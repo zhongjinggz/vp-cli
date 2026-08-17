@@ -321,6 +321,7 @@ public class ClassDiagramExporter extends DiagramExporter {
 	}
 
 	private String formatAlias(String name) {
-			return name.replaceAll("[^a-zA-Z0-9]", "_");
+			// 与 PlantUMLWriter.formatAlias 保持一致：放行所有语言的字母和数字
+			return name.replaceAll("[^\\p{L}\\p{N}]", "_");
 	}
 }

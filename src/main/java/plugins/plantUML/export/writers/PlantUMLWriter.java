@@ -47,10 +47,10 @@ public abstract class PlantUMLWriter {
 
     protected String formatName(String name) {
         /*
-         * Only Greek, Latin letters, and digits are allowed
-         * as names for PlantUML.
+         * \u53EA\u6709\u5B57\u6BCD\uFF08\u4EFB\u610F\u8BED\u8A00\uFF09\u548C\u6570\u5B57\u624D\u80FD\u76F4\u63A5\u4F5C\u4E3A PlantUML \u6807\u8BC6\u7B26\uFF0C
+         * \u5176\u4F59\uFF08\u542B\u7A7A\u683C\uFF09\u7528\u5F15\u53F7\u5305\u88F9\u3002
          */
-        if (!name.matches("[\\p{IsLatin}\\p{IsGreek}0-9]+")) { // Allows only Greek, Latin letters, and digits
+        if (!name.matches("[\\p{L}\\p{N}_]+")) { // \u653E\u884C\u6240\u6709\u8BED\u8A00\u7684\u5B57\u6BCD\u3001\u6570\u5B57\u548C\u4E0B\u5212\u7EBF
             return "\"" + name + "\"";
         }
         return name;
@@ -58,7 +58,8 @@ public abstract class PlantUMLWriter {
 
 
     protected String formatAlias(String name) {
-        return name.replaceAll("[^a-zA-Z0-9\u0370-\u03FF]", "_");
+        // \u5B57\u6BCD\uFF08\u4EFB\u610F\u8BED\u8A00\uFF09\u548C\u6570\u5B57\u4FDD\u7559\uFF0C\u5176\u4F59\u5B57\u7B26\uFF08\u7A7A\u683C\u3001\u6807\u70B9\u3001\u7B26\u53F7\uFF09\u66FF\u6362\u4E3A\u4E0B\u5212\u7EBF
+        return name.replaceAll("[^\\p{L}\\p{N}]", "_");
     }
 
     protected String writeVisibility(String visibility) {
