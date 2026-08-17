@@ -51,6 +51,7 @@ classes
 ### Visual Paradigm
 .vpprefdata
 *.vpp.bak*
+*.vpp.lck
 **/visualparadigm/.lock
 
 ### H2 数据库文件

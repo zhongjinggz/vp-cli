@@ -171,7 +171,7 @@ public class DiagramExportPipeline {
 
 	private File createOutputFile(String title, String contentType) throws IOException {
 		StringBuilder fileName = new StringBuilder();
-		// \u653E\u884C\u6240\u6709\u8BED\u8A00\u7684\u5B57\u6BCD\u548C\u6570\u5B57\uFF08\u4E2D\u6587\u6587\u4EF6\u540D\uFF09\uFF1B\u7A7A\u683C\u3001\u7B26\u53F7\u53CA Windows \u4FDD\u7559\u5B57\u7B26\u4ECD\u8F6C\u4E0B\u5212\u7EBF
+		// 放行所有语言的字母和数字（中文文件名）；空格、符号及 Windows 保留字符仍转下划线
 		fileName.append(title.replaceAll("[^\\p{L}\\p{N}]", "_"));
 		if (contentType.equals("json")) fileName.append("_semantics");
 		fileName.append(".puml");

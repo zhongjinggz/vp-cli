@@ -27,7 +27,7 @@ public class RelationshipData {
 //	}
 
 	protected String formatAlias(String name) {
-		// \u4E0E PlantUMLWriter.formatAlias \u4FDD\u6301\u4E00\u81F4\uFF1A\u653E\u884C\u6240\u6709\u8BED\u8A00\u7684\u5B57\u6BCD\u548C\u6570\u5B57
+		// 与 PlantUMLWriter.formatAlias 保持一致：放行所有语言的字母和数字
 		return name.replaceAll("[^\\p{L}\\p{N}]", "_");
 	}
 
