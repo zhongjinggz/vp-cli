@@ -115,7 +115,9 @@ public class ClassDiagramImporter extends DiagramImporter {
 		}
 		String lineStyle = link.getType().getStyle().toString();
 
-		boolean isReverse = (lineStyle.contains("NORMAL")); // meaning the "from" side has the decoration
+		// 实线且装饰在 entity2 侧才算 reverse（<|--、*--、o--）；
+		// "-->" 装饰在 entity1 侧，不是 reverse，source 应为 entity1（箭头起点）
+		boolean isReverse = (lineStyle.contains("NORMAL") && isDecorated2);
 		boolean isAssoc = false;
 		boolean isAssocClassSolid = false;
 		boolean isAssocClassDashed= false;
@@ -153,6 +155,9 @@ public class ClassDiagramImporter extends DiagramImporter {
 				relationshipType = "Generalization";
 			} else if (decor == "CROWFOOT") {
 				relationshipType = "Containment";
+			} else if (decor == "ARROW") { // "-->" 定向关联（directed association）
+				relationshipType = "Simple";
+				isAssoc = true;
 			}
 
 		} else {
