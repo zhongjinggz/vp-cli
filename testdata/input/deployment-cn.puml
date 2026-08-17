@@ -1,0 +1,11 @@
+@startuml 系统部署
+' 部署图测试：节点 + 构件 + 制品
+node "应用服务器" {
+  component [订单服务]
+  artifact [order-service.jar]
+}
+node "数据库服务器" {
+  database "订单数据库"
+}
+[订单服务] --> "订单数据库" : JDBC
+@enduml

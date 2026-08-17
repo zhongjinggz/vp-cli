@@ -1,7 +1,58 @@
-/.settings/
-/.idea/
-plugins.plantUML.eml
-plugins.plantUML.iml
+# 测试数据
+# .vpp 为 VP 二进制项目文件，每次保存都会变化，不入库
+testdata/vp/*.vpp
+
+# Maven
+target/
+!.mvn/wrapper/maven-wrapper.jar
+!**/src/main/**/target/
+!**/src/test/**/target/
+*.zip
+.kotlin
+
+# IDEA 老式单文件项目
+*.iws
+*.ipr
+
+# IDEA Maven自动导入场景，自动生成模块文件
+.idea/modules.xml
+*.iml
+
+# IDEA 用户环境特定文件
+.idea/workspace.xml
+.idea/shelf/
+.idea/jarRepositories.xml
+.idea/libraries/
+.idea/caches/
+.idea/dictionaries/
+.idea/usage.statistics.xml
+.idea/tasks.xml
+.idea/user-properties.xml
+
+# IDEA 自己管理，用于“双保险”
+.idea/.gitignore
+
+### Eclipse ###
+.apt_generated
 .classpath
+.factorypath
 .project
+.settings
+.springBeans
+.sts4-cache
 classes
+
+### VS Code ###
+.vscode/
+
+### Mac OS ###
+.DS_Store
+
+### Visual Paradigm
+.vpprefdata
+*.vpp.bak*
+**/visualparadigm/.lock
+
+### H2 数据库文件
+db/*
+!db/.gitkeep

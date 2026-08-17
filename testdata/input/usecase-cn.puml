@@ -1,0 +1,14 @@
+@startuml 在线商城用例
+' 用例图测试：中文用例名 + 参与者
+left to right direction
+actor 顾客
+actor 管理员
+rectangle 商城 {
+  usecase "浏览商品"
+  usecase "下订单"
+  usecase "管理商品"
+}
+顾客 --> 浏览商品
+顾客 --> 下订单
+管理员 --> 管理商品
+@enduml

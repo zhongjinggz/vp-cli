@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Assembly descriptor for the Visual Paradigm plugin zip.
+
+  Produces the VP-plugin zip structure (per VP docs):
+      plugins.plantUML/
+      ├── classes/            compiled .class files
+      ├── plugin.xml          plugin descriptor
+      ├── icons/              icons referenced by plugin.xml
+      └── lib/                external jars (openapi.jar must NOT be here)
+
+  The final zip is named plugins.plantUML.zip.
+-->
+<assembly xmlns="http://maven.apache.org/ASSEMBLY/2.2.0"
+          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+          xsi:schemaLocation="http://maven.apache.org/ASSEMBLY/2.2.0 http://maven.apache.org/xsd/assembly-2.2.0.xsd">
+    <id>plugin</id>
+    <formats>
+        <format>zip</format>
+    </formats>
+
+    <!-- The top-level folder inside the zip is named after the plugin id -->
+    <baseDirectory>plugins.plantUML</baseDirectory>
+    <includeBaseDirectory>true</includeBaseDirectory>
+
+    <fileSets>
+        <!-- Compiled classes go into classes/ -->
+        <fileSet>
+            <directory>${project.build.outputDirectory}</directory>
+            <outputDirectory>classes</outputDirectory>
+            <includes>
+                <include>plugins/**</include>
+            </includes>
+        </fileSet>
+
+        <!-- plugin.xml and icons/ are copied into the plugin root -->
+        <fileSet>
+            <directory>${project.build.outputDirectory}</directory>
+            <outputDirectory>/</outputDirectory>
+            <includes>
+                <include>plugin.xml</include>
+                <include>icons/**</include>
+            </includes>
+        </fileSet>
+    </fileSets>
+
+    <dependencySets>
+        <!--
+          All compile/runtime dependencies (plantuml, jackson) go into lib/.
+          The VP SDK (openapi.jar, system scope) is automatically excluded,
+          matching VP's requirement that openapi.jar must not be in the zip.
+        -->
+        <dependencySet>
+            <outputDirectory>lib</outputDirectory>
+            <scope>runtime</scope>
+            <useProjectArtifact>false</useProjectArtifact>
+            <unpack>false</unpack>
+        </dependencySet>
+    </dependencySets>
+</assembly>

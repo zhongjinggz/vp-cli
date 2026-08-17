@@ -1,0 +1,46 @@
+<plugin
+	id="plugins.plantUML"
+	name="PlantUML Support"
+	description="Import from / Export to PlantUML"
+	provider="NataliaSoftlabNtua"
+	class="plugins.plantUML.PlantUML"
+	version="1.0.0">
+        
+	<actionSets>
+		<actionSet id="plugins.plantUML.actionset">
+			<action 
+				id="ImportAction"
+				actionType="generalAction"
+				label="PlantUML..."
+				tooltip="PlantUML..."
+				style="normal"
+				icon="icons/puml-icon.png"
+				ribbonPath="Project/Import/XML">
+				<actionController 
+					class="plugins.plantUML.actions.PlantUMLImportController"/>
+			</action>
+			<action
+                    id="ExportAction"
+                    actionType="generalAction"
+                    label="PlantUML..."
+					tooltip="PlantUML..."
+					style="normal"
+					icon="icons/puml-icon.png"
+                    ribbonPath="Project/Export/XML">
+                <actionController
+                        class="plugins.plantUML.actions.PlantUMLExportController"/>
+            </action>
+			<action
+					id="ExportActiveAction"
+					actionType="generalAction"
+					label="Active Diagram as PlantUML..."
+					tooltip="Active Diagram as PlantUML..."
+					style="normal"
+					icon="icons/puml-icon.png"
+					ribbonPath="Project/Export/XML">
+				<actionController
+						class="plugins.plantUML.actions.PlantUMLExportActiveController"/>
+			</action>
+		</actionSet>
+	</actionSets>
+</plugin>

@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>plugins.plantUML</groupId>
+    <artifactId>plantuml-vp-plugin</artifactId>
+    <version>1.0.0</version>
+    <packaging>jar</packaging>
+
+    <name>PlantUML Support for Visual Paradigm</name>
+    <description>Import from / Export to PlantUML as a Visual Paradigm plugin</description>
+
+    <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <maven.compiler.release>11</maven.compiler.release>
+
+        <jackson.version>2.17.2</jackson.version>
+        <plantuml.version>1.2024.7</plantuml.version>
+
+        <!--
+          Path to the Visual Paradigm Plugin SDK (com.vp.plugin.*).
+          Defaults to the standard macOS installation; override with
+          -Dvp.sdk.dir=<VP lib folder> if your install differs.
+        -->
+        <vp.sdk.dir>/Applications/Visual Paradigm.app/Contents/Resources/app/lib</vp.sdk.dir>
+        <vp.sdk.version>1.0</vp.sdk.version>
+    </properties>
+
+    <dependencies>
+        <!--
+          Visual Paradigm Plugin SDK. Provided by the VP installation at runtime —
+          MUST NOT be packaged into the plugin zip (see VP docs: do not place
+          openapi.jar in the plugin's lib folder).
+        -->
+        <dependency>
+            <groupId>com.vp.plugin</groupId>
+            <artifactId>openapi</artifactId>
+            <version>${vp.sdk.version}</version>
+            <scope>system</scope>
+            <systemPath>${vp.sdk.dir}/openapi.jar</systemPath>
+        </dependency>
+
+        <!--
+          PlantUML parser (used on import to parse .puml source).
+          The original plugin shipped only the standalone plantuml.jar, so the
+          rendering-related transitive deps (jlatexmath, elk, batik) are excluded
+          to keep the plugin's lib/ folder matching that structure.
+        -->
+        <dependency>
+            <groupId>net.sourceforge.plantuml</groupId>
+            <artifactId>plantuml</artifactId>
+            <version>${plantuml.version}</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.scilab.forge</groupId>
+                    <artifactId>jlatexmath</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.eclipse.elk</groupId>
+                    <artifactId>org.eclipse.elk.core</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.eclipse.elk</groupId>
+                    <artifactId>org.eclipse.elk.alg.layered</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.eclipse.elk</groupId>
+                    <artifactId>org.eclipse.elk.alg.mrtree</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+
+        <!-- Jackson: JSON serialization for the semantics round-trip format -->
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-annotations</artifactId>
+            <version>${jackson.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-core</artifactId>
+            <version>${jackson.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-databind</artifactId>
+            <version>${jackson.version}</version>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <finalName>plugins.plantUML</finalName>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-jar-plugin</artifactId>
+                <version>3.4.1</version>
+                <configuration>
+                    <!-- plugin.xml and icons/ are laid out by the assembly plugin,
+                         so keep them out of the intermediate jar. -->
+                    <excludes>
+                        <exclude>plugin.xml</exclude>
+                        <exclude>icons/**</exclude>
+                    </excludes>
+                </configuration>
+            </plugin>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-assembly-plugin</artifactId>
+                <version>3.7.1</version>
+                <configuration>
+                    <descriptors>
+                        <descriptor>assembly/plugin-zip.xml</descriptor>
+                    </descriptors>
+                    <finalName>plugins.plantUML</finalName>
+                    <appendAssemblyId>false</appendAssemblyId>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>make-assembly</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>single</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
+</project>

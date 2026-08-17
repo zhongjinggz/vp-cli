@@ -1,0 +1,14 @@
+@startuml 订单系统
+' 中文类名测试：验证中文类名导出后 alias 不被转成下划线
+class 用户 {
+  -名称: string
+  +登录(): void
+}
+class 订单 {
+  -订单号: string
+  -金额: double
+  +创建(): void
+  +支付(): void
+}
+用户 "1" --> "0..*" 订单 : 下单
+@enduml
