@@ -1,6 +1,22 @@
-# **Visual Paradigm Plugin for PlantUML Import and Export**
+# Visual Paradigm CLI
+A Visual Paradigm Plugin to provide CLI for AI
 
 （origin: https://github.com/nbourdi/PlantUML-VP-Plugin)
+
+
+## TODO 
+- 中文README
+- vp-tree - 显示模型的树形结构
+- vp-export 1 - 导出每个包下的图 plantuml
+- vp-export 2 - 导出每个包下的图 markdown
+- vp-export 3 - 导出每个包下的模型 markdown
+- vp-mount - 把模型文件绑定到目录，不用每次都提供模型文件参数
+- vp-cd
+- vp-cat
+- vp-pwd
+
+## DOING
+- 重构 & UnitTest
 
 
 ## **Supported Diagram Types**
