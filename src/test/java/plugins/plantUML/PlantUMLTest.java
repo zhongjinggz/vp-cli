@@ -1,5 +1,6 @@
 package plugins.plantUML;
 
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doThrow;
@@ -263,7 +264,7 @@ public class PlantUMLTest {
     }
 
     @Test
-    void invoke_unknownArgument_printAndContinue() throws Throwable {
+    void invoke_unknownArgument_printError() throws Throwable {
         File file = Files.createFile(tempDir.resolve("d.puml")).toFile();
         try (MockedStatic<ApplicationManager> amStatic = mockStatic(ApplicationManager.class);
              MockedConstruction<DiagramImportPipeline> pipelineConstruction = mockConstruction(DiagramImportPipeline.class)) {
@@ -274,7 +275,7 @@ public class PlantUMLTest {
             String output = captureOut(() -> plugin.invoke(
                     new String[]{"-action", "import", "-path", file.getAbsolutePath(), "-bogus"}));
             assertTrue(output.contains("Unknown argument: -bogus"));
-            assertTrue(output.contains("Importing from path:"));
+            assertFalse(output.contains("Importing from path:"));
         }
     }
 

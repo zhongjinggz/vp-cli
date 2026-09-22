@@ -35,63 +35,75 @@ public class PlantUML implements VPPlugin, VPPluginCommandLineSupport {
 
         if (args == null || args.length < 2) {
             cliParams.setErrorMessage("Usage: -action <import|export> -path <file_or_folder_path>");
-            System.out.println("Usage: -action <import|export> -path <file_or_folder_path>");
-            return;
-        }
+            //System.out.println("Usage: -action <import|export> -path <file_or_folder_path>");
+            //return;
+        } else {
+            // 顺序解析各命令行参数
+            for (int i = 0; i < args.length; i++) {
+                switch (args[i]) {
+                    case "-action":
+                        if (i + 1 < args.length) {
+                            action = args[++i];
+                            cliParams.setAction(action);
+                        } else {
+                            cliParams.setAction("NO_VALUE");
+                            cliParams.setErrorMessage("Error: Missing value for -action");
+                            break;
+                            //System.out.println("Error: Missing value for -action");
+                            //return;
+                        }
+                        break;
 
+                    case "-path":
+                        if (i + 1 < args.length) {
+                            path = args[++i];
+                            cliParams.addParam("path", path);
+                        } else {
+                            cliParams.setErrorMessage("Error: Missing value for -path");
+//                            System.out.println("Error: Missing value for -path");
+//                            return;
+                            break;
+                        }
+                        break;
 
-        // 顺序解析各命令行参数
-        for (int i = 0; i < args.length; i++) {
-            switch (args[i]) {
-                case "-action":
-                    if (i + 1 < args.length) {
-                        action = args[++i];
-                        cliParams.setAction(action);
-                    } else {
-                        cliParams.setErrorMessage("Error: Missing value for -action");
-                        System.out.println("Error: Missing value for -action");
-                        return;
-                    }
-                    break;
+                    case "-target":
+                        if (i + 1 < args.length) {
+                            target = args[++i];
+                            cliParams.addParam("target", target);
+                        } else {
+                            cliParams.setErrorMessage("Error: Missing value for -target");
+//                            System.out.println("Error: Missing value for -target");
+//                            return;
+                            break;
+                        }
+                        break;
 
-                case "-path":
-                    if (i + 1 < args.length) {
-                        path = args[++i];
-                        cliParams.addParam("path", path);
-                    } else {
-                        cliParams.setErrorMessage("Error: Missing value for -path");
-                        System.out.println("Error: Missing value for -path");
-                        return;
-                    }
-                    break;
+                    case "-list":
+                        cliParams.addParam("list", "true");
+                        listDiagrams = true;
+                        break;
 
-                case "-target":
-                    if (i + 1 < args.length) {
-                        target = args[++i];
-                        cliParams.addParam("target", target);
-                    } else {
-                        cliParams.setErrorMessage("Error: Missing value for -target");
-                        System.out.println("Error: Missing value for -target");
-                        return;
-                    }
-                    break;
+                    default:
+                        cliParams.setErrorMessage("Unknown argument: " + args[i]);
+                        //System.out.println("Unknown argument: " + args[i]);
+                        break;
 
-                case "-list":
-                    cliParams.addParam("list", "true");
-                    listDiagrams = true;
-                    break;
+                }
+            }
 
-                default:
-                    cliParams.setErrorMessage("Unknown argument: " + args[i]);
-                    System.out.println("Unknown argument: " + args[i]);
+            if (cliParams.getAction() == "NOT_SET") {
+//                if (action == null) {
+                cliParams.setErrorMessage("Error: Missing required argument -action.");
+                System.out.println("Error: Missing required argument -action.");
+                return;
             }
         }
 
-        if (action == null) {
-            cliParams.setErrorMessage("Error: Missing required argument -action.");
-            System.out.println("Error: Missing required argument -action.");
+        if (cliParams.isInvalid()) {
+            System.out.println(cliParams.getErrorMessage());
             return;
         }
+
 
         // 按 action 分发到导入/导出/列举图表等分支
         // switch (action.toLowerCase()) {
@@ -204,7 +216,7 @@ public class PlantUML implements VPPlugin, VPPluginCommandLineSupport {
     }
 
     class CliParams {
-        private String action = "UNKNOWN";
+        private String action = "NOT_SET";
         private Map<String, String> params = new HashMap<>();
         private String errorMessage = "";
 
@@ -232,7 +244,7 @@ public class PlantUML implements VPPlugin, VPPluginCommandLineSupport {
             return errorMessage;
         }
 
-        boolean isValid() {
+        boolean isInvalid() {
             return !errorMessage.isEmpty();
         }
     }
