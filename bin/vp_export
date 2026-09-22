@@ -1,0 +1,44 @@
+#!/bin/bash
+
+set -e
+
+APP="/Applications/Visual Paradigm.app/Contents/Resources/app"
+PROJECT="UNDEFINE"
+OUTPUT_PATH="UNDEFINE"
+
+while [[ $# -gt 0 ]]; do
+  case "$1" in
+    -project)
+        PROJECT="$2"
+      shift 2  # shift -project and its value
+      ;;
+    -path)
+      OUTPUT_PATH="$2"
+      shift 2
+      ;;
+    *)
+      shift
+      ;;
+  esac
+done
+
+PROJECT=$(realpath "$PROJECT")
+OUTPUT_PATH=$(realpath "$OUTPUT_PATH")
+
+#echo "-project: $PROJECT"
+#echo "-path: $OUTPUT_PATH"
+
+
+cd "$APP/bin"
+
+java --add-exports java.desktop/com.apple.eawt=ALL-UNNAMED \
+    -Xms256m -Xmx768m \
+    -Djava.awt.headless=true \
+    -cp ".:$APP/lib/*:$APP/ormlib/*" \
+    com.vp.cmd.Plugin \
+    -pluginid "plugins.plantUML" \
+    -project "$PROJECT" \
+    -pluginargs \
+    -action "export" \
+    -path "$OUTPUT_PATH" \
+    -target "all"

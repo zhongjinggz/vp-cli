@@ -21,7 +21,8 @@ public class PlantUML implements VPPlugin, VPPluginCommandLineSupport {
     public void unloaded() {
     }
 
-    @Override
+    // CLI 入口：解析参数并分发到导入/导出逻辑
+@Override
     public void invoke(String[] args) {
         if (args == null || args.length < 2) {
             System.out.println("Usage: -action <import|export> -path <file_or_folder_path>");
@@ -33,6 +34,7 @@ public class PlantUML implements VPPlugin, VPPluginCommandLineSupport {
         String target = null;
         boolean listDiagrams = false;
 
+        // 顺序解析各命令行参数，-list 无需取值，其余参数消耗后续 token
         for (int i = 0; i < args.length; i++) {
             switch (args[i]) {
                 case "-action":
@@ -76,6 +78,7 @@ public class PlantUML implements VPPlugin, VPPluginCommandLineSupport {
             return;
         }
 
+        // 按 action 分发到导入/导出/列举图表等分支
         switch (action.toLowerCase()) {
             case "import":
                 if (path == null) {
@@ -86,11 +89,13 @@ public class PlantUML implements VPPlugin, VPPluginCommandLineSupport {
                 break;
 
             case "export":
+                // -list 优先：仅列举项目内可用图表而不导出
                 if (listDiagrams) {
                     listAvailableDiagrams();
                     return;
                 }
 
+                // export 需要同时指定目标图表与输出路径
                 if (target == null || path == null) {
                     System.out.println("Error: Missing required arguments for export. Use -target and -path.");
                     return;

@@ -1,6 +1,7 @@
 # 测试数据
 # .vpp 为 VP 二进制项目文件，每次保存都会变化，不入库
 testdata/vp/*.vpp
+testdata/output/
 
 # Maven
 target/
@@ -57,3 +58,6 @@ classes
 ### H2 数据库文件
 db/*
 !db/.gitkeep
+
+
+.gientech/
