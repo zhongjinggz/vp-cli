@@ -3,7 +3,9 @@ package plugins.plantUML;
 import java.io.File;
 import java.io.IOException;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import com.vp.plugin.*;
 
@@ -22,25 +24,31 @@ public class PlantUML implements VPPlugin, VPPluginCommandLineSupport {
     }
 
     // CLI 入口：解析参数并分发到导入/导出逻辑
-@Override
+    @Override
     public void invoke(String[] args) {
-        if (args == null || args.length < 2) {
-            System.out.println("Usage: -action <import|export> -path <file_or_folder_path>");
-            return;
-        }
-
         String action = null;
         String path = null;
         String target = null;
         boolean listDiagrams = false;
 
-        // 顺序解析各命令行参数，-list 无需取值，其余参数消耗后续 token
+        CliParams cliParams = new CliParams();
+
+        if (args == null || args.length < 2) {
+            cliParams.setErrorMessage("Usage: -action <import|export> -path <file_or_folder_path>");
+            System.out.println("Usage: -action <import|export> -path <file_or_folder_path>");
+            return;
+        }
+
+
+        // 顺序解析各命令行参数
         for (int i = 0; i < args.length; i++) {
             switch (args[i]) {
                 case "-action":
                     if (i + 1 < args.length) {
                         action = args[++i];
+                        cliParams.setAction(action);
                     } else {
+                        cliParams.setErrorMessage("Error: Missing value for -action");
                         System.out.println("Error: Missing value for -action");
                         return;
                     }
@@ -49,7 +57,9 @@ public class PlantUML implements VPPlugin, VPPluginCommandLineSupport {
                 case "-path":
                     if (i + 1 < args.length) {
                         path = args[++i];
+                        cliParams.addParam("path", path);
                     } else {
+                        cliParams.setErrorMessage("Error: Missing value for -path");
                         System.out.println("Error: Missing value for -path");
                         return;
                     }
@@ -58,50 +68,61 @@ public class PlantUML implements VPPlugin, VPPluginCommandLineSupport {
                 case "-target":
                     if (i + 1 < args.length) {
                         target = args[++i];
+                        cliParams.addParam("target", target);
                     } else {
+                        cliParams.setErrorMessage("Error: Missing value for -target");
                         System.out.println("Error: Missing value for -target");
                         return;
                     }
                     break;
 
                 case "-list":
+                    cliParams.addParam("list", "true");
                     listDiagrams = true;
                     break;
 
                 default:
+                    cliParams.setErrorMessage("Unknown argument: " + args[i]);
                     System.out.println("Unknown argument: " + args[i]);
             }
         }
 
         if (action == null) {
+            cliParams.setErrorMessage("Error: Missing required argument -action.");
             System.out.println("Error: Missing required argument -action.");
             return;
         }
 
         // 按 action 分发到导入/导出/列举图表等分支
-        switch (action.toLowerCase()) {
+        // switch (action.toLowerCase()) {
+        switch (cliParams.getAction().toLowerCase()) {
             case "import":
-                if (path == null) {
+//                if (path == null) {
+                if (cliParams.getParam("path") == null) {
                     System.out.println("Error: Missing required argument -path for import.");
                     return;
                 }
-                performImport(path);
+//                performImport(path);
+                performImport(cliParams.getParam("path"));
                 break;
 
             case "export":
                 // -list 优先：仅列举项目内可用图表而不导出
-                if (listDiagrams) {
+                if (cliParams.getParam("list") == "true") {
+//                    if (listDiagrams) {
                     listAvailableDiagrams();
                     return;
                 }
 
                 // export 需要同时指定目标图表与输出路径
-                if (target == null || path == null) {
+                if (cliParams.getParam("target") == null || cliParams.getParam("path") == null) {
+//                    if (target == null || path == null) {
                     System.out.println("Error: Missing required arguments for export. Use -target and -path.");
                     return;
                 }
 
-                performExport(target, path);
+                performExport(cliParams.getParam("target"), cliParams.getParam("path"));
+//                performExport(target, path);
                 break;
 
             default:
@@ -116,9 +137,9 @@ public class PlantUML implements VPPlugin, VPPluginCommandLineSupport {
 
         if (file.isDirectory()) {
             File[] files = file.listFiles((dir, name) ->
-                    name.toLowerCase().endsWith(".txt") ||
-                            name.toLowerCase().endsWith(".puml") ||
-                            name.toLowerCase().endsWith(".plantuml")
+                name.toLowerCase().endsWith(".txt") ||
+                    name.toLowerCase().endsWith(".puml") ||
+                    name.toLowerCase().endsWith(".plantuml")
             );
 
             if (files != null && files.length > 0) {
@@ -129,8 +150,8 @@ public class PlantUML implements VPPlugin, VPPluginCommandLineSupport {
             }
         } else {
             if (file.getName().toLowerCase().endsWith(".txt") ||
-                    file.getName().toLowerCase().endsWith(".puml") ||
-                    file.getName().toLowerCase().endsWith(".plantuml")) {
+                file.getName().toLowerCase().endsWith(".puml") ||
+                file.getName().toLowerCase().endsWith(".plantuml")) {
                 pipeline.importFromSource(file);
             } else {
                 System.out.println("Error: Unsupported file type. Only .txt, .puml, and .plantuml are allowed.");
@@ -178,7 +199,41 @@ public class PlantUML implements VPPlugin, VPPluginCommandLineSupport {
         ProjectManager projectManager = ApplicationManager.instance().getProjectManager();
         IDiagramUIModel[] allDiagrams = projectManager.getProject().toDiagramArray();
         for (IDiagramUIModel diagram : allDiagrams) {
-            System.out.println(diagram.getName() +" | id: " + diagram.getId());
+            System.out.println(diagram.getName() + " | id: " + diagram.getId());
+        }
+    }
+
+    class CliParams {
+        private String action = "UNKNOWN";
+        private Map<String, String> params = new HashMap<>();
+        private String errorMessage = "";
+
+        void setAction(String action) {
+            this.action = action;
+        }
+
+        void addParam(String key, String value) {
+            this.params.put(key, value);
+        }
+
+        String getAction() {
+            return action;
+        }
+
+        String getParam(String key) {
+            return params.get(key);
+        }
+
+        void setErrorMessage(String errorMessage) {
+            this.errorMessage = errorMessage;
+        }
+
+        String getErrorMessage() {
+            return errorMessage;
+        }
+
+        boolean isValid() {
+            return !errorMessage.isEmpty();
         }
     }
 }

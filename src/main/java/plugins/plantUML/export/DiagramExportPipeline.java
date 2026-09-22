@@ -169,7 +169,7 @@ public class DiagramExportPipeline {
 		return null;
 	}
 
-	private File createOutputFile(String title, String contentType) throws IOException {
+	File createOutputFile(String title, String contentType) throws IOException {
 		StringBuilder fileName = new StringBuilder();
 		// 放行所有语言的字母和数字（中文文件名）；空格、符号及 Windows 保留字符仍转下划线
 		fileName.append(title.replaceAll("[^\\p{L}\\p{N}]", "_"));
