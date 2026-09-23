@@ -30,97 +30,47 @@ public class PlantUML implements VPPlugin, VPPluginCommandLineSupport {
     @Override
     public void invoke(String[] args) {
 
-        CliParams params = acquireParams(args);
+        CliParams params = CliParams.valueOf(args);
 
         if (params.isInvalid()) {
             System.out.println(params.getErrorMessage());
             return;
         }
 
-        switch (params.get(KEY_ACTION)) {
+        switch (params.action().value()) {
+//            switch (params.get(KEY_ACTION)) {
             case VALUE_IMPORT:
-                if (params.isUndefined(KEY_PATH) || params.isNonValue(KEY_PATH)) {
+                if (params.path().isUndefined() || params.path().isNonValue()) {
+//                    if (params.isUndefined(KEY_PATH) || params.isNonValue(KEY_PATH)) {
                     System.out.println("Error: Missing required argument -path for import.");
                     return;
                 }
-                performImport(params.get(KEY_PATH));
+                performImport(params.path().value());
                 break;
 
             case VALUE_EXPORT:
                 // -list 优先：仅列举项目内可用图表而不导出
-                if (params.isTrue(KEY_LIST) ) {
+                if (params.list().isTrue() ) {
+//                    if (params.isTrue(KEY_LIST) ) {
                     listAvailableDiagrams();
                     return;
                 }
 
                 // export 需要同时指定目标图表与输出路径
-                if (params.isUndefined(KEY_TARGET) || params.isNonValue(KEY_TARGET)
-                    || params.isUndefined(KEY_PATH) || params.isNonValue(KEY_PATH)) {
+                if (params.target().isUndefined() || params.target().isNonValue()
+                    || params.path().isUndefined() || params.path().isNonValue()) {
+//                    if (params.isUndefined(KEY_TARGET) || params.isNonValue(KEY_TARGET)
+//                        || params.isUndefined(KEY_PATH) || params.isNonValue(KEY_PATH)) {
                     System.out.println("Error: Missing required arguments for export. Use -target and -path.");
                     return;
                 }
 
-                performExport(params.get(KEY_TARGET), params.get(KEY_PATH));
+                performExport(params.target().value(), params.path().value());
                 break;
 
             default:
                 System.out.println("Error: Invalid action specified. Use 'import' or 'export'.");
         }
-    }
-
-    @NonNull
-    CliParams acquireParams(String[] args) {
-        CliParams cliParams = new CliParams();
-
-        if (args == null || args.length < 2) {
-            cliParams.setErrorMessage("Usage: -action <import|export> -path <file_or_folder_path>");
-        } else {
-            for (int i = 0; i < args.length; i++) {
-                switch (args[i]) {
-                    case KEY_ACTION:
-                        if (i + 1 < args.length) {
-                            cliParams.set(KEY_ACTION, args[++i]);
-                        } else {
-                            cliParams.set(KEY_ACTION, VALUE_NON);
-                            cliParams.setErrorMessage("Error: Missing value for -action");
-                            break;
-                        }
-                        break;
-
-                    case KEY_PATH:
-                        if (i + 1 < args.length) {
-                            cliParams.set(KEY_PATH, args[++i]);
-                        } else {
-                            cliParams.setErrorMessage("Error: Missing value for -path");
-                            break;
-                        }
-                        break;
-
-                    case KEY_TARGET:
-                        if (i + 1 < args.length) {
-                            cliParams.set(KEY_TARGET, args[++i]);
-                        } else {
-                            cliParams.setErrorMessage("Error: Missing value for -target");
-                            break;
-                        }
-                        break;
-
-                    case "-list":
-                        cliParams.set("-list", "true");
-                        break;
-
-                    default:
-                        cliParams.setErrorMessage("Unknown argument: " + args[i]);
-                        break;
-
-                }
-            }
-
-            if (cliParams.isUndefined(KEY_ACTION)) {
-                cliParams.setErrorMessage("Error: Missing required argument -action.");
-            }
-        }
-        return cliParams;
     }
 
     private void performImport(String path) {
@@ -175,7 +125,7 @@ public class PlantUML implements VPPlugin, VPPluginCommandLineSupport {
         System.out.println("Exporting diagram(s): " + target + " to path: " + path);
         DiagramExportPipeline pipeline = new DiagramExportPipeline(exportLocation);
 
-        if (target.equalsIgnoreCase("all")) {
+        if (target.equalsIgnoreCase(CliParams.VALUE_ALL)) {
             pipeline.exportAllDiagrams();
         } else {
             try {
@@ -196,13 +146,16 @@ public class PlantUML implements VPPlugin, VPPluginCommandLineSupport {
         }
     }
 
-    class CliParams {
+    static class CliParams {
         static final String KEY_ACTION = "-action";
         static final String VALUE_IMPORT = "import";
         static final String VALUE_EXPORT = "export";
+
         static final String KEY_TARGET = "-target";
-        static final String KEY_LIST = "-list";
+        static final String VALUE_ALL = "all";
+
         static final String KEY_PATH = "-path";
+        static final String KEY_LIST = "-list";
 
         // 以下两个值用于 key/value 形式的参数的初始值，区别在于：
         // UNDEFINED 代表命令行中根本就没有这个参数，例如 对于“the-command -action abc” ， "-path" 就是 UNDEFINED
@@ -224,6 +177,63 @@ public class PlantUML implements VPPlugin, VPPluginCommandLineSupport {
             params.put(KEY_PATH, VALUE_UNDEFINED);
             params.put(KEY_LIST, VALUE_FALSE);
 
+        }
+
+
+        // 封装命令行参数
+        @NonNull
+        static CliParams valueOf(String[] args) {
+            CliParams cliParams = new CliParams();
+
+            if (args == null || args.length < 2) {
+                cliParams.setErrorMessage("Usage: -action <import|export> -path <file_or_folder_path>");
+            } else {
+                for (int i = 0; i < args.length; i++) {
+                    switch (args[i]) {
+                        case KEY_ACTION:
+                            if (i + 1 < args.length) {
+                                cliParams.set(KEY_ACTION, args[++i]);
+                            } else {
+                                cliParams.set(KEY_ACTION, VALUE_NON);
+                                cliParams.setErrorMessage("Error: Missing value for -action");
+                                break;
+                            }
+                            break;
+
+                        case KEY_PATH:
+                            if (i + 1 < args.length) {
+                                cliParams.set(KEY_PATH, args[++i]);
+                            } else {
+                                cliParams.setErrorMessage("Error: Missing value for -path");
+                                break;
+                            }
+                            break;
+
+                        case KEY_TARGET:
+                            if (i + 1 < args.length) {
+                                cliParams.set(KEY_TARGET, args[++i]);
+                            } else {
+                                cliParams.setErrorMessage("Error: Missing value for -target");
+                                break;
+                            }
+                            break;
+
+                        case "-list":
+                            cliParams.set("-list", "true");
+                            break;
+
+                        default:
+                            cliParams.setErrorMessage("Unknown argument: " + args[i]);
+                            break;
+
+                    }
+                }
+
+                if (cliParams.isUndefined(KEY_ACTION)) {
+                    cliParams.setErrorMessage("Error: Missing required argument -action.");
+                }
+            }
+            return cliParams;
         }
 
         void set(String key, String value) {
@@ -259,6 +269,48 @@ public class PlantUML implements VPPlugin, VPPluginCommandLineSupport {
         }
         boolean isFalse(String key) {
             return params.get(key) == VALUE_FALSE;
+        }
+
+        KeyParam action() {
+            return new KeyParam(KEY_ACTION, params.get(KEY_ACTION));
+        }
+
+        KeyParam path() {
+            return new KeyParam(KEY_PATH, params.get(KEY_PATH));
+        }
+
+        public KeyParam list() {
+            return new KeyParam(KEY_LIST, params.get(KEY_LIST));
+        }
+
+        public KeyParam target() {
+            return new KeyParam(KEY_TARGET, params.get(KEY_TARGET));
+        }
+    }
+
+    static class KeyParam {
+        String key;
+        String value;
+        KeyParam(String key, String value) {
+            this.key = key;
+            this.value = value;
+        }
+
+        boolean isUndefined() {
+            return value.equals(VALUE_UNDEFINED);
+        }
+        boolean isNonValue() {
+            return value.equals(VALUE_NON);
+        }
+        boolean isTrue() {
+            return value.equals(VALUE_TRUE);
+        }
+        boolean isFalse() {
+            return value.equals(VALUE_FALSE);
+        }
+
+        String value() {
+            return this.value;
         }
     }
 }
