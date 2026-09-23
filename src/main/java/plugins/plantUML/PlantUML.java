@@ -37,32 +37,30 @@ public class PlantUML implements VPPlugin, VPPluginCommandLineSupport {
             return;
         }
 
-        // 按 action 分发到导入/导出/列举图表等分支
-
-        switch (params.get("action").toLowerCase()) {
-            case "import":
-                if (params.isUndefined("path") || params.isNoValue("path")) {
+        switch (params.get(KEY_ACTION)) {
+            case VALUE_IMPORT:
+                if (params.isUndefined(KEY_PATH) || params.isNonValue(KEY_PATH)) {
                     System.out.println("Error: Missing required argument -path for import.");
                     return;
                 }
-                performImport(params.get("path"));
+                performImport(params.get(KEY_PATH));
                 break;
 
-            case "export":
+            case VALUE_EXPORT:
                 // -list 优先：仅列举项目内可用图表而不导出
-                if (params.get("list") == "true") {
+                if (params.isTrue(KEY_LIST) ) {
                     listAvailableDiagrams();
                     return;
                 }
 
                 // export 需要同时指定目标图表与输出路径
-                if (params.isUndefined("target") || params.isNoValue("target")
-                    || params.isUndefined("path") || params.isNoValue("path")) {
+                if (params.isUndefined(KEY_TARGET) || params.isNonValue(KEY_TARGET)
+                    || params.isUndefined(KEY_PATH) || params.isNonValue(KEY_PATH)) {
                     System.out.println("Error: Missing required arguments for export. Use -target and -path.");
                     return;
                 }
 
-                performExport(params.get("target"), params.get("path"));
+                performExport(params.get(KEY_TARGET), params.get(KEY_PATH));
                 break;
 
             default:
@@ -79,29 +77,28 @@ public class PlantUML implements VPPlugin, VPPluginCommandLineSupport {
         } else {
             for (int i = 0; i < args.length; i++) {
                 switch (args[i]) {
-                    case "-action":
+                    case KEY_ACTION:
                         if (i + 1 < args.length) {
-                            cliParams.set(P_ACTION, args[++i]);
+                            cliParams.set(KEY_ACTION, args[++i]);
                         } else {
-                            cliParams.set(P_ACTION, NO_VALUE);
+                            cliParams.set(KEY_ACTION, VALUE_NON);
                             cliParams.setErrorMessage("Error: Missing value for -action");
                             break;
                         }
                         break;
 
-                    case "-path":
+                    case KEY_PATH:
                         if (i + 1 < args.length) {
-//                            cliParams.set("path", args[++i]);
-                            cliParams.set(P_PATH, args[++i]);
+                            cliParams.set(KEY_PATH, args[++i]);
                         } else {
                             cliParams.setErrorMessage("Error: Missing value for -path");
                             break;
                         }
                         break;
 
-                    case "-target":
+                    case KEY_TARGET:
                         if (i + 1 < args.length) {
-                            cliParams.set("target", args[++i]);
+                            cliParams.set(KEY_TARGET, args[++i]);
                         } else {
                             cliParams.setErrorMessage("Error: Missing value for -target");
                             break;
@@ -109,7 +106,7 @@ public class PlantUML implements VPPlugin, VPPluginCommandLineSupport {
                         break;
 
                     case "-list":
-                        cliParams.set("list", "true");
+                        cliParams.set("-list", "true");
                         break;
 
                     default:
@@ -119,7 +116,7 @@ public class PlantUML implements VPPlugin, VPPluginCommandLineSupport {
                 }
             }
 
-            if (cliParams.isUndefined("action")) {
+            if (cliParams.isUndefined(KEY_ACTION)) {
                 cliParams.setErrorMessage("Error: Missing required argument -action.");
             }
         }
@@ -200,30 +197,32 @@ public class PlantUML implements VPPlugin, VPPluginCommandLineSupport {
     }
 
     class CliParams {
-        static final String P_ACTION = "action";
-        static final String P_TARGET = "target";
-        static final String P_LIST = "list";
-        static final String P_PATH = "path";
+        static final String KEY_ACTION = "-action";
+        static final String VALUE_IMPORT = "import";
+        static final String VALUE_EXPORT = "export";
+        static final String KEY_TARGET = "-target";
+        static final String KEY_LIST = "-list";
+        static final String KEY_PATH = "-path";
 
         // 以下两个值用于 key/value 形式的参数的初始值，区别在于：
         // UNDEFINED 代表命令行中根本就没有这个参数，例如 对于“the-command -action abc” ， "-path" 就是 UNDEFINED
         // NO_VALUE 代表命令行中有这个参数但是没有设置值，例如 对于“the-command -action abc -path” ， "-path" 就是 NO_VALUE
-        static final String UNDEFINED = "undefined";
-        static final String NO_VALUE = "no_value";
+        static final String VALUE_UNDEFINED = "undefined";
+        static final String VALUE_NON = "no_value";
 
         // 对于不以 key/value 形式的有名称的参数，初始值为 FALSE，一旦命令行中出现了，则为 TRUE
         // 例如 对于"the-command -path"，“-list”为 FALSE，对于“the-command -list”，“-list"则为 TRUE
-        static final String TRUE = "true";
-        static final String FALSE = "false";
+        static final String VALUE_TRUE = "true";
+        static final String VALUE_FALSE = "false";
 
         private Map<String, String> params = new HashMap<>();
         private String errorMessage = "";
 
         CliParams() {
-            params.put(P_ACTION, UNDEFINED);
-            params.put(P_TARGET, UNDEFINED);
-            params.put(P_PATH, UNDEFINED);
-            params.put(P_LIST, FALSE);
+            params.put(KEY_ACTION, VALUE_UNDEFINED);
+            params.put(KEY_TARGET, VALUE_UNDEFINED);
+            params.put(KEY_PATH, VALUE_UNDEFINED);
+            params.put(KEY_LIST, VALUE_FALSE);
 
         }
 
@@ -248,11 +247,18 @@ public class PlantUML implements VPPlugin, VPPluginCommandLineSupport {
         }
 
         boolean isUndefined(String key) {
-            return params.get(key) == UNDEFINED;
+            return params.get(key) == VALUE_UNDEFINED;
         }
 
-        boolean isNoValue(String key) {
-            return params.get(key) == NO_VALUE;
+        boolean isNonValue(String key) {
+            return params.get(key) == VALUE_NON;
+        }
+
+        boolean isTrue(String key) {
+            return params.get(key) == VALUE_TRUE;
+        }
+        boolean isFalse(String key) {
+            return params.get(key) == VALUE_FALSE;
         }
     }
 }

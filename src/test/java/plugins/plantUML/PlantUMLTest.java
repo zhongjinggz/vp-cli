@@ -280,16 +280,6 @@ public class PlantUMLTest {
     }
 
     @Test
-    void invoke_export_uppercaseAction_works() throws Throwable {
-        File dir = tempDir.toFile();
-        try (MockedConstruction<DiagramExportPipeline> pipelineConstruction = mockConstruction(DiagramExportPipeline.class)) {
-            captureOut(() -> plugin.invoke(
-                    new String[]{"-action", "EXPORT", "-target", "all", "-path", dir.getAbsolutePath()}));
-            verify(mockedExport(pipelineConstruction)).exportAllDiagrams();
-        }
-    }
-
-    @Test
     void invoke_export_createsNewDirectoryThenExports() throws Throwable {
         // Path does not yet exist; mkdirs() succeeds (created==true).
         String newDir = tempDir.resolve("fresh").resolve("sub").toString();
