@@ -8,6 +8,8 @@ import plugins.plantUML.export.DiagramExportPipeline;
 //TODO 修改主类名
 //TODO 修改包名
 //TODO 翻译和修改 README
+//TODO 统一处理错误
+//TODO 统一处理日志
 
 //DONE 改为依赖注入 1 - 注入 pipeline
 public class PlantUML implements VPPlugin, VPPluginCommandLineSupport {
