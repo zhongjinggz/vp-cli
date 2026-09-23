@@ -39,32 +39,16 @@ public class PlantUML implements VPPlugin, VPPluginCommandLineSupport {
 
         switch (params.action().text()) {
             case VALUE_IMPORT:
-                if (params.path().isUnset() || params.path().isNonValue()) {
-                    System.out.println("Error: Missing required argument -path for import.");
-                    return;
-                }
                 performImport(params.path().text());
                 break;
-
             case VALUE_EXPORT:
                 // -list 优先：仅列举项目内可用图表而不导出
                 if (params.list().isSet()) {
                     listAvailableDiagrams();
-                    return;
+                } else {
+                    performExport(params.target().text(), params.path().text());
                 }
-
-                // export 需要同时指定目标图表与输出路径
-                if (params.target().isUnset() || params.target().isNonValue()
-                    || params.path().isUnset() || params.path().isNonValue()) {
-                    System.out.println("Error: Missing required arguments for export. Use -target and -path.");
-                    return;
-                }
-
-                performExport(params.target().text(), params.path().text());
                 break;
-
-            default:
-                System.out.println("Error: Invalid action specified. Use 'import' or 'export'.");
         }
     }
 
@@ -190,29 +174,61 @@ public class PlantUML implements VPPlugin, VPPluginCommandLineSupport {
         }
 
         void parse() {
-            if (args == null || args.length < 2) {
-                setErrorMessage("Usage: -action <import|export> -path <file_or_folder_path>");
+            if (acquireParams()) {
+                validateParams();
+            }
+        }
+
+        private void validateParams() {
+            if (action().isUnset()) {
+                setErrorMessage("Error: Missing required argument -action.");
             } else {
-                for (int index = 0; index < args.length; index++) {
-                    String key = args[index];
-
-                    if (isKeyValueParam(key)) {
-                        index = parseValue(index);
-                    } else if (isKeyOnlyParam(key)) {
-                        set(key);
-                    } else {
-                        setErrorMessage("Unknown argument: " + key);
-                    }
-
-                    if (isInvalid()) {
+                switch (action().text()) {
+                    case VALUE_IMPORT:
+                        if (path().isUnset() || path().isNonValue()) {
+                            setErrorMessage("Error: Missing required argument -path for import.");
+                        }
                         break;
-                    }
-                }
-
-                if (action().isUnset()) {
-                    setErrorMessage("Error: Missing required argument -action.");
+                    case VALUE_EXPORT:
+                        if (list().isUnset()) {
+                            // export 需要同时指定目标图表与输出路径
+                            if (target().isUnset() || target().isNonValue()
+                                || path().isUnset() || path().isNonValue()) {
+                                setErrorMessage("Error: Missing required arguments for export. Use -target and -path.");
+                            }
+                        }
+                        break;
+                    default:
+                        setErrorMessage("Error: Invalid action specified. Use 'import' or 'export'.");
                 }
             }
+
+
+        }
+
+        private boolean acquireParams() {
+            if (args == null || args.length < 2) {
+                setErrorMessage("Usage: -action <import|export> -path <file_or_folder_path>");
+                return false;
+            }
+
+            for (int index = 0; index < args.length; index++) {
+                String key = args[index];
+
+                if (isKeyValueParam(key)) {
+                    index = parseValue(index);
+                } else if (isKeyOnlyParam(key)) {
+                    set(key);
+                } else {
+                    setErrorMessage("Unknown argument: " + key);
+                }
+
+                if (isInvalid()) {
+                    return false;
+                }
+            }
+
+            return true;
         }
 
         private boolean isKeyValueParam(String arg) {
@@ -264,6 +280,10 @@ public class PlantUML implements VPPlugin, VPPluginCommandLineSupport {
 
         boolean isInvalid() {
             return !errorMessageText.isEmpty();
+        }
+
+        boolean isValid() {
+            return !isInvalid();
         }
 
         ParamValue action() {
