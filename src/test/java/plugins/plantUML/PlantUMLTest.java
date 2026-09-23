@@ -42,12 +42,12 @@ public class PlantUMLTest {
     private final PlantUML plugin = new PlantUML();
 
     @Test
-    void loaded_doesNothing() throws Throwable {
+    void loaded_doesNothing() {
         plugin.loaded(null);
     }
 
     @Test
-    void unloaded_doesNothing() throws Throwable {
+    void unloaded_doesNothing() {
         plugin.unloaded();
     }
 

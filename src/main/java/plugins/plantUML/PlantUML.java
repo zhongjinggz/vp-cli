@@ -161,11 +161,11 @@ public class PlantUML implements VPPlugin, VPPluginCommandLineSupport {
         static final String VALUE_SET = "set";
         static final String VALUE_NON = "non_value";
 
-        private String[] args;
+        private final String[] args;
 
         //将参数放在两个Map中，就可以区分哪些参数是 key/value 形式的，哪些不具有 value
-        private Map<String, String> keyValueParams = new HashMap<>();
-        private Map<String, String> keyOnlyParams = new HashMap<>();
+        private final Map<String, String> keyValueParams = new HashMap<>();
+        private final Map<String, String> keyOnlyParams = new HashMap<>();
 
         private String errorMessageText = "";
 

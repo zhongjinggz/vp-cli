@@ -24,7 +24,7 @@ public class DiagramExportPipeline {
 	 * Executes the export pipeline for a given diagram.
 	 */
 
-	private List<SemanticsData> projectSemanticsDatas = new ArrayList<SemanticsData>();
+	private final List<SemanticsData> projectSemanticsDatas = new ArrayList<SemanticsData>();
 
 	public void export(IDiagramUIModel diagram) throws IOException, UnfitForExportException {
 		String diagramType = diagram.getType();
