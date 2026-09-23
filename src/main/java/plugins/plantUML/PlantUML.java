@@ -38,10 +38,8 @@ public class PlantUML implements VPPlugin, VPPluginCommandLineSupport {
         }
 
         switch (params.action().text()) {
-//            switch (params.get(KEY_ACTION)) {
             case VALUE_IMPORT:
                 if (params.path().isUnset() || params.path().isNonValue()) {
-//                    if (params.isUndefined(KEY_PATH) || params.isNonValue(KEY_PATH)) {
                     System.out.println("Error: Missing required argument -path for import.");
                     return;
                 }
@@ -51,7 +49,6 @@ public class PlantUML implements VPPlugin, VPPluginCommandLineSupport {
             case VALUE_EXPORT:
                 // -list 优先：仅列举项目内可用图表而不导出
                 if (params.list().isSet()) {
-//                    if (params.isTrue(KEY_LIST) ) {
                     listAvailableDiagrams();
                     return;
                 }
@@ -59,8 +56,6 @@ public class PlantUML implements VPPlugin, VPPluginCommandLineSupport {
                 // export 需要同时指定目标图表与输出路径
                 if (params.target().isUnset() || params.target().isNonValue()
                     || params.path().isUnset() || params.path().isNonValue()) {
-//                    if (params.isUndefined(KEY_TARGET) || params.isNonValue(KEY_TARGET)
-//                        || params.isUndefined(KEY_PATH) || params.isNonValue(KEY_PATH)) {
                     System.out.println("Error: Missing required arguments for export. Use -target and -path.");
                     return;
                 }
@@ -172,15 +167,10 @@ public class PlantUML implements VPPlugin, VPPluginCommandLineSupport {
         private Map<String, String> keyValueParams = new HashMap<>();
         private Map<String, String> keyOnlyParams = new HashMap<>();
 
-
-        private String actionText = VALUE_UNSET;
-        private String targetText = VALUE_UNSET;
-        private String pathText = VALUE_UNSET;
-        private String listText = VALUE_UNSET;
-
         private String errorMessageText = "";
 
         CliParams(String[] args) {
+            // 复制入参，避免无意中修改
             this.args = (args == null ? new String[0] : Arrays.copyOf(args, args.length));
 
             keyValueParams.put(KEY_ACTION, VALUE_UNSET);
@@ -204,12 +194,14 @@ public class PlantUML implements VPPlugin, VPPluginCommandLineSupport {
                 setErrorMessage("Usage: -action <import|export> -path <file_or_folder_path>");
             } else {
                 for (int index = 0; index < args.length; index++) {
-                    if (isKeyValueParam(args[index])) {
+                    String key = args[index];
+
+                    if (isKeyValueParam(key)) {
                         index = parseValue(index);
-                    } else if (isKeyOnlyParam(args[index])){
-                        set(args[index]);
+                    } else if (isKeyOnlyParam(key)) {
+                        set(key);
                     } else {
-                        setErrorMessage("Unknown argument: " + args[index]);
+                        setErrorMessage("Unknown argument: " + key);
                     }
 
                     if (isInvalid()) {
