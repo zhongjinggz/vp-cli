@@ -7,7 +7,6 @@ import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.mockConstruction;
 import static org.mockito.Mockito.mockStatic;
-import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -17,7 +16,6 @@ import com.vp.plugin.diagram.IDiagramUIModel;
 import com.vp.plugin.model.IProject;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
-import java.io.FilenameFilter;
 import java.io.IOException;
 import java.io.PrintStream;
 import java.nio.charset.StandardCharsets;
@@ -30,7 +28,6 @@ import org.mockito.MockedConstruction;
 import org.mockito.MockedStatic;
 import plugins.plantUML.PlantUML;
 import plugins.plantUML.export.DiagramExportPipeline;
-import plugins.plantUML.imports.importers.DiagramImportPipeline;
 
 /**
  *
@@ -56,105 +53,6 @@ String output = captureOut(() -> invoke(new String[]{"-path", "x"}));
         assertTrue(output.contains("Missing required argument -action."),
                 "unexpected output: [" + output + "]");
 
-    }
-
-    // ---------- invoke -> performImport 分支 ----------
-
-    @Test
-    void invoke_importSingleTxtFile_callsPipelineAndSaves() throws Throwable {
-        File txt = Files.createFile(tempDir.resolve("single.txt")).toFile();
-        try (MockedStatic<ApplicationManager> amStatic = mockStatic(ApplicationManager.class);
-             MockedConstruction<DiagramImportPipeline> pipelineConstruction = mockConstruction(DiagramImportPipeline.class)) {
-            ProjectManager pm = setUpProjectManager(amStatic);
-            captureOut(() -> invoke(
-                    new String[]{"-action", "import", "-path", txt.getAbsolutePath()}));
-            verify(mockedImport(pipelineConstruction)).importFromSource(any(File.class));
-            verify(pm).saveProject();
-        }
-    }
-
-    @Test
-    void invoke_importSinglePumlFile_callsPipelineAndSaves() throws Throwable {
-        File puml = Files.createFile(tempDir.resolve("single.puml")).toFile();
-        try (MockedStatic<ApplicationManager> amStatic = mockStatic(ApplicationManager.class);
-             MockedConstruction<DiagramImportPipeline> pipelineConstruction = mockConstruction(DiagramImportPipeline.class)) {
-            ProjectManager pm = setUpProjectManager(amStatic);
-            captureOut(() -> invoke(
-                    new String[]{"-action", "import", "-path", puml.getAbsolutePath()}));
-            verify(mockedImport(pipelineConstruction)).importFromSource(any(File.class));
-            verify(pm).saveProject();
-        }
-    }
-
-    @Test
-    void invoke_importSinglePlantumlFile_callsPipelineAndSaves() throws Throwable {
-        File plantuml = Files.createFile(tempDir.resolve("single.plantuml")).toFile();
-        try (MockedStatic<ApplicationManager> amStatic = mockStatic(ApplicationManager.class);
-             MockedConstruction<DiagramImportPipeline> pipelineConstruction = mockConstruction(DiagramImportPipeline.class)) {
-            ProjectManager pm = setUpProjectManager(amStatic);
-            captureOut(() -> invoke(
-                    new String[]{"-action", "import", "-path", plantuml.getAbsolutePath()}));
-            verify(mockedImport(pipelineConstruction)).importFromSource(any(File.class));
-            verify(pm).saveProject();
-        }
-    }
-
-    @Test
-    void invoke_importUnsupportedFile_printsError() throws Throwable {
-        File file = Files.createFile(tempDir.resolve("c.xyz")).toFile();
-        try (MockedStatic<ApplicationManager> amStatic = mockStatic(ApplicationManager.class)) {
-            ProjectManager pm = setUpProjectManager(amStatic);
-            String output = captureOut(() -> invoke(
-                    new String[]{"-action", "import", "-path", file.getAbsolutePath()}));
-            assertTrue(output.contains("Unsupported file type"));
-            verify(pm).saveProject();
-        }
-    }
-
-    @Test
-    void invoke_importDirectoryWithFiles_callsImportMultiple() throws Throwable {
-        Files.createFile(tempDir.resolve("a.txt"));
-        Files.createFile(tempDir.resolve("b.puml"));
-        Files.createFile(tempDir.resolve("c.plantuml"));
-        Files.createFile(tempDir.resolve("d.xyz"));
-        File dir = tempDir.toFile();
-        try (MockedStatic<ApplicationManager> amStatic = mockStatic(ApplicationManager.class);
-             MockedConstruction<DiagramImportPipeline> pipelineConstruction = mockConstruction(DiagramImportPipeline.class)) {
-            ProjectManager pm = setUpProjectManager(amStatic);
-            captureOut(() -> invoke(
-                    new String[]{"-action", "import", "-path", dir.getAbsolutePath()}));
-            verify(mockedImport(pipelineConstruction)).importMultipleFiles(any());
-            verify(pm).saveProject();
-        }
-    }
-
-    @Test
-    void invoke_importDirectoryEmpty_printsNoFiles() throws Throwable {
-        File dir = tempDir.toFile();
-        try (MockedStatic<ApplicationManager> amStatic = mockStatic(ApplicationManager.class);
-             MockedConstruction<DiagramImportPipeline> pipelineConstruction = mockConstruction(DiagramImportPipeline.class)) {
-            ProjectManager pm = setUpProjectManager(amStatic);
-            String output = captureOut(() -> invoke(
-                    new String[]{"-action", "import", "-path", dir.getAbsolutePath()}));
-            assertTrue(output.contains("No valid .txt, .puml, or .plantuml files found"));
-            verify(mockedImport(pipelineConstruction), never()).importMultipleFiles(any());
-            verify(pm).saveProject();
-        }
-    }
-
-    @Test
-    void invoke_importDirectoryListFilesNull_printsNoFiles() throws Throwable {
-        try (MockedStatic<ApplicationManager> amStatic = mockStatic(ApplicationManager.class);
-             MockedConstruction<DiagramImportPipeline> pipelineConstruction = mockConstruction(DiagramImportPipeline.class);
-             MockedConstruction<File> fileConstruction = mockConstruction(File.class, (mock, context) -> {
-                 when(mock.isDirectory()).thenReturn(true);
-                 when(mock.listFiles(any(FilenameFilter.class))).thenReturn(null);
-             })) {
-            setUpProjectManager(amStatic);
-            String output = captureOut(() -> invoke(
-                    new String[]{"-action", "import", "-path", "whatever"}));
-            assertTrue(output.contains("No valid .txt, .puml, or .plantuml files found"));
-        }
     }
 
     // ---------- invoke -> performExport 分支 ----------
@@ -221,8 +119,6 @@ String output = captureOut(() -> invoke(new String[]{"-path", "x"}));
         }
     }
 
-    // ---------- invoke -> listAvailableDiagrams 分支 ----------
-
     @Test
     void invoke_exportWithList_listsDiagrams() throws Throwable {
         try (MockedStatic<ApplicationManager> amStatic = mockStatic(ApplicationManager.class)) {
@@ -288,10 +184,6 @@ String output = captureOut(() -> invoke(new String[]{"-path", "x"}));
         amStatic.when(ApplicationManager::instance).thenReturn(am);
         when(am.getProjectManager()).thenReturn(pm);
         return pm;
-    }
-
-    private static DiagramImportPipeline mockedImport(MockedConstruction<DiagramImportPipeline> construction) {
-        return construction.constructed().get(0);
     }
 
     private static DiagramExportPipeline mockedExport(MockedConstruction<DiagramExportPipeline> construction) {

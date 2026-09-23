@@ -4,7 +4,6 @@ import com.vp.plugin.ApplicationManager;
 import com.vp.plugin.ProjectManager;
 import com.vp.plugin.diagram.IDiagramUIModel;
 import plugins.plantUML.export.DiagramExportPipeline;
-import plugins.plantUML.imports.importers.DiagramImportPipeline;
 
 import java.io.File;
 import java.io.IOException;
@@ -70,34 +69,7 @@ public class CLIController {
     }
 
     void performImport(String path) {
-        System.out.println("Importing from path: " + path);
-        File file = new File(path);
-        DiagramImportPipeline pipeline = new DiagramImportPipeline();
-
-        if (file.isDirectory()) {
-            File[] files = file.listFiles((dir, name) ->
-                name.toLowerCase().endsWith(".txt") ||
-                    name.toLowerCase().endsWith(".puml") ||
-                    name.toLowerCase().endsWith(".plantuml")
-            );
-
-            if (files != null && files.length > 0) {
-                List<File> fileList = Arrays.asList(files);
-                pipeline.importMultipleFiles(fileList);
-            } else {
-                System.out.println("Error: No valid .txt, .puml, or .plantuml files found in directory.");
-            }
-        } else {
-            if (file.getName().toLowerCase().endsWith(".txt") ||
-                file.getName().toLowerCase().endsWith(".puml") ||
-                file.getName().toLowerCase().endsWith(".plantuml")) {
-                pipeline.importFromSource(file);
-            } else {
-                System.out.println("Error: Unsupported file type. Only .txt, .puml, and .plantuml are allowed.");
-            }
-        }
-        ProjectManager projectManager = ApplicationManager.instance().getProjectManager();
-        projectManager.saveProject();
+       //TBD
     }
 
     void listAvailableDiagrams() {

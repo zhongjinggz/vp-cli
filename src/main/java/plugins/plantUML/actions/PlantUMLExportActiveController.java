@@ -10,7 +10,7 @@ public class PlantUMLExportActiveController implements VPActionController {
     public void performAction(VPAction action) {
 
         ApplicationManager.instance().getViewManager().showMessageDialog(
-            ApplicationManager.instance().getViewManager().getRootFrame(), "vp-cli 2026-9-23 21:54");
+            ApplicationManager.instance().getViewManager().getRootFrame(), "vp-cli 2026-9-23 22:13");
     }
 
     @Override

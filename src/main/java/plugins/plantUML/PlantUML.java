@@ -4,6 +4,7 @@ import com.vp.plugin.*;
 import plugins.plantUML.actions.CLIController;
 
 public class PlantUML implements VPPlugin, VPPluginCommandLineSupport {
+    
     CLIController cliController = new CLIController();
 
     @Override
