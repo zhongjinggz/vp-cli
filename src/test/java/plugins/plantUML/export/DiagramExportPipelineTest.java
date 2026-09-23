@@ -48,7 +48,7 @@ public class DiagramExportPipelineTest {
     Path tempDir;
 
     private DiagramExportPipeline newPipeline() {
-        return new DiagramExportPipeline(tempDir.toFile());
+        return new DiagramExportPipeline();
     }
 
     private List<SemanticsData> nonEmptySemantics() {
@@ -87,7 +87,7 @@ public class DiagramExportPipelineTest {
         throws Throwable {
         try (MockedConstruction<?> e = mockedExporter(exp, sem);
              MockedConstruction<?> w = mockedWriter(wrt)) {
-            captureOut(() -> newPipeline().export(diagram(type, name)));
+            captureOut(() -> newPipeline().export(diagram(type, name), tempDir.toFile()));
         }
     }
 
@@ -159,7 +159,7 @@ public class DiagramExportPipelineTest {
         try (MockedStatic<ApplicationManager> amStatic = mockStatic(ApplicationManager.class)) {
             ApplicationManager am = setUpViewManager(amStatic);
             IDiagramUIModel d = diagram("BogusDiagram", "B");
-            assertThrows(UnfitForExportException.class, () -> newPipeline().export(d));
+            assertThrows(UnfitForExportException.class, () -> newPipeline().export(d, tempDir.toFile()));
             verify(am, times(2)).getViewManager();
         }
     }
@@ -173,7 +173,7 @@ public class DiagramExportPipelineTest {
              })) {
             ApplicationManager am = setUpViewManager(amStatic);
             IDiagramUIModel d = diagram("ClassDiagram", "IO");
-            assertThrows(IOException.class, () -> newPipeline().export(d));
+            assertThrows(IOException.class, () -> newPipeline().export(d, tempDir.toFile()));
             verify(am, times(2)).getViewManager();
         }
     }
@@ -202,14 +202,14 @@ public class DiagramExportPipelineTest {
 
     @Test
     void createOutputFile_jsonType_buildsSemanticsPuml() throws Exception {
-        File f = newPipeline().createOutputFile("project_semantics", "json");
+        File f = newPipeline().createOutputFile("project_semantics", "json", tempDir.toFile());
         assertEquals("project_semantics_semantics.puml", f.getName());
         assertTrue(f.exists());
     }
 
     @Test
     void createOutputFile_umlType_sanitizesName() throws Exception {
-        File f = newPipeline().createOutputFile("My Diagram!", "uml");
+        File f = newPipeline().createOutputFile("My Diagram!", "uml", tempDir.toFile());
         assertEquals("My_Diagram_.puml", f.getName());
         assertTrue(f.exists());
     }
@@ -218,7 +218,7 @@ public class DiagramExportPipelineTest {
     void createOutputFile_existingFile_isReturnedUnchanged() throws Exception {
         Path target = tempDir.resolve("Existing.puml");
         Files.createFile(target);
-        File f = newPipeline().createOutputFile("Existing", "uml");
+        File f = newPipeline().createOutputFile("Existing", "uml", tempDir.toFile());
         assertEquals("Existing.puml", f.getName());
         assertTrue(f.exists());
     }
@@ -230,14 +230,14 @@ public class DiagramExportPipelineTest {
             when(m.exists()).thenReturn(false);
             when(m.createNewFile()).thenReturn(false);
         })) {
-            assertThrows(IOException.class, () -> newPipeline().createOutputFile("t", "uml"));
+            assertThrows(IOException.class, () -> newPipeline().createOutputFile("t", "uml", tempDir.toFile()));
         }
     }
 
     @Test
     void exportDiagramList_emptyList_returnsTrue() throws Exception {
         try (MockedStatic<PlantJSONWriter> pj = mockStatic(PlantJSONWriter.class)) {
-            assertTrue(newPipeline().exportDiagramList(Collections.emptyList()));
+            assertTrue(newPipeline().exportDiagramList(Collections.emptyList(), null));
         }
     }
 
@@ -247,7 +247,7 @@ public class DiagramExportPipelineTest {
         try (MockedConstruction<?> e = mockedExporter(ClassDiagramExporter.class, null);
              MockedConstruction<?> w = mockedWriter(ClassUMLWriter.class);
              MockedStatic<PlantJSONWriter> pj = mockStatic(PlantJSONWriter.class)) {
-            assertTrue(newPipeline().exportDiagramList(Collections.singletonList(d)));
+            assertTrue(newPipeline().exportDiagramList(Collections.singletonList(d), tempDir.toFile()));
         }
     }
 
@@ -257,7 +257,7 @@ public class DiagramExportPipelineTest {
         try (MockedStatic<ApplicationManager> amStatic = mockStatic(ApplicationManager.class);
              MockedStatic<PlantJSONWriter> pj = mockStatic(PlantJSONWriter.class)) {
             setUpViewManager(amStatic);
-            assertTrue(!newPipeline().exportDiagramList(Collections.singletonList(d)));
+            assertTrue(!newPipeline().exportDiagramList(Collections.singletonList(d), tempDir.toFile()));
         }
     }
 
@@ -271,7 +271,7 @@ public class DiagramExportPipelineTest {
              });
              MockedStatic<PlantJSONWriter> pj = mockStatic(PlantJSONWriter.class)) {
             setUpViewManager(amStatic);
-            assertTrue(!newPipeline().exportDiagramList(Collections.singletonList(d)));
+            assertTrue(!newPipeline().exportDiagramList(Collections.singletonList(d), tempDir.toFile()));
         }
     }
 
@@ -285,7 +285,7 @@ public class DiagramExportPipelineTest {
              });
              MockedStatic<PlantJSONWriter> pj = mockStatic(PlantJSONWriter.class)) {
             setUpViewManager(amStatic);
-            assertTrue(!newPipeline().exportDiagramList(Collections.singletonList(d)));
+            assertTrue(!newPipeline().exportDiagramList(Collections.singletonList(d), tempDir.toFile()));
         }
     }
 
@@ -299,12 +299,12 @@ public class DiagramExportPipelineTest {
             setUpViewManager(amStatic);
             pj.when(() -> PlantJSONWriter.writeToFile(any(File.class), any(List.class)))
                 .thenThrow(new IOException("json boom"));
-            assertTrue(!newPipeline().exportDiagramList(Collections.singletonList(d)));
+            assertTrue(!newPipeline().exportDiagramList(Collections.singletonList(d), tempDir.toFile()));
         }
     }
 
     @Test
-    void exportAllDiagrams_exportsEveryDiagram() throws Exception {
+    void exportAllDiagrams_exportsEveryDiagram() {
         IDiagramUIModel clazz = diagram("ClassDiagram", "C");
         IDiagramUIModel seq = diagram("InteractionDiagram", "S");
         try (MockedStatic<ApplicationManager> amStatic = mockStatic(ApplicationManager.class);
@@ -320,7 +320,7 @@ public class DiagramExportPipelineTest {
             when(am.getProjectManager()).thenReturn(pm);
             when(pm.getProject()).thenReturn(project);
             when(project.toDiagramArray()).thenReturn(new IDiagramUIModel[]{clazz, seq});
-            newPipeline().exportAllDiagrams();
+            newPipeline().exportAllDiagrams(tempDir.toFile());
             verify(pm).getProject();
         }
     }
@@ -339,7 +339,7 @@ public class DiagramExportPipelineTest {
             when(am.getProjectManager()).thenReturn(pm);
             when(pm.getProject()).thenReturn(project);
             when(project.getDiagramById("X")).thenReturn(target);
-            newPipeline().exportSpecificDiagram("X");
+            newPipeline().exportSpecificDiagram("X", tempDir.toFile());
             verify(project).getDiagramById("X");
         }
     }

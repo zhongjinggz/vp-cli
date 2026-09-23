@@ -3,7 +3,6 @@ package plugins.plantUML.actions;
 import com.vp.plugin.ApplicationManager;
 import com.vp.plugin.ProjectManager;
 import com.vp.plugin.diagram.IDiagramUIModel;
-import plugins.plantUML.actions.CLIParams;
 import plugins.plantUML.export.DiagramExportPipeline;
 import plugins.plantUML.imports.importers.DiagramImportPipeline;
 
@@ -57,13 +56,13 @@ public class CLIController {
         }
 
         System.out.println("Exporting diagram(s): " + target + " to path: " + path);
-        DiagramExportPipeline pipeline = new DiagramExportPipeline(exportLocation);
+        DiagramExportPipeline pipeline = new DiagramExportPipeline();
 
         if (target.equalsIgnoreCase(CLIParams.VALUE_ALL)) {
-            pipeline.exportAllDiagrams();
+            pipeline.exportAllDiagrams(exportLocation);
         } else {
             try {
-                pipeline.exportSpecificDiagram(target);
+                pipeline.exportSpecificDiagram(target, exportLocation);
             } catch (IOException e) {
                 System.out.println("IO Error: Couldn't create file.");
             }

@@ -14,22 +14,15 @@ import java.util.List;
 
 public class DiagramExportPipeline {
 
-	private final File outputFolder;
-
-	public DiagramExportPipeline(File outputFolder) {
-		this.outputFolder = outputFolder;
+	public DiagramExportPipeline() {
 	}
-
-	/**
-	 * Executes the export pipeline for a given diagram.
-	 */
 
 	private final List<SemanticsData> projectSemanticsDatas = new ArrayList<SemanticsData>();
 
-	public void export(IDiagramUIModel diagram) throws IOException, UnfitForExportException {
+	public void export(IDiagramUIModel diagram, File exportLocation) throws IOException, UnfitForExportException {
 		String diagramType = diagram.getType();
 		String diagramTitle = diagram.getName();
-		File outputFile = createOutputFile(diagramTitle, "uml");
+		File outputFile = createOutputFile(diagramTitle, "uml", exportLocation);
 
 		DiagramExporter exporter;
 
@@ -169,24 +162,24 @@ public class DiagramExportPipeline {
 		return null;
 	}
 
-	File createOutputFile(String title, String contentType) throws IOException {
+	File createOutputFile(String title, String contentType, File exportLocation) throws IOException {
 		StringBuilder fileName = new StringBuilder();
 		// 放行所有语言的字母和数字（中文文件名）；空格、符号及 Windows 保留字符仍转下划线
 		fileName.append(title.replaceAll("[^\\p{L}\\p{N}]", "_"));
 		if (contentType.equals("json")) fileName.append("_semantics");
 		fileName.append(".puml");
-		File outputFile = new File(outputFolder, fileName.toString());
+		File outputFile = new File(exportLocation, fileName.toString());
 		if (!outputFile.exists() && !outputFile.createNewFile()) {
 			throw new IOException("Failed to create file: " + outputFile.getAbsolutePath());
 		}
 		return outputFile;
 	}
 
-	public boolean exportDiagramList(List<IDiagramUIModel> selectedDiagrams) {
+	public boolean exportDiagramList(List<IDiagramUIModel> selectedDiagrams, File exportLocation) {
 		boolean allSuccessful = true;
 		for (IDiagramUIModel activeDiagram : selectedDiagrams) {
 			try {
-				export(activeDiagram);
+				export(activeDiagram, exportLocation);
 			} catch (IOException ex) {
 				ApplicationManager.instance().getViewManager()
 				.showMessageDialog(ApplicationManager.instance().getViewManager().getRootFrame(), "Error processing diagram: " + activeDiagram.getName() + "\n" + ex.getMessage());
@@ -202,7 +195,7 @@ public class DiagramExportPipeline {
 
 		File jsonFile;
 		try {
-			jsonFile = createOutputFile("project_semantics", "json");
+			jsonFile = createOutputFile("project_semantics", "json", exportLocation);
 			PlantJSONWriter.writeToFile(jsonFile, projectSemanticsDatas);
 		} catch (IOException e) {
 			ApplicationManager.instance().getViewManager()
@@ -214,15 +207,15 @@ public class DiagramExportPipeline {
 		return allSuccessful;
 	}
 
-	public void exportAllDiagrams() {
+	public void exportAllDiagrams(File exportLocation) {
 		ProjectManager projectManager = ApplicationManager.instance().getProjectManager();
 		IDiagramUIModel[] allDiagrams = projectManager.getProject().toDiagramArray();
-		this.exportDiagramList(Arrays.asList(allDiagrams));
+		this.exportDiagramList(Arrays.asList(allDiagrams), exportLocation);
 	}
 
-	public void exportSpecificDiagram(String target) throws IOException {
+	public void exportSpecificDiagram(String target, File exportLocation) throws IOException {
 		ProjectManager projectManager = ApplicationManager.instance().getProjectManager();
 		IDiagramUIModel targetDiagram = projectManager.getProject().getDiagramById(target);
-		this.export(targetDiagram);
+		this.export(targetDiagram, exportLocation);
 	}
 }
