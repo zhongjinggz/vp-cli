@@ -3,7 +3,9 @@ package plugins.plantUML;
 import java.io.File;
 import java.io.IOException;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import com.vp.plugin.*;
 
@@ -31,14 +33,14 @@ public class PlantUML implements VPPlugin, VPPluginCommandLineSupport {
         CliParams params = CliParams.valueOf(args);
 
         if (params.isInvalid()) {
-            System.out.println(params.setErrorMessage());
+            System.out.println(params.errorMessage());
             return;
         }
 
-        switch (params.setAction().text()) {
+        switch (params.action().text()) {
 //            switch (params.get(KEY_ACTION)) {
             case VALUE_IMPORT:
-                if (params.path().isUndefined() || params.path().isNonValue()) {
+                if (params.path().isUnset() || params.path().isNonValue()) {
 //                    if (params.isUndefined(KEY_PATH) || params.isNonValue(KEY_PATH)) {
                     System.out.println("Error: Missing required argument -path for import.");
                     return;
@@ -48,15 +50,15 @@ public class PlantUML implements VPPlugin, VPPluginCommandLineSupport {
 
             case VALUE_EXPORT:
                 // -list 优先：仅列举项目内可用图表而不导出
-                if (params.list().isTrue()) {
+                if (params.list().isSet()) {
 //                    if (params.isTrue(KEY_LIST) ) {
                     listAvailableDiagrams();
                     return;
                 }
 
                 // export 需要同时指定目标图表与输出路径
-                if (params.target().isUndefined() || params.target().isNonValue()
-                    || params.path().isUndefined() || params.path().isNonValue()) {
+                if (params.target().isUnset() || params.target().isNonValue()
+                    || params.path().isUnset() || params.path().isNonValue()) {
 //                    if (params.isUndefined(KEY_TARGET) || params.isNonValue(KEY_TARGET)
 //                        || params.isUndefined(KEY_PATH) || params.isNonValue(KEY_PATH)) {
                     System.out.println("Error: Missing required arguments for export. Use -target and -path.");
@@ -144,6 +146,7 @@ public class PlantUML implements VPPlugin, VPPluginCommandLineSupport {
         }
     }
 
+    // TODO 将其他命令行相关参数移入参数类
     static class CliParams {
         static final String KEY_ACTION = "-action";
         static final String VALUE_IMPORT = "import";
@@ -155,133 +158,115 @@ public class PlantUML implements VPPlugin, VPPluginCommandLineSupport {
         static final String KEY_PATH = "-path";
         static final String KEY_LIST = "-list";
 
-        // 以下两个值用于 key/value 形式的参数的初始值，区别在于：
-        // UNDEFINED 代表命令行中根本就没有这个参数，例如 对于“the-command -action abc” ， "-path" 就是 UNDEFINED
-        // NO_VALUE 代表命令行中有这个参数但是没有设置值，例如 对于“the-command -action abc -path” ， "-path" 就是 NO_VALUE
-        static final String VALUE_UNDEFINED = "undefined";
-        static final String VALUE_NON = "no_value";
+        // 对于 key/value 形式的参数:
+        // UNSET 代表命令行中根本就没有这个参数，例如 对于“the-command -action abc” ， "-path" 就是 UNDEFINED
+        // VALUE_NON 代表命令行中有这个参数但是没有设置值，例如 对于“the-command -action abc -path” ， "-path" 就是 NO_VALUE
+        // 对于不带 value 的参数，例如 -list，只需要区分 SET 和 UNSET
+        static final String VALUE_UNSET = "unset";
+        static final String VALUE_SET = "set";
+        static final String VALUE_NON = "non_value";
 
-        // 对于不以 key/value 形式的有名称的参数，初始值为 FALSE，一旦命令行中出现了，则为 TRUE
-        // 例如 对于"the-command -path"，“-list”为 FALSE，对于“the-command -list”，“-list"则为 TRUE
-        static final String VALUE_TRUE = "true";
-        static final String VALUE_FALSE = "false";
+        private String[] args;
 
-        private String actionText = VALUE_UNDEFINED;
-        private String targetText = VALUE_UNDEFINED;
-        private String pathText = VALUE_UNDEFINED;
-        private String listText = VALUE_FALSE;
+        //将参数放在两个Map中，就可以区分哪些参数是 key/value 形式的，哪些不具有 value
+        private Map<String, String> keyValueParams = new HashMap<>();
+        private Map<String, String> keyOnlyParams = new HashMap<>();
+
+
+        private String actionText = VALUE_UNSET;
+        private String targetText = VALUE_UNSET;
+        private String pathText = VALUE_UNSET;
+        private String listText = VALUE_UNSET;
 
         private String errorMessageText = "";
+
+        CliParams(String[] args) {
+            this.args = (args == null ? new String[0] : Arrays.copyOf(args, args.length));
+
+            keyValueParams.put(KEY_ACTION, VALUE_UNSET);
+            keyValueParams.put(KEY_TARGET, VALUE_UNSET);
+            keyValueParams.put(KEY_PATH, VALUE_UNSET);
+
+            keyOnlyParams.put(KEY_LIST, VALUE_UNSET);
+        }
 
         // 封装命令行参数
         @NonNull
         static CliParams valueOf(String[] args) {
-            CliParams params = new CliParams();
+            CliParams params = new CliParams(args);
 
+            params.parse();
+            return params;
+        }
+
+        void parse() {
             if (args == null || args.length < 2) {
-                params.setErrorMessage("Usage: -action <import|export> -path <file_or_folder_path>");
+                setErrorMessage("Usage: -action <import|export> -path <file_or_folder_path>");
             } else {
-                for (int i = 0; i < args.length; i++) {
-                    switch (args[i]) {
-                        case KEY_ACTION:
-                            i = parseParmValue(args, i, params, KEY_ACTION);
-                            break;
-
-                        case KEY_PATH:
-                            if (i + 1 < args.length) {
-                                String arg = args[++i];
-                                params.setPath(arg);
-                            } else {
-                                params.setPath(VALUE_NON);
-                                params.setErrorMessage("Error: Missing value for -path");
-                                //break;
-                            }
-                            break;
-
-                        case KEY_TARGET:
-                            if (i + 1 < args.length) {
-                                String arg = args[++i];
-                                params.setTarget(arg);
-                            } else {
-                                params.setTarget(VALUE_NON);
-                                params.setErrorMessage("Error: Missing value for -target");
-                                //break;
-                            }
-                            break;
-
-                        case "-list":
-                            params.setList(VALUE_TRUE);
-                            break;
-
-                        default:
-                            params.setErrorMessage("Unknown argument: " + args[i]);
-                            break;
+                for (int index = 0; index < args.length; index++) {
+                    if (isKeyValueParam(args[index])) {
+                        index = parseValue(index);
+                    } else if (isKeyOnlyParam(args[index])){
+                        set(args[index]);
+                    } else {
+                        setErrorMessage("Unknown argument: " + args[index]);
                     }
 
-                    if (params.isInvalid()) {
+                    if (isInvalid()) {
                         break;
                     }
                 }
 
-                if (params.setAction().isUndefined()) {
-                    params.setErrorMessage("Error: Missing required argument -action.");
+                if (action().isUnset()) {
+                    setErrorMessage("Error: Missing required argument -action.");
                 }
             }
-            return params;
         }
 
-        private static int parseParmValue(String[] args, int i, CliParams params, String paramKey) {
-            if (i + 1 < args.length) {
-                String arg = args[++i];
-                params.setAction(arg);
+        private boolean isKeyValueParam(String arg) {
+            return keyValueParams.containsKey(arg);
+        }
+
+        private boolean isKeyOnlyParam(String arg) {
+            return keyOnlyParams.containsKey(arg);
+        }
+
+        private int parseValue(int index) {
+            String paramKey = args[index];
+
+            if (index + 1 < args.length) {
+                String arg = args[++index];
+                set(paramKey, arg);
             } else {
-                params.set(paramKey, VALUE_NON);
-                params.setErrorMessage("Error: Missing value for " + paramKey);
-                //break;
+                set(paramKey, VALUE_NON);
+                setErrorMessage("Error: Missing value for " + paramKey);
             }
-            return i;
+            return index;
         }
 
-        private void set(String paramKey, String valueNon) {
-            switch (paramKey) {
-                case KEY_ACTION:
-                    this.actionText = valueNon;
-                    break;
-                case KEY_PATH:
-                    this.pathText = valueNon;
-                    break;
-                case KEY_TARGET:
-                    this.targetText = valueNon;
-                    break;
-                case KEY_LIST:
-                    this.listText = valueNon;
-                    break;
-                default:
-                    throw new IllegalArgumentException("[Coding Bug]Unknown argument: " + paramKey);
+        // 对于 key/value 形式的参数，赋 value 值
+        private void set(String key, String value) {
+            if (keyValueParams.containsKey(key)) {
+                keyValueParams.put(key, value);
+            } else {
+                throw new IllegalArgumentException("[Coding Bug] " + key + " is not a key/value argument.");
             }
         }
 
-        private void setList(String arg) {
-            this.listText = arg;
-        }
-
-        private void setTarget(String arg) {
-            this.targetText = arg;
-        }
-
-        private void setPath(String arg) {
-            this.pathText = arg;
-        }
-
-        private void setAction(String arg) {
-            this.actionText = arg;
+        // 对于不需要 value 的参数，赋为 “VALUE_SET”
+        private void set(String key) {
+            if (keyOnlyParams.containsKey(key)) {
+                keyOnlyParams.put(key, VALUE_SET);
+            } else {
+                throw new IllegalArgumentException("[Coding Bug] " + key + " is not a key only argument.");
+            }
         }
 
         void setErrorMessage(String errorMessage) {
             this.errorMessageText = errorMessage;
         }
 
-        String setErrorMessage() {
+        String errorMessage() {
             return errorMessageText;
         }
 
@@ -289,23 +274,24 @@ public class PlantUML implements VPPlugin, VPPluginCommandLineSupport {
             return !errorMessageText.isEmpty();
         }
 
-        ParamValue setAction() {
-            return new ParamValue(this.actionText);
+        ParamValue action() {
+            return new ParamValue(keyValueParams.get(KEY_ACTION));
         }
 
         ParamValue path() {
-            return new ParamValue(this.pathText);
+            return new ParamValue(keyValueParams.get(KEY_PATH));
         }
 
         public ParamValue list() {
-            return new ParamValue(this.listText);
+            return new ParamValue(keyOnlyParams.get(KEY_LIST));
         }
 
         public ParamValue target() {
-            return new ParamValue(this.targetText);
+            return new ParamValue(keyValueParams.get(KEY_TARGET));
         }
     }
 
+    // 这个类的目的是为了构建流畅的 DSL
     static class ParamValue {
         String text;
 
@@ -313,16 +299,16 @@ public class PlantUML implements VPPlugin, VPPluginCommandLineSupport {
             this.text = text;
         }
 
-        boolean isUndefined() {
-            return text.equals(VALUE_UNDEFINED);
+        boolean isUnset() {
+            return text.equals(VALUE_UNSET);
         }
 
         boolean isNonValue() {
             return text.equals(VALUE_NON);
         }
 
-        boolean isTrue() {
-            return text.equals(VALUE_TRUE);
+        boolean isSet() {
+            return text.equals(VALUE_SET);
         }
 
         String text() {
