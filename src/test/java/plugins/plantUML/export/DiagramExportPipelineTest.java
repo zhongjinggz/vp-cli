@@ -237,7 +237,7 @@ public class DiagramExportPipelineTest {
     @Test
     void exportDiagramList_emptyList_returnsTrue() throws Exception {
         try (MockedStatic<PlantJSONWriter> pj = mockStatic(PlantJSONWriter.class)) {
-            assertTrue(newPipeline().exportDiagramList(Collections.emptyList(), null));
+            assertTrue(newPipeline().exportDiagramList(Collections.emptyList(), tempDir.toFile()));
         }
     }
 
