@@ -3,9 +3,7 @@ package plugins.plantUML;
 import java.io.File;
 import java.io.IOException;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import com.vp.plugin.*;
 
@@ -33,11 +31,11 @@ public class PlantUML implements VPPlugin, VPPluginCommandLineSupport {
         CliParams params = CliParams.valueOf(args);
 
         if (params.isInvalid()) {
-            System.out.println(params.getErrorMessage());
+            System.out.println(params.setErrorMessage());
             return;
         }
 
-        switch (params.action().value()) {
+        switch (params.setAction().text()) {
 //            switch (params.get(KEY_ACTION)) {
             case VALUE_IMPORT:
                 if (params.path().isUndefined() || params.path().isNonValue()) {
@@ -45,12 +43,12 @@ public class PlantUML implements VPPlugin, VPPluginCommandLineSupport {
                     System.out.println("Error: Missing required argument -path for import.");
                     return;
                 }
-                performImport(params.path().value());
+                performImport(params.path().text());
                 break;
 
             case VALUE_EXPORT:
                 // -list 优先：仅列举项目内可用图表而不导出
-                if (params.list().isTrue() ) {
+                if (params.list().isTrue()) {
 //                    if (params.isTrue(KEY_LIST) ) {
                     listAvailableDiagrams();
                     return;
@@ -65,7 +63,7 @@ public class PlantUML implements VPPlugin, VPPluginCommandLineSupport {
                     return;
                 }
 
-                performExport(params.target().value(), params.path().value());
+                performExport(params.target().text(), params.path().text());
                 break;
 
             default:
@@ -168,27 +166,12 @@ public class PlantUML implements VPPlugin, VPPluginCommandLineSupport {
         static final String VALUE_TRUE = "true";
         static final String VALUE_FALSE = "false";
 
-        private String action ;
-        private String target;
-        private String path;
-        private String list;
+        private String actionText = VALUE_UNDEFINED;
+        private String targetText = VALUE_UNDEFINED;
+        private String pathText = VALUE_UNDEFINED;
+        private String listText = VALUE_FALSE;
 
-        private Map<String, String> params = new HashMap<>();
-        private String errorMessage = "";
-
-        CliParams() {
-            params.put(KEY_ACTION, VALUE_UNDEFINED);
-            params.put(KEY_TARGET, VALUE_UNDEFINED);
-            params.put(KEY_PATH, VALUE_UNDEFINED);
-            params.put(KEY_LIST, VALUE_FALSE);
-
-            this.action = VALUE_UNDEFINED;
-            this.target = VALUE_UNDEFINED;
-            this.path = VALUE_UNDEFINED;
-            this.list = VALUE_FALSE;
-
-        }
-
+        private String errorMessageText = "";
 
         // 封装命令行参数
         @NonNull
@@ -201,155 +184,149 @@ public class PlantUML implements VPPlugin, VPPluginCommandLineSupport {
                 for (int i = 0; i < args.length; i++) {
                     switch (args[i]) {
                         case KEY_ACTION:
-                            if (i + 1 < args.length) {
-                                String arg = args[++i];
-                                params.set(KEY_ACTION, arg);
-                                params.setAction(arg);
-                            } else {
-                                params.set(KEY_ACTION, VALUE_NON);
-                                params.setAction(VALUE_NON);
-                                params.setErrorMessage("Error: Missing value for -action");
-                                break;
-                            }
+                            i = parseParmValue(args, i, params, KEY_ACTION);
                             break;
 
                         case KEY_PATH:
                             if (i + 1 < args.length) {
                                 String arg = args[++i];
-                                params.set(KEY_PATH, arg);
                                 params.setPath(arg);
                             } else {
+                                params.setPath(VALUE_NON);
                                 params.setErrorMessage("Error: Missing value for -path");
-                                break;
+                                //break;
                             }
                             break;
 
                         case KEY_TARGET:
                             if (i + 1 < args.length) {
                                 String arg = args[++i];
-                                params.set(KEY_TARGET, arg);
                                 params.setTarget(arg);
                             } else {
+                                params.setTarget(VALUE_NON);
                                 params.setErrorMessage("Error: Missing value for -target");
-                                break;
+                                //break;
                             }
                             break;
 
                         case "-list":
-                            params.set("-list", "true");
                             params.setList(VALUE_TRUE);
                             break;
 
                         default:
                             params.setErrorMessage("Unknown argument: " + args[i]);
                             break;
+                    }
 
+                    if (params.isInvalid()) {
+                        break;
                     }
                 }
 
-                if (params.action().isUndefined()) {
-//                    if (params.isUndefined(KEY_ACTION)) {
+                if (params.setAction().isUndefined()) {
                     params.setErrorMessage("Error: Missing required argument -action.");
                 }
             }
             return params;
         }
 
+        private static int parseParmValue(String[] args, int i, CliParams params, String paramKey) {
+            if (i + 1 < args.length) {
+                String arg = args[++i];
+                params.setAction(arg);
+            } else {
+                params.set(paramKey, VALUE_NON);
+                params.setErrorMessage("Error: Missing value for " + paramKey);
+                //break;
+            }
+            return i;
+        }
+
+        private void set(String paramKey, String valueNon) {
+            switch (paramKey) {
+                case KEY_ACTION:
+                    this.actionText = valueNon;
+                    break;
+                case KEY_PATH:
+                    this.pathText = valueNon;
+                    break;
+                case KEY_TARGET:
+                    this.targetText = valueNon;
+                    break;
+                case KEY_LIST:
+                    this.listText = valueNon;
+                    break;
+                default:
+                    throw new IllegalArgumentException("[Coding Bug]Unknown argument: " + paramKey);
+            }
+        }
+
         private void setList(String arg) {
-           this.list = arg;
+            this.listText = arg;
         }
 
         private void setTarget(String arg) {
-           this.target = arg;
+            this.targetText = arg;
         }
 
         private void setPath(String arg) {
-           this.path = arg;
+            this.pathText = arg;
         }
 
         private void setAction(String arg) {
-           this.action = arg;
-        }
-
-        void set(String key, String value) {
-            this.params.put(key, value);
-        }
-
-        String get(String key) {
-            return params.get(key);
+            this.actionText = arg;
         }
 
         void setErrorMessage(String errorMessage) {
-            this.errorMessage = errorMessage;
+            this.errorMessageText = errorMessage;
         }
 
-        String getErrorMessage() {
-            return errorMessage;
+        String setErrorMessage() {
+            return errorMessageText;
         }
 
         boolean isInvalid() {
-            return !errorMessage.isEmpty();
+            return !errorMessageText.isEmpty();
         }
 
-        boolean isUndefined(String key) {
-            return params.get(key) == VALUE_UNDEFINED;
+        ParamValue setAction() {
+            return new ParamValue(this.actionText);
         }
 
-        boolean isNonValue(String key) {
-            return params.get(key) == VALUE_NON;
+        ParamValue path() {
+            return new ParamValue(this.pathText);
         }
 
-        boolean isTrue(String key) {
-            return params.get(key) == VALUE_TRUE;
-        }
-        boolean isFalse(String key) {
-            return params.get(key) == VALUE_FALSE;
+        public ParamValue list() {
+            return new ParamValue(this.listText);
         }
 
-        KeyParam action() {
-            return new KeyParam(KEY_ACTION, this.action);
-//            return new KeyParam(KEY_ACTION, params.get(KEY_ACTION));
-        }
-
-        KeyParam path() {
-            return new KeyParam(KEY_PATH, this.path);
-//            return new KeyParam(KEY_PATH, params.get(KEY_PATH));
-        }
-
-        public KeyParam list() {
-            return new KeyParam(KEY_LIST, this.list);
-//            return new KeyParam(KEY_LIST, params.get(KEY_LIST));
-        }
-
-        public KeyParam target() {
-            return new KeyParam(KEY_TARGET, this.target);
-            //return new KeyParam(KEY_TARGET, params.get(KEY_TARGET));
+        public ParamValue target() {
+            return new ParamValue(this.targetText);
         }
     }
 
-    static class KeyParam {
-        String key;
-        String value;
-        KeyParam(String key, String value) {
-            this.key = key;
-            this.value = value;
+    static class ParamValue {
+        String text;
+
+        ParamValue(String text) {
+            this.text = text;
         }
 
         boolean isUndefined() {
-            return value.equals(VALUE_UNDEFINED);
-        }
-        boolean isNonValue() {
-            return value.equals(VALUE_NON);
-        }
-        boolean isTrue() {
-            return value.equals(VALUE_TRUE);
-        }
-        boolean isFalse() {
-            return value.equals(VALUE_FALSE);
+            return text.equals(VALUE_UNDEFINED);
         }
 
-        String value() {
-            return this.value;
+        boolean isNonValue() {
+            return text.equals(VALUE_NON);
+        }
+
+        boolean isTrue() {
+            return text.equals(VALUE_TRUE);
+        }
+
+        String text() {
+            return this.text;
         }
     }
 }
