@@ -168,6 +168,11 @@ public class PlantUML implements VPPlugin, VPPluginCommandLineSupport {
         static final String VALUE_TRUE = "true";
         static final String VALUE_FALSE = "false";
 
+        private String action ;
+        private String target;
+        private String path;
+        private String list;
+
         private Map<String, String> params = new HashMap<>();
         private String errorMessage = "";
 
@@ -177,63 +182,93 @@ public class PlantUML implements VPPlugin, VPPluginCommandLineSupport {
             params.put(KEY_PATH, VALUE_UNDEFINED);
             params.put(KEY_LIST, VALUE_FALSE);
 
+            this.action = VALUE_UNDEFINED;
+            this.target = VALUE_UNDEFINED;
+            this.path = VALUE_UNDEFINED;
+            this.list = VALUE_FALSE;
+
         }
 
 
         // 封装命令行参数
         @NonNull
         static CliParams valueOf(String[] args) {
-            CliParams cliParams = new CliParams();
+            CliParams params = new CliParams();
 
             if (args == null || args.length < 2) {
-                cliParams.setErrorMessage("Usage: -action <import|export> -path <file_or_folder_path>");
+                params.setErrorMessage("Usage: -action <import|export> -path <file_or_folder_path>");
             } else {
                 for (int i = 0; i < args.length; i++) {
                     switch (args[i]) {
                         case KEY_ACTION:
                             if (i + 1 < args.length) {
-                                cliParams.set(KEY_ACTION, args[++i]);
+                                String arg = args[++i];
+                                params.set(KEY_ACTION, arg);
+                                params.setAction(arg);
                             } else {
-                                cliParams.set(KEY_ACTION, VALUE_NON);
-                                cliParams.setErrorMessage("Error: Missing value for -action");
+                                params.set(KEY_ACTION, VALUE_NON);
+                                params.setAction(VALUE_NON);
+                                params.setErrorMessage("Error: Missing value for -action");
                                 break;
                             }
                             break;
 
                         case KEY_PATH:
                             if (i + 1 < args.length) {
-                                cliParams.set(KEY_PATH, args[++i]);
+                                String arg = args[++i];
+                                params.set(KEY_PATH, arg);
+                                params.setPath(arg);
                             } else {
-                                cliParams.setErrorMessage("Error: Missing value for -path");
+                                params.setErrorMessage("Error: Missing value for -path");
                                 break;
                             }
                             break;
 
                         case KEY_TARGET:
                             if (i + 1 < args.length) {
-                                cliParams.set(KEY_TARGET, args[++i]);
+                                String arg = args[++i];
+                                params.set(KEY_TARGET, arg);
+                                params.setTarget(arg);
                             } else {
-                                cliParams.setErrorMessage("Error: Missing value for -target");
+                                params.setErrorMessage("Error: Missing value for -target");
                                 break;
                             }
                             break;
 
                         case "-list":
-                            cliParams.set("-list", "true");
+                            params.set("-list", "true");
+                            params.setList(VALUE_TRUE);
                             break;
 
                         default:
-                            cliParams.setErrorMessage("Unknown argument: " + args[i]);
+                            params.setErrorMessage("Unknown argument: " + args[i]);
                             break;
 
                     }
                 }
 
-                if (cliParams.isUndefined(KEY_ACTION)) {
-                    cliParams.setErrorMessage("Error: Missing required argument -action.");
+                if (params.action().isUndefined()) {
+//                    if (params.isUndefined(KEY_ACTION)) {
+                    params.setErrorMessage("Error: Missing required argument -action.");
                 }
             }
-            return cliParams;
+            return params;
+        }
+
+        private void setList(String arg) {
+           this.list = arg;
+        }
+
+        private void setTarget(String arg) {
+           this.target = arg;
+        }
+
+        private void setPath(String arg) {
+           this.path = arg;
+        }
+
+        private void setAction(String arg) {
+           this.action = arg;
         }
 
         void set(String key, String value) {
@@ -272,19 +307,23 @@ public class PlantUML implements VPPlugin, VPPluginCommandLineSupport {
         }
 
         KeyParam action() {
-            return new KeyParam(KEY_ACTION, params.get(KEY_ACTION));
+            return new KeyParam(KEY_ACTION, this.action);
+//            return new KeyParam(KEY_ACTION, params.get(KEY_ACTION));
         }
 
         KeyParam path() {
-            return new KeyParam(KEY_PATH, params.get(KEY_PATH));
+            return new KeyParam(KEY_PATH, this.path);
+//            return new KeyParam(KEY_PATH, params.get(KEY_PATH));
         }
 
         public KeyParam list() {
-            return new KeyParam(KEY_LIST, params.get(KEY_LIST));
+            return new KeyParam(KEY_LIST, this.list);
+//            return new KeyParam(KEY_LIST, params.get(KEY_LIST));
         }
 
         public KeyParam target() {
-            return new KeyParam(KEY_TARGET, params.get(KEY_TARGET));
+            return new KeyParam(KEY_TARGET, this.target);
+            //return new KeyParam(KEY_TARGET, params.get(KEY_TARGET));
         }
     }
 
