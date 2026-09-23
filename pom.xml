@@ -19,14 +19,9 @@
         <jackson.version>2.17.2</jackson.version>
         <plantuml.version>1.2024.7</plantuml.version>
 
-        <junit.version>5.10.2</junit.version>
+        <junit.version>5.12.0</junit.version>
         <mockito.version>5.12.0</mockito.version>
 
-        <!--
-          Path to the Visual Paradigm Plugin SDK (com.vp.plugin.*).
-          Defaults to the standard macOS installation; override with
-          -Dvp.sdk.dir=<VP lib folder> if your install differs.
-        -->
         <vp.sdk.dir>/Applications/Visual Paradigm.app/Contents/Resources/app/lib</vp.sdk.dir>
         <vp.sdk.version>1.0</vp.sdk.version>
     </properties>
@@ -105,12 +100,12 @@
             <version>${mockito.version}</version>
             <scope>test</scope>
         </dependency>
-        <dependency>
-            <groupId>org.junit.jupiter</groupId>
-            <artifactId>junit-jupiter</artifactId>
-            <version>5.12.0</version>
-            <scope>test</scope>
-        </dependency>
+<!--        <dependency>-->
+<!--            <groupId>org.junit.jupiter</groupId>-->
+<!--            <artifactId>junit-jupiter</artifactId>-->
+<!--            <version>5.12.0</version>-->
+<!--            <scope>test</scope>-->
+<!--        </dependency>-->
     </dependencies>
 
     <build>
