@@ -1,19 +1,19 @@
 package plugins.plantUML.actions;
 
-import com.vp.plugin.ApplicationManager;
-import com.vp.plugin.ProjectManager;
-import com.vp.plugin.diagram.IDiagramUIModel;
 import plugins.plantUML.export.DiagramExportPipeline;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.Arrays;
-import java.util.List;
 
 import static plugins.plantUML.actions.CLIParams.VALUE_EXPORT;
 import static plugins.plantUML.actions.CLIParams.VALUE_IMPORT;
 
 public class CLIController {
+    private final DiagramExportPipeline pipeline;
+    public CLIController(DiagramExportPipeline pipeline) {
+        this.pipeline = pipeline;
+    }
+
     public void invoke(String[] args) {
         CLIParams params = CLIParams.valueOf(args);
 
@@ -55,10 +55,9 @@ public class CLIController {
         }
 
         System.out.println("Exporting diagram(s): " + target + " to path: " + path);
-        DiagramExportPipeline pipeline = new DiagramExportPipeline();
 
         if (target.equalsIgnoreCase(CLIParams.VALUE_ALL)) {
-            pipeline.exportAllDiagrams(exportLocation);
+            this.pipeline.exportAllDiagrams(exportLocation);
         } else {
             try {
                 pipeline.exportSpecificDiagram(target, exportLocation);
@@ -74,10 +73,7 @@ public class CLIController {
 
     void listAvailableDiagrams() {
         System.out.println("Listing available diagrams in the project:");
-        ProjectManager projectManager = ApplicationManager.instance().getProjectManager();
-        IDiagramUIModel[] allDiagrams = projectManager.getProject().toDiagramArray();
-        for (IDiagramUIModel diagram : allDiagrams) {
-            System.out.println(diagram.getName() + " | id: " + diagram.getId());
-        }
+        pipeline.listDiagrams();
     }
+
 }

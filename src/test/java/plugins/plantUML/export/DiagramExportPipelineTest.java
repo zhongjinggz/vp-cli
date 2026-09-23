@@ -344,6 +344,42 @@ public class DiagramExportPipelineTest {
         }
     }
 
+    @Test
+    void listDiagrams_printsEachDiagram() throws Throwable {
+        IDiagramUIModel d1 = diagram("ClassDiagram", "Class1");
+        IDiagramUIModel d2 = diagram("InteractionDiagram", "Seq1");
+        when(d1.getId()).thenReturn("id1");
+        when(d2.getId()).thenReturn("id2");
+        try (MockedStatic<ApplicationManager> amStatic = mockStatic(ApplicationManager.class)) {
+            ApplicationManager am = mock(ApplicationManager.class);
+            ProjectManager pm = mock(ProjectManager.class);
+            IProject project = mock(IProject.class);
+            amStatic.when(ApplicationManager::instance).thenReturn(am);
+            when(am.getProjectManager()).thenReturn(pm);
+            when(pm.getProject()).thenReturn(project);
+            when(project.toDiagramArray()).thenReturn(new IDiagramUIModel[]{d1, d2});
+            String output = captureOut(() -> newPipeline().listDiagrams());
+            assertTrue(output.contains("Class1 | id: id1"));
+            assertTrue(output.contains("Seq1 | id: id2"));
+            verify(project).toDiagramArray();
+        }
+    }
+
+    @Test
+    void listDiagrams_emptyProject_printsNothing() throws Throwable {
+        try (MockedStatic<ApplicationManager> amStatic = mockStatic(ApplicationManager.class)) {
+            ApplicationManager am = mock(ApplicationManager.class);
+            ProjectManager pm = mock(ProjectManager.class);
+            IProject project = mock(IProject.class);
+            amStatic.when(ApplicationManager::instance).thenReturn(am);
+            when(am.getProjectManager()).thenReturn(pm);
+            when(pm.getProject()).thenReturn(project);
+            when(project.toDiagramArray()).thenReturn(new IDiagramUIModel[0]);
+            String output = captureOut(() -> newPipeline().listDiagrams());
+            assertTrue(output.isEmpty());
+        }
+    }
+
     private String captureOut(Executable executable) throws Throwable {
         ByteArrayOutputStream buffer = new ByteArrayOutputStream();
         PrintStream originalOut = System.out;

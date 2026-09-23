@@ -5,15 +5,10 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.mockConstruction;
 import static org.mockito.Mockito.mockStatic;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import com.vp.plugin.ApplicationManager;
-import com.vp.plugin.ProjectManager;
-import com.vp.plugin.diagram.IDiagramUIModel;
-import com.vp.plugin.model.IProject;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
@@ -24,7 +19,6 @@ import java.nio.file.Path;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 import org.junit.jupiter.api.function.Executable;
-import org.mockito.MockedConstruction;
 import org.mockito.MockedStatic;
 import plugins.plantUML.PlantUML;
 import plugins.plantUML.export.DiagramExportPipeline;
@@ -33,13 +27,16 @@ import plugins.plantUML.export.DiagramExportPipeline;
  *
  * <p>{@link PlantUML#invoke} 已退化为只把参数转发给 {@link CLIController#invoke}，
  * 因此本测试直接驱动 {@link CLIController}，覆盖 CLI 分发、导入、导出与图表列举的全部分支。
+ * <p>{@link CLIController} 通过构造器注入 {@link DiagramExportPipeline}，测试用 mock 注入以验证交互；
+ * 图表列举等管线内部逻辑（{@code DiagramExportPipeline#listDiagrams}）交由 DiagramExportPipelineTest 覆盖。
  */
 class CLIControllerTest {
 
     @TempDir
     Path tempDir;
 
-    private final CLIController controller = new CLIController();
+    private final DiagramExportPipeline pipelineMock = mock(DiagramExportPipeline.class);
+    private final CLIController controller = new CLIController(pipelineMock);
 
     private void invoke(String[] args) {
         controller.invoke(args);
@@ -49,10 +46,19 @@ class CLIControllerTest {
 
     @Test
     void invoke_invalidParams_printsErrorAndReturns() throws Throwable {
-String output = captureOut(() -> invoke(new String[]{"-path", "x"}));
+        String output = captureOut(() -> invoke(new String[]{"-path", "x"}));
         assertTrue(output.contains("Missing required argument -action."),
                 "unexpected output: [" + output + "]");
+    }
 
+    // ---------- invoke -> performImport 分支 ----------
+
+    @Test
+    void invoke_import_callsPerformImport() throws Throwable {
+        String output = captureOut(() -> invoke(
+                new String[]{"-action", "import", "-path", "some.puml"}));
+        // performImport 当前为 TBD 空实现，仅验证分发执行不抛异常
+        assertTrue(output.isEmpty(), "unexpected output: [" + output + "]");
     }
 
     // ---------- invoke -> performExport 分支 ----------
@@ -61,11 +67,9 @@ String output = captureOut(() -> invoke(new String[]{"-path", "x"}));
     void invoke_export_createsNewDirectoryThenExports() throws Throwable {
         // Path does not yet exist; mkdirs() succeeds.
         String newDir = tempDir.resolve("fresh").resolve("sub").toString();
-        try (MockedConstruction<DiagramExportPipeline> pipelineConstruction = mockConstruction(DiagramExportPipeline.class)) {
-            captureOut(() -> invoke(
-                    new String[]{"-action", "export", "-target", "all", "-path", newDir}));
-            verify(mockedExport(pipelineConstruction)).exportAllDiagrams(new File(newDir));
-        }
+        captureOut(() -> invoke(
+                new String[]{"-action", "export", "-target", "all", "-path", newDir}));
+        verify(pipelineMock).exportAllDiagrams(new File(newDir));
     }
 
     @Test
@@ -90,73 +94,37 @@ String output = captureOut(() -> invoke(new String[]{"-path", "x"}));
     @Test
     void invoke_exportAll_callsPipeline() throws Throwable {
         File dir = tempDir.toFile();
-        try (MockedConstruction<DiagramExportPipeline> pipelineConstruction = mockConstruction(DiagramExportPipeline.class)) {
-            captureOut(() -> invoke(
-                    new String[]{"-action", "export", "-target", "all", "-path", dir.getAbsolutePath()}));
-            verify(mockedExport(pipelineConstruction)).exportAllDiagrams(dir);
-        }
+        captureOut(() -> invoke(
+                new String[]{"-action", "export", "-target", "all", "-path", dir.getAbsolutePath()}));
+        verify(pipelineMock).exportAllDiagrams(dir);
     }
 
     @Test
     void invoke_exportSpecific_callsPipeline() throws Throwable {
         File dir = tempDir.toFile();
-        try (MockedConstruction<DiagramExportPipeline> pipelineConstruction = mockConstruction(DiagramExportPipeline.class)) {
-            captureOut(() -> invoke(
-                    new String[]{"-action", "export", "-target", "someDiagram", "-path", dir.getAbsolutePath()}));
-            verify(mockedExport(pipelineConstruction)).exportSpecificDiagram("someDiagram", dir);
-        }
+        captureOut(() -> invoke(
+                new String[]{"-action", "export", "-target", "someDiagram", "-path", dir.getAbsolutePath()}));
+        verify(pipelineMock).exportSpecificDiagram("someDiagram", dir);
     }
 
     @Test
     void invoke_exportSpecificThrowsIOException_printsIoError() throws Throwable {
         File dir = tempDir.toFile();
-        try (MockedConstruction<DiagramExportPipeline> pipelineConstruction = mockConstruction(DiagramExportPipeline.class, (mock, context) -> {
-            doThrow(new IOException("boom")).when(mock).exportSpecificDiagram(any(), eq(dir));
-        })) {
-            String output = captureOut(() -> invoke(
-                    new String[]{"-action", "export", "-target", "someDiagram", "-path", dir.getAbsolutePath()}));
-            assertTrue(output.contains("IO Error: Couldn't create file."));
-        }
+        doThrow(new IOException("boom")).when(pipelineMock).exportSpecificDiagram(any(), eq(dir));
+        String output = captureOut(() -> invoke(
+                new String[]{"-action", "export", "-target", "someDiagram", "-path", dir.getAbsolutePath()}));
+        assertTrue(output.contains("IO Error: Couldn't create file."));
     }
 
-    @Test
-    void invoke_exportWithList_listsDiagrams() throws Throwable {
-        try (MockedStatic<ApplicationManager> amStatic = mockStatic(ApplicationManager.class)) {
-            ApplicationManager am = mock(ApplicationManager.class);
-            ProjectManager pm = mock(ProjectManager.class);
-            IProject project = mock(IProject.class);
-            IDiagramUIModel d1 = mock(IDiagramUIModel.class);
-            IDiagramUIModel d2 = mock(IDiagramUIModel.class);
-            amStatic.when(ApplicationManager::instance).thenReturn(am);
-            when(am.getProjectManager()).thenReturn(pm);
-            when(pm.getProject()).thenReturn(project);
-            when(project.toDiagramArray()).thenReturn(new IDiagramUIModel[]{d1, d2});
-            when(d1.getName()).thenReturn("Class1");
-            when(d1.getId()).thenReturn("id1");
-            when(d2.getName()).thenReturn("Class2");
-            when(d2.getId()).thenReturn("id2");
-            String output = captureOut(() -> invoke(
-                    new String[]{"-action", "export", "-list"}));
-            assertTrue(output.contains("Listing available diagrams"));
-            assertTrue(output.contains("Class1 | id: id1"));
-            assertTrue(output.contains("Class2 | id: id2"));
-        }
-    }
+    // ---------- invoke -> listAvailableDiagrams 分支（转调 pipeline 列举） ----------
 
     @Test
-    void invoke_exportWithList_emptyDiagrams() throws Throwable {
-        try (MockedStatic<ApplicationManager> amStatic = mockStatic(ApplicationManager.class)) {
-            ApplicationManager am = mock(ApplicationManager.class);
-            ProjectManager pm = mock(ProjectManager.class);
-            IProject project = mock(IProject.class);
-            amStatic.when(ApplicationManager::instance).thenReturn(am);
-            when(am.getProjectManager()).thenReturn(pm);
-            when(pm.getProject()).thenReturn(project);
-            when(project.toDiagramArray()).thenReturn(new IDiagramUIModel[0]);
-            String output = captureOut(() -> invoke(
-                    new String[]{"-action", "export", "-list"}));
-            assertTrue(output.contains("Listing available diagrams"));
-        }
+    void invoke_exportWithList_callsPipelineListDiagrams() throws Throwable {
+        String output = captureOut(() -> invoke(
+                new String[]{"-action", "export", "-list"}));
+        assertTrue(output.contains("Listing available diagrams"));
+        // 列举细节已移入 DiagramExportPipeline#listDiagrams，此处仅验证转调
+        verify(pipelineMock).listDiagrams();
     }
 
     // ---------- invoke 的 switch 默认分支（action 既非 import 也非 export） ----------
@@ -177,18 +145,6 @@ String output = captureOut(() -> invoke(new String[]{"-path", "x"}));
     }
 
     // ---------- 辅助工具 ----------
-
-    private static ProjectManager setUpProjectManager(MockedStatic<ApplicationManager> amStatic) {
-        ApplicationManager am = mock(ApplicationManager.class);
-        ProjectManager pm = mock(ProjectManager.class);
-        amStatic.when(ApplicationManager::instance).thenReturn(am);
-        when(am.getProjectManager()).thenReturn(pm);
-        return pm;
-    }
-
-    private static DiagramExportPipeline mockedExport(MockedConstruction<DiagramExportPipeline> construction) {
-        return construction.constructed().get(0);
-    }
 
     private static String captureOut(Executable executable) throws Throwable {
         ByteArrayOutputStream buffer = new ByteArrayOutputStream();

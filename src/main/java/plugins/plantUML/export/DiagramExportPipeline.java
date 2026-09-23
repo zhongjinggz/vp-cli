@@ -218,4 +218,12 @@ public class DiagramExportPipeline {
 		IDiagramUIModel targetDiagram = projectManager.getProject().getDiagramById(target);
 		this.export(targetDiagram, exportLocation);
 	}
+
+    public void listDiagrams() {
+        ProjectManager projectManager = ApplicationManager.instance().getProjectManager();
+        IDiagramUIModel[] allDiagrams = projectManager.getProject().toDiagramArray();
+        for (IDiagramUIModel diagram : allDiagrams) {
+            System.out.println(diagram.getName() + " | id: " + diagram.getId());
+        }
+    }
 }
