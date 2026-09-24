@@ -3,6 +3,7 @@ import com.vp.plugin.ProjectManager;
 import com.vp.plugin.diagram.IDiagramUIModel;
 
 import plugins.plantUML.ExporterFactory;
+import plugins.plantUML.FileFactory;
 import plugins.plantUML.ProjectManagerFactory;
 import plugins.plantUML.WriterFactory;
 import plugins.plantUML.export.writers.*;
@@ -19,11 +20,13 @@ public class DiagramExportPipeline {
 	ProjectManagerFactory projectManagerFactory;
 	ExporterFactory exporterFactory;
 	WriterFactory writerFactory;
+	FileFactory fileFactory;
 
-	public DiagramExportPipeline(ProjectManagerFactory projectManagerFactory, ExporterFactory exporterFactory, WriterFactory writerFactory) {
+	public DiagramExportPipeline(ProjectManagerFactory projectManagerFactory, ExporterFactory exporterFactory, WriterFactory writerFactory, FileFactory fileFactory) {
 		this.projectManagerFactory = projectManagerFactory;
 		this.exporterFactory = exporterFactory;
 		this.writerFactory = writerFactory;
+		this.fileFactory = fileFactory;
 	}
 
 	private final List<SemanticsData> projectSemanticsDatas = new ArrayList<SemanticsData>();
@@ -138,7 +141,7 @@ public class DiagramExportPipeline {
 		fileName.append(title.replaceAll("[^\\p{L}\\p{N}]", "_"));
 		if (contentType.equals("json")) fileName.append("_semantics");
 		fileName.append(".puml");
-		File outputFile = new File(exportLocation, fileName.toString());
+		File outputFile = fileFactory.createFile(exportLocation, fileName.toString());
 		if (!outputFile.exists() && !outputFile.createNewFile()) {
 			throw new IOException("Failed to create file: " + outputFile.getAbsolutePath());
 		}

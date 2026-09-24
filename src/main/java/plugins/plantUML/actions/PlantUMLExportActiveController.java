@@ -13,7 +13,7 @@ public class PlantUMLExportActiveController implements VPActionController {
             ApplicationManager.instance()
                 .getViewManager()
                 .getRootFrame()
-            , "vp-cli 依赖注入 ProjectManagerFactory 09:06"
+            , "vp-cli 依赖注入 ExporterFactory and WriterFactory 11:39"
         );
     }
 

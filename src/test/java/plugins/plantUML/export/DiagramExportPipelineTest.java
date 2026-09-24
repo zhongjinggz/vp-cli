@@ -26,12 +26,14 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.*;
 
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 import org.junit.jupiter.api.function.Executable;
 import org.mockito.MockedConstruction;
 import org.mockito.MockedStatic;
 import plugins.plantUML.ExporterFactory;
+import plugins.plantUML.FileFactory;
 import plugins.plantUML.ProjectManagerFactory;
 import plugins.plantUML.WriterFactory;
 import plugins.plantUML.export.writers.ActivityUMLWriter;
@@ -51,9 +53,16 @@ public class DiagramExportPipelineTest {
     private final ProjectManagerFactory projectManagerFactory = mock(ProjectManagerFactory.class);
     private final ExporterFactory exporterFactory = mock(ExporterFactory.class);
     private final WriterFactory writerFactory = mock(WriterFactory.class);
+    private final FileFactory fileFactory = mock(FileFactory.class);
+
+    @BeforeEach
+    void defaultFileFactory() {
+        when(fileFactory.createFile(any(File.class), any()))
+            .thenAnswer(inv -> new File((File) inv.getArgument(0), (String) inv.getArgument(1)));
+    }
 
     private DiagramExportPipeline newPipeline() {
-        return new DiagramExportPipeline(projectManagerFactory, exporterFactory, writerFactory);
+        return new DiagramExportPipeline(projectManagerFactory, exporterFactory, writerFactory, fileFactory);
     }
 
     private ProjectManager givenProjectManager() {
@@ -283,12 +292,11 @@ public class DiagramExportPipelineTest {
     @Test
     void createOutputFile_whenCreateFails_throwsIo() throws Exception {
         // Force File.createNewFile() to return false so the defensive dead-branch is taken.
-        try (MockedConstruction<File> fc = mockConstruction(File.class, (m, c) -> {
-            when(m.exists()).thenReturn(false);
-            when(m.createNewFile()).thenReturn(false);
-        })) {
-            assertThrows(IOException.class, () -> newPipeline().createOutputFile("t", "uml", tempDir.toFile()));
-        }
+        File fakeFile = mock(File.class);
+        when(fakeFile.exists()).thenReturn(false);
+        when(fakeFile.createNewFile()).thenReturn(false);
+        when(fileFactory.createFile(any(File.class), any())).thenReturn(fakeFile);
+        assertThrows(IOException.class, () -> newPipeline().createOutputFile("t", "uml", tempDir.toFile()));
     }
 
     @Test

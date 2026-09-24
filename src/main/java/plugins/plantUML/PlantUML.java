@@ -4,7 +4,6 @@ import com.vp.plugin.*;
 import plugins.plantUML.actions.CLIController;
 import plugins.plantUML.export.DiagramExportPipeline;
 
-//TODO 改为依赖注入 2 - 封装对 ApplicationManager 和 ProjectManager 的创建
 //TODO 修改主类名
 //TODO 修改包名
 //TODO 翻译和修改 README
@@ -13,14 +12,16 @@ import plugins.plantUML.export.DiagramExportPipeline;
 //TODO 清理编译警告
 //TODO 整理成DDD架构
 
+//DONE 改为依赖注入 2 - 封装对 ApplicationManager 和 ProjectManager 的创建
 //DONE 改为依赖注入 1 - 注入 pipeline
 public class PlantUML implements VPPlugin, VPPluginCommandLineSupport {
     ExporterFactory exporterFactory = new ExporterFactory();
     WriterFactory writerFactory = new WriterFactory();
     ProjectManagerFactory projectManagerFactory = new ProjectManagerFactory();
+    FileFactory fileFactory = new FileFactory();
 
     DiagramExportPipeline diagramExportPipeline = new DiagramExportPipeline(projectManagerFactory
-        , exporterFactory, writerFactory);
+        , exporterFactory, writerFactory, fileFactory);
     CLIController cliController = new CLIController(diagramExportPipeline);
 
     @Override
