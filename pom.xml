@@ -4,7 +4,7 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>plugins.plantUML</groupId>
+    <groupId>plugins.vpcli</groupId>
     <artifactId>plantuml-vp-plugin</artifactId>
     <version>1.0.0</version>
     <packaging>jar</packaging>
@@ -109,7 +109,7 @@
     </dependencies>
 
     <build>
-        <finalName>plugins.plantUML</finalName>
+        <finalName>plugins.vpcli</finalName>
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -133,7 +133,7 @@
                     <descriptors>
                         <descriptor>assembly/plugin-zip.xml</descriptor>
                     </descriptors>
-                    <finalName>plugins.plantUML</finalName>
+                    <finalName>plugins.vpcli</finalName>
                     <appendAssemblyId>false</appendAssemblyId>
                 </configuration>
                 <executions>
@@ -168,7 +168,7 @@
                 <version>0.8.12</version>
                 <configuration>
                     <excludes>
-                        <exclude>**/plugins/plantUML/models/**</exclude>
+                        <exclude>**/plugins/vpcli/models/**</exclude>
                     </excludes>
                 </configuration>
                 <executions>

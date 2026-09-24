@@ -1,0 +1,128 @@
+package plugins.vpcli.models;
+
+public class RelationshipData {
+	private String source;
+	private String target;
+	private String type;
+	private String sourceID;
+	private String targetID;
+	private String name;
+
+	public RelationshipData(String source, String target, String type, String name) {
+		this.source = source;
+		this.target = target;
+		setType(type);
+		this.name = name != null ? name : "";
+	}
+
+	protected String formatAlias(String name) {
+		// 与 PlantUMLWriter.formatAlias 保持一致：放行所有语言的字母和数字
+		return name.replaceAll("[^\\p{L}\\p{N}]", "_");
+	}
+
+
+
+	public String toExportFormat() {
+		String symbol = "--";
+		String label = "";
+		String prefix = "";
+
+		switch (type) {
+		case "Generalization":
+			symbol = "<|--";
+			break;
+		case "Realization":
+			symbol = "<|..";
+			break;
+		case "Abstraction":
+			symbol = "..>";
+			label = "<<abstraction>>  ";
+			break;
+			case "Permission":
+				symbol = "..>";
+				label = "<<permit>>  ";
+				break;
+		case "Usage":
+			symbol = "..>";
+			label = "<<use>>  ";
+			break;
+		case "Dependency":
+			symbol = "..>";
+			break;
+		case "Anchor":
+			symbol = "..";
+			break;
+		case "Extend":
+			symbol = "<..";
+			label = "<<Extend>>  ";
+			break;
+		case "Include":
+			symbol = "..>";
+			label = "<<Include>>  ";
+			break;
+		case "Containment":
+			symbol = "+--";
+			break;
+		case "Transition2":
+			symbol = "-->";
+			break;
+		}
+
+		if (!label.isEmpty() || !name.isEmpty()) {
+			prefix = " : ";
+		}
+
+		if ("AssociationClass".equals(type)) {
+			symbol = "..";
+			if (source.contains(",")) {
+				target = formatAlias(target);
+			} else {
+				source = formatAlias(source);
+			}
+			return source + " " + symbol + " " + target + prefix + name + "\n";
+		}
+
+		return formatAlias(source) + " " + symbol + " " + formatAlias(target) + prefix + label + name + "\n";
+	}
+
+	public String getSourceID() {
+		return sourceID;
+	}
+
+	public void setSourceID(String sourceID) {
+		this.sourceID = sourceID;
+	}
+
+	public String getTargetID() {
+		return targetID;
+	}
+
+	public void setTargetID(String targetID) {
+		this.targetID = targetID;
+	}
+	
+
+	public String getSource() {
+		return source;
+	}
+
+	public String getTarget() {
+		return target;
+	}
+
+	public String getType() {
+		return type;
+	}
+
+	public void setType(String type) {
+		this.type = type;
+	}
+
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
+}

@@ -1,35 +1,13 @@
 <plugin
-	id="plugins.plantUML"
+	id="plugins.vpcli"
 	name="PlantUML Support"
 	description="Import from / Export to PlantUML"
 	provider="NataliaSoftlabNtua"
-	class="plugins.plantUML.PlantUML"
+	class="plugins.vpcli.PlantUML"
 	version="1.0.0">
         
 	<actionSets>
-		<actionSet id="plugins.plantUML.actionset">
-<!--			<action -->
-<!--				id="ImportAction"-->
-<!--				actionType="generalAction"-->
-<!--				label="PlantUML..."-->
-<!--				tooltip="PlantUML..."-->
-<!--				style="normal"-->
-<!--				icon="icons/puml-icon.png"-->
-<!--				ribbonPath="Project/Import/XML">-->
-<!--				<actionController -->
-<!--					class="plugins.plantUML.actions.PlantUMLImportController"/>-->
-<!--			</action>-->
-<!--			<action-->
-<!--                    id="ExportAction"-->
-<!--                    actionType="generalAction"-->
-<!--                    label="PlantUML..."-->
-<!--					tooltip="PlantUML..."-->
-<!--					style="normal"-->
-<!--					icon="icons/puml-icon.png"-->
-<!--                    ribbonPath="Project/Export/XML">-->
-<!--                <actionController-->
-<!--                        class="plugins.plantUML.actions.PlantUMLExportController"/>-->
-<!--            </action>-->
+		<actionSet id="plugins.vpcli.actionset">
 			<action
 					id="ExportActiveAction"
 					actionType="generalAction"
@@ -39,7 +17,7 @@
 					icon="icons/puml-icon.png"
 					ribbonPath="Project/Export/XML">
 				<actionController
-						class="plugins.plantUML.actions.PlantUMLExportActiveController"/>
+						class="plugins.vpcli.actions.PlantUMLExportActiveController"/>
 			</action>
 		</actionSet>
 	</actionSets>

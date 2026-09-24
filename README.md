@@ -8,8 +8,8 @@ A Visual Paradigm Plugin to provide CLI for AI
 - 中文README
 - vp-tree - 显示模型的树形结构
 - vp-export 1 - 导出每个包下的图 plantuml
-- vp-export 2 - 导出每个包下的图 markdown
-- vp-export 3 - 导出每个包下的模型 markdown
+- vp-export 2 - 导出每个包下的图 Markdown
+- vp-export 3 - 导出每个包下的模型 Markdown
 - vp-mount - 把模型文件绑定到目录，不用每次都提供模型文件参数
 - vp-cd
 - vp-cat
@@ -46,7 +46,7 @@ The plugin currently supports conversion to and from:
 
 ### **Manual Installation**
 1. Extract the plugin folder from the `.zip` file.
-2. Copy the folder into the `/plugins` directory specified by the **Install Plugin** dialog.
+2. Copy the folder into the `/plugins` directory specified by the **Installation Plugin** dialog.
 3. **Restart Visual Paradigm**.
 
 ---
@@ -61,7 +61,7 @@ The CLI is packaged with the plugin and does not require a separate installation
     ```
     VP_installation_dir/scripts
     ```
-2. Copy the file to the binaries folder:
+2. Copy the file to the binaries' folder:
     ```
     VP_installation_dir/bin
     ```
@@ -69,19 +69,19 @@ The CLI is packaged with the plugin and does not require a separate installation
 ### **Example 1: Exporting diagrams**
 Export all diagrams under project:
 ```bash
-Plugin.bat -project "C:/Demo/demo_project.vpp" -pluginid "plugins.plantUML" -pluginargs -action "export" -path "C:/Demo/output" -target "all"
+Plugin.bat -project "C:/Demo/demo_project.vpp" -pluginid "plugins.vpcli" -pluginargs -action "export" -path "C:/Demo/output" -target "all"
 ```
 
 List all diagrams and ids and export specific target:
 ```bash
-Plugin.bat -project "C:/Demo/demo_project.vpp" -pluginid "plugins.plantUML" -pluginargs -action "export" -list
+Plugin.bat -project "C:/Demo/demo_project.vpp" -pluginid "plugins.vpcli" -pluginargs -action "export" -list
 ```
 
 ```bash
-Plugin.bat -project "C:/Demo/demo_project.vpp" -pluginid "plugins.plantUML" -pluginargs -action "export" -path "C:/Demo/output" -target "lAJWSCmGAqACKRNG"
+Plugin.bat -project "C:/Demo/demo_project.vpp" -pluginid "plugins.vpcli" -pluginargs -action "export" -path "C:/Demo/output" -target "lAJWSCmGAqACKRNG"
 ```
 
 ### **Example 2: Importing a folder of diagrams**
 ```bash
-Plugin.bat -project "C:/Demo/demo_project.vpp" -pluginid "plugins.plantUML" -pluginargs -action "import" -path "C:/Demo/plant_diagrams"
+Plugin.bat -project "C:/Demo/demo_project.vpp" -pluginid "plugins.vpcli" -pluginargs -action "import" -path "C:/Demo/plant_diagrams"
 ```

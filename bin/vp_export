@@ -36,7 +36,7 @@ java --add-exports java.desktop/com.apple.eawt=ALL-UNNAMED \
     -Djava.awt.headless=true \
     -cp ".:$APP/lib/*:$APP/ormlib/*" \
     com.vp.cmd.Plugin \
-    -pluginid "plugins.plantUML" \
+    -pluginid "plugins.vpcli" \
     -project "$PROJECT" \
     -pluginargs \
     -action "export" \

@@ -36,7 +36,7 @@ cmd = [
     "-Djava.awt.headless=true",
     "-cp", ".:{0}/lib/*:{0}/ormlib/*".format(APP),
     "com.vp.cmd.Plugin",
-    "-pluginid", "plugins.plantUML",
+    "-pluginid", "plugins.vpcli",
     "-project", PROJECT,
     "-pluginargs",
     "-action", "export",

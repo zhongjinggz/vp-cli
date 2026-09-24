@@ -4,7 +4,7 @@
 
 ## 项目概述
 
-这是一个用于导入/导出 PlantUML 图表的 Visual Paradigm 插件（Java）。插件标识为 `plugins.plantUML`，打包为 `.zip` 格式供 Visual Paradigm 的插件安装机制使用。尽管仓库名为 `vp-cli`，但它是一个 GUI/CLI 插件——而非独立的 CLI 应用程序。
+这是一个用于导入/导出 PlantUML 图表的 Visual Paradigm 插件（Java）。插件标识为 `plugins.vpcli`，打包为 `.zip` 格式供 Visual Paradigm 的插件安装机制使用。尽管仓库名为 `vp-cli`，但它是一个 GUI/CLI 插件——而非独立的 CLI 应用程序。
 
 **支持的图表类型：** 类图（Class）、用例图（Use Case）、时序图（Sequence）、组件图（Component）、部署图（Deployment）、状态机图（State Machine）、活动图（Activity）。
 
@@ -14,12 +14,12 @@
 
 **构建命令：**
 ```bash
-mvn clean package          # 编译并打包，生成 target/plugins.plantUML.zip
+mvn clean package          # 编译并打包，生成 target/plugins.vpcli.zip
 ```
 
 构建完成后，zip 内容为 VP 插件结构：
 ```
-plugins.plantUML/
+plugins.vpcli/
 ├── classes/           编译后的 .class
 ├── plugin.xml         插件描述符
 ├── icons/             图标
@@ -31,13 +31,13 @@ plugins.plantUML/
 - `net.sourceforge.plantuml:plantuml:1.2024.7` — PlantUML 解析器（导入时用于将 `.puml` 源码解析为图表对象）
 - `com.fasterxml.jackson.*` — 用于语义往返（round-trip）格式的 JSON 序列化
 
-本仓库**没有自动化测试**。验证方式是手动的：在 Visual Paradigm 中安装 `target/plugins.plantUML.zip`，通过 GUI 操作或 CLI 入口练习导入/导出。
+本仓库**没有自动化测试**。验证方式是手动的：在 Visual Paradigm 中安装 `target/plugins.vpcli.zip`，通过 GUI 操作或 CLI 入口练习导入/导出。
 
 ## 架构
 
 ### 入口点
 
-`src/plugins/plantUML/PlantUML.java` 实现了 `VPPlugin`（生命周期）和 `VPPluginCommandLineSupport`（CLI）。`invoke(String[] args)` 方法解析 `-action import|export`、`-path`、`-target`、`-list` 参数。`plugin.xml` 声明了插件 id、版本，并将三个 Swing 操作绑定到控制器类。
+`src/plugins/vpcli/PlantUML.java` 实现了 `VPPlugin`（生命周期）和 `VPPluginCommandLineSupport`（CLI）。`invoke(String[] args)` 方法解析 `-action import|export`、`-path`、`-target`、`-list` 参数。`plugin.xml` 声明了插件 id、版本，并将三个 Swing 操作绑定到控制器类。
 
 ### 导出流水线 (`export/`)
 
