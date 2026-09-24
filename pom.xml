@@ -151,6 +151,15 @@
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-plugin</artifactId>
                 <version>3.2.5</version>
+                <configuration>
+                    <systemPropertyVariables>
+                        <!-- Allow ByteBuddy (used by Mockito inline mocking) to support
+                             the newest JDKs (e.g. 24+), where it would otherwise refuse
+                             to mock classes. This must be a forked-JVM system property,
+                             not an argLine override, so JaCoCo's agent still attaches. -->
+                        <net.bytebuddy.experimental>true</net.bytebuddy.experimental>
+                    </systemPropertyVariables>
+                </configuration>
             </plugin>
 
             <plugin>

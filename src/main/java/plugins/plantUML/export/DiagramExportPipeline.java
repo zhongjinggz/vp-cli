@@ -1,8 +1,8 @@
 package plugins.plantUML.export;
-import com.vp.plugin.ApplicationManager;
 import com.vp.plugin.ProjectManager;
 import com.vp.plugin.diagram.IDiagramUIModel;
 
+import plugins.plantUML.ProjectManagerFactory;
 import plugins.plantUML.export.writers.*;
 import plugins.plantUML.models.SemanticsData;
 
@@ -14,7 +14,10 @@ import java.util.List;
 
 public class DiagramExportPipeline {
 
-	public DiagramExportPipeline() {
+	ProjectManagerFactory projectManagerFactory;
+
+	public DiagramExportPipeline(ProjectManagerFactory projectManagerFactory) {
+		this.projectManagerFactory = projectManagerFactory;
 	}
 
 	private final List<SemanticsData> projectSemanticsDatas = new ArrayList<SemanticsData>();
@@ -141,13 +144,11 @@ public class DiagramExportPipeline {
 				throw new UnfitForExportException("Error: " + diagramType + " not supported for export yet.");
 			}
 		} catch (IOException ex) {
-			ApplicationManager.instance().getViewManager()
-			.showMessageDialog(ApplicationManager.instance().getViewManager().getRootFrame(),  "Error processing diagram: " + diagram.getName() + "\n" + ex.getMessage());
+			//TODO 统一异常处理
 			throw ex;
 
 		} catch (UnfitForExportException e) {
-			ApplicationManager.instance().getViewManager()
-					.showMessageDialog(ApplicationManager.instance().getViewManager().getRootFrame(),  "Error: " + diagram.getName() + " is unfit for exporting\n" + e.getMessage());
+			//TODO 统一异常处理
 			throw e;
 		}
 
@@ -181,14 +182,13 @@ public class DiagramExportPipeline {
 			try {
 				export(activeDiagram, exportLocation);
 			} catch (IOException ex) {
-				ApplicationManager.instance().getViewManager()
-				.showMessageDialog(ApplicationManager.instance().getViewManager().getRootFrame(), "Error processing diagram: " + activeDiagram.getName() + "\n" + ex.getMessage());
+				//TODO 统一异常处理
 				allSuccessful = false;
 			} catch (UnsupportedOperationException ex) {
-				ApplicationManager.instance().getViewManager()
-				.showMessageDialog(ApplicationManager.instance().getViewManager().getRootFrame(), ex.getMessage());
+				//TODO 统一异常处理
 				allSuccessful = false;
 			} catch (UnfitForExportException e) {
+				//TODO 统一异常处理
 				allSuccessful = false;
 			}
 		}
@@ -198,9 +198,7 @@ public class DiagramExportPipeline {
 			jsonFile = createOutputFile("project_semantics", "json", exportLocation);
 			PlantJSONWriter.writeToFile(jsonFile, projectSemanticsDatas);
 		} catch (IOException e) {
-			ApplicationManager.instance().getViewManager()
-			.showMessageDialog(ApplicationManager.instance().getViewManager().getRootFrame(), "Error writing to json semantics file");
-			e.printStackTrace();
+			//TODO 统一处理异常
 			allSuccessful = false;
 		}
 
@@ -208,20 +206,20 @@ public class DiagramExportPipeline {
 	}
 
 	public void exportAllDiagrams(File exportLocation) {
-		ProjectManager projectManager = ApplicationManager.instance().getProjectManager();
+		ProjectManager projectManager = projectManagerFactory.getProjectManager();
 		IDiagramUIModel[] allDiagrams = projectManager.getProject().toDiagramArray();
 		this.exportDiagramList(Arrays.asList(allDiagrams), exportLocation);
 	}
 
 	public void exportSpecificDiagram(String target, File exportLocation) throws IOException {
-		ProjectManager projectManager = ApplicationManager.instance().getProjectManager();
+		ProjectManager projectManager = projectManagerFactory.getProjectManager();
 		IDiagramUIModel targetDiagram = projectManager.getProject().getDiagramById(target);
 		this.export(targetDiagram, exportLocation);
 	}
 
     public void listDiagrams() {
-        ProjectManager projectManager = ApplicationManager.instance().getProjectManager();
-        IDiagramUIModel[] allDiagrams = projectManager.getProject().toDiagramArray();
+		ProjectManager projectManager = projectManagerFactory.getProjectManager();
+		IDiagramUIModel[] allDiagrams = projectManager.getProject().toDiagramArray();
         for (IDiagramUIModel diagram : allDiagrams) {
             System.out.println(diagram.getName() + " | id: " + diagram.getId());
         }

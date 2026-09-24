@@ -10,11 +10,15 @@ import plugins.plantUML.export.DiagramExportPipeline;
 //TODO 翻译和修改 README
 //TODO 统一处理错误
 //TODO 统一处理日志
+//TODO 清理编译警告
+//TODO 整理成DDD架构
 
 //DONE 改为依赖注入 1 - 注入 pipeline
 public class PlantUML implements VPPlugin, VPPluginCommandLineSupport {
 
-    DiagramExportPipeline diagramExportPipeline = new DiagramExportPipeline();
+    ProjectManagerFactory projectManagerFactory = new ProjectManagerFactory();
+
+    DiagramExportPipeline diagramExportPipeline = new DiagramExportPipeline(projectManagerFactory);
     CLIController cliController = new CLIController(diagramExportPipeline);
 
     @Override

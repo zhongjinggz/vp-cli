@@ -9,13 +9,10 @@ import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.mockConstruction;
 import static org.mockito.Mockito.mockStatic;
-import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import com.vp.plugin.ApplicationManager;
 import com.vp.plugin.ProjectManager;
-import com.vp.plugin.ViewManager;
 import com.vp.plugin.diagram.IDiagramUIModel;
 import com.vp.plugin.model.IProject;
 
@@ -33,6 +30,7 @@ import org.junit.jupiter.api.io.TempDir;
 import org.junit.jupiter.api.function.Executable;
 import org.mockito.MockedConstruction;
 import org.mockito.MockedStatic;
+import plugins.plantUML.ProjectManagerFactory;
 import plugins.plantUML.export.writers.ActivityUMLWriter;
 import plugins.plantUML.export.writers.ClassUMLWriter;
 import plugins.plantUML.export.writers.ComponentDeploymentUMLWriter;
@@ -47,8 +45,16 @@ public class DiagramExportPipelineTest {
     @TempDir
     Path tempDir;
 
+    private final ProjectManagerFactory projectManagerFactory = mock(ProjectManagerFactory.class);
+
     private DiagramExportPipeline newPipeline() {
-        return new DiagramExportPipeline();
+        return new DiagramExportPipeline(projectManagerFactory);
+    }
+
+    private ProjectManager givenProjectManager() {
+        ProjectManager pm = mock(ProjectManager.class);
+        when(projectManagerFactory.getProjectManager()).thenReturn(pm);
+        return pm;
     }
 
     private List<SemanticsData> nonEmptySemantics() {
@@ -72,15 +78,6 @@ public class DiagramExportPipelineTest {
     @SuppressWarnings({"rawtypes", "unchecked"})
     private MockedConstruction<?> mockedWriter(Class<?> cls) {
         return mockConstruction((Class) cls);
-    }
-
-    private ApplicationManager setUpViewManager(MockedStatic<ApplicationManager> amStatic) {
-        ApplicationManager am = mock(ApplicationManager.class);
-        ViewManager vm = mock(ViewManager.class);
-        when(am.getViewManager()).thenReturn(vm);
-        when(vm.getRootFrame()).thenReturn(mock(java.awt.Component.class));
-        amStatic.when(ApplicationManager::instance).thenReturn(am);
-        return am;
     }
 
     private void runSupportedCase(String type, String name, Class<?> exp, Class<?> wrt, List<SemanticsData> sem)
@@ -156,25 +153,18 @@ public class DiagramExportPipelineTest {
 
     @Test
     void export_unsupportedType_throwsUnfit() throws Throwable {
-        try (MockedStatic<ApplicationManager> amStatic = mockStatic(ApplicationManager.class)) {
-            ApplicationManager am = setUpViewManager(amStatic);
-            IDiagramUIModel d = diagram("BogusDiagram", "B");
-            assertThrows(UnfitForExportException.class, () -> newPipeline().export(d, tempDir.toFile()));
-            verify(am, times(2)).getViewManager();
-        }
+        IDiagramUIModel d = diagram("BogusDiagram", "B");
+        assertThrows(UnfitForExportException.class, () -> newPipeline().export(d, tempDir.toFile()));
     }
 
     @Test
     void export_writerThrowsIOException_printsAndRethrows() throws Throwable {
-        try (MockedStatic<ApplicationManager> amStatic = mockStatic(ApplicationManager.class);
-             MockedConstruction<?> e = mockedExporter(ClassDiagramExporter.class, null);
+        try (MockedConstruction<?> e = mockedExporter(ClassDiagramExporter.class, null);
              MockedConstruction<?> w = mockConstruction(ClassUMLWriter.class, (m, c) -> {
                  doThrow(new IOException("boom")).when(m).writeToFile(any(File.class));
              })) {
-            ApplicationManager am = setUpViewManager(amStatic);
             IDiagramUIModel d = diagram("ClassDiagram", "IO");
             assertThrows(IOException.class, () -> newPipeline().export(d, tempDir.toFile()));
-            verify(am, times(2)).getViewManager();
         }
     }
 
@@ -254,9 +244,7 @@ public class DiagramExportPipelineTest {
     @Test
     void exportDiagramList_unsupportedDiagram_returnsFalse() throws Exception {
         IDiagramUIModel d = diagram("WeirdDiagram", "W");
-        try (MockedStatic<ApplicationManager> amStatic = mockStatic(ApplicationManager.class);
-             MockedStatic<PlantJSONWriter> pj = mockStatic(PlantJSONWriter.class)) {
-            setUpViewManager(amStatic);
+        try (MockedStatic<PlantJSONWriter> pj = mockStatic(PlantJSONWriter.class)) {
             assertTrue(!newPipeline().exportDiagramList(Collections.singletonList(d), tempDir.toFile()));
         }
     }
@@ -264,13 +252,11 @@ public class DiagramExportPipelineTest {
     @Test
     void exportDiagramList_writerIOException_returnsFalse() throws Exception {
         IDiagramUIModel d = diagram("ClassDiagram", "IO");
-        try (MockedStatic<ApplicationManager> amStatic = mockStatic(ApplicationManager.class);
-             MockedConstruction<?> e = mockedExporter(ClassDiagramExporter.class, null);
+        try (MockedConstruction<?> e = mockedExporter(ClassDiagramExporter.class, null);
              MockedConstruction<?> w = mockConstruction(ClassUMLWriter.class, (m, c) -> {
                  doThrow(new IOException("boom")).when(m).writeToFile(any(File.class));
              });
              MockedStatic<PlantJSONWriter> pj = mockStatic(PlantJSONWriter.class)) {
-            setUpViewManager(amStatic);
             assertTrue(!newPipeline().exportDiagramList(Collections.singletonList(d), tempDir.toFile()));
         }
     }
@@ -278,13 +264,11 @@ public class DiagramExportPipelineTest {
     @Test
     void exportDiagramList_writerUnsupportedOperation_returnsFalse() throws Exception {
         IDiagramUIModel d = diagram("ClassDiagram", "UOE");
-        try (MockedStatic<ApplicationManager> amStatic = mockStatic(ApplicationManager.class);
-             MockedConstruction<?> e = mockedExporter(ClassDiagramExporter.class, null);
+        try (MockedConstruction<?> e = mockedExporter(ClassDiagramExporter.class, null);
              MockedConstruction<?> w = mockConstruction(ClassUMLWriter.class, (m, c) -> {
                  doThrow(new UnsupportedOperationException("nope")).when(m).writeToFile(any(File.class));
              });
              MockedStatic<PlantJSONWriter> pj = mockStatic(PlantJSONWriter.class)) {
-            setUpViewManager(amStatic);
             assertTrue(!newPipeline().exportDiagramList(Collections.singletonList(d), tempDir.toFile()));
         }
     }
@@ -292,11 +276,9 @@ public class DiagramExportPipelineTest {
     @Test
     void exportDiagramList_jsonWriteFails_returnsFalse() throws Exception {
         IDiagramUIModel d = diagram("ClassDiagram", "J");
-        try (MockedStatic<ApplicationManager> amStatic = mockStatic(ApplicationManager.class);
-             MockedConstruction<?> e = mockedExporter(ClassDiagramExporter.class, null);
+        try (MockedConstruction<?> e = mockedExporter(ClassDiagramExporter.class, null);
              MockedConstruction<?> w = mockedWriter(ClassUMLWriter.class);
              MockedStatic<PlantJSONWriter> pj = mockStatic(PlantJSONWriter.class)) {
-            setUpViewManager(amStatic);
             pj.when(() -> PlantJSONWriter.writeToFile(any(File.class), any(List.class)))
                 .thenThrow(new IOException("json boom"));
             assertTrue(!newPipeline().exportDiagramList(Collections.singletonList(d), tempDir.toFile()));
@@ -307,17 +289,13 @@ public class DiagramExportPipelineTest {
     void exportAllDiagrams_exportsEveryDiagram() {
         IDiagramUIModel clazz = diagram("ClassDiagram", "C");
         IDiagramUIModel seq = diagram("InteractionDiagram", "S");
-        try (MockedStatic<ApplicationManager> amStatic = mockStatic(ApplicationManager.class);
-             MockedConstruction<?> e1 = mockedExporter(ClassDiagramExporter.class, null);
+        try (MockedConstruction<?> e1 = mockedExporter(ClassDiagramExporter.class, null);
              MockedConstruction<?> w1 = mockedWriter(ClassUMLWriter.class);
              MockedConstruction<?> e2 = mockedExporter(SequenceDiagramExporter.class, null);
              MockedConstruction<?> w2 = mockedWriter(SequenceUMLWriter.class);
              MockedStatic<PlantJSONWriter> pj = mockStatic(PlantJSONWriter.class)) {
-            ApplicationManager am = mock(ApplicationManager.class);
-            ProjectManager pm = mock(ProjectManager.class);
+            ProjectManager pm = givenProjectManager();
             IProject project = mock(IProject.class);
-            amStatic.when(ApplicationManager::instance).thenReturn(am);
-            when(am.getProjectManager()).thenReturn(pm);
             when(pm.getProject()).thenReturn(project);
             when(project.toDiagramArray()).thenReturn(new IDiagramUIModel[]{clazz, seq});
             newPipeline().exportAllDiagrams(tempDir.toFile());
@@ -328,15 +306,11 @@ public class DiagramExportPipelineTest {
     @Test
     void exportSpecificDiagram_exportsTarget() throws Exception {
         IDiagramUIModel target = diagram("ClassDiagram", "T");
-        try (MockedStatic<ApplicationManager> amStatic = mockStatic(ApplicationManager.class);
-             MockedConstruction<?> e = mockedExporter(ClassDiagramExporter.class, null);
+        try (MockedConstruction<?> e = mockedExporter(ClassDiagramExporter.class, null);
              MockedConstruction<?> w = mockedWriter(ClassUMLWriter.class);
              MockedStatic<PlantJSONWriter> pj = mockStatic(PlantJSONWriter.class)) {
-            ApplicationManager am = mock(ApplicationManager.class);
-            ProjectManager pm = mock(ProjectManager.class);
+            ProjectManager pm = givenProjectManager();
             IProject project = mock(IProject.class);
-            amStatic.when(ApplicationManager::instance).thenReturn(am);
-            when(am.getProjectManager()).thenReturn(pm);
             when(pm.getProject()).thenReturn(project);
             when(project.getDiagramById("X")).thenReturn(target);
             newPipeline().exportSpecificDiagram("X", tempDir.toFile());
@@ -350,34 +324,24 @@ public class DiagramExportPipelineTest {
         IDiagramUIModel d2 = diagram("InteractionDiagram", "Seq1");
         when(d1.getId()).thenReturn("id1");
         when(d2.getId()).thenReturn("id2");
-        try (MockedStatic<ApplicationManager> amStatic = mockStatic(ApplicationManager.class)) {
-            ApplicationManager am = mock(ApplicationManager.class);
-            ProjectManager pm = mock(ProjectManager.class);
-            IProject project = mock(IProject.class);
-            amStatic.when(ApplicationManager::instance).thenReturn(am);
-            when(am.getProjectManager()).thenReturn(pm);
-            when(pm.getProject()).thenReturn(project);
-            when(project.toDiagramArray()).thenReturn(new IDiagramUIModel[]{d1, d2});
-            String output = captureOut(() -> newPipeline().listDiagrams());
-            assertTrue(output.contains("Class1 | id: id1"));
-            assertTrue(output.contains("Seq1 | id: id2"));
-            verify(project).toDiagramArray();
-        }
+        ProjectManager pm = givenProjectManager();
+        IProject project = mock(IProject.class);
+        when(pm.getProject()).thenReturn(project);
+        when(project.toDiagramArray()).thenReturn(new IDiagramUIModel[]{d1, d2});
+        String output = captureOut(() -> newPipeline().listDiagrams());
+        assertTrue(output.contains("Class1 | id: id1"));
+        assertTrue(output.contains("Seq1 | id: id2"));
+        verify(project).toDiagramArray();
     }
 
     @Test
     void listDiagrams_emptyProject_printsNothing() throws Throwable {
-        try (MockedStatic<ApplicationManager> amStatic = mockStatic(ApplicationManager.class)) {
-            ApplicationManager am = mock(ApplicationManager.class);
-            ProjectManager pm = mock(ProjectManager.class);
-            IProject project = mock(IProject.class);
-            amStatic.when(ApplicationManager::instance).thenReturn(am);
-            when(am.getProjectManager()).thenReturn(pm);
-            when(pm.getProject()).thenReturn(project);
-            when(project.toDiagramArray()).thenReturn(new IDiagramUIModel[0]);
-            String output = captureOut(() -> newPipeline().listDiagrams());
-            assertTrue(output.isEmpty());
-        }
+        ProjectManager pm = givenProjectManager();
+        IProject project = mock(IProject.class);
+        when(pm.getProject()).thenReturn(project);
+        when(project.toDiagramArray()).thenReturn(new IDiagramUIModel[0]);
+        String output = captureOut(() -> newPipeline().listDiagrams());
+        assertTrue(output.isEmpty());
     }
 
     private String captureOut(Executable executable) throws Throwable {

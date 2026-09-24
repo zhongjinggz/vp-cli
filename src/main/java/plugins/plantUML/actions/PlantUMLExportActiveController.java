@@ -10,7 +10,11 @@ public class PlantUMLExportActiveController implements VPActionController {
     public void performAction(VPAction action) {
 
         ApplicationManager.instance().getViewManager().showMessageDialog(
-            ApplicationManager.instance().getViewManager().getRootFrame(), "vp-cli 改为依赖注入 22:43");
+            ApplicationManager.instance()
+                .getViewManager()
+                .getRootFrame()
+            , "vp-cli 依赖注入 ProjectManagerFactory 09:06"
+        );
     }
 
     @Override
