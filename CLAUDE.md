@@ -70,7 +70,7 @@ plugins.vpcli/
 `plugin.xml` 中绑定的三个 `VPActionController` 实现：
 - `PlantUMLImportController` — 通过 Swing 对话框进行单文件或文件夹导入。
 - `PlantUMLExportController` — 多图表导出，带有按图表类型分组的复选框对话框。
-- `PlantUMLExportActiveController` — 仅导出当前活动图表。
+- `HelpController` — 仅导出当前活动图表。
 
 ## 约定
 

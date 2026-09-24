@@ -20,12 +20,12 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 import org.junit.jupiter.api.function.Executable;
 import org.mockito.MockedStatic;
-import plugins.vpcli.PlantUML;
+import plugins.vpcli.VPCLI;
 import plugins.vpcli.export.DiagramExportPipeline;
 
 /**
  *
- * <p>{@link PlantUML#invoke} 已退化为只把参数转发给 {@link CLIController#invoke}，
+ * <p>{@link VPCLI#invoke} 已退化为只把参数转发给 {@link CLIController#invoke}，
  * 因此本测试直接驱动 {@link CLIController}，覆盖 CLI 分发、导入、导出与图表列举的全部分支。
  * <p>{@link CLIController} 通过构造器注入 {@link DiagramExportPipeline}，测试用 mock 注入以验证交互；
  * 图表列举等管线内部逻辑（{@code DiagramExportPipeline#listDiagrams}）交由 DiagramExportPipelineTest 覆盖。

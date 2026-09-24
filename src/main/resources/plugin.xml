@@ -1,23 +1,24 @@
 <plugin
 	id="plugins.vpcli"
-	name="PlantUML Support"
-	description="Import from / Export to PlantUML"
-	provider="NataliaSoftlabNtua"
-	class="plugins.vpcli.PlantUML"
+	name="VP CLI"
+	description="CLI for Visual Paradigm"
+	provider="Zhong Jing"
+	class="plugins.vpcli.VPCLI"
 	version="1.0.0">
         
 	<actionSets>
 		<actionSet id="plugins.vpcli.actionset">
 			<action
-					id="ExportActiveAction"
+					id="VPCLI-Help"
 					actionType="generalAction"
-					label="Active Diagram as PlantUML..."
-					tooltip="Active Diagram as PlantUML..."
+					label="CLI"
+					tooltip="VP CLI Help"
 					style="normal"
 					icon="icons/puml-icon.png"
-					ribbonPath="Project/Export/XML">
+					ribbonPath="Help/Update">
+<!--				ribbonPath="Project/Export/XML">-->
 				<actionController
-						class="plugins.vpcli.actions.PlantUMLExportActiveController"/>
+						class="plugins.vpcli.actions.HelpController"/>
 			</action>
 		</actionSet>
 	</actionSets>

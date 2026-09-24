@@ -2,9 +2,9 @@ package plugins.vpcli;
 
 import org.junit.jupiter.api.Test;
 
-public class PlantUMLTest {
+public class VPCLITest {
 
-    private final PlantUML plugin = new PlantUML();
+    private final VPCLI plugin = new VPCLI();
 
     @Test
     void loaded_doesNothing() {
