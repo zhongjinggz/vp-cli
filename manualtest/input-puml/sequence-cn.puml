@@ -1,0 +1,13 @@
+@startuml 用户登录时序
+' 时序图测试：中文参与者
+actor 用户
+participant 认证服务
+participant 数据库
+
+用户 -> 认证服务 : 登录请求(用户名, 密码)
+activate 认证服务
+认证服务 -> 数据库 : 校验凭据
+数据库 --> 认证服务 : 校验结果
+认证服务 --> 用户 : 登录成功
+deactivate 认证服务
+@enduml

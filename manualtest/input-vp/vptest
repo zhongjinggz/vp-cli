@@ -1,0 +1,2 @@
+#!/bin/bash
+python3 /Users/zhongjing/Projects/mine/vp-cli/bin/vp_export.py -project ./vp-cli-sample.vpp -path ../output/
