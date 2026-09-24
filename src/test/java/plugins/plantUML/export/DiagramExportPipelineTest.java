@@ -6,6 +6,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doThrow;
+import static org.mockito.Mockito.atLeastOnce;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.mockConstruction;
 import static org.mockito.Mockito.mockStatic;
@@ -30,7 +31,9 @@ import org.junit.jupiter.api.io.TempDir;
 import org.junit.jupiter.api.function.Executable;
 import org.mockito.MockedConstruction;
 import org.mockito.MockedStatic;
+import plugins.plantUML.ExporterFactory;
 import plugins.plantUML.ProjectManagerFactory;
+import plugins.plantUML.WriterFactory;
 import plugins.plantUML.export.writers.ActivityUMLWriter;
 import plugins.plantUML.export.writers.ClassUMLWriter;
 import plugins.plantUML.export.writers.ComponentDeploymentUMLWriter;
@@ -46,9 +49,11 @@ public class DiagramExportPipelineTest {
     Path tempDir;
 
     private final ProjectManagerFactory projectManagerFactory = mock(ProjectManagerFactory.class);
+    private final ExporterFactory exporterFactory = mock(ExporterFactory.class);
+    private final WriterFactory writerFactory = mock(WriterFactory.class);
 
     private DiagramExportPipeline newPipeline() {
-        return new DiagramExportPipeline(projectManagerFactory);
+        return new DiagramExportPipeline(projectManagerFactory, exporterFactory, writerFactory);
     }
 
     private ProjectManager givenProjectManager() {
@@ -70,85 +75,148 @@ public class DiagramExportPipelineTest {
         return d;
     }
 
-    @SuppressWarnings({"rawtypes", "unchecked"})
-    private MockedConstruction<?> mockedExporter(Class<?> cls, List<SemanticsData> sem) {
-        return mockConstruction((Class) cls, (m, c) -> when(((DiagramExporter) m).getExportedSemantics()).thenReturn(sem));
+    @SuppressWarnings("unchecked")
+    private ClassDiagramExporter givenClassExporter(List<SemanticsData> sem) throws IOException {
+        ClassDiagramExporter cde = mock(ClassDiagramExporter.class);
+        when(cde.getExportedSemantics()).thenReturn(sem);
+        when(exporterFactory.createClassDiagramExporter(any())).thenReturn(cde);
+        return cde;
     }
 
-    @SuppressWarnings({"rawtypes", "unchecked"})
-    private MockedConstruction<?> mockedWriter(Class<?> cls) {
-        return mockConstruction((Class) cls);
+    private ClassUMLWriter givenClassWriter(ClassDiagramExporter cde) {
+        ClassUMLWriter w = mock(ClassUMLWriter.class);
+        when(writerFactory.createClassUMLWriter(cde)).thenReturn(w);
+        return w;
     }
 
-    private void runSupportedCase(String type, String name, Class<?> exp, Class<?> wrt, List<SemanticsData> sem)
-        throws Throwable {
-        try (MockedConstruction<?> e = mockedExporter(exp, sem);
-             MockedConstruction<?> w = mockedWriter(wrt)) {
-            captureOut(() -> newPipeline().export(diagram(type, name), tempDir.toFile()));
+    private void givenSuccessExport(String type, List<SemanticsData> sem) throws IOException {
+        switch (type) {
+        case "ClassDiagram": {
+            givenClassWriter(givenClassExporter(sem));
+            break;
+        }
+        case "ComponentDiagram":
+        case "DeploymentDiagram": {
+            ComponentDeploymentDiagramExporter comde = mock(ComponentDeploymentDiagramExporter.class);
+            when(comde.getExportedSemantics()).thenReturn(sem);
+            when(exporterFactory.createComponentDeploymentDiagramExporter(any())).thenReturn(comde);
+            when(writerFactory.createComponentDeploymentUMLWriter(comde)).thenReturn(mock(ComponentDeploymentUMLWriter.class));
+            break;
+        }
+        case "InteractionDiagram": {
+            SequenceDiagramExporter seqde = mock(SequenceDiagramExporter.class);
+            when(seqde.getExportedSemantics()).thenReturn(sem);
+            when(exporterFactory.createSequenceDiagramExporter(any())).thenReturn(seqde);
+            when(writerFactory.createSequenceUMLWriter(seqde)).thenReturn(mock(SequenceUMLWriter.class));
+            break;
+        }
+        case "UseCaseDiagram": {
+            UseCaseDiagramExporter ucde = mock(UseCaseDiagramExporter.class);
+            when(ucde.getExportedSemantics()).thenReturn(sem);
+            when(exporterFactory.createUseCaseDiagramExporter(any())).thenReturn(ucde);
+            when(writerFactory.createUseCaseWriter(ucde)).thenReturn(mock(UseCaseWriter.class));
+            break;
+        }
+        case "StateDiagram": {
+            StateDiagramExporter stde = mock(StateDiagramExporter.class);
+            when(stde.getExportedSemantics()).thenReturn(sem);
+            when(exporterFactory.createStateDiagramExporter(any())).thenReturn(stde);
+            when(writerFactory.createStateUMLWriter(stde)).thenReturn(mock(StateUMLWriter.class));
+            break;
+        }
+        case "ActivityDiagram": {
+            ActivityDiagramExporter acde = mock(ActivityDiagramExporter.class);
+            when(acde.getExportedSemantics()).thenReturn(sem);
+            when(exporterFactory.createActivityDiagramExporter(any())).thenReturn(acde);
+            when(writerFactory.createActivityUMLWriter(acde)).thenReturn(mock(ActivityUMLWriter.class));
+            break;
+        }
+        default:
+            throw new IllegalArgumentException("Unsupported diagram type: " + type);
+        }
+    }
+
+    private void runSupportedCase(String type, String name, List<SemanticsData> sem) throws Throwable {
+        givenSuccessExport(type, sem);
+        captureOut(() -> newPipeline().export(diagram(type, name), tempDir.toFile()));
+        switch (type) {
+        case "ClassDiagram":
+            verify(exporterFactory, atLeastOnce()).createClassDiagramExporter(any());
+            verify(writerFactory, atLeastOnce()).createClassUMLWriter(any());
+            break;
+        case "ComponentDiagram":
+        case "DeploymentDiagram":
+            verify(exporterFactory, atLeastOnce()).createComponentDeploymentDiagramExporter(any());
+            verify(writerFactory, atLeastOnce()).createComponentDeploymentUMLWriter(any());
+            break;
+        case "InteractionDiagram":
+            verify(exporterFactory, atLeastOnce()).createSequenceDiagramExporter(any());
+            verify(writerFactory, atLeastOnce()).createSequenceUMLWriter(any());
+            break;
+        case "UseCaseDiagram":
+            verify(exporterFactory, atLeastOnce()).createUseCaseDiagramExporter(any());
+            verify(writerFactory, atLeastOnce()).createUseCaseWriter(any());
+            break;
+        case "StateDiagram":
+            verify(exporterFactory, atLeastOnce()).createStateDiagramExporter(any());
+            verify(writerFactory, atLeastOnce()).createStateUMLWriter(any());
+            break;
+        case "ActivityDiagram":
+            verify(exporterFactory, atLeastOnce()).createActivityDiagramExporter(any());
+            verify(writerFactory, atLeastOnce()).createActivityUMLWriter(any());
+            break;
+        default:
+            throw new IllegalArgumentException("Unsupported diagram type: " + type);
         }
     }
 
     @Test
     void export_classDiagram_success() throws Throwable {
-        runSupportedCase("ClassDiagram", "C", ClassDiagramExporter.class, ClassUMLWriter.class, null);
-        runSupportedCase("ClassDiagram", "C2", ClassDiagramExporter.class, ClassUMLWriter.class,
-            Collections.emptyList());
-        runSupportedCase("ClassDiagram", "C3", ClassDiagramExporter.class, ClassUMLWriter.class, nonEmptySemantics());
+        runSupportedCase("ClassDiagram", "C", null);
+        runSupportedCase("ClassDiagram", "C2", Collections.emptyList());
+        runSupportedCase("ClassDiagram", "C3", nonEmptySemantics());
     }
 
     @Test
     void export_componentDiagram_success() throws Throwable {
-        runSupportedCase("ComponentDiagram", "CD", ComponentDeploymentDiagramExporter.class,
-            ComponentDeploymentUMLWriter.class, null);
-        runSupportedCase("ComponentDiagram", "CD2", ComponentDeploymentDiagramExporter.class,
-            ComponentDeploymentUMLWriter.class, Collections.emptyList());
-        runSupportedCase("ComponentDiagram", "CD3", ComponentDeploymentDiagramExporter.class,
-            ComponentDeploymentUMLWriter.class, nonEmptySemantics());
+        runSupportedCase("ComponentDiagram", "CD", null);
+        runSupportedCase("ComponentDiagram", "CD2", Collections.emptyList());
+        runSupportedCase("ComponentDiagram", "CD3", nonEmptySemantics());
     }
 
     @Test
     void export_deploymentDiagram_success() throws Throwable {
-        runSupportedCase("DeploymentDiagram", "DD", ComponentDeploymentDiagramExporter.class,
-            ComponentDeploymentUMLWriter.class, null);
-        runSupportedCase("DeploymentDiagram", "DD2", ComponentDeploymentDiagramExporter.class,
-            ComponentDeploymentUMLWriter.class, Collections.emptyList());
-        runSupportedCase("DeploymentDiagram", "DD3", ComponentDeploymentDiagramExporter.class,
-            ComponentDeploymentUMLWriter.class, nonEmptySemantics());
+        runSupportedCase("DeploymentDiagram", "DD", null);
+        runSupportedCase("DeploymentDiagram", "DD2", Collections.emptyList());
+        runSupportedCase("DeploymentDiagram", "DD3", nonEmptySemantics());
     }
 
     @Test
     void export_interactionDiagram_success() throws Throwable {
-        runSupportedCase("InteractionDiagram", "S", SequenceDiagramExporter.class, SequenceUMLWriter.class, null);
-        runSupportedCase("InteractionDiagram", "S2", SequenceDiagramExporter.class, SequenceUMLWriter.class,
-            Collections.emptyList());
-        runSupportedCase("InteractionDiagram", "S3", SequenceDiagramExporter.class, SequenceUMLWriter.class,
-            nonEmptySemantics());
+        runSupportedCase("InteractionDiagram", "S", null);
+        runSupportedCase("InteractionDiagram", "S2", Collections.emptyList());
+        runSupportedCase("InteractionDiagram", "S3", nonEmptySemantics());
     }
 
     @Test
     void export_useCaseDiagram_success() throws Throwable {
-        runSupportedCase("UseCaseDiagram", "U", UseCaseDiagramExporter.class, UseCaseWriter.class, null);
-        runSupportedCase("UseCaseDiagram", "U2", UseCaseDiagramExporter.class, UseCaseWriter.class,
-            Collections.emptyList());
-        runSupportedCase("UseCaseDiagram", "U3", UseCaseDiagramExporter.class, UseCaseWriter.class,
-            nonEmptySemantics());
+        runSupportedCase("UseCaseDiagram", "U", null);
+        runSupportedCase("UseCaseDiagram", "U2", Collections.emptyList());
+        runSupportedCase("UseCaseDiagram", "U3", nonEmptySemantics());
     }
 
     @Test
     void export_stateDiagram_success() throws Throwable {
-        runSupportedCase("StateDiagram", "ST", StateDiagramExporter.class, StateUMLWriter.class, null);
-        runSupportedCase("StateDiagram", "ST2", StateDiagramExporter.class, StateUMLWriter.class,
-            Collections.emptyList());
-        runSupportedCase("StateDiagram", "ST3", StateDiagramExporter.class, StateUMLWriter.class, nonEmptySemantics());
+        runSupportedCase("StateDiagram", "ST", null);
+        runSupportedCase("StateDiagram", "ST2", Collections.emptyList());
+        runSupportedCase("StateDiagram", "ST3", nonEmptySemantics());
     }
 
     @Test
     void export_activityDiagram_success() throws Throwable {
-        runSupportedCase("ActivityDiagram", "A", ActivityDiagramExporter.class, ActivityUMLWriter.class, null);
-        runSupportedCase("ActivityDiagram", "A2", ActivityDiagramExporter.class, ActivityUMLWriter.class,
-            Collections.emptyList());
-        runSupportedCase("ActivityDiagram", "A3", ActivityDiagramExporter.class, ActivityUMLWriter.class,
-            nonEmptySemantics());
+        runSupportedCase("ActivityDiagram", "A", null);
+        runSupportedCase("ActivityDiagram", "A2", Collections.emptyList());
+        runSupportedCase("ActivityDiagram", "A3", nonEmptySemantics());
     }
 
     @Test
@@ -159,13 +227,12 @@ public class DiagramExportPipelineTest {
 
     @Test
     void export_writerThrowsIOException_printsAndRethrows() throws Throwable {
-        try (MockedConstruction<?> e = mockedExporter(ClassDiagramExporter.class, null);
-             MockedConstruction<?> w = mockConstruction(ClassUMLWriter.class, (m, c) -> {
-                 doThrow(new IOException("boom")).when(m).writeToFile(any(File.class));
-             })) {
-            IDiagramUIModel d = diagram("ClassDiagram", "IO");
-            assertThrows(IOException.class, () -> newPipeline().export(d, tempDir.toFile()));
-        }
+        ClassDiagramExporter cde = givenClassExporter(null);
+        ClassUMLWriter w = mock(ClassUMLWriter.class);
+        doThrow(new IOException("boom")).when(w).writeToFile(any(File.class));
+        when(writerFactory.createClassUMLWriter(cde)).thenReturn(w);
+        IDiagramUIModel d = diagram("ClassDiagram", "IO");
+        assertThrows(IOException.class, () -> newPipeline().export(d, tempDir.toFile()));
     }
 
     @Test
@@ -234,9 +301,8 @@ public class DiagramExportPipelineTest {
     @Test
     void exportDiagramList_allSuccess_returnsTrue() throws Exception {
         IDiagramUIModel d = diagram("ClassDiagram", "L1");
-        try (MockedConstruction<?> e = mockedExporter(ClassDiagramExporter.class, null);
-             MockedConstruction<?> w = mockedWriter(ClassUMLWriter.class);
-             MockedStatic<PlantJSONWriter> pj = mockStatic(PlantJSONWriter.class)) {
+        givenClassWriter(givenClassExporter(null));
+        try (MockedStatic<PlantJSONWriter> pj = mockStatic(PlantJSONWriter.class)) {
             assertTrue(newPipeline().exportDiagramList(Collections.singletonList(d), tempDir.toFile()));
         }
     }
@@ -252,11 +318,11 @@ public class DiagramExportPipelineTest {
     @Test
     void exportDiagramList_writerIOException_returnsFalse() throws Exception {
         IDiagramUIModel d = diagram("ClassDiagram", "IO");
-        try (MockedConstruction<?> e = mockedExporter(ClassDiagramExporter.class, null);
-             MockedConstruction<?> w = mockConstruction(ClassUMLWriter.class, (m, c) -> {
-                 doThrow(new IOException("boom")).when(m).writeToFile(any(File.class));
-             });
-             MockedStatic<PlantJSONWriter> pj = mockStatic(PlantJSONWriter.class)) {
+        ClassDiagramExporter cde = givenClassExporter(null);
+        ClassUMLWriter w = mock(ClassUMLWriter.class);
+        doThrow(new IOException("boom")).when(w).writeToFile(any(File.class));
+        when(writerFactory.createClassUMLWriter(cde)).thenReturn(w);
+        try (MockedStatic<PlantJSONWriter> pj = mockStatic(PlantJSONWriter.class)) {
             assertTrue(!newPipeline().exportDiagramList(Collections.singletonList(d), tempDir.toFile()));
         }
     }
@@ -264,11 +330,11 @@ public class DiagramExportPipelineTest {
     @Test
     void exportDiagramList_writerUnsupportedOperation_returnsFalse() throws Exception {
         IDiagramUIModel d = diagram("ClassDiagram", "UOE");
-        try (MockedConstruction<?> e = mockedExporter(ClassDiagramExporter.class, null);
-             MockedConstruction<?> w = mockConstruction(ClassUMLWriter.class, (m, c) -> {
-                 doThrow(new UnsupportedOperationException("nope")).when(m).writeToFile(any(File.class));
-             });
-             MockedStatic<PlantJSONWriter> pj = mockStatic(PlantJSONWriter.class)) {
+        ClassDiagramExporter cde = givenClassExporter(null);
+        ClassUMLWriter w = mock(ClassUMLWriter.class);
+        doThrow(new UnsupportedOperationException("nope")).when(w).writeToFile(any(File.class));
+        when(writerFactory.createClassUMLWriter(cde)).thenReturn(w);
+        try (MockedStatic<PlantJSONWriter> pj = mockStatic(PlantJSONWriter.class)) {
             assertTrue(!newPipeline().exportDiagramList(Collections.singletonList(d), tempDir.toFile()));
         }
     }
@@ -276,9 +342,8 @@ public class DiagramExportPipelineTest {
     @Test
     void exportDiagramList_jsonWriteFails_returnsFalse() throws Exception {
         IDiagramUIModel d = diagram("ClassDiagram", "J");
-        try (MockedConstruction<?> e = mockedExporter(ClassDiagramExporter.class, null);
-             MockedConstruction<?> w = mockedWriter(ClassUMLWriter.class);
-             MockedStatic<PlantJSONWriter> pj = mockStatic(PlantJSONWriter.class)) {
+        givenClassWriter(givenClassExporter(null));
+        try (MockedStatic<PlantJSONWriter> pj = mockStatic(PlantJSONWriter.class)) {
             pj.when(() -> PlantJSONWriter.writeToFile(any(File.class), any(List.class)))
                 .thenThrow(new IOException("json boom"));
             assertTrue(!newPipeline().exportDiagramList(Collections.singletonList(d), tempDir.toFile()));
@@ -286,14 +351,15 @@ public class DiagramExportPipelineTest {
     }
 
     @Test
-    void exportAllDiagrams_exportsEveryDiagram() {
+    void exportAllDiagrams_exportsEveryDiagram() throws Exception {
         IDiagramUIModel clazz = diagram("ClassDiagram", "C");
         IDiagramUIModel seq = diagram("InteractionDiagram", "S");
-        try (MockedConstruction<?> e1 = mockedExporter(ClassDiagramExporter.class, null);
-             MockedConstruction<?> w1 = mockedWriter(ClassUMLWriter.class);
-             MockedConstruction<?> e2 = mockedExporter(SequenceDiagramExporter.class, null);
-             MockedConstruction<?> w2 = mockedWriter(SequenceUMLWriter.class);
-             MockedStatic<PlantJSONWriter> pj = mockStatic(PlantJSONWriter.class)) {
+        givenClassWriter(givenClassExporter(null));
+        SequenceDiagramExporter seqde = mock(SequenceDiagramExporter.class);
+        when(seqde.getExportedSemantics()).thenReturn(null);
+        when(exporterFactory.createSequenceDiagramExporter(any())).thenReturn(seqde);
+        when(writerFactory.createSequenceUMLWriter(seqde)).thenReturn(mock(SequenceUMLWriter.class));
+        try (MockedStatic<PlantJSONWriter> pj = mockStatic(PlantJSONWriter.class)) {
             ProjectManager pm = givenProjectManager();
             IProject project = mock(IProject.class);
             when(pm.getProject()).thenReturn(project);
@@ -306,9 +372,8 @@ public class DiagramExportPipelineTest {
     @Test
     void exportSpecificDiagram_exportsTarget() throws Exception {
         IDiagramUIModel target = diagram("ClassDiagram", "T");
-        try (MockedConstruction<?> e = mockedExporter(ClassDiagramExporter.class, null);
-             MockedConstruction<?> w = mockedWriter(ClassUMLWriter.class);
-             MockedStatic<PlantJSONWriter> pj = mockStatic(PlantJSONWriter.class)) {
+        givenClassWriter(givenClassExporter(null));
+        try (MockedStatic<PlantJSONWriter> pj = mockStatic(PlantJSONWriter.class)) {
             ProjectManager pm = givenProjectManager();
             IProject project = mock(IProject.class);
             when(pm.getProject()).thenReturn(project);

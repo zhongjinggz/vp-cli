@@ -15,10 +15,12 @@ import plugins.plantUML.export.DiagramExportPipeline;
 
 //DONE 改为依赖注入 1 - 注入 pipeline
 public class PlantUML implements VPPlugin, VPPluginCommandLineSupport {
-
+    ExporterFactory exporterFactory = new ExporterFactory();
+    WriterFactory writerFactory = new WriterFactory();
     ProjectManagerFactory projectManagerFactory = new ProjectManagerFactory();
 
-    DiagramExportPipeline diagramExportPipeline = new DiagramExportPipeline(projectManagerFactory);
+    DiagramExportPipeline diagramExportPipeline = new DiagramExportPipeline(projectManagerFactory
+        , exporterFactory, writerFactory);
     CLIController cliController = new CLIController(diagramExportPipeline);
 
     @Override

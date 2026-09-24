@@ -2,7 +2,9 @@ package plugins.plantUML.export;
 import com.vp.plugin.ProjectManager;
 import com.vp.plugin.diagram.IDiagramUIModel;
 
+import plugins.plantUML.ExporterFactory;
 import plugins.plantUML.ProjectManagerFactory;
+import plugins.plantUML.WriterFactory;
 import plugins.plantUML.export.writers.*;
 import plugins.plantUML.models.SemanticsData;
 
@@ -15,9 +17,13 @@ import java.util.List;
 public class DiagramExportPipeline {
 
 	ProjectManagerFactory projectManagerFactory;
+	ExporterFactory exporterFactory;
+	WriterFactory writerFactory;
 
-	public DiagramExportPipeline(ProjectManagerFactory projectManagerFactory) {
+	public DiagramExportPipeline(ProjectManagerFactory projectManagerFactory, ExporterFactory exporterFactory, WriterFactory writerFactory) {
 		this.projectManagerFactory = projectManagerFactory;
+		this.exporterFactory = exporterFactory;
+		this.writerFactory = writerFactory;
 	}
 
 	private final List<SemanticsData> projectSemanticsDatas = new ArrayList<SemanticsData>();
@@ -32,16 +38,10 @@ public class DiagramExportPipeline {
 		try {
 			switch (diagramType) {
 			case "ClassDiagram":
-				ClassDiagramExporter cde = new ClassDiagramExporter(diagram);
+				ClassDiagramExporter cde = exporterFactory.createClassDiagramExporter(diagram);
 				exporter = cde;
 				cde.extract();
-				ClassUMLWriter classWriter = new ClassUMLWriter(
-						cde.getExportedClasses(), 
-						cde.getRelationshipDatas(), 
-						cde.getExportedPackages(), 
-						cde.getExportedNary(), 
-						cde.getNotes()
-						);
+				ClassUMLWriter classWriter = writerFactory.createClassUMLWriter(cde);
 				classWriter.writeToFile(outputFile);
 
 				if (cde.getExportedSemantics() != null && !cde.getExportedSemantics().isEmpty()) {
@@ -52,17 +52,10 @@ public class DiagramExportPipeline {
 
 			case "ComponentDiagram":
 			case "DeploymentDiagram":
-				ComponentDeploymentDiagramExporter comde = new ComponentDeploymentDiagramExporter(diagram);
+				ComponentDeploymentDiagramExporter comde = exporterFactory.createComponentDeploymentDiagramExporter(diagram);
 				exporter = comde;
 				comde.extract();
-				ComponentDeploymentUMLWriter componentWriter = new ComponentDeploymentUMLWriter(
-						comde.getNotes(), 
-						comde.getExportedComponents(), 
-						comde.getExportedInterfaces(),
-						comde.getExportedArtifacts(),
-						comde.getExportedPackages(),
-						comde.getRelationshipDatas()
-						);
+				ComponentDeploymentUMLWriter componentWriter = writerFactory.createComponentDeploymentUMLWriter(comde);
 				componentWriter.writeToFile(outputFile);
 
 				if (comde.getExportedSemantics() != null && !comde.getExportedSemantics().isEmpty()) {
@@ -71,18 +64,10 @@ public class DiagramExportPipeline {
 				break;
 
 			case "InteractionDiagram":
-				SequenceDiagramExporter seqde = new SequenceDiagramExporter(diagram);
+				SequenceDiagramExporter seqde = exporterFactory.createSequenceDiagramExporter(diagram);
 				exporter = seqde;
 				seqde.extract();
-				SequenceUMLWriter sequenceWriter = new SequenceUMLWriter(
-						seqde.getNotes(),
-						seqde.getExportedInteractionActors(),
-						seqde.getExportedLifelines(),
-						seqde.getExportedMessages(),
-						seqde.getExportedFragments(),
-						seqde.getExportedRefs(),
-						seqde.getExportedAnchors()
-						);
+				SequenceUMLWriter sequenceWriter = writerFactory.createSequenceUMLWriter(seqde);
 				sequenceWriter.writeToFile(outputFile);
 
 				if (seqde.getExportedSemantics() != null && !seqde.getExportedSemantics().isEmpty()) {
@@ -92,16 +77,10 @@ public class DiagramExportPipeline {
 				break;
 
 			case "UseCaseDiagram":
-				UseCaseDiagramExporter ucde = new UseCaseDiagramExporter(diagram);
+				UseCaseDiagramExporter ucde = exporterFactory.createUseCaseDiagramExporter(diagram);
 				exporter = ucde;
 				ucde.extract();
-				UseCaseWriter useCaseWriter = new UseCaseWriter(
-						ucde.getExportedUseCases(), 
-						ucde.getExportedRelationships(),
-						ucde.getExportedPackages(),
-						ucde.getExportedActors(), 
-						ucde.getNotes()
-						);
+				UseCaseWriter useCaseWriter = writerFactory.createUseCaseWriter(ucde);
 				useCaseWriter.writeToFile(outputFile);
 				if (ucde.getExportedSemantics() != null && !ucde.getExportedSemantics().isEmpty()) {
 					projectSemanticsDatas.addAll(ucde.getExportedSemantics());
@@ -109,17 +88,10 @@ public class DiagramExportPipeline {
 
 				break;
 			case "StateDiagram":
-				StateDiagramExporter stde = new StateDiagramExporter(diagram);
+				StateDiagramExporter stde = exporterFactory.createStateDiagramExporter(diagram);
 				exporter = stde;
 				stde.extract();
-				StateUMLWriter stateUMLWriter = new StateUMLWriter(
-						stde.getNotes(),
-						stde.getStateDatas(),
-						stde.getTransitions(),
-						stde.getChoices(),
-						stde.getHistories(),
-						stde.getForkJoins()
-				);
+				StateUMLWriter stateUMLWriter = writerFactory.createStateUMLWriter(stde);
 				stateUMLWriter.writeToFile(outputFile);
 				if (stde.getExportedSemantics() != null && !stde.getExportedSemantics().isEmpty()) {
 
@@ -128,13 +100,10 @@ public class DiagramExportPipeline {
 
 				break;
 			case "ActivityDiagram":
-				ActivityDiagramExporter acde = new ActivityDiagramExporter(diagram);
+				ActivityDiagramExporter acde = exporterFactory.createActivityDiagramExporter(diagram);
 				exporter = acde;
 				acde.extract();
-				ActivityUMLWriter activityUMLWriter =  new ActivityUMLWriter(
-						acde.getNotes(),
-						acde.getRootNode()
-				);
+				ActivityUMLWriter activityUMLWriter = writerFactory.createActivityUMLWriter(acde);
 				activityUMLWriter.writeToFile(outputFile);
 				if (acde.getExportedSemantics() != null && !acde.getExportedSemantics().isEmpty()) {
 					projectSemanticsDatas.addAll(acde.getExportedSemantics());
