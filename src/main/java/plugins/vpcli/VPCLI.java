@@ -1,31 +1,36 @@
 package plugins.vpcli;
 
 import com.vp.plugin.*;
-import plugins.vpcli.actions.CLIController;
-import plugins.vpcli.export.DiagramExportPipeline;
+import plugins.vpcli.drivenadapter.FileFactory;
+import plugins.vpcli.drivenadapter.ProjectManagerFactory;
+import plugins.vpcli.drivingadapter.CLIController;
+import plugins.vpcli.application.DiagramExportPipeline;
+import plugins.vpcli.application.exporter.ExporterFactory;
+import plugins.vpcli.application.writers.WriterFactory;
 
 // DOING
-// - 修改主类名
-// - 清理 IDEA 警告
 // TODO
-// - 修改菜单位置和菜单名称
 // - 翻译和修改 README
 // - 统一处理错误
 // - 统一处理日志
-// - 整理成DDD架构
+// - 清理 IDEA 警告
 // DONE
+// - 清理 IDEA 警告 - part1
+// - 整理成DDD架构
+// - 修改菜单位置和菜单名称
+// - 修改主类名
 // - 改为依赖注入
 // - 修改包名
 
 public class VPCLI implements VPPlugin, VPPluginCommandLineSupport {
-    ExporterFactory exporterFactory = new ExporterFactory();
-    WriterFactory writerFactory = new WriterFactory();
-    ProjectManagerFactory projectManagerFactory = new ProjectManagerFactory();
-    FileFactory fileFactory = new FileFactory();
+    private final ExporterFactory exporterFactory = new ExporterFactory();
+    private final WriterFactory writerFactory = new WriterFactory();
+    private final ProjectManagerFactory projectManagerFactory = new ProjectManagerFactory();
+    private final FileFactory fileFactory = new FileFactory();
 
-    DiagramExportPipeline diagramExportPipeline = new DiagramExportPipeline(projectManagerFactory
+    private final DiagramExportPipeline diagramExportPipeline = new DiagramExportPipeline(projectManagerFactory
         , exporterFactory, writerFactory, fileFactory);
-    CLIController cliController = new CLIController(diagramExportPipeline);
+    private final CLIController cliController = new CLIController(diagramExportPipeline);
 
     @Override
     public void loaded(VPPluginInfo pluginInfo) {

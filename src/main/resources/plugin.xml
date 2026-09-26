@@ -18,7 +18,7 @@
 					ribbonPath="Help/Update">
 <!--				ribbonPath="Project/Export/XML">-->
 				<actionController
-						class="plugins.vpcli.actions.HelpController"/>
+						class="plugins.vpcli.drivingadapter.HelpController"/>
 			</action>
 		</actionSet>
 	</actionSets>
