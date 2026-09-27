@@ -9,6 +9,7 @@ import plugins.vpcli.application.exporter.ExporterFactory;
 import plugins.vpcli.application.writers.WriterFactory;
 
 // DOING
+// - 将命令行改为 vp_export
 // TODO
 // - 翻译和修改 README
 // - 统一处理错误

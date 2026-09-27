@@ -72,6 +72,7 @@ class CLIParams {
                 case VALUE_EXPORT:
                     if (list().isUnset()) {
                         // export 需要同时指定目标图表与输出路径
+                        // TODO 潜在Bug：为什么不设置 target 也没有报错？
                         if (target().isUnset() || target().isNonValue()
                             || path().isUnset() || path().isNonValue()) {
                             setErrorMessage("Error: Missing required arguments for export. Use -target and -path.");
