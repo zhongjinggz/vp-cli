@@ -4,117 +4,94 @@ import os
 import subprocess
 import sys
 
-'''
-'''
-
 VP_APP = "/Applications/Visual Paradigm.app/Contents/Resources/app"
 
+KEY_PROJECT = "-project"
+KEY_ACTION = "-action"
+KEY_TARGET = "-target"
+KEY_PATH = "-path"
+KEY_LIST = "-list"
 
-class ParamValue:
-    """封装单个参数值，提供流畅的条件判断 DSL。"""
+VALUE_IMPORT = "import"
+VALUE_EXPORT = "export"
+VALUE_ALL = "all"
 
-    def __init__(self, text):
-        self.text = text
+VALUE_UNSET = "unset"  # 命令行中根本没有该参数
+VALUE_SET = "set"  # 存在该独立参数
+VALUE_NON = "non_value"  # 该参数存在但缺少值
 
-    def is_unset(self):
-        return self.text == CLIParams.VALUE_UNSET
 
-    def is_non_value(self):
-        return self.text == CLIParams.VALUE_NON
+def is_key_value_param(key):
+    return key in [KEY_PROJECT
+        , KEY_ACTION
+        , KEY_TARGET
+        , KEY_PATH]
 
-    def is_set(self):
-        return self.text == CLIParams.VALUE_SET
 
-    def __str__(self):
-        return self.text
+def is_key_only_param(key):
+    return key == KEY_LIST
 
 
 class CLIParams:
-    KEY_ACTION = "-action"
-    KEY_TARGET = "-target"
-    KEY_PATH = "-path"
-    KEY_LIST = "-list"
-    KEY_PROJECT = "-project"
-
-    VALUE_IMPORT = "import"
-    VALUE_EXPORT = "export"
-    VALUE_ALL = "all"
-
-    VALUE_UNSET = "unset"    # 命令行中根本没有该参数
-    VALUE_SET = "set"        # 存在该独立参数
-    VALUE_NON = "non_value"  # 该参数存在但缺少值
 
     def __init__(self, args):
         # 复制入参，避免无意中修改
         self.args = list(args) if args else []
+        self.index = 0
 
-        # key/value 形式的参数
-        self.key_value_params = {
-            self.KEY_ACTION: self.VALUE_UNSET,
-            self.KEY_TARGET: self.VALUE_UNSET,
-            self.KEY_PATH: self.VALUE_UNSET,
-            self.KEY_PROJECT: self.VALUE_UNSET,
-        }
-        # 不带值形式的参数
-        self.key_only_params = {
-            self.KEY_LIST: self.VALUE_UNSET,
-        }
+        self.project = VALUE_UNSET
+        self.action = VALUE_UNSET
+        self.path = VALUE_UNSET
+        self.list = VALUE_UNSET
+        self.target = VALUE_ALL  # -target 的默认值是 all
 
         self.error_message = ""
 
     def parse(self):
-        self.acquire_params()
-
-    def acquire_params(self):
         if not self.args:
-            self.set_error(
-                "Usage: -project <vp_project> -action <import|export> -path <file_or_folder_path>")
-            return
+            raise RuntimeError("== Bug: no args! ==")
 
-        index = 0
-        while index < len(self.args):
-            key = self.args[index]
-
-            if key in self.key_value_params:
-                index = self._parse_value(index)
-            elif key in self.key_only_params:
-                self.key_only_params[key] = self.VALUE_SET
-                index += 1
-            else:
-                self.set_error("Unknown argument: " + key)
-                return
-
+        while self.index < len(self.args):
+            key, value = self._parse_value()
             if self.is_invalid():
-                return
+                break
 
-    def _parse_value(self, index):
-        key = self.args[index]
-        if index + 1 < len(self.args):
-            self.key_value_params[key] = self.args[index + 1]
-            return index + 2
+            # TODO 可以根据 KEY 名称推断属性名，从而更简练
+            if key == KEY_PROJECT:
+                self.project = value
+            elif key == KEY_ACTION:
+                self.action = value
+            elif key == KEY_TARGET:
+                self.target = value
+            elif key == KEY_PATH:
+                self.path = value
+            elif key == KEY_LIST:
+                self.list = value
+            else:
+                raise RuntimeError(
+                    "Bug: unknown argument {0} should have been handled in '_parse_value()': "
+                    .format(key))
+
+    def _parse_value(self):
+        key = self.args[self.index]
+        value = VALUE_UNSET
+        if is_key_value_param(key):
+            if self.index + 1 < len(self.args):
+                value = self.args[self.index + 1]
+                self.index += 1
+            else:
+                value = VALUE_NON
+                self._set_error("Error: Missing value for " + key)
+        elif is_key_only_param(key):
+            value = VALUE_SET
         else:
-            self.key_value_params[key] = self.VALUE_NON
-            self.set_error("Error: Missing value for " + key)
-            return index + 1
+            self._set_error("Unknown argument: " + key)
 
-    # ---- 访问器 ----
-    def action(self):
-        return ParamValue(self.key_value_params[self.KEY_ACTION])
+        self.index += 1
 
-    def target(self):
-        return ParamValue(self.key_value_params[self.KEY_TARGET])
+        return key, value
 
-    def path(self):
-        return ParamValue(self.key_value_params[self.KEY_PATH])
-
-    def project(self):
-        return ParamValue(self.key_value_params[self.KEY_PROJECT])
-
-    def list(self):
-        return ParamValue(self.key_only_params[self.KEY_LIST])
-
-    # ---- 错误处理 ----
-    def set_error(self, message):
+    def _set_error(self, message):
         self.error_message = message
 
     def is_invalid(self):
@@ -135,9 +112,8 @@ def main():
         print(params.error_message, file=sys.stderr)
         sys.exit(2)
 
-    project = os.path.realpath(params.project().text)
-    output_path = os.path.realpath(params.path().text)
-    target = params.target().text if not params.target().is_unset() else CLIParams.VALUE_ALL
+    project = os.path.realpath(params.project)
+    output_path = os.path.realpath(params.path)
 
     app_bin = os.path.join(VP_APP, "bin")
     os.chdir(app_bin)
@@ -153,11 +129,10 @@ def main():
         "-pluginid", "plugins.vpcli",
         "-project", project,
         "-pluginargs",
-        "-action", params.action().text,
+        "-action", params.action,
         "-path", output_path,
-        "-target", target,
+        "-target", params.target
     ]
-
     sys.exit(subprocess.call(cmd))
 
 
