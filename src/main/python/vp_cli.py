@@ -69,8 +69,10 @@ class CLIParams:
                 self.list = value
             else:
                 raise RuntimeError(
-                    "Bug: unknown argument {0} should have been handled in '_parse_value()': "
+                    "== Bug: unknown argument {0} should have been handled in '_parse_value()' == "
                     .format(key))
+
+        return self
 
     def _parse_value(self):
         key = self.args[self.index]
@@ -97,21 +99,17 @@ class CLIParams:
     def is_invalid(self):
         return bool(self.error_message)
 
-
-def parse_args():
-    """解析命令行参数并生成 CLIParams。"""
-    params = CLIParams(sys.argv[1:])
-    params.parse()
-    return params
-
-
 def main():
-    params = parse_args()
+    params = CLIParams(sys.argv[1:]).parse()
 
     if params.is_invalid():
         print(params.error_message, file=sys.stderr)
         sys.exit(2)
 
+    run_plugin(params)
+
+
+def run_plugin(params: CLIParams):
     project = os.path.realpath(params.project)
     output_path = os.path.realpath(params.path)
 
