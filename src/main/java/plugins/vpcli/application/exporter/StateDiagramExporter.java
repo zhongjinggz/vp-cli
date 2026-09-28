@@ -4,7 +4,11 @@ import com.vp.plugin.ApplicationManager;
 import com.vp.plugin.diagram.IDiagramElement;
 import com.vp.plugin.diagram.IDiagramUIModel;
 import com.vp.plugin.model.*;
-import plugins.vpcli.domain.*;
+import plugins.vpcli.domain.myuml.activity.ForkJoin;
+import plugins.vpcli.domain.myuml.common.RelationshipData;
+import plugins.vpcli.domain.myuml.mystatemachine.History;
+import plugins.vpcli.domain.myuml.mystatemachine.StateChoice;
+import plugins.vpcli.domain.myuml.mystatemachine.StateData;
 
 import java.util.ArrayList;
 import java.util.List;

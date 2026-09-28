@@ -13,11 +13,11 @@ import com.vp.plugin.model.INOTE;
 import com.vp.plugin.model.IReference;
 import com.vp.plugin.model.IStereotype;
 
-import plugins.vpcli.domain.BaseWithSemanticsData;
-import plugins.vpcli.domain.NoteData;
-import plugins.vpcli.domain.Reference;
-import plugins.vpcli.domain.SemanticsData;
-import plugins.vpcli.domain.SubDiagramData;
+import plugins.vpcli.domain.myuml.mystatemachine.BaseWithSemanticsData;
+import plugins.vpcli.domain.myuml.common.NoteData;
+import plugins.vpcli.domain.myuml.semantics.Reference;
+import plugins.vpcli.domain.myuml.semantics.SemanticsData;
+import plugins.vpcli.domain.myuml.diagram.SubDiagramData;
 
 public abstract class DiagramExporter {
 

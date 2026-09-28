@@ -8,8 +8,15 @@ import java.nio.file.Files;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import plugins.vpcli.domain.*;
-import plugins.vpcli.domain.ComponentData.PortData;
+import plugins.vpcli.domain.myuml.classifier.ComponentData;
+import plugins.vpcli.domain.myuml.classifier.ComponentData.PortData;
+import plugins.vpcli.domain.myuml.classifier.AttributeData;
+import plugins.vpcli.domain.myuml.classifier.ClassData;
+import plugins.vpcli.domain.myuml.classifier.OperationData;
+import plugins.vpcli.domain.myuml.common.NoteData;
+import plugins.vpcli.domain.myuml.common.PackageData;
+import plugins.vpcli.domain.myuml.common.RelationshipData;
+import plugins.vpcli.domain.myuml.deployment.ArtifactData;
 
 public class ComponentDeploymentUMLWriter extends PlantUMLWriter {
 

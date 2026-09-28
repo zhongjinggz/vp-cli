@@ -7,11 +7,11 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 
-import plugins.vpcli.domain.ActorData;
-import plugins.vpcli.domain.NoteData;
-import plugins.vpcli.domain.PackageData;
-import plugins.vpcli.domain.RelationshipData;
-import plugins.vpcli.domain.UseCaseData;
+import plugins.vpcli.domain.myuml.usecase.ActorData;
+import plugins.vpcli.domain.myuml.common.NoteData;
+import plugins.vpcli.domain.myuml.common.PackageData;
+import plugins.vpcli.domain.myuml.common.RelationshipData;
+import plugins.vpcli.domain.myuml.usecase.UseCaseData;
 
 public class UseCaseWriter extends PlantUMLWriter {
     

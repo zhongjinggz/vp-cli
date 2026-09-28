@@ -11,11 +11,11 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 
-import plugins.vpcli.domain.ClassData;
-import plugins.vpcli.domain.NaryData;
-import plugins.vpcli.domain.NoteData;
-import plugins.vpcli.domain.PackageData;
-import plugins.vpcli.domain.RelationshipData;
+import plugins.vpcli.domain.myuml.classifier.ClassData;
+import plugins.vpcli.domain.myuml.classifier.NaryData;
+import plugins.vpcli.domain.myuml.common.NoteData;
+import plugins.vpcli.domain.myuml.common.PackageData;
+import plugins.vpcli.domain.myuml.common.RelationshipData;
 
 public class ClassUMLWriter extends PlantUMLWriter {
     

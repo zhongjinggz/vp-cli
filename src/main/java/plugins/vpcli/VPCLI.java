@@ -9,9 +9,9 @@ import plugins.vpcli.application.exporter.ExporterFactory;
 import plugins.vpcli.application.writers.WriterFactory;
 
 // DOING
-// - 将命令行改为 vp_export
-// TODO
 // - export：按照模型包结构创建目录结构
+
+// TODO
 // - export：将图表放入目录结构
 // - export: 重构生成图表的程序
 // - export：将图表放入 markdown
@@ -24,6 +24,7 @@ import plugins.vpcli.application.writers.WriterFactory;
 // - 清理 IDEA 警告
 // - 考虑将 python 改为 java ， 改为多模块项目
 // DONE
+// - 将命令行改为 vp_export
 // - 清理 IDEA 警告 - part1
 // - 整理成DDD架构
 // - 修改菜单位置和菜单名称

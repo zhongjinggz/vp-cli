@@ -12,7 +12,12 @@ import com.vp.plugin.diagram.IDiagramElement;
 import com.vp.plugin.diagram.IDiagramUIModel;
 import com.vp.plugin.model.*;
 
-import plugins.vpcli.domain.*;
+import plugins.vpcli.domain.myuml.common.RelationshipData;
+import plugins.vpcli.domain.myuml.interaction.CombinedFragment;
+import plugins.vpcli.domain.myuml.interaction.InteractionRef;
+import plugins.vpcli.domain.myuml.interaction.LifelineData;
+import plugins.vpcli.domain.myuml.interaction.MessageData;
+import plugins.vpcli.domain.myuml.usecase.ActorData;
 
 public class SequenceDiagramExporter extends DiagramExporter {
 

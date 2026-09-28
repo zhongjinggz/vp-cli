@@ -56,6 +56,8 @@ public class CLIController {
 
         System.out.println("Exporting diagram(s): " + target + " to path: " + path);
 
+        this.pipeline.tree(exportLocation);
+
         if (target.equalsIgnoreCase(CLIParams.VALUE_ALL)) {
             this.pipeline.exportAllDiagrams(exportLocation);
         } else {

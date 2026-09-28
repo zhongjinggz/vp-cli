@@ -5,9 +5,9 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import plugins.vpcli.domain.AttributeData;
-import plugins.vpcli.domain.NoteData;
-import plugins.vpcli.domain.OperationData;
+import plugins.vpcli.domain.myuml.classifier.AttributeData;
+import plugins.vpcli.domain.myuml.common.NoteData;
+import plugins.vpcli.domain.myuml.classifier.OperationData;
 
 public abstract class PlantUMLWriter {
     

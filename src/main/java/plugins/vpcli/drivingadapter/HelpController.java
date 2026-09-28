@@ -13,7 +13,7 @@ public class HelpController implements VPActionController {
             ApplicationManager.instance()
                 .getViewManager()
                 .getRootFrame()
-            , "To DDD architecture 17:47"
+            , "打印包结构2 19:48"
         );
     }
 

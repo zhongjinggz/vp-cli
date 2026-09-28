@@ -12,7 +12,13 @@ import java.util.stream.Collectors;
 
 import com.vp.plugin.ApplicationManager;
 
-import plugins.vpcli.domain.*;
+import plugins.vpcli.domain.myuml.common.NoteData;
+import plugins.vpcli.domain.myuml.common.RelationshipData;
+import plugins.vpcli.domain.myuml.interaction.CombinedFragment;
+import plugins.vpcli.domain.myuml.interaction.InteractionRef;
+import plugins.vpcli.domain.myuml.interaction.LifelineData;
+import plugins.vpcli.domain.myuml.interaction.MessageData;
+import plugins.vpcli.domain.myuml.usecase.ActorData;
 
 public class SequenceUMLWriter extends PlantUMLWriter {
 
@@ -26,7 +32,7 @@ public class SequenceUMLWriter extends PlantUMLWriter {
 	private final Set<String> activatedLifelines = new HashSet<>();
 
 	public SequenceUMLWriter(List<NoteData> notes, List<ActorData> actors, List<LifelineData> lifelines,
-			List<MessageData> messages, List<CombinedFragment> fragments, List<InteractionRef> refs, List<RelationshipData> anchors) {
+							 List<MessageData> messages, List<CombinedFragment> fragments, List<InteractionRef> refs, List<RelationshipData> anchors) {
 		super(notes);
 		this.actors = actors;
 		this.lifelines = lifelines;

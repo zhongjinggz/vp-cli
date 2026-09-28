@@ -8,8 +8,11 @@ import com.vp.plugin.diagram.IDiagramElement;
 import com.vp.plugin.diagram.IDiagramUIModel;
 import com.vp.plugin.model.*;
 
-import plugins.vpcli.domain.*;
-import plugins.vpcli.domain.ComponentData.PortData;
+import plugins.vpcli.domain.myuml.classifier.*;
+import plugins.vpcli.domain.myuml.classifier.ComponentData.PortData;
+import plugins.vpcli.domain.myuml.common.PackageData;
+import plugins.vpcli.domain.myuml.common.RelationshipData;
+import plugins.vpcli.domain.myuml.deployment.ArtifactData;
 
 import static com.vp.plugin.diagram.IShapeTypeConstants.*;
 

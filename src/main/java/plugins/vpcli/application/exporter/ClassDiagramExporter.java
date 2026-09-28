@@ -8,15 +8,14 @@ import com.vp.plugin.diagram.IDiagramUIModel;
 import com.vp.plugin.diagram.connector.IContainmentUIModel;
 import com.vp.plugin.model.*;
 
-import plugins.vpcli.domain.AssociationData;
-import plugins.vpcli.domain.AttributeData;
-import plugins.vpcli.domain.ClassData;
-import plugins.vpcli.domain.NaryData;
-import plugins.vpcli.domain.NoteData;
-import plugins.vpcli.domain.OperationData;
-import plugins.vpcli.domain.OperationData.Parameter;
-import plugins.vpcli.domain.PackageData;
-import plugins.vpcli.domain.RelationshipData;
+import plugins.vpcli.domain.myuml.classifier.AssociationData;
+import plugins.vpcli.domain.myuml.classifier.AttributeData;
+import plugins.vpcli.domain.myuml.classifier.ClassData;
+import plugins.vpcli.domain.myuml.classifier.NaryData;
+import plugins.vpcli.domain.myuml.classifier.OperationData;
+import plugins.vpcli.domain.myuml.classifier.OperationData.Parameter;
+import plugins.vpcli.domain.myuml.common.PackageData;
+import plugins.vpcli.domain.myuml.common.RelationshipData;
 
 import static com.vp.plugin.diagram.IShapeTypeConstants.SHAPE_TYPE_PACKAGE;
 

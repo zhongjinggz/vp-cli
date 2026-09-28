@@ -1,6 +1,10 @@
 package plugins.vpcli.application.writers;
 
-import plugins.vpcli.domain.*;
+import plugins.vpcli.domain.myuml.activity.ActionData;
+import plugins.vpcli.domain.myuml.activity.FlowNode;
+import plugins.vpcli.domain.myuml.activity.JoinFlowNode;
+import plugins.vpcli.domain.myuml.activity.SplitFlowNode;
+import plugins.vpcli.domain.myuml.common.NoteData;
 
 import java.io.File;
 import java.io.IOException;
