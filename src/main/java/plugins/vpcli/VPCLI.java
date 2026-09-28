@@ -11,10 +11,18 @@ import plugins.vpcli.application.writers.WriterFactory;
 // DOING
 // - 将命令行改为 vp_export
 // TODO
+// - export：按照模型包结构创建目录结构
+// - export：将图表放入目录结构
+// - export: 重构生成图表的程序
+// - export：将图表放入 markdown
+// - export: 图表 markdown 中放入交叉引用
+// - export: 根据模型内容生成 markdown
+// - export：链接交叉引用
 // - 翻译和修改 README
 // - 统一处理错误
 // - 统一处理日志
 // - 清理 IDEA 警告
+// - 考虑将 python 改为 java ， 改为多模块项目
 // DONE
 // - 清理 IDEA 警告 - part1
 // - 整理成DDD架构
