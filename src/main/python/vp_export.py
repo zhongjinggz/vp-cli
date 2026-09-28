@@ -1,9 +1,7 @@
 #!/usr/bin/env python3
 
 import sys
-
-from vp_cli import CLIParams, run_plugin, VALUE_EXPORT
-
+from vp_cli_common import CLIParams, run_vp_plugin, VALUE_EXPORT
 
 def main():
     params = CLIParams(sys.argv[1:]).parse()
@@ -14,8 +12,7 @@ def main():
 
     params.action = VALUE_EXPORT
 
-    run_plugin(params)
-
+    run_vp_plugin(params)
 
 if __name__ == "__main__":
     main()

@@ -99,17 +99,8 @@ class CLIParams:
     def is_invalid(self):
         return bool(self.error_message)
 
-def main():
-    params = CLIParams(sys.argv[1:]).parse()
 
-    if params.is_invalid():
-        print(params.error_message, file=sys.stderr)
-        sys.exit(2)
-
-    run_plugin(params)
-
-
-def run_plugin(params: CLIParams):
+def run_vp_plugin(params: CLIParams):
     project = os.path.realpath(params.project)
     output_path = os.path.realpath(params.path)
 
@@ -132,7 +123,3 @@ def run_plugin(params: CLIParams):
         "-target", params.target
     ]
     sys.exit(subprocess.call(cmd))
-
-
-if __name__ == "__main__":
-    main()
