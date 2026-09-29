@@ -77,14 +77,6 @@ public class UPackage extends BaseWithSemanticsData {
 		return this.isRectangle;
 	}
 
-	public String getUid() {
-		return Uid;
-	}
-
-	public void setUid(String uid) {
-		Uid = uid;
-	}
-	
 	public List<ComponentData> getComponents() {
 		return components;
 	}
