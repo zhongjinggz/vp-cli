@@ -2,21 +2,21 @@ package plugins.vpcli.application;
 
 import com.vp.plugin.model.IModelElement;
 import com.vp.plugin.model.factory.IModelElementFactory;
-import plugins.vpcli.drivenadapter.ProjectManagerFactory;
+import plugins.vpcli.drivenadapter.ProjectRepository;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class TreeService {
 
-	private final ProjectManagerFactory projectManagerFactory;
+	private final ProjectRepository projectRepository;
 
-	public TreeService(ProjectManagerFactory projectManagerFactory) {
-		this.projectManagerFactory = projectManagerFactory;
+	public TreeService(ProjectRepository projectRepository) {
+		this.projectRepository = projectRepository;
 	}
 
 	public void tree() {
-		IModelElement[] topLevelElements = projectManagerFactory.getProjectManager().getProject().toModelElementArray();
+        var topLevelElements = projectRepository.getProject().toModelElementArray();
 		List<IModelElement> roots = filterNamespaceContainers(topLevelElements);
 		for (IModelElement element : roots) {
 			System.out.println(element.getName());

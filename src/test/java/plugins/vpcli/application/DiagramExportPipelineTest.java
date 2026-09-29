@@ -9,7 +9,6 @@ import static org.mockito.Mockito.mockStatic;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import com.vp.plugin.ProjectManager;
 import com.vp.plugin.diagram.IDiagramUIModel;
 import com.vp.plugin.model.IProject;
 
@@ -29,7 +28,7 @@ import org.junit.jupiter.api.function.Executable;
 import org.mockito.MockedStatic;
 import plugins.vpcli.application.exporter.ExporterFactory;
 import plugins.vpcli.drivenadapter.FileFactory;
-import plugins.vpcli.drivenadapter.ProjectManagerFactory;
+import plugins.vpcli.drivenadapter.ProjectRepository;
 import plugins.vpcli.application.writers.WriterFactory;
 import plugins.vpcli.application.exporter.*;
 import plugins.vpcli.application.writers.ActivityUMLWriter;
@@ -47,7 +46,7 @@ public class DiagramExportPipelineTest {
     @TempDir
     Path tempDir;
 
-    private final ProjectManagerFactory projectManagerFactory = mock(ProjectManagerFactory.class);
+    private final ProjectRepository projectRepository = mock(ProjectRepository.class);
     private final ExporterFactory exporterFactory = mock(ExporterFactory.class);
     private final WriterFactory writerFactory = mock(WriterFactory.class);
     private final FileFactory fileFactory = mock(FileFactory.class);
@@ -59,13 +58,13 @@ public class DiagramExportPipelineTest {
     }
 
     private DiagramExportPipeline newPipeline() {
-        return new DiagramExportPipeline(projectManagerFactory, exporterFactory, writerFactory, fileFactory);
+        return new DiagramExportPipeline(projectRepository, exporterFactory, writerFactory, fileFactory);
     }
 
-    private ProjectManager givenProjectManager() {
-        ProjectManager pm = mock(ProjectManager.class);
-        when(projectManagerFactory.getProjectManager()).thenReturn(pm);
-        return pm;
+    private IProject givenProject() {
+        IProject project = mock(IProject.class);
+        when(projectRepository.getProject()).thenReturn(project);
+        return project;
     }
 
     private List<SemanticsData> nonEmptySemantics() {
@@ -364,12 +363,10 @@ public class DiagramExportPipelineTest {
         when(exporterFactory.createSequenceDiagramExporter(any())).thenReturn(seqde);
         when(writerFactory.createSequenceUMLWriter(seqde)).thenReturn(mock(SequenceUMLWriter.class));
         try (MockedStatic<PlantJSONWriter> pj = mockStatic(PlantJSONWriter.class)) {
-            ProjectManager pm = givenProjectManager();
-            IProject project = mock(IProject.class);
-            when(pm.getProject()).thenReturn(project);
+            IProject project = givenProject();
             when(project.toDiagramArray()).thenReturn(new IDiagramUIModel[]{clazz, seq});
             newPipeline().exportAllDiagrams(tempDir.toFile());
-            verify(pm).getProject();
+            verify(projectRepository).getProject();
         }
     }
 
@@ -378,9 +375,7 @@ public class DiagramExportPipelineTest {
         IDiagramUIModel target = diagram("ClassDiagram", "T");
         givenClassWriter(givenClassExporter(null));
         try (MockedStatic<PlantJSONWriter> pj = mockStatic(PlantJSONWriter.class)) {
-            ProjectManager pm = givenProjectManager();
-            IProject project = mock(IProject.class);
-            when(pm.getProject()).thenReturn(project);
+            IProject project = givenProject();
             when(project.getDiagramById("X")).thenReturn(target);
             newPipeline().exportSpecificDiagram("X", tempDir.toFile());
             verify(project).getDiagramById("X");
@@ -393,9 +388,7 @@ public class DiagramExportPipelineTest {
         IDiagramUIModel d2 = diagram("InteractionDiagram", "Seq1");
         when(d1.getId()).thenReturn("id1");
         when(d2.getId()).thenReturn("id2");
-        ProjectManager pm = givenProjectManager();
-        IProject project = mock(IProject.class);
-        when(pm.getProject()).thenReturn(project);
+        IProject project = givenProject();
         when(project.toDiagramArray()).thenReturn(new IDiagramUIModel[]{d1, d2});
         String output = captureOut(() -> newPipeline().listDiagrams());
         assertTrue(output.contains("Class1 | id: id1"));
@@ -405,9 +398,7 @@ public class DiagramExportPipelineTest {
 
     @Test
     void listDiagrams_emptyProject_printsNothing() throws Throwable {
-        ProjectManager pm = givenProjectManager();
-        IProject project = mock(IProject.class);
-        when(pm.getProject()).thenReturn(project);
+        IProject project = givenProject();
         when(project.toDiagramArray()).thenReturn(new IDiagramUIModel[0]);
         String output = captureOut(() -> newPipeline().listDiagrams());
         assertTrue(output.isEmpty());

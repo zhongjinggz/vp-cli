@@ -2,7 +2,7 @@ package plugins.vpcli;
 
 import com.vp.plugin.*;
 import plugins.vpcli.drivenadapter.FileFactory;
-import plugins.vpcli.drivenadapter.ProjectManagerFactory;
+import plugins.vpcli.drivenadapter.ProjectRepository;
 import plugins.vpcli.drivingadapter.CLIController;
 import plugins.vpcli.application.DiagramExportPipeline;
 import plugins.vpcli.application.TreeService;
@@ -14,6 +14,8 @@ import plugins.vpcli.application.writers.WriterFactory;
 // - export：按照模型包结构创建目录结构
 
 // TODO
+// - tree: 拆分模型和适配器
+// - tree: 补测试
 // - export：将图表放入目录结构
 // - export: 重构生成图表的程序
 // - export：将图表放入 markdown
@@ -37,12 +39,12 @@ import plugins.vpcli.application.writers.WriterFactory;
 public class VPCLI implements VPPlugin, VPPluginCommandLineSupport {
     private final ExporterFactory exporterFactory = new ExporterFactory();
     private final WriterFactory writerFactory = new WriterFactory();
-    private final ProjectManagerFactory projectManagerFactory = new ProjectManagerFactory();
+    private final ProjectRepository projectRepository = new ProjectRepository();
     private final FileFactory fileFactory = new FileFactory();
 
-    private final DiagramExportPipeline diagramExportPipeline = new DiagramExportPipeline(projectManagerFactory
+    private final DiagramExportPipeline diagramExportPipeline = new DiagramExportPipeline(projectRepository
         , exporterFactory, writerFactory, fileFactory);
-    private final TreeService treeService = new TreeService(projectManagerFactory);
+    private final TreeService treeService = new TreeService(projectRepository);
     private final CLIController cliController = new CLIController(diagramExportPipeline, treeService);
 
     @Override

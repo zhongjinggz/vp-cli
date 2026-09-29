@@ -4,7 +4,7 @@ import com.vp.plugin.diagram.IDiagramUIModel;
 
 import plugins.vpcli.application.exporter.ExporterFactory;
 import plugins.vpcli.drivenadapter.FileFactory;
-import plugins.vpcli.drivenadapter.ProjectManagerFactory;
+import plugins.vpcli.drivenadapter.ProjectRepository;
 import plugins.vpcli.application.writers.WriterFactory;
 import plugins.vpcli.application.exporter.*;
 import plugins.vpcli.application.writers.*;
@@ -19,13 +19,13 @@ import java.util.List;
 
 public class DiagramExportPipeline {
 
-	private final ProjectManagerFactory projectManagerFactory;
+	private final ProjectRepository projectRepository;
 	private final ExporterFactory exporterFactory;
 	private final WriterFactory writerFactory;
 	private final FileFactory fileFactory;
 
-	public DiagramExportPipeline(ProjectManagerFactory projectManagerFactory, ExporterFactory exporterFactory, WriterFactory writerFactory, FileFactory fileFactory) {
-		this.projectManagerFactory = projectManagerFactory;
+	public DiagramExportPipeline(ProjectRepository projectRepository, ExporterFactory exporterFactory, WriterFactory writerFactory, FileFactory fileFactory) {
+		this.projectRepository = projectRepository;
 		this.exporterFactory = exporterFactory;
 		this.writerFactory = writerFactory;
 		this.fileFactory = fileFactory;
@@ -160,20 +160,17 @@ public class DiagramExportPipeline {
 	}
 
 	public void exportAllDiagrams(File exportLocation) {
-		ProjectManager projectManager = projectManagerFactory.getProjectManager();
-		IDiagramUIModel[] allDiagrams = projectManager.getProject().toDiagramArray();
+		IDiagramUIModel[] allDiagrams = projectRepository.getProject().toDiagramArray();
 		this.exportDiagramList(Arrays.asList(allDiagrams), exportLocation);
 	}
 
 	public void exportSpecificDiagram(String target, File exportLocation) throws IOException {
-		ProjectManager projectManager = projectManagerFactory.getProjectManager();
-		IDiagramUIModel targetDiagram = projectManager.getProject().getDiagramById(target);
+		IDiagramUIModel targetDiagram = projectRepository.getProject().getDiagramById(target);
 		this.export(targetDiagram, exportLocation);
 	}
 
     public void listDiagrams() {
-		ProjectManager projectManager = projectManagerFactory.getProjectManager();
-		IDiagramUIModel[] allDiagrams = projectManager.getProject().toDiagramArray();
+		IDiagramUIModel[] allDiagrams = projectRepository.getProject().toDiagramArray();
         for (IDiagramUIModel diagram : allDiagrams) {
             System.out.println(diagram.getName() + " | id: " + diagram.getId());
         }
