@@ -7,20 +7,20 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 
-import plugins.vpcli.domain.myuml.usecase.ActorData;
-import plugins.vpcli.domain.myuml.common.NoteData;
-import plugins.vpcli.domain.myuml.common.PackageData;
-import plugins.vpcli.domain.myuml.common.RelationshipData;
-import plugins.vpcli.domain.myuml.usecase.UseCaseData;
+import plugins.vpcli.domain.myuml.uusecase.ActorData;
+import plugins.vpcli.domain.myuml.ucommon.NoteData;
+import plugins.vpcli.domain.myuml.upackage.UPackage;
+import plugins.vpcli.domain.myuml.ucommon.RelationshipData;
+import plugins.vpcli.domain.myuml.uusecase.UseCaseData;
 
 public class UseCaseWriter extends PlantUMLWriter {
     
-	private final List<PackageData> packages;
+	private final List<UPackage> packages;
     private final List<ActorData> actors;
     private final List<RelationshipData> relationships;
     private final List<UseCaseData> useCases;
 
-    public UseCaseWriter(List<UseCaseData> useCases, List<RelationshipData> relationships, List<PackageData> packages, List<ActorData> actors, List<NoteData> notes) {
+    public UseCaseWriter(List<UseCaseData> useCases, List<RelationshipData> relationships, List<UPackage> packages, List<ActorData> actors, List<NoteData> notes) {
     	super(notes);
     	this.packages = packages;
     	this.useCases = useCases;
@@ -31,9 +31,9 @@ public class UseCaseWriter extends PlantUMLWriter {
     public void writeToFile(File file) throws IOException {
         StringBuilder plantUMLContent = new StringBuilder("@startuml\n");
         
-        for (PackageData packageData : packages) {
-        	if(!packageData.isSubpackage())
-        		plantUMLContent.append(writePackage(packageData, ""));
+        for (UPackage uPackage : packages) {
+        	if(!uPackage.isSubpackage())
+        		plantUMLContent.append(writePackage(uPackage, ""));
         }
 
         for (ActorData actorData : actors) {
@@ -60,20 +60,20 @@ public class UseCaseWriter extends PlantUMLWriter {
     
     
 
-	private String writePackage(PackageData packageData, String indent) {
+	private String writePackage(UPackage uPackage, String indent) {
     	StringBuilder packageString = new StringBuilder();
-    	String name = formatName(packageData.getName());
-    	String definition = packageData.isRectangle() ? "rectangle " : "package " ;
+    	String name = formatName(uPackage.getName());
+    	String definition = uPackage.isRectangle() ? "rectangle " : "package " ;
     	packageString.append(indent).append(definition).append(name).append(" {\n");
     	
-    	for (ActorData actorData : packageData.getActors()) {
+    	for (ActorData actorData : uPackage.getActors()) {
     		packageString.append(writeActor(actorData, indent + "\t"));
     	}
-    	for (UseCaseData useCaseData : packageData.getUseCases()) {
+    	for (UseCaseData useCaseData : uPackage.getUseCases()) {
     		packageString.append(writeUseCase(useCaseData, indent + "\t"));
     	}
     	
-    	for (PackageData subPackage : packageData.getSubPackages()) {
+    	for (UPackage subPackage : uPackage.getSubPackages()) {
     		packageString.append(writePackage(subPackage, indent + "\t"));
     		
     	}

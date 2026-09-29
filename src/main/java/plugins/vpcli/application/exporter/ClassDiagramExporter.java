@@ -8,14 +8,14 @@ import com.vp.plugin.diagram.IDiagramUIModel;
 import com.vp.plugin.diagram.connector.IContainmentUIModel;
 import com.vp.plugin.model.*;
 
-import plugins.vpcli.domain.myuml.classifier.AssociationData;
-import plugins.vpcli.domain.myuml.classifier.AttributeData;
-import plugins.vpcli.domain.myuml.classifier.ClassData;
-import plugins.vpcli.domain.myuml.classifier.NaryData;
-import plugins.vpcli.domain.myuml.classifier.OperationData;
-import plugins.vpcli.domain.myuml.classifier.OperationData.Parameter;
-import plugins.vpcli.domain.myuml.common.PackageData;
-import plugins.vpcli.domain.myuml.common.RelationshipData;
+import plugins.vpcli.domain.myuml.uclassifier.AssociationData;
+import plugins.vpcli.domain.myuml.uclassifier.AttributeData;
+import plugins.vpcli.domain.myuml.uclassifier.ClassData;
+import plugins.vpcli.domain.myuml.uclassifier.NaryData;
+import plugins.vpcli.domain.myuml.uclassifier.OperationData;
+import plugins.vpcli.domain.myuml.uclassifier.OperationData.Parameter;
+import plugins.vpcli.domain.myuml.upackage.UPackage;
+import plugins.vpcli.domain.myuml.ucommon.RelationshipData;
 
 import static com.vp.plugin.diagram.IShapeTypeConstants.SHAPE_TYPE_PACKAGE;
 
@@ -25,7 +25,7 @@ public class ClassDiagramExporter extends DiagramExporter {
 
 	private final List<ClassData> exportedClasses = new ArrayList<>();
 	private final List<RelationshipData> relationshipDatas = new ArrayList<>();
-	private final List<PackageData> exportedPackages = new ArrayList<>();
+	private final List<UPackage> exportedPackages = new ArrayList<>();
 	private final List<NaryData> exportedNary = new ArrayList<>();
 
 
@@ -102,7 +102,7 @@ public class ClassDiagramExporter extends DiagramExporter {
 
 
 
-	private void extractClass(IClass classModel, PackageData packageData) {
+	private void extractClass(IClass classModel, UPackage uPackage) {
 		boolean isInPackage = !isRootLevelInDiagram(classModel);
 		ClassData classData = new ClassData(classModel.getName(), classModel.isAbstract(), classModel.getVisibility(),
 				isInPackage);
@@ -113,11 +113,11 @@ public class ClassDiagramExporter extends DiagramExporter {
 		
 		addSemanticsIfExist(classModel, classData);
 		exportedClasses.add(classData);
-		if (packageData != null)
-			packageData.getClasses().add(classData);
+		if (uPackage != null)
+			uPackage.getClasses().add(classData);
 	}
 
-	private void extractNary(INARY naryModel, PackageData packageData) {
+	private void extractNary(INARY naryModel, UPackage uPackage) {
 		boolean isInPackage = !isRootLevelInDiagram(naryModel);
 		String name = naryModel.getName();
 		String id = naryModel.getId();
@@ -125,8 +125,8 @@ public class ClassDiagramExporter extends DiagramExporter {
 		naryData.setDescription(naryModel.getDescription());
 		addSemanticsIfExist(naryModel, naryData);
 
-		if (packageData != null)
-			packageData.getNaries().add(naryData);
+		if (uPackage != null)
+			uPackage.getNaries().add(naryData);
 		else exportedNary.add(naryData); // I changed if bug
 
 		allExportedNary.add(naryData); // Naries are to be reversed by id so whether in package or not, need to add so that relationships aren't pointing to null.
@@ -222,40 +222,40 @@ public class ClassDiagramExporter extends DiagramExporter {
 	private void extractPackage(IPackage packageModel) {
 
 		if (isRootLevelInDiagram(packageModel)) {
-			PackageData packageData = new PackageData(packageModel.getName(), null, null, null, false, false);
-			packageData.setDescription(packageModel.getDescription());
+			UPackage uPackage = new UPackage(packageModel.getName(), null, null, null, false, false);
+			uPackage.setDescription(packageModel.getDescription());
 			IModelElement[] childElements = packageModel.toChildArray();
 			for (IModelElement childElement : childElements) {
 				if (childElement instanceof IClass) {
-					extractClass((IClass) childElement, packageData);
+					extractClass((IClass) childElement, uPackage);
 				} else if (childElement instanceof INARY) {
-					extractNary((INARY) childElement, packageData);
+					extractNary((INARY) childElement, uPackage);
 				} else if (childElement instanceof IPackage) {
-                    extractPackagedPackage((IPackage) childElement, packageData);
+                    extractPackagedPackage((IPackage) childElement, uPackage);
 				}
 			}
-			addSemanticsIfExist(packageModel, packageData);
-			exportedPackages.add(packageData);
+			addSemanticsIfExist(packageModel, uPackage);
+			exportedPackages.add(uPackage);
 		}
 	}
 
-	private void extractPackagedPackage(IPackage packageModel, PackageData parent) {
+	private void extractPackagedPackage(IPackage packageModel, UPackage parent) {
 
-		PackageData packageData = new PackageData(packageModel.getName(), null, null, null, true, false);
-		packageData.setDescription(packageModel.getDescription());
+		UPackage uPackage = new UPackage(packageModel.getName(), null, null, null, true, false);
+		uPackage.setDescription(packageModel.getDescription());
 		IModelElement[] childElements = packageModel.toChildArray();
 		for (IModelElement childElement : childElements) {
 			if (childElement instanceof IClass) {
-				extractClass((IClass) childElement, packageData);
+				extractClass((IClass) childElement, uPackage);
 			} else if (childElement instanceof INARY) {
-				extractNary((INARY) childElement, packageData);
+				extractNary((INARY) childElement, uPackage);
 			} else if (childElement instanceof IPackage) {
-				extractPackagedPackage((IPackage) childElement, packageData);
+				extractPackagedPackage((IPackage) childElement, uPackage);
 			}
 		}
-		addSemanticsIfExist(packageModel, packageData);
-		parent.getSubPackages().add(packageData);
-		exportedPackages.add(packageData);
+		addSemanticsIfExist(packageModel, uPackage);
+		parent.getSubPackages().add(uPackage);
+		exportedPackages.add(uPackage);
 	}
 
 	private void extractAttributes(IClass classModel, ClassData classData) {
@@ -303,7 +303,7 @@ public class ClassDiagramExporter extends DiagramExporter {
 		return relationshipDatas;
 	}
 
-	public List<PackageData> getExportedPackages() {
+	public List<UPackage> getExportedPackages() {
 		return exportedPackages;
 	}
 

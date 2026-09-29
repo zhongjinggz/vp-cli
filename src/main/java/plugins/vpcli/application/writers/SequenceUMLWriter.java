@@ -12,13 +12,13 @@ import java.util.stream.Collectors;
 
 import com.vp.plugin.ApplicationManager;
 
-import plugins.vpcli.domain.myuml.common.NoteData;
-import plugins.vpcli.domain.myuml.common.RelationshipData;
-import plugins.vpcli.domain.myuml.interaction.CombinedFragment;
-import plugins.vpcli.domain.myuml.interaction.InteractionRef;
-import plugins.vpcli.domain.myuml.interaction.LifelineData;
-import plugins.vpcli.domain.myuml.interaction.MessageData;
-import plugins.vpcli.domain.myuml.usecase.ActorData;
+import plugins.vpcli.domain.myuml.ucommon.NoteData;
+import plugins.vpcli.domain.myuml.ucommon.RelationshipData;
+import plugins.vpcli.domain.myuml.uinteraction.CombinedFragment;
+import plugins.vpcli.domain.myuml.uinteraction.InteractionRef;
+import plugins.vpcli.domain.myuml.uinteraction.LifelineData;
+import plugins.vpcli.domain.myuml.uinteraction.MessageData;
+import plugins.vpcli.domain.myuml.uusecase.ActorData;
 
 public class SequenceUMLWriter extends PlantUMLWriter {
 

@@ -11,20 +11,20 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 
-import plugins.vpcli.domain.myuml.classifier.ClassData;
-import plugins.vpcli.domain.myuml.classifier.NaryData;
-import plugins.vpcli.domain.myuml.common.NoteData;
-import plugins.vpcli.domain.myuml.common.PackageData;
-import plugins.vpcli.domain.myuml.common.RelationshipData;
+import plugins.vpcli.domain.myuml.uclassifier.ClassData;
+import plugins.vpcli.domain.myuml.uclassifier.NaryData;
+import plugins.vpcli.domain.myuml.ucommon.NoteData;
+import plugins.vpcli.domain.myuml.upackage.UPackage;
+import plugins.vpcli.domain.myuml.ucommon.RelationshipData;
 
 public class ClassUMLWriter extends PlantUMLWriter {
     
-	private final List<PackageData> packages;
+	private final List<UPackage> packages;
     private final List<ClassData> classes;
     private final List<RelationshipData> relationships;
     private List<NaryData> naries;
 
-    public ClassUMLWriter(List<ClassData> classes, List<RelationshipData> relationships, List<PackageData> packages, List<NaryData> naries, List<NoteData> notes) {
+    public ClassUMLWriter(List<ClassData> classes, List<RelationshipData> relationships, List<UPackage> packages, List<NaryData> naries, List<NoteData> notes) {
     	super(notes);
     	this.packages = packages;
         this.classes = classes;
@@ -35,9 +35,9 @@ public class ClassUMLWriter extends PlantUMLWriter {
     public void writeToFile(File file) throws IOException {
         StringBuilder plantUMLContent = new StringBuilder("@startuml\n");
         
-        for (PackageData packageData : packages) {
-        	if(!packageData.isSubpackage())
-        		plantUMLContent.append(writePackage(packageData, ""));
+        for (UPackage uPackage : packages) {
+        	if(!uPackage.isSubpackage())
+        		plantUMLContent.append(writePackage(uPackage, ""));
         }
 
         for (ClassData classData : classes) {
@@ -75,22 +75,22 @@ public class ClassUMLWriter extends PlantUMLWriter {
 	}
 	
 
-	private String writePackage(PackageData packageData, String indent) {
+	private String writePackage(UPackage uPackage, String indent) {
     	StringBuilder packageString = new StringBuilder();
-    	String name = formatName(packageData.getName());
+    	String name = formatName(uPackage.getName());
     	
     	packageString.append(indent).append("package " ).append(name).append(" {\n");
     	
-    	for (ClassData classData : packageData.getClasses()) {
+    	for (ClassData classData : uPackage.getClasses()) {
     		packageString.append(writeClass(classData, indent + "\t"));
     		
     	}
     	
-    	for (NaryData naryData : packageData.getNaries()) {
+    	for (NaryData naryData : uPackage.getNaries()) {
     		packageString.append(writeNary(naryData, indent + "\t"));
     	}
     	
-    	for (PackageData subPackage : packageData.getSubPackages()) {
+    	for (UPackage subPackage : uPackage.getSubPackages()) {
     		packageString.append(writePackage(subPackage, indent + "\t"));
     		
     	}

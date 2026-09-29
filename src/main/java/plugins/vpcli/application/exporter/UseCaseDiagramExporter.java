@@ -13,11 +13,11 @@ import com.vp.plugin.model.IRelationship;
 import com.vp.plugin.model.ISystem;
 import com.vp.plugin.model.IUseCase;
 
-import plugins.vpcli.domain.myuml.usecase.ActorData;
-import plugins.vpcli.domain.myuml.classifier.AssociationData;
-import plugins.vpcli.domain.myuml.common.PackageData;
-import plugins.vpcli.domain.myuml.common.RelationshipData;
-import plugins.vpcli.domain.myuml.usecase.UseCaseData;
+import plugins.vpcli.domain.myuml.uusecase.ActorData;
+import plugins.vpcli.domain.myuml.uclassifier.AssociationData;
+import plugins.vpcli.domain.myuml.upackage.UPackage;
+import plugins.vpcli.domain.myuml.ucommon.RelationshipData;
+import plugins.vpcli.domain.myuml.uusecase.UseCaseData;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -37,7 +37,7 @@ public class UseCaseDiagramExporter extends DiagramExporter {
     private final List<ActorData> exportedActors = new ArrayList<>();
     
     private final List<RelationshipData> relationshipDatas = new ArrayList<>();
-    private final List<PackageData> exportedPackages = new ArrayList<>();
+    private final List<UPackage> exportedPackages = new ArrayList<>();
     private final List<UseCaseData> exportedUseCases = new ArrayList<>();
 
     public void extract() {
@@ -101,7 +101,7 @@ public class UseCaseDiagramExporter extends DiagramExporter {
     }
 
 
-	private void extractUseCase(IUseCase modelElement, PackageData packageData) {
+	private void extractUseCase(IUseCase modelElement, UPackage uPackage) {
     	boolean isInPackage = !isRootLevelInDiagram(modelElement);
     	String name = modelElement.getName();
     	boolean isBusiness = modelElement.isBusinessModel();
@@ -112,11 +112,11 @@ public class UseCaseDiagramExporter extends DiagramExporter {
 		useCaseData.setBusiness(isBusiness);
         addSemanticsIfExist(modelElement, useCaseData);
 		exportedUseCases.add(useCaseData);
-		if (packageData != null) packageData.getUseCases().add(useCaseData);
+		if (uPackage != null) uPackage.getUseCases().add(useCaseData);
 	}
 
 
-	private void extractActor(IActor modelElement, PackageData packageData) {
+	private void extractActor(IActor modelElement, UPackage uPackage) {
 		boolean isInPackage = !isRootLevelInDiagram(modelElement);
         boolean isBusiness = modelElement.isBusinessModel();
     	String name = modelElement.getName();
@@ -127,7 +127,7 @@ public class UseCaseDiagramExporter extends DiagramExporter {
         actorData.setBusiness(isBusiness);
         addSemanticsIfExist(modelElement, actorData);
     	exportedActors.add(actorData);
-    	if (packageData != null) packageData.getActors().add(actorData);
+    	if (uPackage != null) uPackage.getActors().add(actorData);
 	}
 
 
@@ -189,42 +189,42 @@ public class UseCaseDiagramExporter extends DiagramExporter {
 	private void extractPackage(IModelElement modelElement) {
         
         if (isRootLevelInDiagram(modelElement)) {
-	        PackageData packageData = new PackageData(modelElement.getName(), null, null, null, false, modelElement instanceof ISystem);
-            packageData.setDescription(modelElement.getDescription());
+	        UPackage uPackage = new UPackage(modelElement.getName(), null, null, null, false, modelElement instanceof ISystem);
+            uPackage.setDescription(modelElement.getDescription());
             IModelElement[] childElements = modelElement.toChildArray();
 	        for (IModelElement childElement : childElements) {
 	            if (childElement instanceof IActor) {
-	               extractActor((IActor) childElement, packageData);
+	               extractActor((IActor) childElement, uPackage);
 	            } else if (childElement instanceof IUseCase) {
-	            	extractUseCase((IUseCase) childElement, packageData);
+	            	extractUseCase((IUseCase) childElement, uPackage);
 	            } else if (childElement instanceof IPackage || childElement instanceof ISystem) {
-                    extractPackagedPackage(childElement, packageData);
+                    extractPackagedPackage(childElement, uPackage);
 	                
 	            }
 	        }
-            addSemanticsIfExist(modelElement, packageData);
-	        exportedPackages.add(packageData);
+            addSemanticsIfExist(modelElement, uPackage);
+	        exportedPackages.add(uPackage);
         }
     }
 
-	private void extractPackagedPackage(IModelElement childElement, PackageData parent) {
+	private void extractPackagedPackage(IModelElement childElement, UPackage parent) {
 //        ApplicationManager.instance().getViewManager().showMessage("Extracting package: " + childElement.getName());
         
-        PackageData packageData = new PackageData(childElement.getName(), null, null, null, true, childElement instanceof ISystem);
-        packageData.setDescription(childElement.getDescription());
+        UPackage uPackage = new UPackage(childElement.getName(), null, null, null, true, childElement instanceof ISystem);
+        uPackage.setDescription(childElement.getDescription());
         IModelElement[] childElements = childElement.toChildArray();
         for (IModelElement childElement1 : childElements) {
         	if (childElement1 instanceof IActor) {
-	               extractActor((IActor) childElement1, packageData);
+	               extractActor((IActor) childElement1, uPackage);
 	        } else if (childElement1 instanceof IUseCase) {
-	            	extractUseCase((IUseCase) childElement1, packageData);
+	            	extractUseCase((IUseCase) childElement1, uPackage);
             } else if (childElement1 instanceof IPackage || childElement1 instanceof ISystem) {
-                extractPackagedPackage(childElement1, packageData);
+                extractPackagedPackage(childElement1, uPackage);
             }
         }
-        addSemanticsIfExist(childElement, packageData);
-        parent.getSubPackages().add(packageData);
-        exportedPackages.add(packageData);
+        addSemanticsIfExist(childElement, uPackage);
+        parent.getSubPackages().add(uPackage);
+        exportedPackages.add(uPackage);
     }
 
 
@@ -238,7 +238,7 @@ public class UseCaseDiagramExporter extends DiagramExporter {
 	}
 
 
-	public List<PackageData> getExportedPackages() {
+	public List<UPackage> getExportedPackages() {
 		return exportedPackages;
 	}
 

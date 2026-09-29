@@ -1,5 +1,4 @@
 package plugins.vpcli.application;
-import com.vp.plugin.ProjectManager;
 import com.vp.plugin.diagram.IDiagramUIModel;
 
 import plugins.vpcli.application.exporter.ExporterFactory;
@@ -8,7 +7,7 @@ import plugins.vpcli.drivenadapter.ProjectRepository;
 import plugins.vpcli.application.writers.WriterFactory;
 import plugins.vpcli.application.exporter.*;
 import plugins.vpcli.application.writers.*;
-import plugins.vpcli.domain.myuml.semantics.SemanticsData;
+import plugins.vpcli.domain.myuml.ucommon.SemanticsData;
 import plugins.vpcli.util.UnfitForExportException;
 
 import java.io.File;

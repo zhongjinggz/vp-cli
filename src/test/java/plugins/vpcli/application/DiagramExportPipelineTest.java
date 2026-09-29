@@ -38,7 +38,7 @@ import plugins.vpcli.application.writers.PlantJSONWriter;
 import plugins.vpcli.application.writers.SequenceUMLWriter;
 import plugins.vpcli.application.writers.StateUMLWriter;
 import plugins.vpcli.application.writers.UseCaseWriter;
-import plugins.vpcli.domain.myuml.semantics.SemanticsData;
+import plugins.vpcli.domain.myuml.ucommon.SemanticsData;
 import plugins.vpcli.util.UnfitForExportException;
 
 public class DiagramExportPipelineTest {

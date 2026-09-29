@@ -8,11 +8,11 @@ import com.vp.plugin.diagram.IDiagramElement;
 import com.vp.plugin.diagram.IDiagramUIModel;
 import com.vp.plugin.model.*;
 
-import plugins.vpcli.domain.myuml.classifier.*;
-import plugins.vpcli.domain.myuml.classifier.ComponentData.PortData;
-import plugins.vpcli.domain.myuml.common.PackageData;
-import plugins.vpcli.domain.myuml.common.RelationshipData;
-import plugins.vpcli.domain.myuml.deployment.ArtifactData;
+import plugins.vpcli.domain.myuml.uclassifier.*;
+import plugins.vpcli.domain.myuml.uclassifier.ComponentData.PortData;
+import plugins.vpcli.domain.myuml.upackage.UPackage;
+import plugins.vpcli.domain.myuml.ucommon.RelationshipData;
+import plugins.vpcli.domain.myuml.udeployment.ArtifactData;
 
 import static com.vp.plugin.diagram.IShapeTypeConstants.*;
 
@@ -24,7 +24,7 @@ public class ComponentDeploymentDiagramExporter extends DiagramExporter {
 	private final List<ClassData> exportedInterfaces = new ArrayList<>();
 	private final List<RelationshipData> relationshipDatas = new ArrayList<>();
 	private final List<ArtifactData> exportedArtifacts = new ArrayList<>();
-    private final List<PackageData> exportedPackages = new ArrayList<>();
+    private final List<UPackage> exportedPackages = new ArrayList<>();
 	private final List<PortData> allExportedPorts = new ArrayList<>();
 
 	private final Set<String> compModelIds = new HashSet<>();
@@ -116,7 +116,7 @@ public class ComponentDeploymentDiagramExporter extends DiagramExporter {
 	}
 
 
-	private void extractArtifact(IArtifact artifactModel, PackageData packageData, ComponentData nodeData) {
+	private void extractArtifact(IArtifact artifactModel, UPackage uPackage, ComponentData nodeData) {
 		boolean isInPackage = (artifactModel.getParent() instanceof IPackage && packageModelIds.contains(artifactModel.getParent().getId()));
 
 		boolean isInNode = (artifactModel.getParent() instanceof INode && nodeModelIds.contains(artifactModel.getParent().getId()));
@@ -126,13 +126,13 @@ public class ComponentDeploymentDiagramExporter extends DiagramExporter {
 		addSemanticsIfExist(artifactModel, artifactData);
 
 		exportedArtifacts.add(artifactData);
-		if (packageData != null)
-			packageData.getArtifacts().add(artifactData);
+		if (uPackage != null)
+			uPackage.getArtifacts().add(artifactData);
 		if (nodeData != null)
 			nodeData.getArtifacts().add(artifactData);
 	}
 
-	private void extractNode(INode nodeModel, PackageData packageData, ComponentData parentNodeData) {
+	private void extractNode(INode nodeModel, UPackage uPackage, ComponentData parentNodeData) {
 		boolean isInPackage = (nodeModel.getParent() instanceof IPackage && packageModelIds.contains(nodeModel.getParent().getId()));
 		boolean isResident = (nodeModel.getParent() instanceof IComponent && compModelIds.contains(nodeModel.getParent().getId()))
 
@@ -176,8 +176,8 @@ public class ComponentDeploymentDiagramExporter extends DiagramExporter {
 		addSemanticsIfExist(nodeModel, nodeData);
 
 		exportedComponents.add(nodeData);
-		if (packageData != null)
-			packageData.getComponents().add(nodeData);
+		if (uPackage != null)
+			uPackage.getComponents().add(nodeData);
 		if (parentNodeData != null)
 			parentNodeData.getResidents().add(nodeData);
 	}
@@ -258,50 +258,50 @@ public class ComponentDeploymentDiagramExporter extends DiagramExporter {
 	private void extractPackage(IPackage packageModel) {
 		
 		if (isRootLevelInDiagram2(packageModel)) {
-			PackageData packageData = new PackageData(packageModel.getName(), false);
-			packageData.setDescription(packageModel.getDescription());
+			UPackage uPackage = new UPackage(packageModel.getName(), false);
+			uPackage.setDescription(packageModel.getDescription());
 			IModelElement[] childElements = packageModel.toChildArray();
 			for (IModelElement childElement : childElements) {
 				if (childElement instanceof IClass) {
-					extractInterface((IClass) childElement, packageData);
+					extractInterface((IClass) childElement, uPackage);
 				} else if (childElement instanceof IComponent) {
-					extractComponent((IComponent) childElement, packageData, null);
+					extractComponent((IComponent) childElement, uPackage, null);
 				} else if (childElement instanceof INode) {
-					extractNode((INode) childElement, packageData, null);
+					extractNode((INode) childElement, uPackage, null);
 				} else if (childElement instanceof IPackage) {
-                    extractPackagedPackage((IPackage) childElement, packageData);
+                    extractPackagedPackage((IPackage) childElement, uPackage);
 				} else if (childElement instanceof IArtifact) {
-					extractArtifact((IArtifact) childElement, packageData, null);
+					extractArtifact((IArtifact) childElement, uPackage, null);
 				}
 			}
-			addSemanticsIfExist(packageModel, packageData);
-			exportedPackages.add(packageData);
+			addSemanticsIfExist(packageModel, uPackage);
+			exportedPackages.add(uPackage);
 		}
 	}
 
-	private void extractPackagedPackage(IPackage packageModel, PackageData parent) {
-		PackageData packageData = new PackageData(packageModel.getName(), true);
-		packageData.setDescription(packageModel.getDescription());
+	private void extractPackagedPackage(IPackage packageModel, UPackage parent) {
+		UPackage uPackage = new UPackage(packageModel.getName(), true);
+		uPackage.setDescription(packageModel.getDescription());
 		IModelElement[] childElements = packageModel.toChildArray();
 		for (IModelElement childElement : childElements) {
 			if (childElement instanceof IClass) {
-				extractInterface((IClass) childElement, packageData);
+				extractInterface((IClass) childElement, uPackage);
 			} else if (childElement instanceof IComponent) {
-				extractComponent((IComponent) childElement, packageData, null);
+				extractComponent((IComponent) childElement, uPackage, null);
 			} else if (childElement instanceof INode) {
-				extractNode((INode) childElement, packageData, null);
+				extractNode((INode) childElement, uPackage, null);
 			} else if (childElement instanceof IPackage) {
-				extractPackagedPackage((IPackage) childElement, packageData);
+				extractPackagedPackage((IPackage) childElement, uPackage);
 
 			}
 		}
-		addSemanticsIfExist(packageModel, packageData);
-		parent.getSubPackages().add(packageData);
-		exportedPackages.add(packageData);
+		addSemanticsIfExist(packageModel, uPackage);
+		parent.getSubPackages().add(uPackage);
+		exportedPackages.add(uPackage);
 		
 	}
 
-	private void extractInterface(IClass interfaceModel, PackageData packageData) {
+	private void extractInterface(IClass interfaceModel, UPackage uPackage) {
 		boolean isInPackage = (interfaceModel.getParent() instanceof IPackage && packageModelIds.contains(interfaceModel.getParent().getId()));
 		
 		ClassData interfaceData = new ClassData(interfaceModel.getName(), isInPackage);
@@ -317,11 +317,11 @@ public class ComponentDeploymentDiagramExporter extends DiagramExporter {
 		addSemanticsIfExist(interfaceModel, interfaceData);
 		
 		exportedInterfaces.add(interfaceData);
-		if (packageData != null)
-			packageData.getClasses().add(interfaceData);
+		if (uPackage != null)
+			uPackage.getClasses().add(interfaceData);
 	}
 
-	private void extractComponent(IComponent componentModel, PackageData packageData, ComponentData parentComponentData) {
+	private void extractComponent(IComponent componentModel, UPackage uPackage, ComponentData parentComponentData) {
 		boolean isInPackage = (componentModel.getParent() instanceof IPackage) && packageModelIds.contains(componentModel.getParent().getId());
 		boolean isResident = (componentModel.getParent() instanceof IComponent && compModelIds.contains(componentModel.getParent().getId()))
 
@@ -355,8 +355,8 @@ public class ComponentDeploymentDiagramExporter extends DiagramExporter {
 		addSemanticsIfExist(componentModel, componentData);
 		
 		exportedComponents.add(componentData);
-		if (packageData != null)
-			packageData.getComponents().add(componentData);
+		if (uPackage != null)
+			uPackage.getComponents().add(componentData);
 		if (parentComponentData != null)
 			parentComponentData.getResidents().add(componentData);
 
@@ -404,7 +404,7 @@ public class ComponentDeploymentDiagramExporter extends DiagramExporter {
 		return exportedInterfaces;
 	}
 	
-	public List<PackageData> getExportedPackages() {
+	public List<UPackage> getExportedPackages() {
 		return exportedPackages;
 	}
 	public List<RelationshipData> getRelationshipDatas() {

@@ -8,25 +8,25 @@ import java.nio.file.Files;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import plugins.vpcli.domain.myuml.classifier.ComponentData;
-import plugins.vpcli.domain.myuml.classifier.ComponentData.PortData;
-import plugins.vpcli.domain.myuml.classifier.AttributeData;
-import plugins.vpcli.domain.myuml.classifier.ClassData;
-import plugins.vpcli.domain.myuml.classifier.OperationData;
-import plugins.vpcli.domain.myuml.common.NoteData;
-import plugins.vpcli.domain.myuml.common.PackageData;
-import plugins.vpcli.domain.myuml.common.RelationshipData;
-import plugins.vpcli.domain.myuml.deployment.ArtifactData;
+import plugins.vpcli.domain.myuml.uclassifier.ComponentData;
+import plugins.vpcli.domain.myuml.uclassifier.ComponentData.PortData;
+import plugins.vpcli.domain.myuml.uclassifier.AttributeData;
+import plugins.vpcli.domain.myuml.uclassifier.ClassData;
+import plugins.vpcli.domain.myuml.uclassifier.OperationData;
+import plugins.vpcli.domain.myuml.ucommon.NoteData;
+import plugins.vpcli.domain.myuml.upackage.UPackage;
+import plugins.vpcli.domain.myuml.ucommon.RelationshipData;
+import plugins.vpcli.domain.myuml.udeployment.ArtifactData;
 
 public class ComponentDeploymentUMLWriter extends PlantUMLWriter {
 
 	private final List<ComponentData> components;
 	private final List<ClassData> interfaces;
-	private final List<PackageData> packages;
+	private final List<UPackage> packages;
 	private final List<RelationshipData> relationships;
 	private final List<ArtifactData> artifacts;
 
-    public ComponentDeploymentUMLWriter(List<NoteData> notes, List<ComponentData> components, List<ClassData> interfaces, List<ArtifactData> artifacts, List<PackageData> packages, List<RelationshipData> relationships) {
+    public ComponentDeploymentUMLWriter(List<NoteData> notes, List<ComponentData> components, List<ClassData> interfaces, List<ArtifactData> artifacts, List<UPackage> packages, List<RelationshipData> relationships) {
 		super(notes);
 		this.components = components;
 		this.interfaces = interfaces;
@@ -57,9 +57,9 @@ public class ComponentDeploymentUMLWriter extends PlantUMLWriter {
 				plantUMLContent.append(writeArtifact(artifactData, ""));
 		}
 
-		for (PackageData packageData : packages) {
-			if(!packageData.isSubpackage())
-				plantUMLContent.append(writePackage(packageData, ""));
+		for (UPackage uPackage : packages) {
+			if(!uPackage.isSubpackage())
+				plantUMLContent.append(writePackage(uPackage, ""));
 		}
 
 		plantUMLContent.append(writeNotes());
@@ -87,24 +87,24 @@ public class ComponentDeploymentUMLWriter extends PlantUMLWriter {
 		return relationship.toExportFormat();
     }
 	
-	private String writePackage(PackageData packageData, String indent) {
+	private String writePackage(UPackage uPackage, String indent) {
 		StringBuilder packageString = new StringBuilder();
-		String name = formatName(packageData.getName());
+		String name = formatName(uPackage.getName());
 
 		packageString.append(indent).append("package " ).append(name).append(" {\n");
 
-		for (ClassData interfaceData : packageData.getClasses()) {
+		for (ClassData interfaceData : uPackage.getClasses()) {
 			packageString.append(writeInterface(interfaceData, indent + "\t"));
 		}
 
-		for (ArtifactData artifactData : packageData.getArtifacts()) {
+		for (ArtifactData artifactData : uPackage.getArtifacts()) {
 			packageString.append(writeArtifact(artifactData, indent + "\t"));
 		}
-		for (ComponentData componentData : packageData.getComponents()) {
+		for (ComponentData componentData : uPackage.getComponents()) {
 			packageString.append(writeComponent(componentData, indent + "\t"));
 		}
 
-		for (PackageData subPackage : packageData.getSubPackages()) {
+		for (UPackage subPackage : uPackage.getSubPackages()) {
 			packageString.append(writePackage(subPackage, indent + "\t"));
 		}
 

@@ -4,10 +4,10 @@ import com.vp.plugin.diagram.IDiagramElement;
 import com.vp.plugin.diagram.IDiagramUIModel;
 import com.vp.plugin.model.*;
 import com.vp.plugin.model.factory.IModelElementFactory;
-import plugins.vpcli.domain.myuml.activity.ActionData;
-import plugins.vpcli.domain.myuml.activity.FlowNode;
-import plugins.vpcli.domain.myuml.activity.JoinFlowNode;
-import plugins.vpcli.domain.myuml.activity.SplitFlowNode;
+import plugins.vpcli.domain.myuml.uactivity.ActionData;
+import plugins.vpcli.domain.myuml.uactivity.FlowNode;
+import plugins.vpcli.domain.myuml.uactivity.JoinFlowNode;
+import plugins.vpcli.domain.myuml.uactivity.SplitFlowNode;
 import plugins.vpcli.util.UnfitForExportException;
 
 import java.util.*;

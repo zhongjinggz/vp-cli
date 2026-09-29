@@ -4,11 +4,11 @@ import com.vp.plugin.ApplicationManager;
 import com.vp.plugin.diagram.IDiagramElement;
 import com.vp.plugin.diagram.IDiagramUIModel;
 import com.vp.plugin.model.*;
-import plugins.vpcli.domain.myuml.activity.ForkJoin;
-import plugins.vpcli.domain.myuml.common.RelationshipData;
-import plugins.vpcli.domain.myuml.mystatemachine.History;
-import plugins.vpcli.domain.myuml.mystatemachine.StateChoice;
-import plugins.vpcli.domain.myuml.mystatemachine.StateData;
+import plugins.vpcli.domain.myuml.uactivity.ForkJoin;
+import plugins.vpcli.domain.myuml.ucommon.RelationshipData;
+import plugins.vpcli.domain.myuml.ustatemachine.History;
+import plugins.vpcli.domain.myuml.ustatemachine.StateChoice;
+import plugins.vpcli.domain.myuml.ustatemachine.StateData;
 
 import java.util.ArrayList;
 import java.util.List;

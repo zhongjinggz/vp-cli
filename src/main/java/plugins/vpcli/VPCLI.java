@@ -10,11 +10,10 @@ import plugins.vpcli.application.exporter.ExporterFactory;
 import plugins.vpcli.application.writers.WriterFactory;
 
 // DOING
-// - tree
+// - tree: 拆分模型和适配器
 // - export：按照模型包结构创建目录结构
 
 // TODO
-// - tree: 拆分模型和适配器
 // - tree: 补测试
 // - export：将图表放入目录结构
 // - export: 重构生成图表的程序
@@ -28,6 +27,7 @@ import plugins.vpcli.application.writers.WriterFactory;
 // - 清理 IDEA 警告
 // - 考虑将 python 改为 java ， 改为多模块项目
 // DONE
+// - tree: 完成功能
 // - 将命令行改为 vp_export
 // - 清理 IDEA 警告 - part1
 // - 整理成DDD架构

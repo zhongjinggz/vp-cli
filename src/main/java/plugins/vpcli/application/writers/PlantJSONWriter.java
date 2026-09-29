@@ -10,7 +10,7 @@ import java.util.List;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 
-import plugins.vpcli.domain.myuml.semantics.SemanticsData;
+import plugins.vpcli.domain.myuml.ucommon.SemanticsData;
 
 public class PlantJSONWriter {
 	
