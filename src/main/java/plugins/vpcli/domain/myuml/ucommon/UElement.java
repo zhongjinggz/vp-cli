@@ -1,5 +1,6 @@
 package plugins.vpcli.domain.myuml.ucommon;
 
+import java.util.Collections;
 import java.util.List;
 
 public class UElement {
@@ -43,19 +44,19 @@ public class UElement {
     }
 
     public List<UElement> getChildren() {
-        return children;
+        return Collections.unmodifiableList(children);
     }
 
-    public void setChildren(List<UElement> children) {
-        this.children = children;
+    public void addChild(UElement uElement) {
+        this.children.add(uElement);
     }
 
     public List<UReference> getReferences() {
-        return references;
+        return Collections.unmodifiableList(references);
     }
 
-    public void setReferences(List<UReference> references) {
-        this.references = references;
+    public void addReference(UReference uReference) {
+        this.references.add(uReference);
     }
 
 }
