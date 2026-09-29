@@ -14,6 +14,7 @@ KEY_LIST = "-list"
 
 VALUE_IMPORT = "import"
 VALUE_EXPORT = "export"
+VALUE_TREE = "tree"
 VALUE_ALL = "all"
 
 VALUE_UNSET = "unset"  # 命令行中根本没有该参数

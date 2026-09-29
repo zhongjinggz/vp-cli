@@ -1,17 +1,19 @@
 package plugins.vpcli.drivingadapter;
 
 import plugins.vpcli.application.DiagramExportPipeline;
+import plugins.vpcli.application.TreeService;
 
 import java.io.File;
 import java.io.IOException;
 
-import static plugins.vpcli.drivingadapter.CLIParams.VALUE_EXPORT;
-import static plugins.vpcli.drivingadapter.CLIParams.VALUE_IMPORT;
+import static plugins.vpcli.drivingadapter.CLIParams.*;
 
 public class CLIController {
     private final DiagramExportPipeline pipeline;
-    public CLIController(DiagramExportPipeline pipeline) {
+    private final TreeService treeService;
+    public CLIController(DiagramExportPipeline pipeline, TreeService treeService) {
         this.pipeline = pipeline;
+        this.treeService = treeService;
     }
 
     public void invoke(String[] args) {
@@ -34,6 +36,8 @@ public class CLIController {
                     performExport(params.target().text(), params.path().text());
                 }
                 break;
+            case VALUE_TREE:
+                this.treeService.tree();
         }
     }
 
@@ -55,8 +59,6 @@ public class CLIController {
         }
 
         System.out.println("Exporting diagram(s): " + target + " to path: " + path);
-
-        this.pipeline.tree(exportLocation);
 
         if (target.equalsIgnoreCase(CLIParams.VALUE_ALL)) {
             this.pipeline.exportAllDiagrams(exportLocation);

@@ -1,8 +1,6 @@
 package plugins.vpcli.application;
 import com.vp.plugin.ProjectManager;
 import com.vp.plugin.diagram.IDiagramUIModel;
-import com.vp.plugin.model.IModelElement;
-import com.vp.plugin.model.factory.IModelElementFactory;
 
 import plugins.vpcli.application.exporter.ExporterFactory;
 import plugins.vpcli.drivenadapter.FileFactory;
@@ -180,43 +178,4 @@ public class DiagramExportPipeline {
             System.out.println(diagram.getName() + " | id: " + diagram.getId());
         }
     }
-
-    public void tree(File exportLocation) {
-		ProjectManager projectManager = projectManagerFactory.getProjectManager();
-		IModelElement[] topLevelElements = projectManager.getProject().toModelElementArray();
-		List<IModelElement> roots = filterNamespaceContainers(topLevelElements);
-		for (IModelElement element : roots) {
-			System.out.println(element.getName());
-			printNamespaceTree(element, "");
-		}
-	}
-
-	private void printNamespaceTree(IModelElement element, String prefix) {
-		List<IModelElement> children = filterNamespaceContainers(element.toChildArray());
-		for (int i = 0; i < children.size(); i++) {
-			boolean isLast = (i == children.size() - 1);
-			String branch = isLast ? "└── " : "├── ";
-			System.out.println(prefix + branch + children.get(i).getName());
-			String childPrefix = prefix + (isLast ? "    " : "│   ");
-			printNamespaceTree(children.get(i), childPrefix);
-		}
-	}
-
-	private List<IModelElement> filterNamespaceContainers(IModelElement[] elements) {
-		List<IModelElement> result = new ArrayList<>();
-		for (IModelElement element : elements) {
-			if (isNamespaceContainer(element)) {
-				result.add(element);
-			}
-		}
-		return result;
-	}
-
-	private boolean isNamespaceContainer(IModelElement element) {
-		String type = element.getModelType();
-		return IModelElementFactory.MODEL_TYPE_PACKAGE.equals(type)
-				|| IModelElementFactory.MODEL_TYPE_SUBSYSTEM.equals(type)
-				|| IModelElementFactory.MODEL_TYPE_SYSTEM.equals(type)
-				|| IModelElementFactory.MODEL_TYPE_MODEL.equals(type);
-	}
 }

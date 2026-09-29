@@ -13,7 +13,7 @@ public class HelpController implements VPActionController {
             ApplicationManager.instance()
                 .getViewManager()
                 .getRootFrame()
-            , "打印包结构2 19:48"
+            , "Refactory vp-tree command 9:46"
         );
     }
 

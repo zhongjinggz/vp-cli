@@ -5,10 +5,12 @@ import plugins.vpcli.drivenadapter.FileFactory;
 import plugins.vpcli.drivenadapter.ProjectManagerFactory;
 import plugins.vpcli.drivingadapter.CLIController;
 import plugins.vpcli.application.DiagramExportPipeline;
+import plugins.vpcli.application.TreeService;
 import plugins.vpcli.application.exporter.ExporterFactory;
 import plugins.vpcli.application.writers.WriterFactory;
 
 // DOING
+// - tree
 // - export：按照模型包结构创建目录结构
 
 // TODO
@@ -40,7 +42,8 @@ public class VPCLI implements VPPlugin, VPPluginCommandLineSupport {
 
     private final DiagramExportPipeline diagramExportPipeline = new DiagramExportPipeline(projectManagerFactory
         , exporterFactory, writerFactory, fileFactory);
-    private final CLIController cliController = new CLIController(diagramExportPipeline);
+    private final TreeService treeService = new TreeService(projectManagerFactory);
+    private final CLIController cliController = new CLIController(diagramExportPipeline, treeService);
 
     @Override
     public void loaded(VPPluginInfo pluginInfo) {

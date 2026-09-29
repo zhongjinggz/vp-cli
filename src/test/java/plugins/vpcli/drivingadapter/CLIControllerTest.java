@@ -22,6 +22,7 @@ import org.junit.jupiter.api.function.Executable;
 import org.mockito.MockedStatic;
 import plugins.vpcli.VPCLI;
 import plugins.vpcli.application.DiagramExportPipeline;
+import plugins.vpcli.application.TreeService;
 
 /**
  *
@@ -36,7 +37,8 @@ class CLIControllerTest {
     Path tempDir;
 
     private final DiagramExportPipeline pipelineMock = mock(DiagramExportPipeline.class);
-    private final CLIController controller = new CLIController(pipelineMock);
+    private final TreeService treeServiceMock = mock(TreeService.class);
+    private final CLIController controller = new CLIController(pipelineMock, treeServiceMock);
 
     private void invoke(String[] args) {
         controller.invoke(args);

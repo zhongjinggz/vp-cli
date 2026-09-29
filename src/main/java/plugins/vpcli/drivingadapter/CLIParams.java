@@ -10,6 +10,7 @@ class CLIParams {
     static final String KEY_ACTION = "-action";
     static final String VALUE_IMPORT = "import";
     static final String VALUE_EXPORT = "export";
+    static final String VALUE_TREE = "tree";
 
     static final String KEY_TARGET = "-target";
     static final String VALUE_ALL = "all";
@@ -78,6 +79,8 @@ class CLIParams {
                             setErrorMessage("Error: Missing required arguments for export. Use -target and -path.");
                         }
                     }
+                    break;
+                case VALUE_TREE:
                     break;
                 default:
                     setErrorMessage("Error: Invalid action specified. Use 'import' or 'export'.");
