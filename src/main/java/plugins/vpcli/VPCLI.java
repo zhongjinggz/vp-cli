@@ -1,6 +1,7 @@
 package plugins.vpcli;
 
 import com.vp.plugin.*;
+import plugins.vpcli.application.ListDiagramsService;
 import plugins.vpcli.domain.myuml.myproject.MyConverter;
 import plugins.vpcli.drivenadapter.FileFactory;
 import plugins.vpcli.drivenadapter.ProjectRepository;
@@ -28,7 +29,9 @@ public class VPCLI implements VPPlugin, VPPluginCommandLineSupport {
     // Application Services
     private ExportService exportService;
     private TreeService treeService;
+    private ListDiagramsService listDiagramsService;
 
+    // Driving Adapter
     private CLIController cliController;
 
 
@@ -51,22 +54,25 @@ public class VPCLI implements VPPlugin, VPPluginCommandLineSupport {
 
         // Application Services
         this.exportService = new ExportService(
-            myConverter
-            , projectRepository
-            , exporterFactory
-            , writerFactory
-            , fileFactory
-            , treeDirMaker);
+            this.myConverter
+            , this.projectRepository
+            , this.exporterFactory
+            , this.writerFactory
+            , this.fileFactory
+            , this.treeDirMaker);
 
         this.treeService = new TreeService(
-            projectRepository
+            this.projectRepository
             , this.myConverter
             , this.treePrinter);
 
+        this.listDiagramsService = new ListDiagramsService(this.projectRepository);
+
         // Controller
         this.cliController = new CLIController(
-            exportService
-            , treeService);
+            this.exportService
+            , this.treeService
+            , this.listDiagramsService);
     }
 
     @Override

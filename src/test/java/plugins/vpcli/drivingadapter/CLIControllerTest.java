@@ -22,6 +22,7 @@ import org.junit.jupiter.api.function.Executable;
 import org.mockito.MockedStatic;
 import plugins.vpcli.VPCLI;
 import plugins.vpcli.application.ExportService;
+import plugins.vpcli.application.ListDiagramsService;
 import plugins.vpcli.application.TreeService;
 
 /**
@@ -36,9 +37,10 @@ class CLIControllerTest {
     @TempDir
     Path tempDir;
 
-    private final ExportService pipelineMock = mock(ExportService.class);
+    private final ExportService exportServiceMock = mock(ExportService.class);
     private final TreeService treeServiceMock = mock(TreeService.class);
-    private final CLIController controller = new CLIController(pipelineMock, treeServiceMock);
+    private final ListDiagramsService listDiagramsServiceMock = mock(ListDiagramsService.class);
+    private final CLIController controller = new CLIController(exportServiceMock, treeServiceMock, this.listDiagramsServiceMock);
 
     private void invoke(String[] args) {
         controller.invoke(args);
@@ -72,7 +74,7 @@ class CLIControllerTest {
         String newDir = tempDir.resolve("fresh").resolve("sub").toString();
         captureOut(() -> invoke(
                 new String[]{"-action", "export", "-target", "all", "-path", newDir}));
-        verify(pipelineMock).exportAll(new File(newDir));
+        verify(exportServiceMock).exportAll(new File(newDir));
     }
 
     @Test
@@ -99,7 +101,7 @@ class CLIControllerTest {
         File dir = tempDir.toFile();
         captureOut(() -> invoke(
                 new String[]{"-action", "export", "-target", "all", "-path", dir.getAbsolutePath()}));
-        verify(pipelineMock).exportAll(dir);
+        verify(exportServiceMock).exportAll(dir);
     }
 
     @Test
@@ -107,13 +109,13 @@ class CLIControllerTest {
         File dir = tempDir.toFile();
         captureOut(() -> invoke(
                 new String[]{"-action", "export", "-target", "someDiagram", "-path", dir.getAbsolutePath()}));
-        verify(pipelineMock).exportSpecificDiagram("someDiagram", dir);
+        verify(exportServiceMock).exportSpecificDiagram("someDiagram", dir);
     }
 
     @Test
     void invoke_exportSpecificThrowsIOException_printsIoError() throws Throwable {
         File dir = tempDir.toFile();
-        doThrow(new IOException("boom")).when(pipelineMock).exportSpecificDiagram(any(), eq(dir));
+        doThrow(new IOException("boom")).when(exportServiceMock).exportSpecificDiagram(any(), eq(dir));
         String output = captureOut(() -> invoke(
                 new String[]{"-action", "export", "-target", "someDiagram", "-path", dir.getAbsolutePath()}));
         assertTrue(output.contains("IO Error: Couldn't create file."));
@@ -126,7 +128,7 @@ class CLIControllerTest {
         String output = captureOut(() -> invoke(
                 new String[]{"-action", "list-diagrams"}));
         assertTrue(output.contains("Listing available diagrams"));
-        verify(pipelineMock).listDiagrams();
+        verify(listDiagramsServiceMock).listDiagrams();
     }
 
     // ---------- invoke 的 switch 默认分支（action 既非 import 也非 export） ----------

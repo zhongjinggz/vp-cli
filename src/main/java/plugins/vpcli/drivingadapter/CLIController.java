@@ -1,6 +1,7 @@
 package plugins.vpcli.drivingadapter;
 
 import plugins.vpcli.application.ExportService;
+import plugins.vpcli.application.ListDiagramsService;
 import plugins.vpcli.application.TreeService;
 
 import java.io.File;
@@ -11,10 +12,12 @@ import static plugins.vpcli.drivingadapter.CLIParams.*;
 public class CLIController {
     private final ExportService exportService;
     private final TreeService treeService;
+    private final ListDiagramsService listDiagramsService;
 
-    public CLIController(ExportService exportService, TreeService treeService) {
+    public CLIController(ExportService exportService, TreeService treeService, ListDiagramsService listDiagramsService) {
         this.exportService = exportService;
         this.treeService = treeService;
+        this.listDiagramsService = listDiagramsService;
     }
 
     public void invoke(String[] args) {
@@ -77,7 +80,7 @@ public class CLIController {
 
     void listAvailableDiagrams() {
         System.out.println("Listing available diagrams in the project:");
-        exportService.listDiagrams();
+        listDiagramsService.listDiagrams();
     }
 
 }

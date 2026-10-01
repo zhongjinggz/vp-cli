@@ -5,7 +5,6 @@ import com.vp.plugin.action.VPAction;
 import com.vp.plugin.action.VPActionController;
 
 // DOING
-// - 修改命令行 -action list
 
 // TODO
 // - export: 重构生成图表的程序
@@ -30,6 +29,7 @@ import com.vp.plugin.action.VPActionController;
 // - 补充建立目录时的各种异常情况
 
 // DONE
+// - 修改命令行 -action list
 // - export：按照模型包结构创建目录结构
 // - 将依赖注入作为方法
 // - tree: 拆分模型和适配器

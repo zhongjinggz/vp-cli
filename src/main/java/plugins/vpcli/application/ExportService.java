@@ -142,10 +142,4 @@ public class ExportService {
         this.export(targetDiagram, exportLocation);
     }
 
-    public void listDiagrams() {
-        IDiagramUIModel[] allDiagrams = projectRepository.getProject().toDiagramArray();
-        for (IDiagramUIModel diagram : allDiagrams) {
-            System.out.println(diagram.getName() + " | id: " + diagram.getId());
-        }
-    }
 }

@@ -7,10 +7,20 @@ import java.util.List;
 public class MyElement {
     private String id = "";
     private String name = "";
-    private String elementType = "";
+    private String alias = "";
     private String description = "";
+    private String elementType = "";
     private MyElement parent;
     private final List<MyElement> children = new ArrayList<>();
+
+    public String getAlias() {
+        return alias;
+    }
+
+    public void setAlias(String alias) {
+        this.alias = alias;
+    }
+
     private final List<MyReference> references = new ArrayList<>();
 
     public MyElement(String name) {
