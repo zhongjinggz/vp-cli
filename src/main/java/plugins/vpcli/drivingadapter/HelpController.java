@@ -13,7 +13,7 @@ public class HelpController implements VPActionController {
             ApplicationManager.instance()
                 .getViewManager()
                 .getRootFrame()
-            , "Refactor TreeService -  10:07"
+            , "Refactor extract InjectDependencies -  11:25"
         );
     }
 

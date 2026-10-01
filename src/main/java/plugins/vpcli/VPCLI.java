@@ -1,8 +1,10 @@
 package plugins.vpcli;
 
 import com.vp.plugin.*;
+import plugins.vpcli.domain.myuml.uproject.UConverter;
 import plugins.vpcli.drivenadapter.FileFactory;
 import plugins.vpcli.drivenadapter.ProjectRepository;
+import plugins.vpcli.drivenadapter.TreePrinter;
 import plugins.vpcli.drivingadapter.CLIController;
 import plugins.vpcli.application.DiagramExportPipeline;
 import plugins.vpcli.application.TreeService;
@@ -10,6 +12,7 @@ import plugins.vpcli.application.exporter.ExporterFactory;
 import plugins.vpcli.application.writers.WriterFactory;
 
 // DOING
+// - 将依赖注入作为方法
 // - tree: 拆分模型和适配器
 
 // TODO
@@ -38,15 +41,56 @@ import plugins.vpcli.application.writers.WriterFactory;
 // - 修改包名
 
 public class VPCLI implements VPPlugin, VPPluginCommandLineSupport {
-    private final ExporterFactory exporterFactory = new ExporterFactory();
-    private final WriterFactory writerFactory = new WriterFactory();
-    private final ProjectRepository projectRepository = new ProjectRepository();
-    private final FileFactory fileFactory = new FileFactory();
+    // Driven Adapters
+    private ExporterFactory exporterFactory;
+    private WriterFactory writerFactory;
+    private ProjectRepository projectRepository;
+    private FileFactory fileFactory;
+    private TreePrinter treePrinter;
 
-    private final DiagramExportPipeline diagramExportPipeline = new DiagramExportPipeline(projectRepository
-        , exporterFactory, writerFactory, fileFactory);
-    private final TreeService treeService = new TreeService(projectRepository);
-    private final CLIController cliController = new CLIController(diagramExportPipeline, treeService);
+    // Domain Services
+    private UConverter packageConverter;
+
+    // Application Services
+    private DiagramExportPipeline diagramExportPipeline;
+    private TreeService treeService;
+
+    private CLIController cliController;
+
+
+    public VPCLI() {
+        injectDependencies();
+    }
+
+    // TODO 优化依赖注入，按功能分开不同的控制器，只注入本次功能需要的依赖
+    void injectDependencies() {
+        // Driven Adapters
+        this.exporterFactory = new ExporterFactory();
+        this.writerFactory = new WriterFactory();
+        this.projectRepository = new ProjectRepository();
+        this.fileFactory = new FileFactory();
+        this.treePrinter = new TreePrinter();
+
+        // Domain Services
+        this.packageConverter = new UConverter();
+
+        // Application Services
+        this.diagramExportPipeline = new DiagramExportPipeline(
+            projectRepository
+            , exporterFactory
+            , writerFactory
+            , fileFactory);
+
+        this.treeService = new TreeService(
+            projectRepository
+            , this.packageConverter
+            , this.treePrinter);
+
+        // Controller
+        this.cliController = new CLIController(
+            diagramExportPipeline
+            , treeService);
+    }
 
     @Override
     public void loaded(VPPluginInfo pluginInfo) {
@@ -59,7 +103,8 @@ public class VPCLI implements VPPlugin, VPPluginCommandLineSupport {
     // CLI 入口：解析参数并分发到导入/导出逻辑
     @Override
     public void invoke(String[] args) {
-
         cliController.invoke(args);
     }
+
+
 }
