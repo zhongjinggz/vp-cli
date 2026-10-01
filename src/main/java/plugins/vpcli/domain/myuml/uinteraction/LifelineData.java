@@ -1,11 +1,11 @@
 package plugins.vpcli.domain.myuml.uinteraction;
 
-import plugins.vpcli.domain.myuml.ustatemachine.BaseWithSemanticsData;
+import plugins.vpcli.domain.myuml.ucommon.UElement;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class LifelineData extends BaseWithSemanticsData {
+public class LifelineData extends UElement {
 
 	private List<String> stereotypes = new ArrayList<>();
 	private boolean isCreatedByMessage;
@@ -44,7 +44,4 @@ public class LifelineData extends BaseWithSemanticsData {
         return alias;
     }
 
-    public void setAlias(String alias) {
-        this.alias = alias;
-    }
 }

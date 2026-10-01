@@ -1,11 +1,12 @@
 package plugins.vpcli.domain.myuml.ustatemachine;
 
 import plugins.vpcli.domain.myuml.ucommon.RelationshipData;
+import plugins.vpcli.domain.myuml.ucommon.UElement;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class StateData extends BaseWithSemanticsData {
+public class StateData extends UElement {
 
     private String Uid;
     private boolean isStart;
@@ -93,10 +94,6 @@ public class StateData extends BaseWithSemanticsData {
 
         public List<StateData> getSubStates() {
             return subStates;
-        }
-
-        public void setSubStates(List<StateData> subStates) {
-            this.subStates = subStates;
         }
 
         public List<RelationshipData> getRegTransitions() {

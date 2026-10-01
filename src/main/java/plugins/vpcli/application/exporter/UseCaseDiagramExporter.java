@@ -17,7 +17,7 @@ import plugins.vpcli.domain.myuml.uusecase.ActorData;
 import plugins.vpcli.domain.myuml.uclassifier.AssociationData;
 import plugins.vpcli.domain.myuml.upackage.UPackage;
 import plugins.vpcli.domain.myuml.ucommon.RelationshipData;
-import plugins.vpcli.domain.myuml.uusecase.UseCaseData;
+import plugins.vpcli.domain.myuml.uusecase.UUseCase;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -38,7 +38,7 @@ public class UseCaseDiagramExporter extends DiagramExporter {
     
     private final List<RelationshipData> relationshipDatas = new ArrayList<>();
     private final List<UPackage> exportedPackages = new ArrayList<>();
-    private final List<UseCaseData> exportedUseCases = new ArrayList<>();
+    private final List<UUseCase> exportedUseCases = new ArrayList<>();
 
     public void extract() {
 
@@ -105,14 +105,13 @@ public class UseCaseDiagramExporter extends DiagramExporter {
     	boolean isInPackage = !isRootLevelInDiagram(modelElement);
     	String name = modelElement.getName();
     	boolean isBusiness = modelElement.isBusinessModel();
-		UseCaseData useCaseData = new UseCaseData(name);
-		useCaseData.setInPackage(isInPackage);
-        useCaseData.setDescription(modelElement.getDescription());
-		useCaseData.setStereotypes(extractStereotypes(modelElement));
-		useCaseData.setBusiness(isBusiness);
-        addSemanticsIfExist(modelElement, useCaseData);
-		exportedUseCases.add(useCaseData);
-		if (uPackage != null) uPackage.getUseCases().add(useCaseData);
+		UUseCase uUseCase = new UUseCase(name);
+		uUseCase.setInPackage(isInPackage);
+        uUseCase.setDescription(modelElement.getDescription());
+		uUseCase.setStereotypes(extractStereotypes(modelElement));
+		uUseCase.setBusiness(isBusiness);
+		exportedUseCases.add(uUseCase);
+		if (uPackage != null) uPackage.getUseCases().add(uUseCase);
 	}
 
 
@@ -125,7 +124,6 @@ public class UseCaseDiagramExporter extends DiagramExporter {
         actorData.setDescription(modelElement.getDescription());
     	actorData.setStereotypes(extractStereotypes(modelElement));
         actorData.setBusiness(isBusiness);
-        addSemanticsIfExist(modelElement, actorData);
     	exportedActors.add(actorData);
     	if (uPackage != null) uPackage.getActors().add(actorData);
 	}
@@ -202,7 +200,6 @@ public class UseCaseDiagramExporter extends DiagramExporter {
 	                
 	            }
 	        }
-            addSemanticsIfExist(modelElement, uPackage);
 	        exportedPackages.add(uPackage);
         }
     }
@@ -222,13 +219,12 @@ public class UseCaseDiagramExporter extends DiagramExporter {
                 extractPackagedPackage(childElement1, uPackage);
             }
         }
-        addSemanticsIfExist(childElement, uPackage);
         parent.getSubPackages().add(uPackage);
         exportedPackages.add(uPackage);
     }
 
 
-	public List<UseCaseData> getExportedUseCases() {
+	public List<UUseCase> getExportedUseCases() {
 		return exportedUseCases;
 	}
 

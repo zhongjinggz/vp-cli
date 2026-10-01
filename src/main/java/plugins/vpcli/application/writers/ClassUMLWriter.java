@@ -11,7 +11,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 
-import plugins.vpcli.domain.myuml.uclassifier.ClassData;
+import plugins.vpcli.domain.myuml.uclassifier.UClass;
 import plugins.vpcli.domain.myuml.uclassifier.NaryData;
 import plugins.vpcli.domain.myuml.ucommon.NoteData;
 import plugins.vpcli.domain.myuml.upackage.UPackage;
@@ -20,11 +20,11 @@ import plugins.vpcli.domain.myuml.ucommon.RelationshipData;
 public class ClassUMLWriter extends PlantUMLWriter {
     
 	private final List<UPackage> packages;
-    private final List<ClassData> classes;
+    private final List<UClass> classes;
     private final List<RelationshipData> relationships;
     private List<NaryData> naries;
 
-    public ClassUMLWriter(List<ClassData> classes, List<RelationshipData> relationships, List<UPackage> packages, List<NaryData> naries, List<NoteData> notes) {
+    public ClassUMLWriter(List<UClass> classes, List<RelationshipData> relationships, List<UPackage> packages, List<NaryData> naries, List<NoteData> notes) {
     	super(notes);
     	this.packages = packages;
         this.classes = classes;
@@ -40,9 +40,9 @@ public class ClassUMLWriter extends PlantUMLWriter {
         		plantUMLContent.append(writePackage(uPackage, ""));
         }
 
-        for (ClassData classData : classes) {
-        	if(!classData.isInPackage())
-        		plantUMLContent.append(writeClass(classData, ""));
+        for (UClass uClass : classes) {
+        	if(!uClass.isInPackage())
+        		plantUMLContent.append(writeClass(uClass, ""));
         }
         
         for (NaryData naryData : naries) {
@@ -81,8 +81,8 @@ public class ClassUMLWriter extends PlantUMLWriter {
     	
     	packageString.append(indent).append("package " ).append(name).append(" {\n");
     	
-    	for (ClassData classData : uPackage.getClasses()) {
-    		packageString.append(writeClass(classData, indent + "\t"));
+    	for (UClass uClass : uPackage.getClasses()) {
+    		packageString.append(writeClass(uClass, indent + "\t"));
     		
     	}
     	
@@ -100,10 +100,10 @@ public class ClassUMLWriter extends PlantUMLWriter {
     	
     }
 
-    private String writeClass(ClassData classData, String indent) {
+    private String writeClass(UClass uClass, String indent) {
     	StringBuilder classString = new StringBuilder();
-    	String name = formatName(classData.getName());
-    	String aliasDeclaration = formatAlias(classData.getName()).equals(classData.getName()) ? "" : (" as " + formatAlias(classData.getName()));
+    	String name = formatName(uClass.getName());
+    	String aliasDeclaration = formatAlias(uClass.getName()).equals(uClass.getName()) ? "" : (" as " + formatAlias(uClass.getName()));
     	
     	// equivalents mapping
     	Map<String, String> keywordStereotypes = new HashMap<>();
@@ -115,11 +115,11 @@ public class ClassUMLWriter extends PlantUMLWriter {
     	keywordStereotypes.put("entity", "entity");
     	
     	classString.append(indent);
-    	classString.append(writeVisibility(classData.getVisibility()));
+    	classString.append(writeVisibility(uClass.getVisibility()));
     	
-    	if (classData.isAbstract()) classString.append("abstract ");
-    	if (classData.getStereotypes().size() == 1 && !classData.isAbstract()) {
-    	    String stereotype = classData.getStereotypes().get(0).toLowerCase();  
+    	if (uClass.isAbstract()) classString.append("abstract ");
+    	if (uClass.getStereotypes().size() == 1 && !uClass.isAbstract()) {
+    	    String stereotype = uClass.getStereotypes().get(0).toLowerCase();
     	    if (keywordStereotypes.containsKey(stereotype)) {
     	        classString.append(keywordStereotypes.get(stereotype)).append(" ").append(name).append(aliasDeclaration);
     	    } else {
@@ -129,8 +129,8 @@ public class ClassUMLWriter extends PlantUMLWriter {
     	} else {
     	    // Default to "class" with any stereotypes listed
     	    classString.append("class ").append(name).append(aliasDeclaration);
-    	    if (!classData.getStereotypes().isEmpty()) {
-    	        String stereotypesString = classData.getStereotypes().stream()
+    	    if (!uClass.getStereotypes().isEmpty()) {
+    	        String stereotypesString = uClass.getStereotypes().stream()
     	            .map(stereotype -> "<<" + stereotype + ">>")
     	            .collect(Collectors.joining(", "));
     	        classString.append(" ").append(stereotypesString);
@@ -140,7 +140,7 @@ public class ClassUMLWriter extends PlantUMLWriter {
     	classString.append(" {\n");
 
         // Attributes
-		writeAttributesAndOperations(classData.getAttributes(), classData.getOperations(), indent, classString);
+		writeAttributesAndOperations(uClass.getAttributes(), uClass.getOperations(), indent, classString);
 
 		classString.append(indent).append("}\n");
         return classString.toString();

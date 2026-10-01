@@ -1,8 +1,8 @@
 package plugins.vpcli.domain.myuml.uclassifier;
 
-import plugins.vpcli.domain.myuml.ustatemachine.BaseWithSemanticsData;
+import plugins.vpcli.domain.myuml.ucommon.UElement;
 
-public class NaryData extends BaseWithSemanticsData {
+public class NaryData extends UElement {
     private final String name;
     private final String id;
     private final boolean isInPackage;

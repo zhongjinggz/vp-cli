@@ -1,7 +1,8 @@
 #!/usr/bin/env python3
 
 import sys
-from vp_cli_common import CLIParams, run_vp_plugin, VALUE_TREE
+
+from vp_cli_common import CLIParams, run_vp_plugin, VALUE_EXPORT
 
 def main():
     params = CLIParams(sys.argv[1:]).parse()
@@ -10,7 +11,7 @@ def main():
         print(params.error_message, file=sys.stderr)
         sys.exit(2)
 
-    params.action = VALUE_TREE
+    params.action = VALUE_EXPORT
 
     run_vp_plugin(params)
 

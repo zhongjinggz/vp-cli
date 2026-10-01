@@ -7,12 +7,10 @@ import plugins.vpcli.drivenadapter.ProjectRepository;
 import plugins.vpcli.application.writers.WriterFactory;
 import plugins.vpcli.application.exporter.*;
 import plugins.vpcli.application.writers.*;
-import plugins.vpcli.domain.myuml.ucommon.SemanticsData;
 import plugins.vpcli.util.UnfitForExportException;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -30,8 +28,6 @@ public class DiagramExportPipeline {
 		this.fileFactory = fileFactory;
 	}
 
-	private final List<SemanticsData> projectSemanticsDatas = new ArrayList<>();
-
 	public void export(IDiagramUIModel diagram, File exportLocation) throws IOException, UnfitForExportException {
 		String diagramType = diagram.getType();
 		String diagramTitle = diagram.getName();
@@ -44,11 +40,6 @@ public class DiagramExportPipeline {
                 cde.extract();
 				ClassUMLWriter classWriter = writerFactory.createClassUMLWriter(cde);
 				classWriter.writeToFile(outputFile);
-
-				if (cde.getExportedSemantics() != null && !cde.getExportedSemantics().isEmpty()) {
-					projectSemanticsDatas.addAll(cde.getExportedSemantics());
-				}
-
 				break;
 
 			case "ComponentDiagram":
@@ -57,10 +48,6 @@ public class DiagramExportPipeline {
                 exporter.extract();
 				ComponentDeploymentUMLWriter componentWriter = writerFactory.createComponentDeploymentUMLWriter(exporter);
 				componentWriter.writeToFile(outputFile);
-
-				if (exporter.getExportedSemantics() != null && !exporter.getExportedSemantics().isEmpty()) {
-					projectSemanticsDatas.addAll(exporter.getExportedSemantics());
-				}
 				break;
 
 			case "InteractionDiagram":
@@ -68,11 +55,6 @@ public class DiagramExportPipeline {
                 seqde.extract();
 				SequenceUMLWriter sequenceWriter = writerFactory.createSequenceUMLWriter(seqde);
 				sequenceWriter.writeToFile(outputFile);
-
-				if (seqde.getExportedSemantics() != null && !seqde.getExportedSemantics().isEmpty()) {
-					projectSemanticsDatas.addAll(seqde.getExportedSemantics());
-				}
-				
 				break;
 
 			case "UseCaseDiagram":
@@ -80,30 +62,18 @@ public class DiagramExportPipeline {
                 ucde.extract();
 				UseCaseWriter useCaseWriter = writerFactory.createUseCaseWriter(ucde);
 				useCaseWriter.writeToFile(outputFile);
-				if (ucde.getExportedSemantics() != null && !ucde.getExportedSemantics().isEmpty()) {
-					projectSemanticsDatas.addAll(ucde.getExportedSemantics());
-				}
-
 				break;
 			case "StateDiagram":
 				StateDiagramExporter stde = exporterFactory.createStateDiagramExporter(diagram);
                 stde.extract();
 				StateUMLWriter stateUMLWriter = writerFactory.createStateUMLWriter(stde);
 				stateUMLWriter.writeToFile(outputFile);
-				if (stde.getExportedSemantics() != null && !stde.getExportedSemantics().isEmpty()) {
-
-					projectSemanticsDatas.addAll(stde.getExportedSemantics());
-				}
-
 				break;
 			case "ActivityDiagram":
 				ActivityDiagramExporter acde = exporterFactory.createActivityDiagramExporter(diagram);
                 acde.extract();
 				ActivityUMLWriter activityUMLWriter = writerFactory.createActivityUMLWriter(acde);
 				activityUMLWriter.writeToFile(outputFile);
-				if (acde.getExportedSemantics() != null && !acde.getExportedSemantics().isEmpty()) {
-					projectSemanticsDatas.addAll(acde.getExportedSemantics());
-				}
 				break;
 			default:
 				throw new UnfitForExportException("Error: " + diagramType + " not supported for export yet.");
@@ -114,13 +84,6 @@ public class DiagramExportPipeline {
 
 		}
     }
-
-	public List<SemanticsData> exportPartialSemantics(DiagramExporter diagramExporter) {
-		if (diagramExporter.getExportedSemantics() != null && !diagramExporter.getExportedSemantics().isEmpty()) {
-			return diagramExporter.getExportedSemantics(); 
-		}
-		return null;
-	}
 
 	File createOutputFile(String title, String contentType, File exportLocation) throws IOException {
 		StringBuilder fileName = new StringBuilder();
@@ -145,15 +108,6 @@ public class DiagramExportPipeline {
 				allSuccessful = false;
 			}
         }
-
-		File jsonFile;
-		try {
-			jsonFile = createOutputFile("project_semantics", "json", exportLocation);
-			PlantJSONWriter.writeToFile(jsonFile, projectSemanticsDatas);
-		} catch (IOException e) {
-			//TODO 统一处理异常
-			allSuccessful = false;
-		}
 
 		return allSuccessful;
 	}

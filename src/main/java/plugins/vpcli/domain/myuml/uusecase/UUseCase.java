@@ -1,32 +1,18 @@
 package plugins.vpcli.domain.myuml.uusecase;
 
-import plugins.vpcli.domain.myuml.ustatemachine.BaseWithSemanticsData;
+import plugins.vpcli.domain.myuml.ucommon.UElement;
 
 import java.util.List;
 
-public class UseCaseData extends BaseWithSemanticsData {
-	private String name;
-	private String description;
+public class UUseCase extends UElement {
 	private List<String> stereotypes;
 	private boolean isInPackage;
 	private boolean isBusiness;
 	private String Uid;
 	
 	
-	public UseCaseData(String name) {
+	public UUseCase(String name) {
         super(name);
-	}
-	public String getName() {
-		return name;
-	}
-	public void setName(String name) {
-		this.name = name;
-	}
-	public String getDescription() {
-		return description;
-	}
-	public void setDescription(String description) {
-		this.description = description;
 	}
 	public List<String> getStereotypes() {
 		return stereotypes;

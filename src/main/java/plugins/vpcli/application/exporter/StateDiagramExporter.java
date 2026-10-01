@@ -277,8 +277,6 @@ public class StateDiagramExporter extends DiagramExporter {
         stateData.setInState(isInState);
         stateData.setId(id);
 
-        addSemanticsIfExist(stateModel, stateData);
-
         var regionIter = stateModel.regionIterator();
         while (regionIter.hasNext()) {
             IRegion regionModel = (IRegion) regionIter.next();

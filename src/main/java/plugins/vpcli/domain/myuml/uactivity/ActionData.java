@@ -1,8 +1,8 @@
 package plugins.vpcli.domain.myuml.uactivity;
 
-import plugins.vpcli.domain.myuml.ustatemachine.BaseWithSemanticsData;
+import plugins.vpcli.domain.myuml.ucommon.UElement;
 
-public class ActionData extends BaseWithSemanticsData implements FlowNode {
+public class ActionData extends UElement implements FlowNode {
     private boolean isInitial;
     private boolean isFinal;
     private boolean isFinalFlow;

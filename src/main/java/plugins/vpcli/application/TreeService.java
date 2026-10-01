@@ -2,6 +2,7 @@ package plugins.vpcli.application;
 
 import com.vp.plugin.model.IModelElement;
 import com.vp.plugin.model.factory.IModelElementFactory;
+import plugins.vpcli.domain.myuml.upackage.UPackage;
 import plugins.vpcli.drivenadapter.ProjectRepository;
 
 import java.util.ArrayList;
@@ -16,38 +17,53 @@ public class TreeService {
 	}
 
 	public void tree() {
-        var topLevelElements = projectRepository.getProject().toModelElementArray();
-		List<IModelElement> roots = filterNamespaceContainers(topLevelElements);
-		for (IModelElement element : roots) {
-			System.out.println(element.getName());
-			printNamespaceTree(element, "");
+		var topLevelVPElements = projectRepository.getProject().toModelElementArray();
+		var packages = toUPackages(topLevelVPElements);
+		printPackageTree(packages);
+	}
+
+	private void printPackageTree(List<UPackage> packages) {
+		for (UPackage aPackage : packages) {
+			System.out.println(aPackage.getName());
+			printSubPackages(aPackage, "");
 		}
 	}
 
-	private void printNamespaceTree(IModelElement element, String prefix) {
-		List<IModelElement> children = filterNamespaceContainers(element.toChildArray());
-		for (int i = 0; i < children.size(); i++) {
-			boolean isLast = (i == children.size() - 1);
-			String branch = isLast ? "└── " : "├── ";
-			System.out.println(prefix + branch + children.get(i).getName());
-			String childPrefix = prefix + (isLast ? "    " : "│   ");
-			printNamespaceTree(children.get(i), childPrefix);
-		}
-	}
-
-	private List<IModelElement> filterNamespaceContainers(IModelElement[] elements) {
-		List<IModelElement> result = new ArrayList<>();
-		for (IModelElement element : elements) {
-			if (isNamespaceContainer(element)) {
-				result.add(element);
+	private List<UPackage> toUPackages(IModelElement[] vpElements) {
+		List<UPackage> result = new ArrayList<>();
+        for ( var aVPElement : vpElements ) {
+			if (isPackage(aVPElement)) {
+				var aPackage = toUPackage(aVPElement);
+				var subPackages = toUPackages(aVPElement.toChildArray());
+				aPackage.addChildren(subPackages);
+				result.add(aPackage);
 			}
 		}
 		return result;
-	}
+    }
 
-	private boolean isNamespaceContainer(IModelElement element) {
+    private UPackage toUPackage(IModelElement vpElement) {
+        return new UPackage(vpElement.getId(), vpElement.getName());
+    }
+
+
+	private boolean isPackage(IModelElement element) {
 		String type = element.getModelType();
 		return IModelElementFactory.MODEL_TYPE_PACKAGE.equals(type)
 				|| IModelElementFactory.MODEL_TYPE_MODEL.equals(type);
+	}
+
+	private void printSubPackages(UPackage aPackage, String prefix) {
+		var subPackages = aPackage.getSubPackages();
+		int i = 0;
+		int size = subPackages.size();
+		for (var subPackage : subPackages) {
+			boolean isLast = (i == size - 1);
+			String branch = isLast ? "└── " : "├── ";
+			System.out.println(prefix + branch + subPackage.getName());
+			String subPrefix = prefix + (isLast ? "    " : "│   ");
+			printSubPackages(subPackage, subPrefix);
+			i++;
+		}
 	}
 }

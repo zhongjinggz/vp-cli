@@ -1,26 +1,26 @@
 package plugins.vpcli.domain.myuml.uclassifier;
 
-import plugins.vpcli.domain.myuml.ustatemachine.BaseWithSemanticsData;
-import plugins.vpcli.domain.myuml.udeployment.ArtifactData;
+import plugins.vpcli.domain.myuml.ucommon.UElement;
+import plugins.vpcli.domain.myuml.udeployment.UArtifact;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class ComponentData extends BaseWithSemanticsData {
+public class UComponent extends UElement {
 
 	private final boolean isInPackage;
 	private List<String> stereotypes;
 	private String Uid;
-	private final List<ComponentData> residents;
+	private final List<UComponent> residents;
     private boolean isResident;
 	private final List<PortData> ports;
 	private boolean isNodeComponent; // components and nodes are basically the same.
-	private final List<ArtifactData> artifacts;
+	private final List<UArtifact> artifacts;
 	private List<AttributeData> attributes;
 	private List<OperationData> operations;
 
 
-	public ComponentData(String name, boolean isInPackage) {
+	public UComponent(String name, boolean isInPackage) {
 		super(name);
 		this.isInPackage = isInPackage;
 		this.stereotypes = new ArrayList<>();
@@ -43,7 +43,7 @@ public class ComponentData extends BaseWithSemanticsData {
 		return isInPackage;
 	}
 
-	public List<ArtifactData> getArtifacts() {
+	public List<UArtifact> getArtifacts() {
 		return artifacts;
 	}
 
@@ -63,7 +63,7 @@ public class ComponentData extends BaseWithSemanticsData {
 		this.isResident = isResident;
 	}
 
-	public List<ComponentData> getResidents() {
+	public List<UComponent> getResidents() {
 		return residents;
 	}
 

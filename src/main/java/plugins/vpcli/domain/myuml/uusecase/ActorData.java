@@ -1,10 +1,10 @@
 package plugins.vpcli.domain.myuml.uusecase;
 
-import plugins.vpcli.domain.myuml.ustatemachine.BaseWithSemanticsData;
+import plugins.vpcli.domain.myuml.ucommon.UElement;
 
 import java.util.List;
 
-public class ActorData extends BaseWithSemanticsData {
+public class ActorData extends UElement {
 	private List<String> stereotypes;
 	private boolean isInPackage;
 	private boolean isBusiness;

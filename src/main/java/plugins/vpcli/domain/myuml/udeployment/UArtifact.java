@@ -1,15 +1,15 @@
 package plugins.vpcli.domain.myuml.udeployment;
 
-import plugins.vpcli.domain.myuml.ustatemachine.BaseWithSemanticsData;
+import plugins.vpcli.domain.myuml.ucommon.UElement;
 
-public class ArtifactData extends BaseWithSemanticsData {
+public class UArtifact extends UElement {
 
     private final boolean isInPackage;
     private final boolean isInNode;
     private String Uid;
 
 
-    public ArtifactData(String name, boolean isInPackage, boolean isInNode) {
+    public UArtifact(String name, boolean isInPackage, boolean isInNode) {
         super(name);
         this.isInPackage = isInPackage;
         this.isInNode = isInNode;

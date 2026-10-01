@@ -9,10 +9,10 @@ import com.vp.plugin.diagram.IDiagramUIModel;
 import com.vp.plugin.model.*;
 
 import plugins.vpcli.domain.myuml.uclassifier.*;
-import plugins.vpcli.domain.myuml.uclassifier.ComponentData.PortData;
+import plugins.vpcli.domain.myuml.uclassifier.UComponent.PortData;
 import plugins.vpcli.domain.myuml.upackage.UPackage;
 import plugins.vpcli.domain.myuml.ucommon.RelationshipData;
-import plugins.vpcli.domain.myuml.udeployment.ArtifactData;
+import plugins.vpcli.domain.myuml.udeployment.UArtifact;
 
 import static com.vp.plugin.diagram.IShapeTypeConstants.*;
 
@@ -20,10 +20,10 @@ public class ComponentDeploymentDiagramExporter extends DiagramExporter {
 	
 	private final IDiagramUIModel diagram;
 	
-	private final List<ComponentData> exportedComponents = new ArrayList<>();
-	private final List<ClassData> exportedInterfaces = new ArrayList<>();
+	private final List<UComponent> exportedComponents = new ArrayList<>();
+	private final List<UClass> exportedInterfaces = new ArrayList<>();
 	private final List<RelationshipData> relationshipDatas = new ArrayList<>();
-	private final List<ArtifactData> exportedArtifacts = new ArrayList<>();
+	private final List<UArtifact> exportedArtifacts = new ArrayList<>();
     private final List<UPackage> exportedPackages = new ArrayList<>();
 	private final List<PortData> allExportedPorts = new ArrayList<>();
 
@@ -116,29 +116,28 @@ public class ComponentDeploymentDiagramExporter extends DiagramExporter {
 	}
 
 
-	private void extractArtifact(IArtifact artifactModel, UPackage uPackage, ComponentData nodeData) {
+	private void extractArtifact(IArtifact artifactModel, UPackage uPackage, UComponent nodeData) {
 		boolean isInPackage = (artifactModel.getParent() instanceof IPackage && packageModelIds.contains(artifactModel.getParent().getId()));
 
 		boolean isInNode = (artifactModel.getParent() instanceof INode && nodeModelIds.contains(artifactModel.getParent().getId()));
 
-		ArtifactData artifactData = new ArtifactData(artifactModel.getName(), isInPackage, isInNode);
-		artifactData.setDescription(artifactModel.getDescription());
-		addSemanticsIfExist(artifactModel, artifactData);
+		UArtifact uArtifact = new UArtifact(artifactModel.getName(), isInPackage, isInNode);
+		uArtifact.setDescription(artifactModel.getDescription());
 
-		exportedArtifacts.add(artifactData);
+		exportedArtifacts.add(uArtifact);
 		if (uPackage != null)
-			uPackage.getArtifacts().add(artifactData);
+			uPackage.getArtifacts().add(uArtifact);
 		if (nodeData != null)
-			nodeData.getArtifacts().add(artifactData);
+			nodeData.getArtifacts().add(uArtifact);
 	}
 
-	private void extractNode(INode nodeModel, UPackage uPackage, ComponentData parentNodeData) {
+	private void extractNode(INode nodeModel, UPackage uPackage, UComponent parentNodeData) {
 		boolean isInPackage = (nodeModel.getParent() instanceof IPackage && packageModelIds.contains(nodeModel.getParent().getId()));
 		boolean isResident = (nodeModel.getParent() instanceof IComponent && compModelIds.contains(nodeModel.getParent().getId()))
 
 				|| (nodeModel.getParent() instanceof INode && nodeModelIds.contains(nodeModel.getParent().getId()));
 
-		ComponentData nodeData = new ComponentData(nodeModel.getName(), isInPackage);
+		UComponent nodeData = new UComponent(nodeModel.getName(), isInPackage);
 		nodeData.setNodeComponent(true);
 
 		nodeData.setDescription(nodeModel.getDescription());
@@ -173,7 +172,6 @@ public class ComponentDeploymentDiagramExporter extends DiagramExporter {
 			allExportedPorts.add(portData);
 		}
 
-		addSemanticsIfExist(nodeModel, nodeData);
 
 		exportedComponents.add(nodeData);
 		if (uPackage != null)
@@ -274,7 +272,6 @@ public class ComponentDeploymentDiagramExporter extends DiagramExporter {
 					extractArtifact((IArtifact) childElement, uPackage, null);
 				}
 			}
-			addSemanticsIfExist(packageModel, uPackage);
 			exportedPackages.add(uPackage);
 		}
 	}
@@ -295,7 +292,6 @@ public class ComponentDeploymentDiagramExporter extends DiagramExporter {
 
 			}
 		}
-		addSemanticsIfExist(packageModel, uPackage);
 		parent.getSubPackages().add(uPackage);
 		exportedPackages.add(uPackage);
 		
@@ -304,7 +300,7 @@ public class ComponentDeploymentDiagramExporter extends DiagramExporter {
 	private void extractInterface(IClass interfaceModel, UPackage uPackage) {
 		boolean isInPackage = (interfaceModel.getParent() instanceof IPackage && packageModelIds.contains(interfaceModel.getParent().getId()));
 		
-		ClassData interfaceData = new ClassData(interfaceModel.getName(), isInPackage);
+		UClass interfaceData = new UClass(interfaceModel.getName(), isInPackage);
 		interfaceData.setDescription(interfaceModel.getDescription());
 		interfaceData.setStereotypes(extractStereotypes(interfaceModel));
 		interfaceData.setUid(interfaceModel.getId());
@@ -314,29 +310,28 @@ public class ComponentDeploymentDiagramExporter extends DiagramExporter {
 		interfaceData.setAttributes(attributes);
 		interfaceData.setOperations(operations);
 
-		addSemanticsIfExist(interfaceModel, interfaceData);
-		
+
 		exportedInterfaces.add(interfaceData);
 		if (uPackage != null)
 			uPackage.getClasses().add(interfaceData);
 	}
 
-	private void extractComponent(IComponent componentModel, UPackage uPackage, ComponentData parentComponentData) {
+	private void extractComponent(IComponent componentModel, UPackage uPackage, UComponent parentUComponent) {
 		boolean isInPackage = (componentModel.getParent() instanceof IPackage) && packageModelIds.contains(componentModel.getParent().getId());
 		boolean isResident = (componentModel.getParent() instanceof IComponent && compModelIds.contains(componentModel.getParent().getId()))
 
 				|| (componentModel.getParent() instanceof INode && nodeModelIds.contains(componentModel.getParent().getId()));
 		
-		ComponentData componentData = new ComponentData(componentModel.getName(), isInPackage);
-		componentData.setDescription(componentModel.getDescription());
-		componentData.setResident(isResident);
+		UComponent uComponent = new UComponent(componentModel.getName(), isInPackage);
+		uComponent.setDescription(componentModel.getDescription());
+		uComponent.setResident(isResident);
 		
-		componentData.setStereotypes(extractStereotypes(componentModel));
+		uComponent.setStereotypes(extractStereotypes(componentModel));
 
         var componentIterator = componentModel.componentIterator();
 		while (componentIterator.hasNext()) {
 			IComponent residentComponentModel = (IComponent) componentIterator.next();
-			extractComponent(residentComponentModel, null, componentData);  // idk
+			extractComponent(residentComponentModel, null, uComponent);  // idk
 		}
 
         var portIterator =  componentModel.portIterator();
@@ -345,20 +340,19 @@ public class ComponentDeploymentDiagramExporter extends DiagramExporter {
 			PortData portData = new PortData(portModel.getName());
 			portData.setId(portModel.getId());
 			
-			componentData.getPorts().add(portData);
+			uComponent.getPorts().add(portData);
 			allExportedPorts.add(portData);
 		}
 
-		componentData.setAttributes(extractAttributes(componentModel::attributeIterator));
-		componentData.setOperations(extractOperations(componentModel::operationIterator));
+		uComponent.setAttributes(extractAttributes(componentModel::attributeIterator));
+		uComponent.setOperations(extractOperations(componentModel::operationIterator));
 
-		addSemanticsIfExist(componentModel, componentData);
-		
-		exportedComponents.add(componentData);
+
+		exportedComponents.add(uComponent);
 		if (uPackage != null)
-			uPackage.getComponents().add(componentData);
-		if (parentComponentData != null)
-			parentComponentData.getResidents().add(componentData);
+			uPackage.getComponents().add(uComponent);
+		if (parentUComponent != null)
+			parentUComponent.getResidents().add(uComponent);
 
 	}
 
@@ -396,11 +390,11 @@ public class ComponentDeploymentDiagramExporter extends DiagramExporter {
 		return operations;
 	}
 
-	public List<ComponentData> getExportedComponents() {
+	public List<UComponent> getExportedComponents() {
 		return exportedComponents;
 	}
 	
-	public List<ClassData> getExportedInterfaces() {
+	public List<UClass> getExportedInterfaces() {
 		return exportedInterfaces;
 	}
 	
@@ -411,7 +405,7 @@ public class ComponentDeploymentDiagramExporter extends DiagramExporter {
 		return relationshipDatas;
 	}
 
-	public List<ArtifactData> getExportedArtifacts() {
+	public List<UArtifact> getExportedArtifacts() {
 		return exportedArtifacts;
 	}
 

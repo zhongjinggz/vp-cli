@@ -211,7 +211,6 @@ public class SequenceDiagramExporter extends DiagramExporter {
 
 
 		lifelineData.setStereotypes(extractStereotypes(lifelineModel));
-		addSemanticsIfExist(lifelineModel, lifelineData);
 		exportedLifelines.add(lifelineData);
 		lifelineMap.put(lifelineModel, lifelineData);
 	}
@@ -221,7 +220,6 @@ public class SequenceDiagramExporter extends DiagramExporter {
 		ActorData actorData = new ActorData(name);
 		actorData.setStereotypes(extractStereotypes(modelElement));
 		actorData.setDescription(modelElement.getDescription());
-		addSemanticsIfExist(modelElement,actorData);
 		exportedInteractionActors.add(actorData);
 	}
 

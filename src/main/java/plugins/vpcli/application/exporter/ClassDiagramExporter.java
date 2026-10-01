@@ -10,7 +10,7 @@ import com.vp.plugin.model.*;
 
 import plugins.vpcli.domain.myuml.uclassifier.AssociationData;
 import plugins.vpcli.domain.myuml.uclassifier.AttributeData;
-import plugins.vpcli.domain.myuml.uclassifier.ClassData;
+import plugins.vpcli.domain.myuml.uclassifier.UClass;
 import plugins.vpcli.domain.myuml.uclassifier.NaryData;
 import plugins.vpcli.domain.myuml.uclassifier.OperationData;
 import plugins.vpcli.domain.myuml.uclassifier.OperationData.Parameter;
@@ -23,7 +23,7 @@ public class ClassDiagramExporter extends DiagramExporter {
 
 	private final IDiagramUIModel diagram;
 
-	private final List<ClassData> exportedClasses = new ArrayList<>();
+	private final List<UClass> exportedClasses = new ArrayList<>();
 	private final List<RelationshipData> relationshipDatas = new ArrayList<>();
 	private final List<UPackage> exportedPackages = new ArrayList<>();
 	private final List<NaryData> exportedNary = new ArrayList<>();
@@ -104,17 +104,16 @@ public class ClassDiagramExporter extends DiagramExporter {
 
 	private void extractClass(IClass classModel, UPackage uPackage) {
 		boolean isInPackage = !isRootLevelInDiagram(classModel);
-		ClassData classData = new ClassData(classModel.getName(), classModel.isAbstract(), classModel.getVisibility(),
+		UClass uClass = new UClass(classModel.getName(), classModel.isAbstract(), classModel.getVisibility(),
 				isInPackage);
-		classData.setDescription(classModel.getDescription());
-		classData.setStereotypes(extractStereotypes(classModel));
-		extractAttributes(classModel, classData);
-		extractOperations(classModel, classData);
+		uClass.setDescription(classModel.getDescription());
+		uClass.setStereotypes(extractStereotypes(classModel));
+		extractAttributes(classModel, uClass);
+		extractOperations(classModel, uClass);
 		
-		addSemanticsIfExist(classModel, classData);
-		exportedClasses.add(classData);
+		exportedClasses.add(uClass);
 		if (uPackage != null)
-			uPackage.getClasses().add(classData);
+			uPackage.getClasses().add(uClass);
 	}
 
 	private void extractNary(INARY naryModel, UPackage uPackage) {
@@ -123,7 +122,6 @@ public class ClassDiagramExporter extends DiagramExporter {
 		String id = naryModel.getId();
 		NaryData naryData = new NaryData(name, id, isInPackage);
 		naryData.setDescription(naryModel.getDescription());
-		addSemanticsIfExist(naryModel, naryData);
 
 		if (uPackage != null)
 			uPackage.getNaries().add(naryData);
@@ -234,7 +232,6 @@ public class ClassDiagramExporter extends DiagramExporter {
                     extractPackagedPackage((IPackage) childElement, uPackage);
 				}
 			}
-			addSemanticsIfExist(packageModel, uPackage);
 			exportedPackages.add(uPackage);
 		}
 	}
@@ -253,19 +250,18 @@ public class ClassDiagramExporter extends DiagramExporter {
 				extractPackagedPackage((IPackage) childElement, uPackage);
 			}
 		}
-		addSemanticsIfExist(packageModel, uPackage);
 		parent.getSubPackages().add(uPackage);
 		exportedPackages.add(uPackage);
 	}
 
-	private void extractAttributes(IClass classModel, ClassData classData) {
+	private void extractAttributes(IClass classModel, UClass uClass) {
         var attributeIter = classModel.attributeIterator();
 		while (attributeIter.hasNext()) {
 			IAttribute attribute = (IAttribute) attributeIter.next();
 			AttributeData attr = new AttributeData(attribute.getVisibility(), attribute.getName(),
 					attribute.getTypeAsString(), attribute.getInitialValueAsString(), attribute.getScope());
 
-			classData.addAttribute(attr);
+			uClass.addAttribute(attr);
 		}
 
         var literalIter = classModel.enumerationLiteralIterator();
@@ -273,11 +269,11 @@ public class ClassDiagramExporter extends DiagramExporter {
 			ApplicationManager.instance().getViewManager().showMessage("literal being extracted.");
 			IEnumerationLiteral literal = (IEnumerationLiteral) literalIter.next();
 			AttributeData attr = new AttributeData("", literal.getName(), "", "", "instance");
-			classData.addAttribute(attr);
+			uClass.addAttribute(attr);
 		}
 	}
 
-	private void extractOperations(IClass classModel, ClassData classData) {
+	private void extractOperations(IClass classModel, UClass uClass) {
         var operationIter = classModel.operationIterator();
 		while (operationIter.hasNext()) {
 			IOperation operation = (IOperation) operationIter.next();
@@ -291,11 +287,11 @@ public class ClassDiagramExporter extends DiagramExporter {
 						parameter.getDefaultValueAsString());
 				op.addParameter(paramData);
 			}
-			classData.addOperation(op);
+			uClass.addOperation(op);
 		}
 	}
 
-	public List<ClassData> getExportedClasses() {
+	public List<UClass> getExportedClasses() {
 		return exportedClasses;
 	}
 

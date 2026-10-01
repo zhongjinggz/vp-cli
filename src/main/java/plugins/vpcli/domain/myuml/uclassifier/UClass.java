@@ -1,11 +1,11 @@
 package plugins.vpcli.domain.myuml.uclassifier;
 
-import plugins.vpcli.domain.myuml.ustatemachine.BaseWithSemanticsData;
+import plugins.vpcli.domain.myuml.ucommon.UElement;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class ClassData extends BaseWithSemanticsData {
+public class UClass extends UElement {
     private boolean isAbstract;
     private List<AttributeData> attributes = new ArrayList<>();
     private List<OperationData> operations = new ArrayList<>();
@@ -14,7 +14,7 @@ public class ClassData extends BaseWithSemanticsData {
     private String visibility;
     private String Uid;
 
-    public ClassData(String name, boolean isAbstract, String visibility, boolean isInPackage) {
+    public UClass(String name, boolean isAbstract, String visibility, boolean isInPackage) {
     	super(name);
         this.setAbstract(isAbstract);
         this.visibility = visibility;
@@ -22,7 +22,7 @@ public class ClassData extends BaseWithSemanticsData {
         this.setInPackage(isInPackage);
     }
 
-    public ClassData(String name, boolean isInPackage) { // interfaces for component
+    public UClass(String name, boolean isInPackage) { // interfaces for component
     	super(name);
     	this.setInPackage(isInPackage);
     	this.stereotypes = new ArrayList<>();

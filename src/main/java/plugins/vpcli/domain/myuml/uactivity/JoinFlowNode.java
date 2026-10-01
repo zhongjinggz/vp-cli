@@ -1,8 +1,8 @@
 package plugins.vpcli.domain.myuml.uactivity;
 
-import plugins.vpcli.domain.myuml.ustatemachine.BaseWithSemanticsData;
+import plugins.vpcli.domain.myuml.ucommon.UElement;
 
-public class JoinFlowNode extends BaseWithSemanticsData implements FlowNode {
+public class JoinFlowNode extends UElement implements FlowNode {
 
     private FlowNode nextNode;
     private String prevLabel;

@@ -1,87 +1,131 @@
 package plugins.vpcli.domain.myuml.upackage;
 
-import plugins.vpcli.domain.myuml.uusecase.UseCaseData;
-import plugins.vpcli.domain.myuml.ustatemachine.BaseWithSemanticsData;
-import plugins.vpcli.domain.myuml.uclassifier.ClassData;
-import plugins.vpcli.domain.myuml.uclassifier.ComponentData;
+import plugins.vpcli.domain.myuml.ucommon.UElement;
+import plugins.vpcli.domain.myuml.uusecase.UUseCase;
+import plugins.vpcli.domain.myuml.uclassifier.UClass;
+import plugins.vpcli.domain.myuml.uclassifier.UComponent;
 import plugins.vpcli.domain.myuml.uclassifier.NaryData;
-import plugins.vpcli.domain.myuml.udeployment.ArtifactData;
+import plugins.vpcli.domain.myuml.udeployment.UArtifact;
 import plugins.vpcli.domain.myuml.uusecase.ActorData;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class UPackage extends BaseWithSemanticsData {
-    private List<ClassData> classes = new ArrayList<>();
-    private List<UPackage> subPackages = new ArrayList<>(); // Nested packages if any
-    private List<NaryData> naries = new ArrayList<>();
-    private List<ActorData> actors = new ArrayList<>();
-    private List<UseCaseData> useCases = new ArrayList<>();
-    private final List<ComponentData> components = new ArrayList<>();
-	private final List<ArtifactData> artifacts = new ArrayList<>();
+public class UPackage extends UElement {
     private boolean isSubpackage;
     private boolean isRectangle = false; // is System in reality, but systems are not a different type in puml , just a rectangle shape
-    private String Uid;
 
-    public UPackage(String packageName, boolean isSubpackage) {
-    	super(packageName);
-    	this.isSubpackage = isSubpackage;
-    	
+    public UPackage(String id, String name) {
+        super(id, name);
+
     }
-    public UPackage(String packageName, List<ClassData> classes, List<UPackage> subPackages, List<NaryData> naries, boolean isSubpackage, boolean isRectangle) {
+    public UPackage(String packageName, boolean isSubpackage) {
         super(packageName);
-        this.classes = classes != null ? classes : new ArrayList<>();
-        this.subPackages = subPackages != null ? subPackages : new ArrayList<>();
-        this.setNaries(naries != null ? naries : new ArrayList<>());
+        this.isSubpackage = isSubpackage;
+    }
+
+    public UPackage(String packageName
+        , List<UClass> classes
+        , List<UPackage> subPackages
+        , List<NaryData> naries
+        , boolean isSubpackage
+        , boolean isRectangle) {
+
+        super(packageName);
+
+        super.addChildren(classes);
+        super.addChildren(subPackages);
+        super.addChildren(naries);
+
         this.setSubpackage(isSubpackage);
-        this.useCases = useCases != null ? useCases : new ArrayList<>();
-        this.actors = actors != null ? actors : new ArrayList<>();
-        this.classes = classes != null ? classes : new ArrayList<>();
         this.isRectangle = isRectangle;
     }
 
-    
-    public List<ClassData> getClasses() {
-        return classes;
+
+    public boolean isSubpackage() {
+        return isSubpackage;
+    }
+
+    public void setSubpackage(boolean isSubpackage) {
+        this.isSubpackage = isSubpackage;
+    }
+
+    public boolean isRectangle() {
+        return this.isRectangle;
+    }
+
+    // TODO 抽取下述个方法的重复代码
+    public List<UClass> getClasses() {
+        List<UClass> result = new ArrayList<>();
+        for (UElement element : getChildren()) {
+            if (element instanceof UClass) {
+                result.add((UClass) element);
+            }
+        }
+        return result;
     }
 
     public List<UPackage> getSubPackages() {
-        return subPackages;
+        List<UPackage> result = new ArrayList<>();
+        for (UElement element : getChildren()) {
+            if (element instanceof UPackage) {
+                result.add((UPackage) element);
+            }
+        }
+        return result;
     }
 
-	public boolean isSubpackage() {
-		return isSubpackage;
-	}
+    public void addSubPackage(UPackage subPackage) {
+        addChild(subPackage);
+    }
 
-	public void setSubpackage(boolean isSubpackage) {
-		this.isSubpackage = isSubpackage;
-	}
+    public List<NaryData> getNaries() {
+        List<NaryData> result = new ArrayList<>();
+        for (UElement element : getChildren()) {
+            if (element instanceof NaryData) {
+                result.add((NaryData) element);
+            }
+        }
+        return result;
+    }
 
-	public List<NaryData> getNaries() {
-		return naries;
-	}
+    public List<ActorData> getActors() {
+        List<ActorData> result = new ArrayList<>();
+        for (UElement element : getChildren()) {
+            if (element instanceof ActorData) {
+                result.add((ActorData) element);
+            }
+        }
+        return result;
+    }
 
-	public void setNaries(List<NaryData> naries) {
-		this.naries = naries;
-	}
+    public List<UUseCase> getUseCases() {
+        List<UUseCase> result = new ArrayList<>();
+        for (UElement element : getChildren()) {
+            if (element instanceof UUseCase) {
+                result.add((UUseCase) element);
+            }
+        }
+        return result;
+    }
 
-	public List<ActorData> getActors() {
-		return actors;
-	}
+    public List<UComponent> getComponents() {
+        List<UComponent> result = new ArrayList<>();
+        for (UElement element : getChildren()) {
+            if (element instanceof UComponent) {
+                result.add((UComponent) element);
+            }
+        }
+        return result;
+    }
 
-	public List<UseCaseData> getUseCases() {
-		return useCases;
-	}
-
-	public boolean isRectangle() {
-		return this.isRectangle;
-	}
-
-	public List<ComponentData> getComponents() {
-		return components;
-	}
-
-	public List<ArtifactData> getArtifacts() {
-		return artifacts;
-	}
+    public List<UArtifact> getArtifacts() {
+        List<UArtifact> result = new ArrayList<>();
+        for (UElement element : getChildren()) {
+            if (element instanceof UArtifact) {
+                result.add((UArtifact) element);
+            }
+        }
+        return result;
+    }
 }

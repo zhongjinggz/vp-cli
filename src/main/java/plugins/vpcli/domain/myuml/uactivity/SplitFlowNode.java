@@ -1,11 +1,11 @@
 package plugins.vpcli.domain.myuml.uactivity;
 
-import plugins.vpcli.domain.myuml.ustatemachine.BaseWithSemanticsData;
+import plugins.vpcli.domain.myuml.ucommon.UElement;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class SplitFlowNode extends BaseWithSemanticsData implements FlowNode {
+public class SplitFlowNode extends UElement implements FlowNode {
 
     private final String type;
     private final List<FlowNode> branches = new ArrayList<>();
@@ -37,9 +37,6 @@ public class SplitFlowNode extends BaseWithSemanticsData implements FlowNode {
     @Override
     public void setPrevLabelBranch(String label) {
         this.prevLabel = label;
-    }
-
-    public void setMergeStyleJoin(boolean mergeStyleJoin) {
     }
 
     public String getSwimlane() {
