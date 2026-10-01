@@ -44,7 +44,7 @@ plugins.vpcli/
 "先读取、后写入"的两阶段设计：
 
 1. **`DiagramExportPipeline`** — 根据 `IDiagramUIModel.getType()`（如 `"ClassDiagram"`、`"InteractionDiagram"` 即时序图）分派到具体的 `DiagramExporter`。
-2. **`DiagramExporter`（抽象类）** — `extract()` 遍历 VP 图表模型并填充类型化的数据对象（如 `UClass`、`UUseCase`、`MessageData`）。子类：`ClassDiagramExporter`、`UseCaseDiagramExporter`、`SequenceDiagramExporter`、`ComponentDeploymentDiagramExporter`（同时处理组件图和部署图）、`StateDiagramExporter`、`ActivityDiagramExporter`。
+2. **`DiagramExporter`（抽象类）** — `extract()` 遍历 VP 图表模型并填充类型化的数据对象（如 `MyClass`、`MyUseCase`、`MessageData`）。子类：`ClassDiagramExporter`、`UseCaseDiagramExporter`、`SequenceDiagramExporter`、`ComponentDeploymentDiagramExporter`（同时处理组件图和部署图）、`StateDiagramExporter`、`ActivityDiagramExporter`。
 3. **`PlantUMLWriter`（抽象类）** — `writeToFile()` 将数据对象渲染为 PlantUML 语法。子类：`ClassUMLWriter`、`UseCaseWriter`、`SequenceUMLWriter`、`ComponentDeploymentUMLWriter`、`StateUMLWriter`、`ActivityUMLWriter`。
 
 ### 导入流水线 (`imports/`)

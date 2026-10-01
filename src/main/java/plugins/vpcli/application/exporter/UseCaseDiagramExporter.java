@@ -13,11 +13,11 @@ import com.vp.plugin.model.IRelationship;
 import com.vp.plugin.model.ISystem;
 import com.vp.plugin.model.IUseCase;
 
-import plugins.vpcli.domain.myuml.uusecase.ActorData;
-import plugins.vpcli.domain.myuml.uclassifier.AssociationData;
-import plugins.vpcli.domain.myuml.upackage.UPackage;
-import plugins.vpcli.domain.myuml.ucommon.RelationshipData;
-import plugins.vpcli.domain.myuml.uusecase.UUseCase;
+import plugins.vpcli.domain.myuml.myusecase.MyActor;
+import plugins.vpcli.domain.myuml.myclassifier.MyAssociation;
+import plugins.vpcli.domain.myuml.mypackage.MyPackage;
+import plugins.vpcli.domain.myuml.mycommon.MyRelationship;
+import plugins.vpcli.domain.myuml.myusecase.MyUseCase;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -34,11 +34,11 @@ public class UseCaseDiagramExporter extends DiagramExporter {
         this.diagram = diagram;
     }
     
-    private final List<ActorData> exportedActors = new ArrayList<>();
+    private final List<MyActor> exportedActors = new ArrayList<>();
     
-    private final List<RelationshipData> relationshipDatas = new ArrayList<>();
-    private final List<UPackage> exportedPackages = new ArrayList<>();
-    private final List<UUseCase> exportedUseCases = new ArrayList<>();
+    private final List<MyRelationship> myRelationships = new ArrayList<>();
+    private final List<MyPackage> exportedPackages = new ArrayList<>();
+    private final List<MyUseCase> exportedUseCases = new ArrayList<>();
 
     public void extract() {
 
@@ -101,11 +101,11 @@ public class UseCaseDiagramExporter extends DiagramExporter {
     }
 
 
-	private void extractUseCase(IUseCase modelElement, UPackage uPackage) {
+	private void extractUseCase(IUseCase modelElement, MyPackage uPackage) {
     	boolean isInPackage = !isRootLevelInDiagram(modelElement);
     	String name = modelElement.getName();
     	boolean isBusiness = modelElement.isBusinessModel();
-		UUseCase uUseCase = new UUseCase(name);
+		MyUseCase uUseCase = new MyUseCase(name);
 		uUseCase.setInPackage(isInPackage);
         uUseCase.setDescription(modelElement.getDescription());
 		uUseCase.setStereotypes(extractStereotypes(modelElement));
@@ -115,17 +115,17 @@ public class UseCaseDiagramExporter extends DiagramExporter {
 	}
 
 
-	private void extractActor(IActor modelElement, UPackage uPackage) {
+	private void extractActor(IActor modelElement, MyPackage uPackage) {
 		boolean isInPackage = !isRootLevelInDiagram(modelElement);
         boolean isBusiness = modelElement.isBusinessModel();
     	String name = modelElement.getName();
-    	ActorData actorData = new ActorData(name);
-    	actorData.setInPackage(isInPackage);
-        actorData.setDescription(modelElement.getDescription());
-    	actorData.setStereotypes(extractStereotypes(modelElement));
-        actorData.setBusiness(isBusiness);
-    	exportedActors.add(actorData);
-    	if (uPackage != null) uPackage.getActors().add(actorData);
+    	MyActor myActor = new MyActor(name);
+    	myActor.setInPackage(isInPackage);
+        myActor.setDescription(modelElement.getDescription());
+    	myActor.setStereotypes(extractStereotypes(modelElement));
+        myActor.setBusiness(isBusiness);
+    	exportedActors.add(myActor);
+    	if (uPackage != null) uPackage.getActors().add(myActor);
 	}
 
 
@@ -165,7 +165,7 @@ public class UseCaseDiagramExporter extends DiagramExporter {
             String toEndMultiplicity = Objects.toString(toEnd.getMultiplicity(), "").equals("Unspecified") ? "" : toEnd.getMultiplicity();
 
 
-            AssociationData associationData = new AssociationData(
+            MyAssociation myAssociation = new MyAssociation(
             		sourceName,
                     targetName,
                     relationship.getModelType(),
@@ -175,19 +175,19 @@ public class UseCaseDiagramExporter extends DiagramExporter {
                     fromEnd.getAggregationKind()
             );
 
-            relationshipDatas.add(associationData);
+            myRelationships.add(myAssociation);
         	return;
         }
 
-        RelationshipData relationshipData = new RelationshipData(sourceName, targetName, relationship.getModelType(), relationship.getName());
-        relationshipDatas.add(relationshipData);
+        MyRelationship myRelationship = new MyRelationship(sourceName, targetName, relationship.getModelType(), relationship.getName());
+        myRelationships.add(myRelationship);
     }
 
 
 	private void extractPackage(IModelElement modelElement) {
         
         if (isRootLevelInDiagram(modelElement)) {
-	        UPackage uPackage = new UPackage(modelElement.getName(), null, null, null, false, modelElement instanceof ISystem);
+	        MyPackage uPackage = new MyPackage(modelElement.getName(), null, null, null, false, modelElement instanceof ISystem);
             uPackage.setDescription(modelElement.getDescription());
             IModelElement[] childElements = modelElement.toChildArray();
 	        for (IModelElement childElement : childElements) {
@@ -204,10 +204,10 @@ public class UseCaseDiagramExporter extends DiagramExporter {
         }
     }
 
-	private void extractPackagedPackage(IModelElement childElement, UPackage parent) {
+	private void extractPackagedPackage(IModelElement childElement, MyPackage parent) {
 //        ApplicationManager.instance().getViewManager().showMessage("Extracting package: " + childElement.getName());
         
-        UPackage uPackage = new UPackage(childElement.getName(), null, null, null, true, childElement instanceof ISystem);
+        MyPackage uPackage = new MyPackage(childElement.getName(), null, null, null, true, childElement instanceof ISystem);
         uPackage.setDescription(childElement.getDescription());
         IModelElement[] childElements = childElement.toChildArray();
         for (IModelElement childElement1 : childElements) {
@@ -224,22 +224,22 @@ public class UseCaseDiagramExporter extends DiagramExporter {
     }
 
 
-	public List<UUseCase> getExportedUseCases() {
+	public List<MyUseCase> getExportedUseCases() {
 		return exportedUseCases;
 	}
 
 
-	public List<RelationshipData> getExportedRelationships() {
-		return relationshipDatas;
+	public List<MyRelationship> getExportedRelationships() {
+		return myRelationships;
 	}
 
 
-	public List<UPackage> getExportedPackages() {
+	public List<MyPackage> getExportedPackages() {
 		return exportedPackages;
 	}
 
 
-	public List<ActorData> getExportedActors() {
+	public List<MyActor> getExportedActors() {
 		return exportedActors;
 	}
 	

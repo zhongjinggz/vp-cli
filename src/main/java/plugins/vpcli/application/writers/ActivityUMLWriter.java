@@ -1,10 +1,10 @@
 package plugins.vpcli.application.writers;
 
-import plugins.vpcli.domain.myuml.uactivity.ActionData;
-import plugins.vpcli.domain.myuml.uactivity.FlowNode;
-import plugins.vpcli.domain.myuml.uactivity.JoinFlowNode;
-import plugins.vpcli.domain.myuml.uactivity.SplitFlowNode;
-import plugins.vpcli.domain.myuml.ucommon.NoteData;
+import plugins.vpcli.domain.myuml.myactivity.MyAction;
+import plugins.vpcli.domain.myuml.myactivity.MyFlowNode;
+import plugins.vpcli.domain.myuml.myactivity.MyJoinFlowNode;
+import plugins.vpcli.domain.myuml.myactivity.MySplitFlowNode;
+import plugins.vpcli.domain.myuml.mycommon.MyNote;
 
 import java.io.File;
 import java.io.IOException;
@@ -15,12 +15,12 @@ import java.util.*;
 
 public class ActivityUMLWriter extends PlantUMLWriter {
 
-    private final FlowNode rootFlowNode;
-    private final Set<FlowNode> processedNodes = new HashSet<>();
-    private final Stack<JoinFlowNode> joinStack = new Stack<>();
+    private final MyFlowNode rootFlowNode;
+    private final Set<MyFlowNode> processedNodes = new HashSet<>();
+    private final Stack<MyJoinFlowNode> joinStack = new Stack<>();
     private String activeSwimlane = "";
 
-    public ActivityUMLWriter(List<NoteData> notes, FlowNode rootFlowNode) {
+    public ActivityUMLWriter(List<MyNote> notes, MyFlowNode rootFlowNode) {
         super(notes);
         this.rootFlowNode = rootFlowNode;
     }
@@ -38,15 +38,15 @@ public class ActivityUMLWriter extends PlantUMLWriter {
         }
     }
 
-    private void generateFlowUML(FlowNode node, StringBuilder plantUMLContent) {
+    private void generateFlowUML(MyFlowNode node, StringBuilder plantUMLContent) {
         if (node == null || processedNodes.contains(node)) {
             return;
         }
 
         processedNodes.add(node);
 
-        if (node instanceof ActionData) {
-            ActionData action = (ActionData) node;
+        if (node instanceof MyAction) {
+            MyAction action = (MyAction) node;
             if (action.getSwimlane() != null) {
                 if (!Objects.equals(activeSwimlane, action.getSwimlane()))
                     plantUMLContent.append("|").append(action.getSwimlane()).append("|\n");
@@ -73,8 +73,8 @@ public class ActivityUMLWriter extends PlantUMLWriter {
 
         }
         // Handle SplitFlowNode
-        else if (node instanceof SplitFlowNode) {
-            SplitFlowNode splitNode = (SplitFlowNode) node;
+        else if (node instanceof MySplitFlowNode) {
+            MySplitFlowNode splitNode = (MySplitFlowNode) node;
             String type = splitNode.getType();
 
             if ("decision".equals(type)) {
@@ -82,13 +82,13 @@ public class ActivityUMLWriter extends PlantUMLWriter {
             } else if ("fork".equals(type)) {
                 writeForkAndJoin(plantUMLContent, splitNode);
             }
-        } else if (node instanceof JoinFlowNode) {
-            JoinFlowNode joinNode = (JoinFlowNode) node;
+        } else if (node instanceof MyJoinFlowNode) {
+            MyJoinFlowNode joinNode = (MyJoinFlowNode) node;
             if (!joinStack.contains(joinNode)) joinStack.push(joinNode);
         }
     }
 
-    private void writeDecision(StringBuilder plantUMLContent, SplitFlowNode decisionNode) {
+    private void writeDecision(StringBuilder plantUMLContent, MySplitFlowNode decisionNode) {
 
 
         if (decisionNode.getSwimlane() != null) {
@@ -97,7 +97,7 @@ public class ActivityUMLWriter extends PlantUMLWriter {
             activeSwimlane = decisionNode.getSwimlane();
         }
 
-        List<FlowNode> branches = decisionNode.getBranches();
+        List<MyFlowNode> branches = decisionNode.getBranches();
         String branchLabel = branches.get(0).getPrevLabelBranch();
         boolean isSwitch = false;
 
@@ -136,19 +136,19 @@ public class ActivityUMLWriter extends PlantUMLWriter {
         else plantUMLContent.append("endif\n");
 
         if (!joinStack.isEmpty()) {
-            JoinFlowNode join = joinStack.pop();
+            MyJoinFlowNode join = joinStack.pop();
             generateFlowUML(join.getNextNode(), plantUMLContent);
         }
-        FlowNode continuationNode = findJoinContinuation(decisionNode);
+        MyFlowNode continuationNode = findJoinContinuation(decisionNode);
         if (continuationNode != null) {
             generateFlowUML(continuationNode, plantUMLContent);
         }
     }
 
-    private void writeForkAndJoin(StringBuilder plantUMLContent, SplitFlowNode forkNode) {
+    private void writeForkAndJoin(StringBuilder plantUMLContent, MySplitFlowNode forkNode) {
         plantUMLContent.append("fork\n");
 
-        List<FlowNode> branches = forkNode.getBranches();
+        List<MyFlowNode> branches = forkNode.getBranches();
         for (int i = 0; i < branches.size(); i++) {
             generateFlowUML(branches.get(i), plantUMLContent);
             if (i < branches.size() - 1) {
@@ -157,21 +157,21 @@ public class ActivityUMLWriter extends PlantUMLWriter {
         }
 
         if (!joinStack.isEmpty()) {
-            JoinFlowNode join = joinStack.pop();
+            MyJoinFlowNode join = joinStack.pop();
             if (join.isMerge()) plantUMLContent.append("end merge\n");
             else plantUMLContent.append("end fork\n");
             generateFlowUML(join.getNextNode(), plantUMLContent);
         }
-        FlowNode continuationNode = findJoinContinuation(forkNode);
+        MyFlowNode continuationNode = findJoinContinuation(forkNode);
         if (continuationNode != null) {
             generateFlowUML(continuationNode, plantUMLContent);
         }
     }
 
-    private FlowNode findJoinContinuation(SplitFlowNode forkNode) {
-        for (FlowNode branch : forkNode.getBranches()) {
-            if (branch instanceof JoinFlowNode) {
-                return ((JoinFlowNode) branch).getNextNode();
+    private MyFlowNode findJoinContinuation(MySplitFlowNode forkNode) {
+        for (MyFlowNode branch : forkNode.getBranches()) {
+            if (branch instanceof MyJoinFlowNode) {
+                return ((MyJoinFlowNode) branch).getNextNode();
             }
         }
         return null;

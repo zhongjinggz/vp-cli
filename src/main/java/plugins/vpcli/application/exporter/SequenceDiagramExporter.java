@@ -12,25 +12,25 @@ import com.vp.plugin.diagram.IDiagramElement;
 import com.vp.plugin.diagram.IDiagramUIModel;
 import com.vp.plugin.model.*;
 
-import plugins.vpcli.domain.myuml.ucommon.RelationshipData;
-import plugins.vpcli.domain.myuml.uinteraction.CombinedFragment;
-import plugins.vpcli.domain.myuml.uinteraction.InteractionRef;
-import plugins.vpcli.domain.myuml.uinteraction.LifelineData;
-import plugins.vpcli.domain.myuml.uinteraction.MessageData;
-import plugins.vpcli.domain.myuml.uusecase.ActorData;
+import plugins.vpcli.domain.myuml.mycommon.MyRelationship;
+import plugins.vpcli.domain.myuml.myinteraction.MyCombinedFragment;
+import plugins.vpcli.domain.myuml.myinteraction.MyInteractionRef;
+import plugins.vpcli.domain.myuml.myinteraction.MyLifeline;
+import plugins.vpcli.domain.myuml.myinteraction.MessageData;
+import plugins.vpcli.domain.myuml.myusecase.MyActor;
 
 public class SequenceDiagramExporter extends DiagramExporter {
 
 	private final IDiagramUIModel diagram;
 
-	private final List<ActorData> exportedInteractionActors = new ArrayList<>();
-    private final List<LifelineData> exportedLifelines = new ArrayList<>();
+	private final List<MyActor> exportedInteractionActors = new ArrayList<>();
+    private final List<MyLifeline> exportedLifelines = new ArrayList<>();
 	private final List<MessageData> exportedMessages = new ArrayList<>();
-	private final List<CombinedFragment> exportedFragments = new ArrayList<>();
-	private final List<InteractionRef> exportedRefs = new ArrayList<>();
-	private final List<RelationshipData> exportedAnchors = new ArrayList<>();
+	private final List<MyCombinedFragment> exportedFragments = new ArrayList<>();
+	private final List<MyInteractionRef> exportedRefs = new ArrayList<>();
+	private final List<MyRelationship> exportedAnchors = new ArrayList<>();
 
-	private final Map<IInteractionLifeLine, LifelineData> lifelineMap = new HashMap<>();
+	private final Map<IInteractionLifeLine, MyLifeline> lifelineMap = new HashMap<>();
 	private final Set<IMessage> processedMessages = new HashSet<>(); // Set to track processed messages
 
 	public SequenceDiagramExporter(IDiagramUIModel diagram) {
@@ -116,9 +116,9 @@ public class SequenceDiagramExporter extends DiagramExporter {
 			addWarning("One of the Anchor's elements were null possibly due to illegal relationship (e.g. an Anchor between classes)");
 			return;
 		}
-		RelationshipData relationshipData = new RelationshipData(sourceName, targetName, relationship.getModelType(),
+		MyRelationship myRelationship = new MyRelationship(sourceName, targetName, relationship.getModelType(),
 				relationship.getName());
-		exportedAnchors.add(relationshipData);
+		exportedAnchors.add(myRelationship);
 	}
 
 	private void extracRef(IInteractionOccurrence refModel) {
@@ -129,7 +129,7 @@ public class SequenceDiagramExporter extends DiagramExporter {
 			return;
 		}
 		String referenceName = refModel.getRefersTo().getName();
-		InteractionRef ref = new InteractionRef(referenceName);
+		MyInteractionRef ref = new MyInteractionRef(referenceName);
 
 
 		for(IModelElement coveredLifeLine : refModel.toCoveredLifeLineArray()) {
@@ -139,11 +139,11 @@ public class SequenceDiagramExporter extends DiagramExporter {
 	}
 
 	private void extractFragment(ICombinedFragment fragmentModel) {
-		CombinedFragment fragment = new CombinedFragment(fragmentModel.getInteractionOperator()); 
+		MyCombinedFragment fragment = new MyCombinedFragment(fragmentModel.getInteractionOperator());
 
 		for(IInteractionOperand childOperand : fragmentModel.toOperandArray()) {
 
-			CombinedFragment.Operand operand = new CombinedFragment.Operand();
+			MyCombinedFragment.Operand operand = new MyCombinedFragment.Operand();
 			if (childOperand.toMessageArray() != null) {
 				for (IMessage message : childOperand.toMessageArray()) {
 
@@ -172,9 +172,9 @@ public class SequenceDiagramExporter extends DiagramExporter {
 		MessageData messageData = new MessageData(sourceName, targetName, "Message", messageModel.getName());
 
 		if (messageModel.getType() == IMessage.TYPE_CREATE_MESSAGE) {
-			LifelineData createLifelineData = lifelineMap.get((IInteractionLifeLine) target);
-			createLifelineData.setCreatedByMessage(true);
-			messageData.setCreate(true, createLifelineData);
+			MyLifeline createMyLifeline = lifelineMap.get((IInteractionLifeLine) target);
+			createMyLifeline.setCreatedByMessage(true);
+			messageData.setCreate(true, createMyLifeline);
 		} else if (messageModel.getType() == IMessage.TYPE_DURATION_MESSAGE) {
 			int durationHeight = messageModel.getDurationHeight();
 			messageData.setDuration(durationHeight);
@@ -201,33 +201,33 @@ public class SequenceDiagramExporter extends DiagramExporter {
 	private void extractLifeline(IInteractionLifeLine lifelineModel) {
 		String name = lifelineModel.getName();
 
-		LifelineData lifelineData = new LifelineData(name);
-		lifelineData.setDescription(lifelineModel.getDescription());
+		MyLifeline myLifeline = new MyLifeline(name);
+		myLifeline.setDescription(lifelineModel.getDescription());
 		IModelElement classifierModel = lifelineModel.getBaseClassifierAsModel();
 		if (classifierModel != null) {
-			lifelineData.setClassifier(classifierModel.getName());
-			if (name.isEmpty()) lifelineData.setName(classifierModel.getName());
+			myLifeline.setClassifier(classifierModel.getName());
+			if (name.isEmpty()) myLifeline.setName(classifierModel.getName());
 		}
 
 
-		lifelineData.setStereotypes(extractStereotypes(lifelineModel));
-		exportedLifelines.add(lifelineData);
-		lifelineMap.put(lifelineModel, lifelineData);
+		myLifeline.setStereotypes(extractStereotypes(lifelineModel));
+		exportedLifelines.add(myLifeline);
+		lifelineMap.put(lifelineModel, myLifeline);
 	}
 
 	private void extractInteractionActor(IInteractionActor modelElement) {
 		String name = modelElement.getName();
-		ActorData actorData = new ActorData(name);
-		actorData.setStereotypes(extractStereotypes(modelElement));
-		actorData.setDescription(modelElement.getDescription());
-		exportedInteractionActors.add(actorData);
+		MyActor myActor = new MyActor(name);
+		myActor.setStereotypes(extractStereotypes(modelElement));
+		myActor.setDescription(modelElement.getDescription());
+		exportedInteractionActors.add(myActor);
 	}
 
-	public List<ActorData> getExportedInteractionActors() {
+	public List<MyActor> getExportedInteractionActors() {
 		return exportedInteractionActors;
 	}
 
-	public List<LifelineData> getExportedLifelines() {
+	public List<MyLifeline> getExportedLifelines() {
 		return exportedLifelines;
 	}
 
@@ -235,15 +235,15 @@ public class SequenceDiagramExporter extends DiagramExporter {
 		return exportedMessages;
 	}
 
-	public List<CombinedFragment> getExportedFragments() {
+	public List<MyCombinedFragment> getExportedFragments() {
 		return exportedFragments;
 	}
 
-	public List<InteractionRef> getExportedRefs() {
+	public List<MyInteractionRef> getExportedRefs() {
 		return exportedRefs;
 	}
 	
-	public List<RelationshipData> getExportedAnchors() {
+	public List<MyRelationship> getExportedAnchors() {
 		return exportedAnchors;
 	}
 }

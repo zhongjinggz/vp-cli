@@ -1,7 +1,7 @@
 package plugins.vpcli;
 
 import com.vp.plugin.*;
-import plugins.vpcli.domain.myuml.uproject.UConverter;
+import plugins.vpcli.domain.myuml.myproject.MyConverter;
 import plugins.vpcli.drivenadapter.FileFactory;
 import plugins.vpcli.drivenadapter.ProjectRepository;
 import plugins.vpcli.drivenadapter.TreePrinter;
@@ -49,7 +49,7 @@ public class VPCLI implements VPPlugin, VPPluginCommandLineSupport {
     private TreePrinter treePrinter;
 
     // Domain Services
-    private UConverter packageConverter;
+    private MyConverter packageConverter;
 
     // Application Services
     private DiagramExportPipeline diagramExportPipeline;
@@ -72,7 +72,7 @@ public class VPCLI implements VPPlugin, VPPluginCommandLineSupport {
         this.treePrinter = new TreePrinter();
 
         // Domain Services
-        this.packageConverter = new UConverter();
+        this.packageConverter = new MyConverter();
 
         // Application Services
         this.diagramExportPipeline = new DiagramExportPipeline(

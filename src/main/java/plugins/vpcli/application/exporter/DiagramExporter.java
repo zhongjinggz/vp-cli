@@ -13,16 +13,16 @@ import com.vp.plugin.model.INOTE;
 import com.vp.plugin.model.IReference;
 import com.vp.plugin.model.IStereotype;
 
-import plugins.vpcli.domain.myuml.ucommon.NoteData;
-import plugins.vpcli.domain.myuml.ucommon.UReference;
-import plugins.vpcli.domain.myuml.udiagram.Diagram;
+import plugins.vpcli.domain.myuml.mycommon.MyNote;
+import plugins.vpcli.domain.myuml.mycommon.MyReference;
+import plugins.vpcli.domain.myuml.mydiagram.MyDiagram;
 
 public abstract class DiagramExporter {
 
 	public abstract void extract();
 	private final List<String> warnings = new ArrayList<>();
 
-	private final List<NoteData> noteDatas = new ArrayList<>();
+	private final List<MyNote> myNotes = new ArrayList<>();
 
 	// Set of all exported elements for constant lookup so that no relationships with un-exported elements are written
     protected final Set<IModelElement> allExportedElements = new HashSet<>();
@@ -53,36 +53,36 @@ public abstract class DiagramExporter {
 //	}
 
 
-	private List<UReference> extractReferences(IHasChildrenBaseModelElement modelElement) {
-		List<UReference> exportedReferences = new ArrayList<>();
+	private List<MyReference> extractReferences(IHasChildrenBaseModelElement modelElement) {
+		List<MyReference> exportedReferences = new ArrayList<>();
         var referenceIter = modelElement.referenceIterator();
 		while (referenceIter.hasNext()) {
 			IReference reference = (IReference) referenceIter.next();
-			UReference referenceData = null;
+			MyReference referenceData = null;
 			try {
 				switch (reference.getType()) {
 				case IReference.TYPE_DIAGRAM:
-					referenceData = new UReference("diagram", reference.getDescription(), reference.getUrlAsDiagram().getName(), reference.getUrlAsDiagram().getType(), null); // TODO: throws null pointer bc getUrlAsDiagram when the diagram is not in project
+					referenceData = new MyReference("diagram", reference.getDescription(), reference.getUrlAsDiagram().getName(), reference.getUrlAsDiagram().getType(), null); // TODO: throws null pointer bc getUrlAsDiagram when the diagram is not in project
 					break;
 
 				case IReference.TYPE_URL:
-					referenceData = new UReference("url", reference.getDescription(), reference.getUrl(), null, null);
+					referenceData = new MyReference("url", reference.getDescription(), reference.getUrl(), null, null);
 					break;
 
 				case IReference.TYPE_FILE:
-					referenceData = new UReference("file", reference.getDescription(), reference.getUrl(), null, null);
+					referenceData = new MyReference("file", reference.getDescription(), reference.getUrl(), null, null);
 					break;
 
 				case IReference.TYPE_FOLDER:
-					referenceData = new UReference("folder", reference.getDescription(), reference.getUrl(), null, null);
+					referenceData = new MyReference("folder", reference.getDescription(), reference.getUrl(), null, null);
 					break;
 
 				case IReference.TYPE_SHAPE:
-					referenceData = new UReference("shape", reference.getDescription(), reference.getName(), null, null);
+					referenceData = new MyReference("shape", reference.getDescription(), reference.getName(), null, null);
 					break;
 
 				case IReference.TYPE_MODEL_ELEMENT:
-					referenceData = new UReference("model_element", reference.getDescription(), reference.getUrlAsModel().getName(), null, reference.getUrlAsModel().getModelType());
+					referenceData = new MyReference("model_element", reference.getDescription(), reference.getUrlAsModel().getName(), null, reference.getUrlAsModel().getModelType());
 					break;
 
 				default:
@@ -105,14 +105,14 @@ public abstract class DiagramExporter {
 		String name = noteModel.getName();
 		String content = noteModel.getDescription();
 		String id = noteModel.getId();
-		NoteData noteData = new NoteData(name, content, id);
-		noteDatas.add(noteData);
+		MyNote myNote = new MyNote(name, content, id);
+		myNotes.add(myNote);
 	}
 
 	protected String getNoteAliasById(String naryId) {
-		for (NoteData noteData : noteDatas) {
-			if (noteData.getId().equals(naryId)) {
-				return noteData.getAlias();
+		for (MyNote myNote : myNotes) {
+			if (myNote.getId().equals(naryId)) {
+				return myNote.getAlias();
 			}
 		}
 		return null;
@@ -131,12 +131,12 @@ public abstract class DiagramExporter {
 		return stereotypes;
 	}
 
-	private List<Diagram> extractSubdiagrams(IModelElement modelElement) {
-		List<Diagram> diagrams = new ArrayList<>();
+	private List<MyDiagram> extractSubdiagrams(IModelElement modelElement) {
+		List<MyDiagram> diagrams = new ArrayList<>();
 		IDiagramUIModel[] subDiagrams = modelElement.toSubDiagramArray();
 		if (subDiagrams != null) {
 			for (IDiagramUIModel subDiagram : subDiagrams) {
-				diagrams.add(new Diagram(subDiagram.getName(), subDiagram.getType()));
+				diagrams.add(new MyDiagram(subDiagram.getName(), subDiagram.getType()));
 			}
 		}
 		return diagrams;
@@ -159,8 +159,8 @@ public abstract class DiagramExporter {
 		return isRootLevel(modelElement) || !packageModelIds.contains(modelElement.getParent().getId());
 	}
 
-	public List<NoteData> getNotes() {
-		return noteDatas;
+	public List<MyNote> getNotes() {
+		return myNotes;
 	}
 
 	protected void addWarning(String warning) {

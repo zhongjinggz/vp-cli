@@ -8,11 +8,11 @@ import com.vp.plugin.diagram.IDiagramElement;
 import com.vp.plugin.diagram.IDiagramUIModel;
 import com.vp.plugin.model.*;
 
-import plugins.vpcli.domain.myuml.uclassifier.*;
-import plugins.vpcli.domain.myuml.uclassifier.UComponent.PortData;
-import plugins.vpcli.domain.myuml.upackage.UPackage;
-import plugins.vpcli.domain.myuml.ucommon.RelationshipData;
-import plugins.vpcli.domain.myuml.udeployment.UArtifact;
+import plugins.vpcli.domain.myuml.myclassifier.*;
+import plugins.vpcli.domain.myuml.myclassifier.MyComponent.PortData;
+import plugins.vpcli.domain.myuml.mypackage.MyPackage;
+import plugins.vpcli.domain.myuml.mycommon.MyRelationship;
+import plugins.vpcli.domain.myuml.mydeployment.MyArtifact;
 
 import static com.vp.plugin.diagram.IShapeTypeConstants.*;
 
@@ -20,11 +20,11 @@ public class ComponentDeploymentDiagramExporter extends DiagramExporter {
 	
 	private final IDiagramUIModel diagram;
 	
-	private final List<UComponent> exportedComponents = new ArrayList<>();
-	private final List<UClass> exportedInterfaces = new ArrayList<>();
-	private final List<RelationshipData> relationshipDatas = new ArrayList<>();
-	private final List<UArtifact> exportedArtifacts = new ArrayList<>();
-    private final List<UPackage> exportedPackages = new ArrayList<>();
+	private final List<MyComponent> exportedComponents = new ArrayList<>();
+	private final List<MyClass> exportedInterfaces = new ArrayList<>();
+	private final List<MyRelationship> myRelationships = new ArrayList<>();
+	private final List<MyArtifact> exportedArtifacts = new ArrayList<>();
+    private final List<MyPackage> exportedPackages = new ArrayList<>();
 	private final List<PortData> allExportedPorts = new ArrayList<>();
 
 	private final Set<String> compModelIds = new HashSet<>();
@@ -116,12 +116,12 @@ public class ComponentDeploymentDiagramExporter extends DiagramExporter {
 	}
 
 
-	private void extractArtifact(IArtifact artifactModel, UPackage uPackage, UComponent nodeData) {
+	private void extractArtifact(IArtifact artifactModel, MyPackage uPackage, MyComponent nodeData) {
 		boolean isInPackage = (artifactModel.getParent() instanceof IPackage && packageModelIds.contains(artifactModel.getParent().getId()));
 
 		boolean isInNode = (artifactModel.getParent() instanceof INode && nodeModelIds.contains(artifactModel.getParent().getId()));
 
-		UArtifact uArtifact = new UArtifact(artifactModel.getName(), isInPackage, isInNode);
+		MyArtifact uArtifact = new MyArtifact(artifactModel.getName(), isInPackage, isInNode);
 		uArtifact.setDescription(artifactModel.getDescription());
 
 		exportedArtifacts.add(uArtifact);
@@ -131,13 +131,13 @@ public class ComponentDeploymentDiagramExporter extends DiagramExporter {
 			nodeData.getArtifacts().add(uArtifact);
 	}
 
-	private void extractNode(INode nodeModel, UPackage uPackage, UComponent parentNodeData) {
+	private void extractNode(INode nodeModel, MyPackage uPackage, MyComponent parentNodeData) {
 		boolean isInPackage = (nodeModel.getParent() instanceof IPackage && packageModelIds.contains(nodeModel.getParent().getId()));
 		boolean isResident = (nodeModel.getParent() instanceof IComponent && compModelIds.contains(nodeModel.getParent().getId()))
 
 				|| (nodeModel.getParent() instanceof INode && nodeModelIds.contains(nodeModel.getParent().getId()));
 
-		UComponent nodeData = new UComponent(nodeModel.getName(), isInPackage);
+		MyComponent nodeData = new MyComponent(nodeModel.getName(), isInPackage);
 		nodeData.setNodeComponent(true);
 
 		nodeData.setDescription(nodeModel.getDescription());
@@ -240,23 +240,23 @@ public class ComponentDeploymentDiagramExporter extends DiagramExporter {
 			if (toEnd.getMultiplicity() != null) {
 				 toEndMultiplicity = toEnd.getMultiplicity().equals("Unspecified") ? "" : toEnd.getMultiplicity();
 			}
-			AssociationData associationData = new AssociationData(sourceName, targetName, relationship.getModelType(),
+			MyAssociation myAssociation = new MyAssociation(sourceName, targetName, relationship.getModelType(),
 					relationship.getName(), fromEndMultiplicity, toEndMultiplicity,
 					fromEnd.getAggregationKind());
-			relationshipDatas.add(associationData);
+			myRelationships.add(myAssociation);
 			return;
 		}
 
 
-		RelationshipData relationshipData = new RelationshipData(sourceName, targetName, relationship.getModelType(),
+		MyRelationship myRelationship = new MyRelationship(sourceName, targetName, relationship.getModelType(),
 				relationship.getName());
-		relationshipDatas.add(relationshipData);
+		myRelationships.add(myRelationship);
 	}
 
 	private void extractPackage(IPackage packageModel) {
 		
 		if (isRootLevelInDiagram2(packageModel)) {
-			UPackage uPackage = new UPackage(packageModel.getName(), false);
+			MyPackage uPackage = new MyPackage(packageModel.getName(), false);
 			uPackage.setDescription(packageModel.getDescription());
 			IModelElement[] childElements = packageModel.toChildArray();
 			for (IModelElement childElement : childElements) {
@@ -276,8 +276,8 @@ public class ComponentDeploymentDiagramExporter extends DiagramExporter {
 		}
 	}
 
-	private void extractPackagedPackage(IPackage packageModel, UPackage parent) {
-		UPackage uPackage = new UPackage(packageModel.getName(), true);
+	private void extractPackagedPackage(IPackage packageModel, MyPackage parent) {
+		MyPackage uPackage = new MyPackage(packageModel.getName(), true);
 		uPackage.setDescription(packageModel.getDescription());
 		IModelElement[] childElements = packageModel.toChildArray();
 		for (IModelElement childElement : childElements) {
@@ -297,16 +297,16 @@ public class ComponentDeploymentDiagramExporter extends DiagramExporter {
 		
 	}
 
-	private void extractInterface(IClass interfaceModel, UPackage uPackage) {
+	private void extractInterface(IClass interfaceModel, MyPackage uPackage) {
 		boolean isInPackage = (interfaceModel.getParent() instanceof IPackage && packageModelIds.contains(interfaceModel.getParent().getId()));
 		
-		UClass interfaceData = new UClass(interfaceModel.getName(), isInPackage);
+		MyClass interfaceData = new MyClass(interfaceModel.getName(), isInPackage);
 		interfaceData.setDescription(interfaceModel.getDescription());
 		interfaceData.setStereotypes(extractStereotypes(interfaceModel));
 		interfaceData.setUid(interfaceModel.getId());
 
 		List<AttributeData> attributes = extractAttributes(interfaceModel::attributeIterator);
-		List<OperationData> operations = extractOperations(interfaceModel::operationIterator);
+		List<MyOperation> operations = extractOperations(interfaceModel::operationIterator);
 		interfaceData.setAttributes(attributes);
 		interfaceData.setOperations(operations);
 
@@ -316,22 +316,22 @@ public class ComponentDeploymentDiagramExporter extends DiagramExporter {
 			uPackage.getClasses().add(interfaceData);
 	}
 
-	private void extractComponent(IComponent componentModel, UPackage uPackage, UComponent parentUComponent) {
+	private void extractComponent(IComponent componentModel, MyPackage uPackage, MyComponent parentMyComponent) {
 		boolean isInPackage = (componentModel.getParent() instanceof IPackage) && packageModelIds.contains(componentModel.getParent().getId());
 		boolean isResident = (componentModel.getParent() instanceof IComponent && compModelIds.contains(componentModel.getParent().getId()))
 
 				|| (componentModel.getParent() instanceof INode && nodeModelIds.contains(componentModel.getParent().getId()));
 		
-		UComponent uComponent = new UComponent(componentModel.getName(), isInPackage);
-		uComponent.setDescription(componentModel.getDescription());
-		uComponent.setResident(isResident);
+		MyComponent myComponent = new MyComponent(componentModel.getName(), isInPackage);
+		myComponent.setDescription(componentModel.getDescription());
+		myComponent.setResident(isResident);
 		
-		uComponent.setStereotypes(extractStereotypes(componentModel));
+		myComponent.setStereotypes(extractStereotypes(componentModel));
 
         var componentIterator = componentModel.componentIterator();
 		while (componentIterator.hasNext()) {
 			IComponent residentComponentModel = (IComponent) componentIterator.next();
-			extractComponent(residentComponentModel, null, uComponent);  // idk
+			extractComponent(residentComponentModel, null, myComponent);  // idk
 		}
 
         var portIterator =  componentModel.portIterator();
@@ -340,19 +340,19 @@ public class ComponentDeploymentDiagramExporter extends DiagramExporter {
 			PortData portData = new PortData(portModel.getName());
 			portData.setId(portModel.getId());
 			
-			uComponent.getPorts().add(portData);
+			myComponent.getPorts().add(portData);
 			allExportedPorts.add(portData);
 		}
 
-		uComponent.setAttributes(extractAttributes(componentModel::attributeIterator));
-		uComponent.setOperations(extractOperations(componentModel::operationIterator));
+		myComponent.setAttributes(extractAttributes(componentModel::attributeIterator));
+		myComponent.setOperations(extractOperations(componentModel::operationIterator));
 
 
-		exportedComponents.add(uComponent);
+		exportedComponents.add(myComponent);
 		if (uPackage != null)
-			uPackage.getComponents().add(uComponent);
-		if (parentUComponent != null)
-			parentUComponent.getResidents().add(uComponent);
+			uPackage.getComponents().add(myComponent);
+		if (parentMyComponent != null)
+			parentMyComponent.getResidents().add(myComponent);
 
 	}
 
@@ -370,18 +370,18 @@ public class ComponentDeploymentDiagramExporter extends DiagramExporter {
 		return attributes;
 	}
 
-	private List<OperationData> extractOperations(Supplier<Iterator> operationIteratorSupplier) {
-		List<OperationData> operations = new ArrayList<>();
+	private List<MyOperation> extractOperations(Supplier<Iterator> operationIteratorSupplier) {
+		List<MyOperation> operations = new ArrayList<>();
         var operationIter = operationIteratorSupplier.get();
 		while (operationIter.hasNext()) {
 			IOperation operation = (IOperation) operationIter.next();
-			OperationData op = new OperationData(operation.getVisibility(), operation.getName(),
+			MyOperation op = new MyOperation(operation.getVisibility(), operation.getName(),
 					operation.getReturnTypeAsString(), operation.isAbstract(), null, operation.getScope());
 
             var paramIterator = operation.parameterIterator();
 			while (paramIterator.hasNext()) {
 				IParameter parameter = (IParameter) paramIterator.next();
-				OperationData.Parameter paramData = new OperationData.Parameter(parameter.getName(),
+				MyOperation.Parameter paramData = new MyOperation.Parameter(parameter.getName(),
 						parameter.getTypeAsString(), parameter.getDefaultValueAsString());
 				op.addParameter(paramData);
 			}
@@ -390,22 +390,22 @@ public class ComponentDeploymentDiagramExporter extends DiagramExporter {
 		return operations;
 	}
 
-	public List<UComponent> getExportedComponents() {
+	public List<MyComponent> getExportedComponents() {
 		return exportedComponents;
 	}
 	
-	public List<UClass> getExportedInterfaces() {
+	public List<MyClass> getExportedInterfaces() {
 		return exportedInterfaces;
 	}
 	
-	public List<UPackage> getExportedPackages() {
+	public List<MyPackage> getExportedPackages() {
 		return exportedPackages;
 	}
-	public List<RelationshipData> getRelationshipDatas() {
-		return relationshipDatas;
+	public List<MyRelationship> getRelationshipDatas() {
+		return myRelationships;
 	}
 
-	public List<UArtifact> getExportedArtifacts() {
+	public List<MyArtifact> getExportedArtifacts() {
 		return exportedArtifacts;
 	}
 

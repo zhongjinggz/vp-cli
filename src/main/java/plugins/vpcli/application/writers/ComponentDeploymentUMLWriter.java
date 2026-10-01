@@ -8,25 +8,25 @@ import java.nio.file.Files;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import plugins.vpcli.domain.myuml.uclassifier.UComponent;
-import plugins.vpcli.domain.myuml.uclassifier.UComponent.PortData;
-import plugins.vpcli.domain.myuml.uclassifier.AttributeData;
-import plugins.vpcli.domain.myuml.uclassifier.UClass;
-import plugins.vpcli.domain.myuml.uclassifier.OperationData;
-import plugins.vpcli.domain.myuml.ucommon.NoteData;
-import plugins.vpcli.domain.myuml.upackage.UPackage;
-import plugins.vpcli.domain.myuml.ucommon.RelationshipData;
-import plugins.vpcli.domain.myuml.udeployment.UArtifact;
+import plugins.vpcli.domain.myuml.myclassifier.MyComponent;
+import plugins.vpcli.domain.myuml.myclassifier.MyComponent.PortData;
+import plugins.vpcli.domain.myuml.myclassifier.AttributeData;
+import plugins.vpcli.domain.myuml.myclassifier.MyClass;
+import plugins.vpcli.domain.myuml.myclassifier.MyOperation;
+import plugins.vpcli.domain.myuml.mycommon.MyNote;
+import plugins.vpcli.domain.myuml.mypackage.MyPackage;
+import plugins.vpcli.domain.myuml.mycommon.MyRelationship;
+import plugins.vpcli.domain.myuml.mydeployment.MyArtifact;
 
 public class ComponentDeploymentUMLWriter extends PlantUMLWriter {
 
-	private final List<UComponent> components;
-	private final List<UClass> interfaces;
-	private final List<UPackage> packages;
-	private final List<RelationshipData> relationships;
-	private final List<UArtifact> artifacts;
+	private final List<MyComponent> components;
+	private final List<MyClass> interfaces;
+	private final List<MyPackage> packages;
+	private final List<MyRelationship> relationships;
+	private final List<MyArtifact> artifacts;
 
-    public ComponentDeploymentUMLWriter(List<NoteData> notes, List<UComponent> components, List<UClass> interfaces, List<UArtifact> artifacts, List<UPackage> packages, List<RelationshipData> relationships) {
+    public ComponentDeploymentUMLWriter(List<MyNote> notes, List<MyComponent> components, List<MyClass> interfaces, List<MyArtifact> artifacts, List<MyPackage> packages, List<MyRelationship> relationships) {
 		super(notes);
 		this.components = components;
 		this.interfaces = interfaces;
@@ -42,29 +42,29 @@ public class ComponentDeploymentUMLWriter extends PlantUMLWriter {
 		// Allowmixing parameter to allow for class-type interfaces
 		plantUMLContent.append("allowmixing\n");
 
-		for (UComponent uComponent : components) {
-			if(!uComponent.isInPackage() && !uComponent.isResident())
-				plantUMLContent.append(writeComponent(uComponent, ""));
+		for (MyComponent myComponent : components) {
+			if(!myComponent.isInPackage() && !myComponent.isResident())
+				plantUMLContent.append(writeComponent(myComponent, ""));
 		}
 
-		for (UClass interfaceData : interfaces) {
+		for (MyClass interfaceData : interfaces) {
 			if(!interfaceData.isInPackage())  
 				plantUMLContent.append(writeInterface(interfaceData, ""));
 		}
 
-		for (UArtifact uArtifact : artifacts) {
+		for (MyArtifact uArtifact : artifacts) {
 			if(!uArtifact.isInPackage() && !uArtifact.isInNode())
 				plantUMLContent.append(writeArtifact(uArtifact, ""));
 		}
 
-		for (UPackage uPackage : packages) {
+		for (MyPackage uPackage : packages) {
 			if(!uPackage.isSubpackage())
 				plantUMLContent.append(writePackage(uPackage, ""));
 		}
 
 		plantUMLContent.append(writeNotes());
 
-		for (RelationshipData relationship : relationships) {
+		for (MyRelationship relationship : relationships) {
 			plantUMLContent.append(writeRelationship(relationship));
 		}
 
@@ -74,7 +74,7 @@ public class ComponentDeploymentUMLWriter extends PlantUMLWriter {
 		}
 	}
 
-	private String writeArtifact(UArtifact uArtifact, String indent) {
+	private String writeArtifact(MyArtifact uArtifact, String indent) {
 		StringBuilder artifactString = new StringBuilder();
 		String name = formatName(uArtifact.getName());
 
@@ -82,29 +82,29 @@ public class ComponentDeploymentUMLWriter extends PlantUMLWriter {
 		return artifactString.toString();
 	}
 
-	private String writeRelationship(RelationshipData relationship) {
+	private String writeRelationship(MyRelationship relationship) {
 		
 		return relationship.toExportFormat();
     }
 	
-	private String writePackage(UPackage uPackage, String indent) {
+	private String writePackage(MyPackage uPackage, String indent) {
 		StringBuilder packageString = new StringBuilder();
 		String name = formatName(uPackage.getName());
 
 		packageString.append(indent).append("package " ).append(name).append(" {\n");
 
-		for (UClass interfaceData : uPackage.getClasses()) {
+		for (MyClass interfaceData : uPackage.getClasses()) {
 			packageString.append(writeInterface(interfaceData, indent + "\t"));
 		}
 
-		for (UArtifact uArtifact : uPackage.getArtifacts()) {
+		for (MyArtifact uArtifact : uPackage.getArtifacts()) {
 			packageString.append(writeArtifact(uArtifact, indent + "\t"));
 		}
-		for (UComponent uComponent : uPackage.getComponents()) {
-			packageString.append(writeComponent(uComponent, indent + "\t"));
+		for (MyComponent myComponent : uPackage.getComponents()) {
+			packageString.append(writeComponent(myComponent, indent + "\t"));
 		}
 
-		for (UPackage subPackage : uPackage.getSubPackages()) {
+		for (MyPackage subPackage : uPackage.getSubPackages()) {
 			packageString.append(writePackage(subPackage, indent + "\t"));
 		}
 
@@ -112,7 +112,7 @@ public class ComponentDeploymentUMLWriter extends PlantUMLWriter {
 		return packageString.toString();
 	}
 
-	private String writeInterface(UClass interfaceData, String indent) {
+	private String writeInterface(MyClass interfaceData, String indent) {
 		StringBuilder interfaceString = new StringBuilder();
 		String name = formatName(interfaceData.getName());
 		String warningComment = "";
@@ -158,13 +158,13 @@ public class ComponentDeploymentUMLWriter extends PlantUMLWriter {
 	}
 
 
-	private String writeComponent(UComponent uComponent, String indent) {
+	private String writeComponent(MyComponent myComponent, String indent) {
 		StringBuilder componentString = new StringBuilder();
-		String name = formatName(uComponent.getName()) ;
-		String aliasDeclaration = formatAlias(uComponent.getName()).equals(uComponent.getName()) ? "" : (" as " + formatAlias(uComponent.getName()));
+		String name = formatName(myComponent.getName()) ;
+		String aliasDeclaration = formatAlias(myComponent.getName()).equals(myComponent.getName()) ? "" : (" as " + formatAlias(myComponent.getName()));
 
-		List<AttributeData> attributeData = uComponent.getAttributes();
-		List<OperationData> operationData = uComponent.getOperations();
+		List<AttributeData> attributeData = myComponent.getAttributes();
+		List<MyOperation> operationData = myComponent.getOperations();
 		boolean hasOpsAndAttrs = !attributeData.isEmpty() || !operationData.isEmpty();
 		if (hasOpsAndAttrs) {
 			// we will need to create a package to contain the component and the interface it will implement
@@ -172,15 +172,15 @@ public class ComponentDeploymentUMLWriter extends PlantUMLWriter {
 		}
 		componentString.append(indent);
 
-		if (uComponent.isNodeComponent()) {
+		if (myComponent.isNodeComponent()) {
 			componentString.append("node ");
 		} else {
 			componentString.append("component ");
 		}
 		componentString.append(name).append(aliasDeclaration);
 
-		if (!uComponent.getStereotypes().isEmpty()) {
-			String stereotypesString = uComponent.getStereotypes().stream()
+		if (!myComponent.getStereotypes().isEmpty()) {
+			String stereotypesString = myComponent.getStereotypes().stream()
 					.filter(stereotype -> !"component".equals(stereotype)) // Exclude "component", VP auto applies it to every use case for some reason
 					.map(stereotype -> "<<" + stereotype + ">>")
 					.collect(Collectors.joining(", "));
@@ -189,20 +189,20 @@ public class ComponentDeploymentUMLWriter extends PlantUMLWriter {
 			}
 		}
 		// resident components & ports
-		List<UComponent> residents = uComponent.getResidents();
-		List<PortData> ports = uComponent.getPorts();
-		List<UArtifact> artifacts = uComponent.getArtifacts();
+		List<MyComponent> residents = myComponent.getResidents();
+		List<PortData> ports = myComponent.getPorts();
+		List<MyArtifact> artifacts = myComponent.getArtifacts();
 
 		componentString.append(" {\n");
 
 		if (residents != null && !residents.isEmpty()) {
-			for (UComponent resident : residents) {
+			for (MyComponent resident : residents) {
 				componentString.append(writeComponent(resident, indent + "\t"));
 			}
 		}
 
 		if (artifacts != null && !artifacts.isEmpty()) {
-			for (UArtifact artifact : artifacts) {
+			for (MyArtifact artifact : artifacts) {
 				componentString.append(writeArtifact(artifact, indent + "\t"));
 			}
 		}
@@ -223,24 +223,24 @@ public class ComponentDeploymentUMLWriter extends PlantUMLWriter {
 		componentString.append("\n");
 
 		if (hasOpsAndAttrs) {
-			componentString.append(writeImplInterface(uComponent, indent));
+			componentString.append(writeImplInterface(myComponent, indent));
 			componentString.append("}\n");
 		}
 		return componentString.toString();
 	}
 
-	private String writeImplInterface(UComponent uComponent, String indent) {
-		String name = formatName("I" + uComponent.getName());
+	private String writeImplInterface(MyComponent myComponent, String indent) {
+		String name = formatName("I" + myComponent.getName());
 		StringBuilder interfaceString = new StringBuilder();
-		String aliasDeclaration = formatAlias(uComponent.getName()).equals(uComponent.getName()) ? "" : (" as I" + formatAlias(uComponent.getName()));
+		String aliasDeclaration = formatAlias(myComponent.getName()).equals(myComponent.getName()) ? "" : (" as I" + formatAlias(myComponent.getName()));
 
 		interfaceString.append(indent).append("interface ").append(name).append(aliasDeclaration);
 		interfaceString.append(" {\n");
 
-		writeAttributesAndOperations(uComponent.getAttributes(), uComponent.getOperations(), indent, interfaceString);
+		writeAttributesAndOperations(myComponent.getAttributes(), myComponent.getOperations(), indent, interfaceString);
 		interfaceString.append(indent).append("}\n");
 
-		interfaceString.append(indent).append(formatAlias(uComponent.getName())).append(" ..|> ").append("I").append(formatAlias(uComponent.getName())).append(" : implements");
+		interfaceString.append(indent).append(formatAlias(myComponent.getName())).append(" ..|> ").append("I").append(formatAlias(myComponent.getName())).append(" : implements");
 		interfaceString.append("\n");
 		return interfaceString.toString();
 	}

@@ -5,15 +5,15 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import plugins.vpcli.domain.myuml.uclassifier.AttributeData;
-import plugins.vpcli.domain.myuml.ucommon.NoteData;
-import plugins.vpcli.domain.myuml.uclassifier.OperationData;
+import plugins.vpcli.domain.myuml.myclassifier.AttributeData;
+import plugins.vpcli.domain.myuml.mycommon.MyNote;
+import plugins.vpcli.domain.myuml.myclassifier.MyOperation;
 
 public abstract class PlantUMLWriter {
     
-    protected List<NoteData> notes = new ArrayList<>();
+    protected List<MyNote> notes = new ArrayList<>();
     
-    public PlantUMLWriter(List<NoteData> notes) {
+    public PlantUMLWriter(List<MyNote> notes) {
         if (notes != null) {
             this.notes = notes;
         }
@@ -23,14 +23,14 @@ public abstract class PlantUMLWriter {
     
     protected String writeNotes() {
         StringBuilder notesContent = new StringBuilder();
-        for (NoteData noteData : notes) {
-            notesContent.append(writeNote(noteData)).append("\n");
+        for (MyNote myNote : notes) {
+            notesContent.append(writeNote(myNote)).append("\n");
         }
         return notesContent.toString();
     }
     
-    protected String writeNote(NoteData noteData) {
-        String content = noteData.getContent().replaceAll("\n", "\\\\n");
+    protected String writeNote(MyNote myNote) {
+        String content = myNote.getContent().replaceAll("\n", "\\\\n");
         
         // Return an empty string if content is null or empty
         if (content == null || content.isEmpty()) {
@@ -39,7 +39,7 @@ public abstract class PlantUMLWriter {
 
         return "note " +
             "\"" + content + "\" as " +
-            noteData.getName();
+            myNote.getName();
     }
 
     protected String formatName(String name) {
@@ -77,7 +77,7 @@ public abstract class PlantUMLWriter {
         }
         return visibilityCharacter;
     }
-    protected void writeAttributesAndOperations(List<AttributeData> attributes, List<OperationData> operations, String indent, StringBuilder classString) {
+    protected void writeAttributesAndOperations(List<AttributeData> attributes, List<MyOperation> operations, String indent, StringBuilder classString) {
         for (AttributeData attribute : attributes) {
             String visibilityChar = writeVisibility(attribute.getVisibility());
 
@@ -95,7 +95,7 @@ public abstract class PlantUMLWriter {
         }
 
         // Add operations
-        for (OperationData operation : operations) {
+        for (MyOperation operation : operations) {
             String visibilityChar = writeVisibility(operation.getVisibility());
 
             classString.append(indent).append("\t").append(visibilityChar);
@@ -107,9 +107,9 @@ public abstract class PlantUMLWriter {
             classString.append(operation.getName()).append("(");
 
             // Add parameters
-            List<OperationData.Parameter> parameters = operation.getParameters();
+            List<MyOperation.Parameter> parameters = operation.getParameters();
             for (int i = 0; i < parameters.size(); i++) {
-                OperationData.Parameter param = parameters.get(i);
+                MyOperation.Parameter param = parameters.get(i);
 
                 classString.append(param.getName());
 

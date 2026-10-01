@@ -7,20 +7,20 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 
-import plugins.vpcli.domain.myuml.uusecase.ActorData;
-import plugins.vpcli.domain.myuml.ucommon.NoteData;
-import plugins.vpcli.domain.myuml.upackage.UPackage;
-import plugins.vpcli.domain.myuml.ucommon.RelationshipData;
-import plugins.vpcli.domain.myuml.uusecase.UUseCase;
+import plugins.vpcli.domain.myuml.myusecase.MyActor;
+import plugins.vpcli.domain.myuml.mycommon.MyNote;
+import plugins.vpcli.domain.myuml.mypackage.MyPackage;
+import plugins.vpcli.domain.myuml.mycommon.MyRelationship;
+import plugins.vpcli.domain.myuml.myusecase.MyUseCase;
 
 public class UseCaseWriter extends PlantUMLWriter {
     
-	private final List<UPackage> packages;
-    private final List<ActorData> actors;
-    private final List<RelationshipData> relationships;
-    private final List<UUseCase> useCases;
+	private final List<MyPackage> packages;
+    private final List<MyActor> actors;
+    private final List<MyRelationship> relationships;
+    private final List<MyUseCase> useCases;
 
-    public UseCaseWriter(List<UUseCase> useCases, List<RelationshipData> relationships, List<UPackage> packages, List<ActorData> actors, List<NoteData> notes) {
+    public UseCaseWriter(List<MyUseCase> useCases, List<MyRelationship> relationships, List<MyPackage> packages, List<MyActor> actors, List<MyNote> notes) {
     	super(notes);
     	this.packages = packages;
     	this.useCases = useCases;
@@ -31,24 +31,24 @@ public class UseCaseWriter extends PlantUMLWriter {
     public void writeToFile(File file) throws IOException {
         StringBuilder plantUMLContent = new StringBuilder("@startuml\n");
         
-        for (UPackage uPackage : packages) {
+        for (MyPackage uPackage : packages) {
         	if(!uPackage.isSubpackage())
         		plantUMLContent.append(writePackage(uPackage, ""));
         }
 
-        for (ActorData actorData : actors) {
-        	if(!actorData.isInPackage())  
-        		plantUMLContent.append(writeActor(actorData, ""));
+        for (MyActor myActor : actors) {
+        	if(!myActor.isInPackage())
+        		plantUMLContent.append(writeActor(myActor, ""));
         }
 
-        for (UUseCase usecaseU : useCases) {
+        for (MyUseCase usecaseU : useCases) {
         	if(!usecaseU.isInPackage())
         		plantUMLContent.append(writeUseCase(usecaseU, ""));
         }
         
         plantUMLContent.append(writeNotes());
 
-        for (RelationshipData relationship : relationships) {
+        for (MyRelationship relationship : relationships) {
             plantUMLContent.append(writeRelationship(relationship));
         }
         
@@ -60,20 +60,20 @@ public class UseCaseWriter extends PlantUMLWriter {
     
     
 
-	private String writePackage(UPackage uPackage, String indent) {
+	private String writePackage(MyPackage uPackage, String indent) {
     	StringBuilder packageString = new StringBuilder();
     	String name = formatName(uPackage.getName());
     	String definition = uPackage.isRectangle() ? "rectangle " : "package " ;
     	packageString.append(indent).append(definition).append(name).append(" {\n");
     	
-    	for (ActorData actorData : uPackage.getActors()) {
-    		packageString.append(writeActor(actorData, indent + "\t"));
+    	for (MyActor myActor : uPackage.getActors()) {
+    		packageString.append(writeActor(myActor, indent + "\t"));
     	}
-    	for (UUseCase uUseCase : uPackage.getUseCases()) {
+    	for (MyUseCase uUseCase : uPackage.getUseCases()) {
     		packageString.append(writeUseCase(uUseCase, indent + "\t"));
     	}
     	
-    	for (UPackage subPackage : uPackage.getSubPackages()) {
+    	for (MyPackage subPackage : uPackage.getSubPackages()) {
     		packageString.append(writePackage(subPackage, indent + "\t"));
     		
     	}
@@ -83,7 +83,7 @@ public class UseCaseWriter extends PlantUMLWriter {
     }
 
 
-	private String writeUseCase(UUseCase uUseCase, String indent) {
+	private String writeUseCase(MyUseCase uUseCase, String indent) {
 	    StringBuilder usecaseString = new StringBuilder();
 	    String name = uUseCase.getName();
 	    String business = uUseCase.isBusiness() ? "/" : "";
@@ -106,14 +106,14 @@ public class UseCaseWriter extends PlantUMLWriter {
 	}
 
 
-	private String writeActor(ActorData actorData, String indent) {
+	private String writeActor(MyActor myActor, String indent) {
 		StringBuilder actorString = new StringBuilder();
-		String name = actorData.getName();
-		String aliasDeclaration = formatAlias(actorData.getName()).equals(actorData.getName()) ? "" : (" as " + formatAlias(actorData.getName()));
-		String business = actorData.isBusiness() ? "/" : "";
+		String name = myActor.getName();
+		String aliasDeclaration = formatAlias(myActor.getName()).equals(myActor.getName()) ? "" : (" as " + formatAlias(myActor.getName()));
+		String business = myActor.isBusiness() ? "/" : "";
 		actorString.append(indent).append("actor").append(business).append(" ").append(" :").append(name).append(":").append(aliasDeclaration);
-		if (!actorData.getStereotypes().isEmpty()) {
-	        String stereotypesString = actorData.getStereotypes().stream()
+		if (!myActor.getStereotypes().isEmpty()) {
+	        String stereotypesString = myActor.getStereotypes().stream()
 	            .map(stereotype -> "<<" + stereotype + ">>")
 	            .collect(Collectors.joining(", "));
 	        actorString.append(" ").append(stereotypesString);
@@ -122,7 +122,7 @@ public class UseCaseWriter extends PlantUMLWriter {
 		return actorString.toString();
 	}
 
-	private String writeRelationship(RelationshipData relationship) {
+	private String writeRelationship(MyRelationship relationship) {
 		return relationship.toExportFormat();
     }
 

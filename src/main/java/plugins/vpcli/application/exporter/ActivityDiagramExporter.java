@@ -4,10 +4,10 @@ import com.vp.plugin.diagram.IDiagramElement;
 import com.vp.plugin.diagram.IDiagramUIModel;
 import com.vp.plugin.model.*;
 import com.vp.plugin.model.factory.IModelElementFactory;
-import plugins.vpcli.domain.myuml.uactivity.ActionData;
-import plugins.vpcli.domain.myuml.uactivity.FlowNode;
-import plugins.vpcli.domain.myuml.uactivity.JoinFlowNode;
-import plugins.vpcli.domain.myuml.uactivity.SplitFlowNode;
+import plugins.vpcli.domain.myuml.myactivity.MyAction;
+import plugins.vpcli.domain.myuml.myactivity.MyFlowNode;
+import plugins.vpcli.domain.myuml.myactivity.MyJoinFlowNode;
+import plugins.vpcli.domain.myuml.myactivity.MySplitFlowNode;
 import plugins.vpcli.util.UnfitForExportException;
 
 import java.util.*;
@@ -17,10 +17,10 @@ import static com.vp.plugin.diagram.IShapeTypeConstants.*;
 public class ActivityDiagramExporter extends DiagramExporter {
 
     private final IDiagramUIModel diagram;
-    private FlowNode rootNode;
+    private MyFlowNode rootNode;
     private final List<IModelElement> visited = new ArrayList<>();
-    private final Map<IModelElement, FlowNode> joinMap = new HashMap<>();
-    private final Map<IModelElement, FlowNode> endMap = new HashMap<>();
+    private final Map<IModelElement, MyFlowNode> joinMap = new HashMap<>();
+    private final Map<IModelElement, MyFlowNode> endMap = new HashMap<>();
 
     public ActivityDiagramExporter(IDiagramUIModel diagram) {
         this.diagram = diagram;
@@ -43,7 +43,7 @@ public class ActivityDiagramExporter extends DiagramExporter {
         logFlow(rootNode, "");
     }
 
-    private FlowNode traverseAndBuild(IModelElement currentElement, List<IModelElement> visited) {
+    private MyFlowNode traverseAndBuild(IModelElement currentElement, List<IModelElement> visited) {
         if (visited.contains(currentElement)) {
             if (currentElement.getModelType().equals(SHAPE_TYPE_JOIN_NODE) || Objects.equals(currentElement.getModelType(), SHAPE_TYPE_MERGE_NODE)) {
                 return joinMap.get(currentElement);
@@ -60,7 +60,7 @@ public class ActivityDiagramExporter extends DiagramExporter {
 
             case SHAPE_TYPE_ACTIVITY_FINAL_NODE:
             case SHAPE_TYPE_FLOW_FINAL_NODE:
-                ActionData end = getActionData(currentElement, visited);
+                MyAction end = getActionData(currentElement, visited);
                 endMap.put(currentElement, end);
                 return end;
 
@@ -78,13 +78,13 @@ public class ActivityDiagramExporter extends DiagramExporter {
                 if (!checkSingleOutgoingEdge(currentElement)) {
                     throw new UnfitForExportException("Error: a join can't have more than one outgoing edge.");
                 }
-                JoinFlowNode join = extractJoin(currentElement);
+                MyJoinFlowNode join = extractJoin(currentElement);
                 joinMap.put(currentElement, join);
                 IRelationship[] outgoingRelationships2 = currentElement.toFromRelationshipArray();
                 if (outgoingRelationships2.length > 0) {
                     IModelElement targetElement = outgoingRelationships2[0].getTo();
 
-                    FlowNode nextNode = traverseAndBuild(targetElement, visited);
+                    MyFlowNode nextNode = traverseAndBuild(targetElement, visited);
                     if (nextNode != null) {
                         join.setNextNode(nextNode);
                     }
@@ -94,13 +94,13 @@ public class ActivityDiagramExporter extends DiagramExporter {
                 if (!checkSingleOutgoingEdge(currentElement)) {
                     throw new UnfitForExportException("Error: a merge node can't have more than one outgoing edge.");
                 }
-                JoinFlowNode merge = extractJoin(currentElement);
+                MyJoinFlowNode merge = extractJoin(currentElement);
                 joinMap.put(currentElement, merge);
                 IRelationship[] outgoingRelationships3 = currentElement.toFromRelationshipArray();
                 if (outgoingRelationships3.length > 0) {
                     IModelElement targetElement = outgoingRelationships3[0].getTo();
 
-                    FlowNode nextNode = traverseAndBuild(targetElement, visited);
+                    MyFlowNode nextNode = traverseAndBuild(targetElement, visited);
                     if (nextNode != null) {
                         merge.setNextNode(nextNode);
                     }
@@ -113,15 +113,15 @@ public class ActivityDiagramExporter extends DiagramExporter {
         }
     }
 
-    private ActionData getActionData(IModelElement currentElement, List<IModelElement> visited) {
+    private MyAction getActionData(IModelElement currentElement, List<IModelElement> visited) {
         if (!checkSingleOutgoingEdge(currentElement)) {
             throw new UnfitForExportException("Error: an action can't have more than one outgoing edge.");
         }
-        ActionData action = extractAction(currentElement);
+        MyAction action = extractAction(currentElement);
         IRelationship[] outgoingRelationships = currentElement.toFromRelationshipArray();
         if (outgoingRelationships.length > 0) {
             IModelElement targetElement = outgoingRelationships[0].getTo();
-            FlowNode nextNode = traverseAndBuild(targetElement, visited);
+            MyFlowNode nextNode = traverseAndBuild(targetElement, visited);
             action.setNextLabel(outgoingRelationships[0].getName());
             if (nextNode != null) {
                 action.setNextNode(nextNode);
@@ -130,18 +130,18 @@ public class ActivityDiagramExporter extends DiagramExporter {
         return action;
     }
 
-    private JoinFlowNode extractJoin(IModelElement joinModel) {
-        JoinFlowNode joinOrMergeNode = new JoinFlowNode(joinModel.getName());
+    private MyJoinFlowNode extractJoin(IModelElement joinModel) {
+        MyJoinFlowNode joinOrMergeNode = new MyJoinFlowNode(joinModel.getName());
         joinOrMergeNode.setMerge(joinModel instanceof IMergeNode);
 
         return joinOrMergeNode;
     }
 
-    private ActionData extractAction(IModelElement actionModel) {
-        ActionData actionData = new ActionData(actionModel.getName());
-        actionData.setInitial(actionModel instanceof IInitialNode);
-        actionData.setFinal(actionModel instanceof IActivityFinalNode);
-        actionData.setFinalFlow(actionModel instanceof IFlowFinalNode);
+    private MyAction extractAction(IModelElement actionModel) {
+        MyAction myAction = new MyAction(actionModel.getName());
+        myAction.setInitial(actionModel instanceof IInitialNode);
+        myAction.setFinal(actionModel instanceof IActivityFinalNode);
+        myAction.setFinalFlow(actionModel instanceof IFlowFinalNode);
 
         IModelElement[] partition =
             actionModel.getReferencingModels(
@@ -151,14 +151,14 @@ public class ActivityDiagramExporter extends DiagramExporter {
 
         // could be in multiple due to other activity diagrams, but safe enough to assume it's just in this one, hence [0]
         if (partition.length > 0) {
-            actionData.setSwimlane(partition[0].getName());
+            myAction.setSwimlane(partition[0].getName());
         }
 
-        return actionData;
+        return myAction;
     }
 
-    private SplitFlowNode extractDecision(IModelElement decisionModel) {
-        SplitFlowNode decisionNode = new SplitFlowNode(decisionModel.getName(), "decision");
+    private MySplitFlowNode extractDecision(IModelElement decisionModel) {
+        MySplitFlowNode decisionNode = new MySplitFlowNode(decisionModel.getName(), "decision");
 
         IModelElement[] partition =
             decisionModel.getReferencingModels(
@@ -174,19 +174,19 @@ public class ActivityDiagramExporter extends DiagramExporter {
         IRelationship[] outgoingRelationships = decisionModel.toFromRelationshipArray();
         for (IRelationship relationship : outgoingRelationships) {
             IModelElement targetElement = relationship.getTo();
-            FlowNode branch = traverseAndBuild(targetElement, visited);
+            MyFlowNode branch = traverseAndBuild(targetElement, visited);
             Objects.requireNonNull(branch).setPrevLabelBranch(relationship.getName());
             decisionNode.addBranch(branch);
         }
         return decisionNode;
     }
 
-    private FlowNode extractFork(IModelElement forkModel) {
-        SplitFlowNode fork = new SplitFlowNode(forkModel.getName(), "fork");
+    private MyFlowNode extractFork(IModelElement forkModel) {
+        MySplitFlowNode fork = new MySplitFlowNode(forkModel.getName(), "fork");
         IRelationship[] outgoingRelationships = forkModel.toFromRelationshipArray();
         for (IRelationship relationship : outgoingRelationships) {
             IModelElement targetElement = relationship.getTo();
-            FlowNode branch = traverseAndBuild(targetElement, visited);
+            MyFlowNode branch = traverseAndBuild(targetElement, visited);
             if (branch != null) {
                 fork.addBranch(branch);
             }
@@ -213,13 +213,13 @@ public class ActivityDiagramExporter extends DiagramExporter {
         return null;
     }
 
-    private void logFlow(FlowNode node, String indent) {
+    private void logFlow(MyFlowNode node, String indent) {
         if (node == null) {
             return;
         }
 
-        if (node instanceof ActionData) {
-            ActionData action = (ActionData) node;
+        if (node instanceof MyAction) {
+            MyAction action = (MyAction) node;
             System.out.println(indent + "Action: " + action.getName() +
                 (action.isInitial() ? " (Initial)" : "") +
                 (action.isFinal() ? " (Final)" : ""));
@@ -228,17 +228,17 @@ public class ActivityDiagramExporter extends DiagramExporter {
                 System.out.println(indent + "  -> Next:");
                 logFlow(action.getNextNode(), indent + "    ");
             }
-        } else if (node instanceof SplitFlowNode) {
-            SplitFlowNode decision = (SplitFlowNode) node;
+        } else if (node instanceof MySplitFlowNode) {
+            MySplitFlowNode decision = (MySplitFlowNode) node;
             System.out.println(indent + "Decision Node: " + decision.getName());
 
             for (int i = 0; i < decision.getBranches().size(); i++) {
                 System.out.println(indent + "  Branch " + (i + 1) + ":");
                 logFlow(decision.getBranches().get(i), indent + "    ");
             }
-        } else if (node instanceof JoinFlowNode) {
+        } else if (node instanceof MyJoinFlowNode) {
 
-            JoinFlowNode join = (JoinFlowNode) node;
+            MyJoinFlowNode join = (MyJoinFlowNode) node;
             System.out.println(indent + "Join Node: " + join.getName());
 
             logFlow(join.getNextNode(), indent + "\t");
@@ -251,7 +251,7 @@ public class ActivityDiagramExporter extends DiagramExporter {
         return outgoingCount <= 1;
     }
 
-    public FlowNode getRootNode() {
+    public MyFlowNode getRootNode() {
         return this.rootNode;
     }
 

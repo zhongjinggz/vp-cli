@@ -1,11 +1,11 @@
 package plugins.vpcli.application.writers;
 
-import plugins.vpcli.domain.myuml.uactivity.ForkJoin;
-import plugins.vpcli.domain.myuml.ucommon.NoteData;
-import plugins.vpcli.domain.myuml.ucommon.RelationshipData;
-import plugins.vpcli.domain.myuml.ustatemachine.History;
-import plugins.vpcli.domain.myuml.ustatemachine.StateChoice;
-import plugins.vpcli.domain.myuml.ustatemachine.StateData;
+import plugins.vpcli.domain.myuml.myactivity.MyForkJoin;
+import plugins.vpcli.domain.myuml.mycommon.MyNote;
+import plugins.vpcli.domain.myuml.mycommon.MyRelationship;
+import plugins.vpcli.domain.myuml.mystatemachine.MyHistory;
+import plugins.vpcli.domain.myuml.mystatemachine.MyStateChoice;
+import plugins.vpcli.domain.myuml.mystatemachine.MyState;
 
 import java.io.File;
 import java.io.IOException;
@@ -16,13 +16,13 @@ import java.util.List;
 
 public class StateUMLWriter extends PlantUMLWriter {
 
-    private final List<StateData> states;
-    private final List<RelationshipData> transitions;
-    private final List<StateChoice> choices;
-    private final List<History> histories;
-    private final List<ForkJoin> forkJoins;
+    private final List<MyState> states;
+    private final List<MyRelationship> transitions;
+    private final List<MyStateChoice> choices;
+    private final List<MyHistory> histories;
+    private final List<MyForkJoin> forkJoins;
 
-    public StateUMLWriter(List<NoteData> notes, List<StateData> states, List<RelationshipData> transitions, List<StateChoice> choices, List<History> histories, List<ForkJoin> forkJoins) {
+    public StateUMLWriter(List<MyNote> notes, List<MyState> states, List<MyRelationship> transitions, List<MyStateChoice> choices, List<MyHistory> histories, List<MyForkJoin> forkJoins) {
         super(notes);
         this.states = states;
         this.choices = choices;
@@ -36,24 +36,24 @@ public class StateUMLWriter extends PlantUMLWriter {
 
         StringBuilder plantUMLContent = new StringBuilder("@startuml\n");
 
-        for (StateData stateData : states) {
-            if(!stateData.isInState())
-                plantUMLContent.append(writeState(stateData, ""));
+        for (MyState myState : states) {
+            if(!myState.isInState())
+                plantUMLContent.append(writeState(myState, ""));
         }
 
-        for (StateChoice stateChoice : choices) {
+        for (MyStateChoice stateChoice : choices) {
             if(!stateChoice.isInState()) {
                 plantUMLContent.append(writeChoice(stateChoice, ""));
             }
         }
 
-        for (History history : histories) {
+        for (MyHistory history : histories) {
             if (!history.isInState()) {
                 plantUMLContent.append(writeHistory(history, ""));
             }
         }
 
-        for (ForkJoin forkJoin : forkJoins) {
+        for (MyForkJoin forkJoin : forkJoins) {
             if (!forkJoin.isInState()) {
                 plantUMLContent.append(writeState(forkJoin, ""));
             }
@@ -61,7 +61,7 @@ public class StateUMLWriter extends PlantUMLWriter {
 
         plantUMLContent.append(writeNotes());
 
-        for (RelationshipData transition : transitions) {
+        for (MyRelationship transition : transitions) {
             plantUMLContent.append(writeRelationship(transition));
         }
 
@@ -71,7 +71,7 @@ public class StateUMLWriter extends PlantUMLWriter {
         }
     }
 
-    private String writeHistory(History history, String indent) {
+    private String writeHistory(MyHistory history, String indent) {
         StringBuilder historyString = new StringBuilder();
         String stereo = (history.isDeep() ? "<<history*>>" : "<<history>>");
         historyString.append(indent).append("state ").append(history.getAlias()).append( " ").append(stereo).append("\n");
@@ -79,22 +79,22 @@ public class StateUMLWriter extends PlantUMLWriter {
         return historyString.toString();
     }
 
-    private String writeChoice(StateChoice stateChoice, String indent) {
+    private String writeChoice(MyStateChoice stateChoice, String indent) {
 
         return indent + "state " + stateChoice.getAlias() + " <<choice>>\n";
     }
 
-    private String writeRelationship(RelationshipData transition) {
+    private String writeRelationship(MyRelationship transition) {
         return transition.toExportFormat();
     }
 
-    private String writeState(StateData stateData, String indent) {
+    private String writeState(MyState myState, String indent) {
         StringBuilder stateString = new StringBuilder();
-        boolean isStart = stateData.isStart();
-        boolean isEnd = stateData.isEnd();
-        String alias = stateData.getAlias();
+        boolean isStart = myState.isStart();
+        boolean isEnd = myState.isEnd();
+        String alias = myState.getAlias();
 
-        String name = stateData.getName();
+        String name = myState.getName();
         stateString.append(indent).append("state \" \" as ").append(alias);
 
         if (isStart) {
@@ -105,8 +105,8 @@ public class StateUMLWriter extends PlantUMLWriter {
             return stateString.append(" <<end>>\n").toString();
         }
 
-        if (stateData instanceof ForkJoin) {
-            stateString.append(((ForkJoin) stateData).isFork() ? " <<fork>>\n" : " <<join>>\n");
+        if (myState instanceof MyForkJoin) {
+            stateString.append(((MyForkJoin) myState).isFork() ? " <<fork>>\n" : " <<join>>\n");
             return stateString.toString();
         }
 
@@ -116,29 +116,29 @@ public class StateUMLWriter extends PlantUMLWriter {
             name = name.replace("\n", "\\n");
         }
 
-        stateString.append(writeRegions(stateData, indent));
+        stateString.append(writeRegions(myState, indent));
         stateString.append(" : ").append(name);
         stateString.append("\n");
         return  stateString.toString();
     }
 
-    private String writeRegions(StateData stateData, String indent) {
+    private String writeRegions(MyState myState, String indent) {
         StringBuilder stateString = new StringBuilder();
-        if (!stateData.getRegions().isEmpty()) {
+        if (!myState.getRegions().isEmpty()) {
             stateString.append( " {\n");
 
-            List<StateData.StateRegion> regions = stateData.getRegions();
+            List<MyState.StateRegion> regions = myState.getRegions();
             for (int i = 0; i < regions.size(); i++) {
-                StateData.StateRegion region = regions.get(i);
-                for (StateData stateInRegion : region.getSubStates()) {
-                    if (stateInRegion instanceof History) {
-                        stateString.append(writeHistory((History) stateInRegion, indent + "\t"));
+                MyState.StateRegion region = regions.get(i);
+                for (MyState stateInRegion : region.getSubStates()) {
+                    if (stateInRegion instanceof MyHistory) {
+                        stateString.append(writeHistory((MyHistory) stateInRegion, indent + "\t"));
                     } else {
                         stateString.append(writeState(stateInRegion, indent + "\t"));
                     }
                 }
 
-                for (RelationshipData transition : region.getRegTransitions()) {
+                for (MyRelationship transition : region.getRegTransitions()) {
                     stateString.append(indent).append("\t").append(transition.toExportFormat());
                 }
                 // concurrent if there's more than one region
@@ -148,7 +148,7 @@ public class StateUMLWriter extends PlantUMLWriter {
             }
 
             stateString.append("}\n");
-            stateString.append(indent).append("state ").append(stateData.getAlias());
+            stateString.append(indent).append("state ").append(myState.getAlias());
         }
         return stateString.toString();
     }

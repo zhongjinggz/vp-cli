@@ -8,14 +8,14 @@ import com.vp.plugin.diagram.IDiagramUIModel;
 import com.vp.plugin.diagram.connector.IContainmentUIModel;
 import com.vp.plugin.model.*;
 
-import plugins.vpcli.domain.myuml.uclassifier.AssociationData;
-import plugins.vpcli.domain.myuml.uclassifier.AttributeData;
-import plugins.vpcli.domain.myuml.uclassifier.UClass;
-import plugins.vpcli.domain.myuml.uclassifier.NaryData;
-import plugins.vpcli.domain.myuml.uclassifier.OperationData;
-import plugins.vpcli.domain.myuml.uclassifier.OperationData.Parameter;
-import plugins.vpcli.domain.myuml.upackage.UPackage;
-import plugins.vpcli.domain.myuml.ucommon.RelationshipData;
+import plugins.vpcli.domain.myuml.myclassifier.MyAssociation;
+import plugins.vpcli.domain.myuml.myclassifier.AttributeData;
+import plugins.vpcli.domain.myuml.myclassifier.MyClass;
+import plugins.vpcli.domain.myuml.myclassifier.MyNary;
+import plugins.vpcli.domain.myuml.myclassifier.MyOperation;
+import plugins.vpcli.domain.myuml.myclassifier.MyOperation.Parameter;
+import plugins.vpcli.domain.myuml.mypackage.MyPackage;
+import plugins.vpcli.domain.myuml.mycommon.MyRelationship;
 
 import static com.vp.plugin.diagram.IShapeTypeConstants.SHAPE_TYPE_PACKAGE;
 
@@ -23,13 +23,13 @@ public class ClassDiagramExporter extends DiagramExporter {
 
 	private final IDiagramUIModel diagram;
 
-	private final List<UClass> exportedClasses = new ArrayList<>();
-	private final List<RelationshipData> relationshipDatas = new ArrayList<>();
-	private final List<UPackage> exportedPackages = new ArrayList<>();
-	private final List<NaryData> exportedNary = new ArrayList<>();
+	private final List<MyClass> exportedClasses = new ArrayList<>();
+	private final List<MyRelationship> myRelationships = new ArrayList<>();
+	private final List<MyPackage> exportedPackages = new ArrayList<>();
+	private final List<MyNary> exportedNary = new ArrayList<>();
 
 
-    private final List<NaryData> allExportedNary = new ArrayList<>();
+    private final List<MyNary> allExportedNary = new ArrayList<>();
 
 	public ClassDiagramExporter(IDiagramUIModel diagram) {
 		this.diagram = diagram;
@@ -102,39 +102,39 @@ public class ClassDiagramExporter extends DiagramExporter {
 
 
 
-	private void extractClass(IClass classModel, UPackage uPackage) {
+	private void extractClass(IClass classModel, MyPackage uPackage) {
 		boolean isInPackage = !isRootLevelInDiagram(classModel);
-		UClass uClass = new UClass(classModel.getName(), classModel.isAbstract(), classModel.getVisibility(),
+		MyClass myClass = new MyClass(classModel.getName(), classModel.isAbstract(), classModel.getVisibility(),
 				isInPackage);
-		uClass.setDescription(classModel.getDescription());
-		uClass.setStereotypes(extractStereotypes(classModel));
-		extractAttributes(classModel, uClass);
-		extractOperations(classModel, uClass);
+		myClass.setDescription(classModel.getDescription());
+		myClass.setStereotypes(extractStereotypes(classModel));
+		extractAttributes(classModel, myClass);
+		extractOperations(classModel, myClass);
 		
-		exportedClasses.add(uClass);
+		exportedClasses.add(myClass);
 		if (uPackage != null)
-			uPackage.getClasses().add(uClass);
+			uPackage.getClasses().add(myClass);
 	}
 
-	private void extractNary(INARY naryModel, UPackage uPackage) {
+	private void extractNary(INARY naryModel, MyPackage uPackage) {
 		boolean isInPackage = !isRootLevelInDiagram(naryModel);
 		String name = naryModel.getName();
 		String id = naryModel.getId();
-		NaryData naryData = new NaryData(name, id, isInPackage);
-		naryData.setDescription(naryModel.getDescription());
+		MyNary myNary = new MyNary(name, id, isInPackage);
+		myNary.setDescription(naryModel.getDescription());
 
 		if (uPackage != null)
-			uPackage.getNaries().add(naryData);
-		else exportedNary.add(naryData); // I changed if bug
+			uPackage.getNaries().add(myNary);
+		else exportedNary.add(myNary); // I changed if bug
 
-		allExportedNary.add(naryData); // Naries are to be reversed by id so whether in package or not, need to add so that relationships aren't pointing to null.
+		allExportedNary.add(myNary); // Naries are to be reversed by id so whether in package or not, need to add so that relationships aren't pointing to null.
 	}
 
 
 	private String getNaryAliasById(String naryId) {
-		for (NaryData naryData : allExportedNary) {
-			if (naryData.getId().equals(naryId)) {
-				return naryData.getAlias();
+		for (MyNary myNary : allExportedNary) {
+			if (myNary.getId().equals(naryId)) {
+				return myNary.getAlias();
 			}
 		}
 		return null;
@@ -145,8 +145,8 @@ public class ClassDiagramExporter extends DiagramExporter {
 		IModelElement target = relationship.getToShape().getModelElement();
 		String sourceName = source.getName();
 		String targetName = target.getName();
-		RelationshipData relationshipData = new RelationshipData(sourceName, targetName, "Containment", "");
-		relationshipDatas.add(relationshipData);
+		MyRelationship myRelationship = new MyRelationship(sourceName, targetName, "Containment", "");
+		myRelationships.add(myRelationship);
 	}
 
 	private void extractRelationship(IRelationship relationship) {
@@ -191,9 +191,9 @@ public class ClassDiagramExporter extends DiagramExporter {
 			if (toEnd.getMultiplicity() != null) {
 				 toEndMultiplicity = toEnd.getMultiplicity().equals("Unspecified") ? "" : toEnd.getMultiplicity();
 			}
-			AssociationData associationData = new AssociationData(sourceName, targetName, relationship.getModelType(),
+			MyAssociation myAssociation = new MyAssociation(sourceName, targetName, relationship.getModelType(),
 					relationship.getName(), fromEndMultiplicity, toEndMultiplicity, fromEnd.getAggregationKind());
-			relationshipDatas.add(associationData);
+			myRelationships.add(myAssociation);
 			return;
 		}
 		if (relationship instanceof IAssociationClass) {
@@ -213,14 +213,14 @@ public class ClassDiagramExporter extends DiagramExporter {
 			}
 		}
 
-		RelationshipData relationshipData = new RelationshipData(sourceName, targetName, relationship.getModelType(), relationship.getName());
-		relationshipDatas.add(relationshipData);
+		MyRelationship myRelationship = new MyRelationship(sourceName, targetName, relationship.getModelType(), relationship.getName());
+		myRelationships.add(myRelationship);
 	}
 
 	private void extractPackage(IPackage packageModel) {
 
 		if (isRootLevelInDiagram(packageModel)) {
-			UPackage uPackage = new UPackage(packageModel.getName(), null, null, null, false, false);
+			MyPackage uPackage = new MyPackage(packageModel.getName(), null, null, null, false, false);
 			uPackage.setDescription(packageModel.getDescription());
 			IModelElement[] childElements = packageModel.toChildArray();
 			for (IModelElement childElement : childElements) {
@@ -236,9 +236,9 @@ public class ClassDiagramExporter extends DiagramExporter {
 		}
 	}
 
-	private void extractPackagedPackage(IPackage packageModel, UPackage parent) {
+	private void extractPackagedPackage(IPackage packageModel, MyPackage parent) {
 
-		UPackage uPackage = new UPackage(packageModel.getName(), null, null, null, true, false);
+		MyPackage uPackage = new MyPackage(packageModel.getName(), null, null, null, true, false);
 		uPackage.setDescription(packageModel.getDescription());
 		IModelElement[] childElements = packageModel.toChildArray();
 		for (IModelElement childElement : childElements) {
@@ -254,14 +254,14 @@ public class ClassDiagramExporter extends DiagramExporter {
 		exportedPackages.add(uPackage);
 	}
 
-	private void extractAttributes(IClass classModel, UClass uClass) {
+	private void extractAttributes(IClass classModel, MyClass myClass) {
         var attributeIter = classModel.attributeIterator();
 		while (attributeIter.hasNext()) {
 			IAttribute attribute = (IAttribute) attributeIter.next();
 			AttributeData attr = new AttributeData(attribute.getVisibility(), attribute.getName(),
 					attribute.getTypeAsString(), attribute.getInitialValueAsString(), attribute.getScope());
 
-			uClass.addAttribute(attr);
+			myClass.addAttribute(attr);
 		}
 
         var literalIter = classModel.enumerationLiteralIterator();
@@ -269,15 +269,15 @@ public class ClassDiagramExporter extends DiagramExporter {
 			ApplicationManager.instance().getViewManager().showMessage("literal being extracted.");
 			IEnumerationLiteral literal = (IEnumerationLiteral) literalIter.next();
 			AttributeData attr = new AttributeData("", literal.getName(), "", "", "instance");
-			uClass.addAttribute(attr);
+			myClass.addAttribute(attr);
 		}
 	}
 
-	private void extractOperations(IClass classModel, UClass uClass) {
+	private void extractOperations(IClass classModel, MyClass myClass) {
         var operationIter = classModel.operationIterator();
 		while (operationIter.hasNext()) {
 			IOperation operation = (IOperation) operationIter.next();
-			OperationData op = new OperationData(operation.getVisibility(), operation.getName(),
+			MyOperation op = new MyOperation(operation.getVisibility(), operation.getName(),
 					operation.getReturnTypeAsString(), operation.isAbstract(), null, operation.getScope());
 
             var paramIterator = operation.parameterIterator();
@@ -287,23 +287,23 @@ public class ClassDiagramExporter extends DiagramExporter {
 						parameter.getDefaultValueAsString());
 				op.addParameter(paramData);
 			}
-			uClass.addOperation(op);
+			myClass.addOperation(op);
 		}
 	}
 
-	public List<UClass> getExportedClasses() {
+	public List<MyClass> getExportedClasses() {
 		return exportedClasses;
 	}
 
-	public List<RelationshipData> getRelationshipDatas() {
-		return relationshipDatas;
+	public List<MyRelationship> getRelationshipDatas() {
+		return myRelationships;
 	}
 
-	public List<UPackage> getExportedPackages() {
+	public List<MyPackage> getExportedPackages() {
 		return exportedPackages;
 	}
 
-	public List<NaryData> getExportedNary() {
+	public List<MyNary> getExportedNary() {
 		return exportedNary;
 	}
 
