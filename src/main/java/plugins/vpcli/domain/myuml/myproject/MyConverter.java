@@ -2,19 +2,18 @@ package plugins.vpcli.domain.myuml.myproject;
 
 import com.vp.plugin.model.IModelElement;
 import com.vp.plugin.model.factory.IModelElementFactory;
-import plugins.vpcli.application.TreeService;
 import plugins.vpcli.domain.myuml.mypackage.MyPackage;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class MyConverter {
-    public List<MyPackage> fromVPElementsToMyPackages(IModelElement[] vpElements, TreeService treeService) {
+    public List<MyPackage> fromVPElementsToPackages(IModelElement[] vpElements) {
         List<MyPackage> result = new ArrayList<>();
         for (var aVPElement : vpElements) {
             if (isPackage(aVPElement)) {
                 var aPackage = fromVPElement(aVPElement);
-                var subPackages = fromVPElementsToMyPackages(aVPElement.toChildArray(), treeService);
+                var subPackages = fromVPElementsToPackages(aVPElement.toChildArray());
                 aPackage.addChildren(subPackages);
                 result.add(aPackage);
             }

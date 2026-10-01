@@ -21,14 +21,14 @@ import org.junit.jupiter.api.io.TempDir;
 import org.junit.jupiter.api.function.Executable;
 import org.mockito.MockedStatic;
 import plugins.vpcli.VPCLI;
-import plugins.vpcli.application.DiagramExportPipeline;
+import plugins.vpcli.application.ExportService;
 import plugins.vpcli.application.TreeService;
 
 /**
  *
  * <p>{@link VPCLI#invoke} 已退化为只把参数转发给 {@link CLIController#invoke}，
  * 因此本测试直接驱动 {@link CLIController}，覆盖 CLI 分发、导入、导出与图表列举的全部分支。
- * <p>{@link CLIController} 通过构造器注入 {@link DiagramExportPipeline}，测试用 mock 注入以验证交互；
+ * <p>{@link CLIController} 通过构造器注入 {@link ExportService}，测试用 mock 注入以验证交互；
  * 图表列举等管线内部逻辑（{@code DiagramExportPipeline#listDiagrams}）交由 DiagramExportPipelineTest 覆盖。
  */
 class CLIControllerTest {
@@ -36,7 +36,7 @@ class CLIControllerTest {
     @TempDir
     Path tempDir;
 
-    private final DiagramExportPipeline pipelineMock = mock(DiagramExportPipeline.class);
+    private final ExportService pipelineMock = mock(ExportService.class);
     private final TreeService treeServiceMock = mock(TreeService.class);
     private final CLIController controller = new CLIController(pipelineMock, treeServiceMock);
 
@@ -72,7 +72,7 @@ class CLIControllerTest {
         String newDir = tempDir.resolve("fresh").resolve("sub").toString();
         captureOut(() -> invoke(
                 new String[]{"-action", "export", "-target", "all", "-path", newDir}));
-        verify(pipelineMock).exportAllDiagrams(new File(newDir));
+        verify(pipelineMock).exportAll(new File(newDir));
     }
 
     @Test
@@ -99,7 +99,7 @@ class CLIControllerTest {
         File dir = tempDir.toFile();
         captureOut(() -> invoke(
                 new String[]{"-action", "export", "-target", "all", "-path", dir.getAbsolutePath()}));
-        verify(pipelineMock).exportAllDiagrams(dir);
+        verify(pipelineMock).exportAll(dir);
     }
 
     @Test
@@ -122,11 +122,10 @@ class CLIControllerTest {
     // ---------- invoke -> listAvailableDiagrams 分支（转调 pipeline 列举） ----------
 
     @Test
-    void invoke_exportWithList_callsPipelineListDiagrams() throws Throwable {
+    void invoke_执行列出图表清单命令_则listDiagrams被调用() throws Throwable {
         String output = captureOut(() -> invoke(
-                new String[]{"-action", "export", "-list"}));
+                new String[]{"-action", "list-diagrams"}));
         assertTrue(output.contains("Listing available diagrams"));
-        // 列举细节已移入 DiagramExportPipeline#listDiagrams，此处仅验证转调
         verify(pipelineMock).listDiagrams();
     }
 

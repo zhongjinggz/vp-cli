@@ -11,12 +11,12 @@ class CLIParams {
     static final String VALUE_IMPORT = "import";
     static final String VALUE_EXPORT = "export";
     static final String VALUE_TREE = "tree";
+    static final String VALUE_LIST_DIAGRAMS = "list-diagrams";
 
     static final String KEY_TARGET = "-target";
     static final String VALUE_ALL = "all";
 
     static final String KEY_PATH = "-path";
-    static final String KEY_LIST = "-list";
 
     // 对于 key/value 形式的参数:
     // UNSET 代表命令行中根本就没有这个参数，例如 对于“the-command -action abc” ， "-path" 就是 UNDEFINED
@@ -41,15 +41,12 @@ class CLIParams {
         keyValueParams.put(KEY_ACTION, VALUE_UNSET);
         keyValueParams.put(KEY_TARGET, VALUE_UNSET);
         keyValueParams.put(KEY_PATH, VALUE_UNSET);
-
-        keyOnlyParams.put(KEY_LIST, VALUE_UNSET);
     }
 
     // 封装命令行参数
     @NonNull
     static CLIParams valueOf(String[] args) {
         CLIParams params = new CLIParams(args);
-
         params.parse();
         return params;
     }
@@ -71,14 +68,14 @@ class CLIParams {
                     }
                     break;
                 case VALUE_EXPORT:
-                    if (list().isUnset()) {
-                        // export 需要同时指定目标图表与输出路径
-                        // TODO 潜在Bug：为什么不设置 target 也没有报错？
-                        if (target().isUnset() || target().isNonValue()
-                            || path().isUnset() || path().isNonValue()) {
-                            setErrorMessage("Error: Missing required arguments for export. Use -target and -path.");
-                        }
+                    // 需要同时指定目标图表与输出路径
+                    // TODO 潜在Bug：为什么不设置 target 也没有报错？
+                    if (target().isUnset() || target().isNonValue()
+                        || path().isUnset() || path().isNonValue()) {
+                        setErrorMessage("Error: Missing required arguments for export. Use -target and -path.");
                     }
+                    break;
+                case VALUE_LIST_DIAGRAMS:
                     break;
                 case VALUE_TREE:
                     break;
@@ -172,10 +169,6 @@ class CLIParams {
 
     ParamValue path() {
         return new ParamValue(keyValueParams.get(KEY_PATH));
-    }
-
-    public ParamValue list() {
-        return new ParamValue(keyOnlyParams.get(KEY_LIST));
     }
 
     public ParamValue target() {

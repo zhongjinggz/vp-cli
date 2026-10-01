@@ -21,7 +21,7 @@ public class TreeService {
 
 	public void tree() {
 		var topLevelVPElements = projectRepository.getProject().toModelElementArray();
-		var packages = convert.fromVPElementsToMyPackages(topLevelVPElements, this);
+		var packages = convert.fromVPElementsToPackages(topLevelVPElements);
 		treePrinter.print(packages);
 	}
 }

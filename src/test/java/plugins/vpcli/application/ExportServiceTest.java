@@ -26,6 +26,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 import org.junit.jupiter.api.function.Executable;
 import plugins.vpcli.application.exporter.ExporterFactory;
+import plugins.vpcli.domain.myuml.myproject.MyConverter;
 import plugins.vpcli.drivenadapter.FileFactory;
 import plugins.vpcli.drivenadapter.ProjectRepository;
 import plugins.vpcli.application.writers.WriterFactory;
@@ -36,9 +37,10 @@ import plugins.vpcli.application.writers.ComponentDeploymentUMLWriter;
 import plugins.vpcli.application.writers.SequenceUMLWriter;
 import plugins.vpcli.application.writers.StateUMLWriter;
 import plugins.vpcli.application.writers.UseCaseWriter;
+import plugins.vpcli.drivenadapter.TreeDirMaker;
 import plugins.vpcli.util.UnfitForExportException;
 
-public class MyDiagramExportPipelineTest {
+public class ExportServiceTest {
 
     @TempDir
     Path tempDir;
@@ -47,6 +49,8 @@ public class MyDiagramExportPipelineTest {
     private final ExporterFactory exporterFactory = mock(ExporterFactory.class);
     private final WriterFactory writerFactory = mock(WriterFactory.class);
     private final FileFactory fileFactory = mock(FileFactory.class);
+    private final MyConverter myConverter = mock(MyConverter.class);
+    private final TreeDirMaker treeDirMaker = mock(TreeDirMaker.class);
 
     @BeforeEach
     void defaultFileFactory() {
@@ -54,8 +58,8 @@ public class MyDiagramExportPipelineTest {
             .thenAnswer(inv -> new File((File) inv.getArgument(0), inv.getArgument(1)));
     }
 
-    private DiagramExportPipeline newPipeline() {
-        return new DiagramExportPipeline(projectRepository, exporterFactory, writerFactory, fileFactory);
+    private ExportService newPipeline() {
+        return new ExportService(myConverter, projectRepository, exporterFactory, writerFactory, fileFactory, treeDirMaker);
     }
 
     private IProject givenProject() {
@@ -298,7 +302,7 @@ public class MyDiagramExportPipelineTest {
         when(writerFactory.createSequenceUMLWriter(seqde)).thenReturn(mock(SequenceUMLWriter.class));
         IProject project = givenProject();
         when(project.toDiagramArray()).thenReturn(new IDiagramUIModel[]{clazz, seq});
-        newPipeline().exportAllDiagrams(tempDir.toFile());
+        newPipeline().exportAll(tempDir.toFile());
         verify(projectRepository).getProject();
     }
 

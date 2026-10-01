@@ -11,8 +11,6 @@ import java.lang.reflect.Method;
 import org.junit.jupiter.api.Test;
 
 /**
- * 单元测试 {@link CLIParams}，目标是对应文件的 100% 分支覆盖。
- *
  * <p>说明：类内部含有两处仅靠外部 API 无法触达的“防御性”分支：
  * 1) {@code acquireParams} 中 {@code args == null}（构造器总是把 null 归一化为空数组）；
  * 2) {@code set(String,String)} 与 {@code set(String)} 中不属于对应 Map 的 throw 分支。
@@ -23,13 +21,12 @@ class CLIParamsTest {
     // ---------- 正常/合法参数 ----------
 
     @Test
-    void valueOf_validImport_parsesWithoutError() {
+    void valueOf_正常执行Import命令() {
         CLIParams params = CLIParams.valueOf(new String[]{"-action", "import", "-path", "folder"});
 
         assertFalse(params.isInvalid());
         assertEquals("", params.errorMessage());
         assertEquals("import", params.action().text());
-        assertFalse(params.action().isUnset());
         assertFalse(params.action().isNonValue());
         assertEquals("folder", params.path().text());
         assertFalse(params.path().isUnset());
@@ -50,14 +47,11 @@ class CLIParamsTest {
     }
 
     @Test
-    void valueOf_exportWithList_skipsTargetAndPathValidation() {
-        CLIParams params = CLIParams.valueOf(new String[]{"-action", "export", "-list"});
+    void valueOf_正常执行listdiagrams命令() {
+        CLIParams params = CLIParams.valueOf(new String[]{"-action", "list-diagrams"});
 
         assertFalse(params.isInvalid());
-        assertTrue(params.list().isSet());
-        // -list 存在时，即使未提供 -target/-path 也不报错
-        assertTrue(params.target().isUnset());
-        assertTrue(params.path().isUnset());
+        assertEquals("list-diagrams", params.action().text());
     }
 
     // ---------- action 相关错误分支 ----------
