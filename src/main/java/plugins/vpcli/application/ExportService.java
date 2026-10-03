@@ -138,8 +138,8 @@ public class ExportService {
 
         var project = projectRepository.getProject();
 
-        var packages = convertPackage.fromVPElements(project.toModelElementArray());
-		makeDir.forPackages(packages, exportLocation);
+        var packages = convertPackage.fromVPProject(project);
+        makeDir.forPackages(packages, exportLocation);
 
         var vpDiagrams = project.toDiagramArray();
 

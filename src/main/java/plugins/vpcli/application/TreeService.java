@@ -20,8 +20,9 @@ public class TreeService {
 	}
 
 	public void tree() {
-		var topLevelVPElements = projectRepository.getProject().toModelElementArray();
-		var packages = convert.fromVPElements(topLevelVPElements);
+//		var topLevelVPElements = projectRepository.getProject().toModelElementArray();
+//		var packages = convert.fromVPElements(topLevelVPElements, vpModelTypes);
+		var packages = convert.fromVPProject(projectRepository.getProject());
 		treePrinter.print(packages);
 	}
 }

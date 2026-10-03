@@ -5,12 +5,13 @@ import com.vp.plugin.action.VPAction;
 import com.vp.plugin.action.VPActionController;
 
 // DOING
+// - tree: 使用IModelElement[] toChildArray(java.lang.String[] modelTypes)
 // - export: 重构生成图表的程序(类名和包结构）
 
 // TODO
 // - export：将图表放入目录结构
 // - export: 重构/重写生成图表的程序
-// - export: fix bug of Class Daigram 包和类同名造成混乱
+// - export: fix bug of Class Diagram 包和类同名造成混乱
 // - 翻译和修改 README
 
 // - 清理测试
@@ -18,13 +19,14 @@ import com.vp.plugin.action.VPActionController;
 // - 清理 IDEA 警告
 // - 拆分成多个 Controller， 分别依赖注入
 
+// - TreeConverter: 考虑区分仅用于 Tree 的 TreeItem 和实际的元素（例如Package）
+// - TreeConverter: 考虑根据参数控制 TreeItem 的类型和深度
 // - export：将图表放入 markdown
 // - export: 图表 markdown 中放入交叉引用
 // - export: 根据模型内容生成 markdown
 // - export：链接交叉引用
 // - tree: 补测试
-// - tree: 使用IModelElement[] toChildArray(java.lang.String[] modelTypes)
-// - tree: 增加一个虚拟的根包 VirtualRootPackage
+// - tree: 增加一个虚拟的根包 ProjectVirtualPackage 对应于 VP Project
 // - 统一处理日志
 // - 考虑将 python 改为 java ， 改为多模块项目
 // - 改用 NIO
@@ -52,7 +54,7 @@ public class HelpController implements VPActionController {
             ApplicationManager.instance()
                 .getViewManager()
                 .getRootFrame()
-            , "make folders for packages -  16:34"
+            , "bug fixing for TreeConverter -  12:55"
         );
     }
 
