@@ -26,7 +26,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 import org.junit.jupiter.api.function.Executable;
 import plugins.vpcli.domain.mydiagram.*;
-import plugins.vpcli.domain.myuml.myproject.MyConverter;
+import plugins.vpcli.domain.myuml.myproject.TreeConverter;
 import plugins.vpcli.drivenadapter.FileFactory;
 import plugins.vpcli.drivenadapter.ProjectRepository;
 import plugins.vpcli.application.writers.WriterFactory;
@@ -48,7 +48,7 @@ public class ExportServiceTest {
     private final MyDiagramFactory myDiagramFactory = mock(MyDiagramFactory.class);
     private final WriterFactory writerFactory = mock(WriterFactory.class);
     private final FileFactory fileFactory = mock(FileFactory.class);
-    private final MyConverter myConverter = mock(MyConverter.class);
+    private final TreeConverter treeConverter = mock(TreeConverter.class);
     private final TreeDirMaker treeDirMaker = mock(TreeDirMaker.class);
 
     @BeforeEach
@@ -58,7 +58,7 @@ public class ExportServiceTest {
     }
 
     private ExportService newPipeline() {
-        return new ExportService(myConverter, projectRepository, myDiagramFactory, writerFactory, fileFactory, treeDirMaker);
+        return new ExportService(treeConverter, projectRepository, myDiagramFactory, writerFactory, fileFactory, treeDirMaker);
     }
 
     private IProject givenProject() {

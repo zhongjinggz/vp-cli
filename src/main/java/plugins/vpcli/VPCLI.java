@@ -2,7 +2,7 @@ package plugins.vpcli;
 
 import com.vp.plugin.*;
 import plugins.vpcli.application.ListDiagramsService;
-import plugins.vpcli.domain.myuml.myproject.MyConverter;
+import plugins.vpcli.domain.myuml.myproject.TreeConverter;
 import plugins.vpcli.drivenadapter.FileFactory;
 import plugins.vpcli.drivenadapter.ProjectRepository;
 import plugins.vpcli.drivenadapter.TreeDirMaker;
@@ -24,7 +24,7 @@ public class VPCLI implements VPPlugin, VPPluginCommandLineSupport {
     private TreeDirMaker treeDirMaker;
 
     // Domain Services
-    private MyConverter myConverter;
+    private TreeConverter treeConverter;
 
     // Application Services
     private ExportService exportService;
@@ -50,11 +50,11 @@ public class VPCLI implements VPPlugin, VPPluginCommandLineSupport {
         this.treeDirMaker = new TreeDirMaker();
 
         // Domain Services
-        this.myConverter = new MyConverter();
+        this.treeConverter = new TreeConverter();
 
         // Application Services
         this.exportService = new ExportService(
-            this.myConverter
+            this.treeConverter
             , this.projectRepository
             , this.myDiagramFactory
             , this.writerFactory
@@ -63,7 +63,7 @@ public class VPCLI implements VPPlugin, VPPluginCommandLineSupport {
 
         this.treeService = new TreeService(
             this.projectRepository
-            , this.myConverter
+            , this.treeConverter
             , this.treePrinter);
 
         this.listDiagramsService = new ListDiagramsService(this.projectRepository);

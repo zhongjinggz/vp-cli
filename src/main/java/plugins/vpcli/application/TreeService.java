@@ -1,17 +1,17 @@
 package plugins.vpcli.application;
 
-import plugins.vpcli.domain.myuml.myproject.MyConverter;
+import plugins.vpcli.domain.myuml.myproject.TreeConverter;
 import plugins.vpcli.drivenadapter.ProjectRepository;
 import plugins.vpcli.drivenadapter.TreePrinter;
 
 public class TreeService {
 
 	private final ProjectRepository projectRepository;
-	private final MyConverter convert;
+	private final TreeConverter convert;
 	private final TreePrinter treePrinter ;
 
 	public TreeService(ProjectRepository projectRepository
-		, MyConverter convert
+		, TreeConverter convert
 		, TreePrinter treePrinter) {
 
 		this.projectRepository = projectRepository;
@@ -21,7 +21,7 @@ public class TreeService {
 
 	public void tree() {
 		var topLevelVPElements = projectRepository.getProject().toModelElementArray();
-		var packages = convert.fromVPElementsToPackages(topLevelVPElements);
+		var packages = convert.fromVPElements(topLevelVPElements);
 		treePrinter.print(packages);
 	}
 }

@@ -7,13 +7,13 @@ import plugins.vpcli.domain.myuml.mypackage.MyPackage;
 import java.util.ArrayList;
 import java.util.List;
 
-public class MyConverter {
-    public List<MyPackage> fromVPElementsToPackages(IModelElement[] vpElements) {
+public class TreeConverter {
+    public List<MyPackage> fromVPElements(IModelElement[] vpElements) {
         List<MyPackage> result = new ArrayList<>();
         for (var aVPElement : vpElements) {
             if (isPackage(aVPElement)) {
                 var aPackage = fromVPElement(aVPElement);
-                var subPackages = fromVPElementsToPackages(aVPElement.toChildArray());
+                var subPackages = fromVPElements(aVPElement.toChildArray());
                 aPackage.addChildren(subPackages);
                 result.add(aPackage);
             }

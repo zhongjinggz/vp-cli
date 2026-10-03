@@ -3,7 +3,7 @@ package plugins.vpcli.application;
 import com.vp.plugin.diagram.IDiagramUIModel;
 
 import plugins.vpcli.domain.mydiagram.*;
-import plugins.vpcli.domain.myuml.myproject.MyConverter;
+import plugins.vpcli.domain.myuml.myproject.TreeConverter;
 import plugins.vpcli.drivenadapter.FileFactory;
 import plugins.vpcli.drivenadapter.ProjectRepository;
 import plugins.vpcli.application.writers.WriterFactory;
@@ -18,21 +18,21 @@ import java.util.List;
 
 public class ExportService {
 
-    private final MyConverter convert;
+    private final TreeConverter convertPackage;
     private final ProjectRepository projectRepository;
     private final MyDiagramFactory myDiagramFactory;
     private final WriterFactory writerFactory;
     private final FileFactory fileFactory;
     private final TreeDirMaker makeDir;
 
-    public ExportService(MyConverter myConverter
+    public ExportService(TreeConverter treeConverter
         , ProjectRepository projectRepository
         , MyDiagramFactory myDiagramFactory
         , WriterFactory writerFactory
         , FileFactory fileFactory
         , TreeDirMaker treeDirMaker) {
 
-        this.convert = myConverter;
+        this.convertPackage = treeConverter;
         this.projectRepository = projectRepository;
         this.myDiagramFactory = myDiagramFactory;
         this.writerFactory = writerFactory;
@@ -138,7 +138,7 @@ public class ExportService {
 
         var project = projectRepository.getProject();
 
-        var packages = convert.fromVPElementsToPackages(project.toModelElementArray());
+        var packages = convertPackage.fromVPElements(project.toModelElementArray());
 		makeDir.forPackages(packages, exportLocation);
 
         var vpDiagrams = project.toDiagramArray();
