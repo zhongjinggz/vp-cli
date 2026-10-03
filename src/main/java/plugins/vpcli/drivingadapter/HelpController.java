@@ -5,11 +5,9 @@ import com.vp.plugin.action.VPAction;
 import com.vp.plugin.action.VPActionController;
 
 // DOING
-// - tree: 使用IModelElement[] toChildArray(java.lang.String[] modelTypes)
-// - export: 重构生成图表的程序(类名和包结构）
+// - export：将图表放入目录结构
 
 // TODO
-// - export：将图表放入目录结构
 // - export: 重构/重写生成图表的程序
 // - export: fix bug of Class Diagram 包和类同名造成混乱
 // - 翻译和修改 README
@@ -33,6 +31,8 @@ import com.vp.plugin.action.VPActionController;
 // - 补充建立目录时的各种异常情况
 
 // DONE
+// - export: 重构生成图表的程序(类名和包结构）
+// - tree: 使用IModelElement[] toChildArray(java.lang.String[] modelTypes)
 // - 修改命令行 -action list
 // - export：按照模型包结构创建目录结构
 // - 将依赖注入作为方法

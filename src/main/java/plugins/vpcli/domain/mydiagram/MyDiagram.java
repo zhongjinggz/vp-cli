@@ -5,15 +5,11 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import com.vp.plugin.ApplicationManager;
-import com.vp.plugin.model.IHasChildrenBaseModelElement;
 import com.vp.plugin.model.IModelElement;
 import com.vp.plugin.model.INOTE;
-import com.vp.plugin.model.IReference;
 import com.vp.plugin.model.IStereotype;
 
 import plugins.vpcli.domain.myuml.mycommon.MyNote;
-import plugins.vpcli.domain.myuml.mycommon.MyReference;
 
 public abstract class MyDiagram {
 
@@ -25,54 +21,6 @@ public abstract class MyDiagram {
 	// Set of all exported elements for constant lookup so that no relationships with un-exported elements are written
     protected final Set<IModelElement> allExportedElements = new HashSet<>();
 	protected final Set<String> packageModelIds = new HashSet<>();
-
-	private List<MyReference> extractReferences(IHasChildrenBaseModelElement modelElement) {
-		List<MyReference> exportedReferences = new ArrayList<>();
-        var referenceIter = modelElement.referenceIterator();
-		while (referenceIter.hasNext()) {
-			IReference reference = (IReference) referenceIter.next();
-			MyReference referenceData = null;
-			try {
-				switch (reference.getType()) {
-				case IReference.TYPE_DIAGRAM:
-					referenceData = new MyReference("diagram", reference.getDescription(), reference.getUrlAsDiagram().getName(), reference.getUrlAsDiagram().getType(), null); // TODO: throws null pointer bc getUrlAsDiagram when the diagram is not in project
-					break;
-
-				case IReference.TYPE_URL:
-					referenceData = new MyReference("url", reference.getDescription(), reference.getUrl(), null, null);
-					break;
-
-				case IReference.TYPE_FILE:
-					referenceData = new MyReference("file", reference.getDescription(), reference.getUrl(), null, null);
-					break;
-
-				case IReference.TYPE_FOLDER:
-					referenceData = new MyReference("folder", reference.getDescription(), reference.getUrl(), null, null);
-					break;
-
-				case IReference.TYPE_SHAPE:
-					referenceData = new MyReference("shape", reference.getDescription(), reference.getName(), null, null);
-					break;
-
-				case IReference.TYPE_MODEL_ELEMENT:
-					referenceData = new MyReference("model_element", reference.getDescription(), reference.getUrlAsModel().getName(), null, reference.getUrlAsModel().getModelType());
-					break;
-
-				default:
-					ApplicationManager.instance().getViewManager().showMessage("Found and ignored an unsupported reference");
-					addWarning("Found and ignored an unsupported reference");
-					break;
-				}
-			} catch (NullPointerException e) {
-				ApplicationManager.instance().getViewManager().showMessage("Warning: a reference by model element " + modelElement.getName() + " was null possibly due to referencing a deleted element/diagram.");
-				addWarning("A reference by model element " + modelElement.getName() + " was null possibly due to referencing a deleted element/diagram.");
-			}
-
-			if (referenceData != null)
-				exportedReferences.add(referenceData);
-		}
-		return exportedReferences;
-	}
 
 	protected void extractNote(INOTE noteModel) {
 		String name = noteModel.getName();

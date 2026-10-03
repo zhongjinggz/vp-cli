@@ -47,7 +47,8 @@ public class MyActivityDiagram extends MyDiagram {
         if (visited.contains(currentElement)) {
             if (currentElement.getModelType().equals(SHAPE_TYPE_JOIN_NODE) || Objects.equals(currentElement.getModelType(), SHAPE_TYPE_MERGE_NODE)) {
                 return joinMap.get(currentElement);
-            } else if (Objects.equals(currentElement.getModelType(), SHAPE_TYPE_ACTIVITY_FINAL_NODE) || currentElement.getModelType() == SHAPE_TYPE_FLOW_FINAL_NODE) {
+            } else if (Objects.equals(currentElement.getModelType(), SHAPE_TYPE_ACTIVITY_FINAL_NODE)
+                || Objects.equals(currentElement.getModelType(), SHAPE_TYPE_FLOW_FINAL_NODE)) {
                 // end types. multiple can end here
                 return endMap.get(currentElement);
 

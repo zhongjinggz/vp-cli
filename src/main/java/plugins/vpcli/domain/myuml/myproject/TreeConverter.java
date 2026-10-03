@@ -23,12 +23,6 @@ public class TreeConverter {
         return result;
     }
 
-    boolean isPackage(IModelElement element) {
-        String type = element.getModelType();
-        return IModelElementFactory.MODEL_TYPE_PACKAGE.equals(type)
-            || IModelElementFactory.MODEL_TYPE_MODEL.equals(type);
-    }
-
     MyPackage fromVPElement(IModelElement vpElement) {
         return new MyPackage(vpElement.getId(), vpElement.getName());
     }
@@ -41,7 +35,6 @@ public class TreeConverter {
 
         var topLevel = project.toModelElementArray(vpModelTypes);
 
-        var packages = fromVPElements(topLevel, vpModelTypes);
-        return packages;
+        return fromVPElements(topLevel, vpModelTypes);
     }
 }

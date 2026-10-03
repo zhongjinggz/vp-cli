@@ -5,7 +5,6 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.atLeastOnce;
 import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.mockStatic;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -80,10 +79,9 @@ public class ExportServiceTest {
         return cde;
     }
 
-    private ClassUMLWriter givenClassWriter(MyClassDiagram cde) {
+    private void givenClassWriter(MyClassDiagram cde) {
         ClassUMLWriter w = mock(ClassUMLWriter.class);
         when(writerFactory.createClassUMLWriter(cde)).thenReturn(w);
-        return w;
     }
 
     private void givenSuccessExport(String type) {
@@ -259,7 +257,7 @@ public class ExportServiceTest {
     }
 
     @Test
-    void exportDiagramList_allSuccess_returnsTrue() throws Exception {
+    void exportDiagramList_allSuccess_returnsTrue() {
         IDiagramUIModel d = diagram("ClassDiagram", "L1");
         givenClassWriter(givenClassExporter());
         assertTrue(newPipeline().exportDiagrams(Collections.singletonList(d), tempDir.toFile()));
@@ -292,7 +290,7 @@ public class ExportServiceTest {
     }
 
     @Test
-    void exportAllDiagrams_exportsEveryDiagram() throws Exception {
+    void exportAllDiagrams_exportsEveryDiagram() {
         IDiagramUIModel clazz = diagram("ClassDiagram", "C");
         IDiagramUIModel seq = diagram("InteractionDiagram", "S");
         givenClassWriter(givenClassExporter());
