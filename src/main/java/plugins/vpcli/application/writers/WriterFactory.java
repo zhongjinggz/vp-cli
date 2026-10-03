@@ -1,11 +1,11 @@
 package plugins.vpcli.application.writers;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
-import plugins.vpcli.application.exporter.*;
+import plugins.vpcli.domain.mydiagram.*;
 
 public class WriterFactory {
     @NonNull
-    public ActivityUMLWriter createActivityUMLWriter(ActivityDiagramExporter exporter) {
+    public ActivityUMLWriter createActivityUMLWriter(MyActivityDiagram exporter) {
         return new ActivityUMLWriter(
             exporter.getNotes(),
             exporter.getRootNode()
@@ -13,7 +13,7 @@ public class WriterFactory {
     }
 
     @NonNull
-    public StateUMLWriter createStateUMLWriter(StateDiagramExporter exporter) {
+    public StateUMLWriter createStateUMLWriter(MyStateDiagram exporter) {
         return new StateUMLWriter(
             exporter.getNotes(),
             exporter.getStateDatas(),
@@ -25,7 +25,7 @@ public class WriterFactory {
     }
 
     @NonNull
-    public UseCaseWriter createUseCaseWriter(UseCaseDiagramExporter exporter) {
+    public UseCaseWriter createUseCaseWriter(MyUseCaseDiagram exporter) {
         return new UseCaseWriter(
             exporter.getExportedUseCases(),
             exporter.getExportedRelationships(),
@@ -36,7 +36,7 @@ public class WriterFactory {
     }
 
     @NonNull
-    public SequenceUMLWriter createSequenceUMLWriter(SequenceDiagramExporter exporter) {
+    public SequenceUMLWriter createSequenceUMLWriter(MySequenceDiagram exporter) {
         return new SequenceUMLWriter(
             exporter.getNotes(),
             exporter.getExportedInteractionActors(),
@@ -49,7 +49,7 @@ public class WriterFactory {
     }
 
     @NonNull
-    public ComponentDeploymentUMLWriter createComponentDeploymentUMLWriter(ComponentDeploymentDiagramExporter exporter) {
+    public ComponentDeploymentUMLWriter createComponentDeploymentUMLWriter(MyComponentDeploymentDiagram exporter) {
         return new ComponentDeploymentUMLWriter(
             exporter.getNotes(),
             exporter.getExportedComponents(),
@@ -61,7 +61,7 @@ public class WriterFactory {
     }
 
     @NonNull
-    public ClassUMLWriter createClassUMLWriter(ClassDiagramExporter exporter) {
+    public ClassUMLWriter createClassUMLWriter(MyClassDiagram exporter) {
         return new ClassUMLWriter(
             exporter.getExportedClasses(),
             exporter.getRelationshipDatas(),

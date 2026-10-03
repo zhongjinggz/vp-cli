@@ -1,4 +1,4 @@
-package plugins.vpcli.application.exporter;
+package plugins.vpcli.domain.mydiagram;
 
 import java.util.*;
 
@@ -19,7 +19,7 @@ import plugins.vpcli.domain.myuml.mycommon.MyRelationship;
 
 import static com.vp.plugin.diagram.IShapeTypeConstants.SHAPE_TYPE_PACKAGE;
 
-public class ClassDiagramExporter extends DiagramExporter {
+public class MyClassDiagram extends MyDiagram {
 
 	private final IDiagramUIModel diagram;
 
@@ -31,7 +31,7 @@ public class ClassDiagramExporter extends DiagramExporter {
 
     private final List<MyNary> allExportedNary = new ArrayList<>();
 
-	public ClassDiagramExporter(IDiagramUIModel diagram) {
+	public MyClassDiagram(IDiagramUIModel diagram) {
 		this.diagram = diagram;
 	}
 
@@ -49,13 +49,11 @@ public class ClassDiagramExporter extends DiagramExporter {
 		List<IRelationship> deferredRelationships = new ArrayList<>();
 
 		for (IDiagramElement diagramElement : allElements) {
-
-
 			IModelElement modelElement = diagramElement.getModelElement();
 
 			if (modelElement == null) {
-				ApplicationManager.instance().getViewManager()
-						.showMessage("Warning: modelElement is null for a diagram element.");
+//				ApplicationManager.instance().getViewManager()
+//						.showMessage("Warning: modelElement is null for a diagram element.");
 				addWarning("ModelElement is null for a diagram element.");
 				continue;
 			}
@@ -79,9 +77,9 @@ public class ClassDiagramExporter extends DiagramExporter {
 				deferredRelationships.add((IRelationship) modelElement); // Defer relationships
 			} else {
 				allExportedElements.remove(modelElement);
-				ApplicationManager.instance().getViewManager()
-						.showMessage("Warning: diagram element " + modelElement.getName()
-								+ " is of unsupported type and will not be processed ... ");
+//				ApplicationManager.instance().getViewManager()
+//						.showMessage("Warning: diagram element " + modelElement.getName()
+//								+ " is of unsupported type and will not be processed ... ");
 
 				addWarning("Diagram element " + modelElement.getName()
 								+ " is of unsupported type and was not processed. ");
@@ -102,18 +100,20 @@ public class ClassDiagramExporter extends DiagramExporter {
 
 
 
-	private void extractClass(IClass classModel, MyPackage uPackage) {
+	private void extractClass(IClass classModel, MyPackage myPackage) {
 		boolean isInPackage = !isRootLevelInDiagram(classModel);
-		MyClass myClass = new MyClass(classModel.getName(), classModel.isAbstract(), classModel.getVisibility(),
-				isInPackage);
+		MyClass myClass = new MyClass(classModel.getName()
+			, classModel.isAbstract()
+			, classModel.getVisibility()
+			, isInPackage);
 		myClass.setDescription(classModel.getDescription());
 		myClass.setStereotypes(extractStereotypes(classModel));
 		extractAttributes(classModel, myClass);
 		extractOperations(classModel, myClass);
 		
 		exportedClasses.add(myClass);
-		if (uPackage != null)
-			uPackage.getClasses().add(myClass);
+		if (myPackage != null)
+			myPackage.getClasses().add(myClass);
 	}
 
 	private void extractNary(INARY naryModel, MyPackage uPackage) {
@@ -157,8 +157,8 @@ public class ClassDiagramExporter extends DiagramExporter {
 			return;
 		}
 		if (source.getName() == null || target.getName() == null) {
-			ApplicationManager.instance().getViewManager()
-					.showMessage("Warning: One of the relationship's " +(relationship.getName())+ " elements were null possibly due to illegal relationship (e.g. Anchor between classes) or a hanging connector End");
+//			ApplicationManager.instance().getViewManager()
+//					.showMessage("Warning: One of the relationship's " +(relationship.getName())+ " elements were null possibly due to illegal relationship (e.g. Anchor between classes) or a hanging connector End");
 			addWarning("One of the relationship's elements " + (relationship.getName()) + " were null possibly due to illegal relationship (e.g. Anchor between classes) or a hanging connector End");
 			return;
 		}
@@ -254,8 +254,8 @@ public class ClassDiagramExporter extends DiagramExporter {
 		exportedPackages.add(uPackage);
 	}
 
-	private void extractAttributes(IClass classModel, MyClass myClass) {
-        var attributeIter = classModel.attributeIterator();
+	private void extractAttributes(IClass vpClass, MyClass myClass) {
+        var attributeIter = vpClass.attributeIterator();
 		while (attributeIter.hasNext()) {
 			IAttribute attribute = (IAttribute) attributeIter.next();
 			AttributeData attr = new AttributeData(attribute.getVisibility(), attribute.getName(),
@@ -264,7 +264,7 @@ public class ClassDiagramExporter extends DiagramExporter {
 			myClass.addAttribute(attr);
 		}
 
-        var literalIter = classModel.enumerationLiteralIterator();
+        var literalIter = vpClass.enumerationLiteralIterator();
 		while (literalIter.hasNext()) {
 			ApplicationManager.instance().getViewManager().showMessage("literal being extracted.");
 			IEnumerationLiteral literal = (IEnumerationLiteral) literalIter.next();

@@ -1,4 +1,4 @@
-package plugins.vpcli.application.exporter;
+package plugins.vpcli.domain.mydiagram;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -19,7 +19,7 @@ import plugins.vpcli.domain.myuml.myinteraction.MyLifeline;
 import plugins.vpcli.domain.myuml.myinteraction.MessageData;
 import plugins.vpcli.domain.myuml.myusecase.MyActor;
 
-public class SequenceDiagramExporter extends DiagramExporter {
+public class MySequenceDiagram extends MyDiagram {
 
 	private final IDiagramUIModel diagram;
 
@@ -33,7 +33,7 @@ public class SequenceDiagramExporter extends DiagramExporter {
 	private final Map<IInteractionLifeLine, MyLifeline> lifelineMap = new HashMap<>();
 	private final Set<IMessage> processedMessages = new HashSet<>(); // Set to track processed messages
 
-	public SequenceDiagramExporter(IDiagramUIModel diagram) {
+	public MySequenceDiagram(IDiagramUIModel diagram) {
 		this.diagram = diagram;
 	}
 

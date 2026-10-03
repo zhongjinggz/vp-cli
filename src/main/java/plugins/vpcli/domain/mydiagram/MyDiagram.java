@@ -1,4 +1,4 @@
-package plugins.vpcli.application.exporter;
+package plugins.vpcli.domain.mydiagram;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -6,7 +6,6 @@ import java.util.List;
 import java.util.Set;
 
 import com.vp.plugin.ApplicationManager;
-import com.vp.plugin.diagram.IDiagramUIModel;
 import com.vp.plugin.model.IHasChildrenBaseModelElement;
 import com.vp.plugin.model.IModelElement;
 import com.vp.plugin.model.INOTE;
@@ -15,9 +14,8 @@ import com.vp.plugin.model.IStereotype;
 
 import plugins.vpcli.domain.myuml.mycommon.MyNote;
 import plugins.vpcli.domain.myuml.mycommon.MyReference;
-import plugins.vpcli.domain.myuml.mydiagram.MyDiagram;
 
-public abstract class DiagramExporter {
+public abstract class MyDiagram {
 
 	public abstract void extract();
 	private final List<String> warnings = new ArrayList<>();
@@ -27,31 +25,6 @@ public abstract class DiagramExporter {
 	// Set of all exported elements for constant lookup so that no relationships with un-exported elements are written
     protected final Set<IModelElement> allExportedElements = new HashSet<>();
 	protected final Set<String> packageModelIds = new HashSet<>();
-
-//	protected SemanticsData extractSemantics(IModelElement modelElement) {
-//		List<UReference> extractedReferences = extractReferences((IHasChildrenBaseModelElement) modelElement);
-//		List<Diagram> extractedSubdiagrams = extractSubdiagrams(modelElement);
-//		String description = modelElement.getDescription();
-//
-//		// Include semantics only if there is at least 1 of the 3 elements
-//		if ((!extractedReferences.isEmpty()) ||
-//				(!extractedSubdiagrams.isEmpty()) ||
-//				(description != null && !description.isEmpty())) {
-//
-//			SemanticsData semanticsData = new SemanticsData();
-//			semanticsData.setOwnerName(modelElement.getName());
-//			semanticsData.setOwnerType(modelElement.getModelType());
-//			semanticsData.setReferences(extractedReferences);
-//			semanticsData.setSubDiagrams(extractedSubdiagrams);
-//			semanticsData.setDescription(description);
-//
-//			return semanticsData;
-//
-//		} else { // No meaningful information to extract
-//			return null;
-//		}
-//	}
-
 
 	private List<MyReference> extractReferences(IHasChildrenBaseModelElement modelElement) {
 		List<MyReference> exportedReferences = new ArrayList<>();
@@ -130,26 +103,6 @@ public abstract class DiagramExporter {
 		}
 		return stereotypes;
 	}
-
-	private List<MyDiagram> extractSubdiagrams(IModelElement modelElement) {
-		List<MyDiagram> diagrams = new ArrayList<>();
-		IDiagramUIModel[] subDiagrams = modelElement.toSubDiagramArray();
-		if (subDiagrams != null) {
-			for (IDiagramUIModel subDiagram : subDiagrams) {
-				diagrams.add(new MyDiagram(subDiagram.getName(), subDiagram.getType()));
-			}
-		}
-		return diagrams;
-	}
-
-//	protected void addSemanticsIfExist(IModelElement modelElement, BaseWithSemanticsData modelData) {
-//		SemanticsData semantics = extractSemantics(modelElement);
-//
-//		if (semantics != null) {
-//			modelData.setSemantics(extractSemantics(modelElement));
-//			exportedSemantics.add(modelData.getSemantics());
-//		}
-//	}
 
 	protected boolean isRootLevel(IModelElement element) {
 		return (element.getParent() == null);

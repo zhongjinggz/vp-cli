@@ -1,4 +1,4 @@
-package plugins.vpcli.application.exporter;
+package plugins.vpcli.domain.mydiagram;
 
 import com.vp.plugin.ApplicationManager;
 import com.vp.plugin.diagram.IDiagramElement;
@@ -26,11 +26,11 @@ import java.util.Objects;
 import static com.vp.plugin.diagram.IShapeTypeConstants.*;
 
 
-public class UseCaseDiagramExporter extends DiagramExporter {
+public class MyUseCaseDiagram extends MyDiagram {
 
     private final IDiagramUIModel diagram;
 
-    public UseCaseDiagramExporter(IDiagramUIModel diagram) {
+    public MyUseCaseDiagram(IDiagramUIModel diagram) {
         this.diagram = diagram;
     }
     

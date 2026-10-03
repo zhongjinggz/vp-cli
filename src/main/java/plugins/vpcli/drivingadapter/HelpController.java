@@ -5,10 +5,11 @@ import com.vp.plugin.action.VPAction;
 import com.vp.plugin.action.VPActionController;
 
 // DOING
+// - export: 重构生成图表的程序(类名和包结构）
 
 // TODO
-// - export: 重构生成图表的程序
 // - export：将图表放入目录结构
+// - export: 重构/重写生成图表的程序
 // - export: fix bug of Class Daigram 包和类同名造成混乱
 // - 翻译和修改 README
 
@@ -23,6 +24,7 @@ import com.vp.plugin.action.VPActionController;
 // - export：链接交叉引用
 // - tree: 补测试
 // - tree: 使用IModelElement[] toChildArray(java.lang.String[] modelTypes)
+// - tree: 增加一个虚拟的根包 VirtualRootPackage
 // - 统一处理日志
 // - 考虑将 python 改为 java ， 改为多模块项目
 // - 改用 NIO

@@ -1,4 +1,4 @@
-package plugins.vpcli.application.exporter;
+package plugins.vpcli.domain.mydiagram;
 
 import java.util.*;
 import java.util.function.Supplier;
@@ -16,7 +16,7 @@ import plugins.vpcli.domain.myuml.mydeployment.MyArtifact;
 
 import static com.vp.plugin.diagram.IShapeTypeConstants.*;
 
-public class ComponentDeploymentDiagramExporter extends DiagramExporter {
+public class MyComponentDeploymentDiagram extends MyDiagram {
 	
 	private final IDiagramUIModel diagram;
 	
@@ -30,7 +30,7 @@ public class ComponentDeploymentDiagramExporter extends DiagramExporter {
 	private final Set<String> compModelIds = new HashSet<>();
 	private final Set<String> nodeModelIds = new HashSet<>();
 
-	public ComponentDeploymentDiagramExporter(IDiagramUIModel diagram) {
+	public MyComponentDeploymentDiagram(IDiagramUIModel diagram) {
 		this.diagram = diagram;
 	}
 	

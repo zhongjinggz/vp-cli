@@ -1,4 +1,4 @@
-package plugins.vpcli.application.exporter;
+package plugins.vpcli.domain.mydiagram;
 
 import com.vp.plugin.ApplicationManager;
 import com.vp.plugin.diagram.IDiagramElement;
@@ -16,7 +16,7 @@ import java.util.Objects;
 
 import static com.vp.plugin.diagram.IShapeTypeConstants.*;
 
-public class StateDiagramExporter extends DiagramExporter {
+public class MyStateDiagram extends MyDiagram {
 
     private final IDiagramUIModel diagram;
     private final List<MyState> myStates = new ArrayList<>();
@@ -36,7 +36,7 @@ public class StateDiagramExporter extends DiagramExporter {
     }
 
 
-    public StateDiagramExporter(IDiagramUIModel diagram) {
+    public MyStateDiagram(IDiagramUIModel diagram) {
         this.diagram = diagram;
     }
 

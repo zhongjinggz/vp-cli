@@ -2,12 +2,11 @@ package plugins.vpcli.application;
 
 import com.vp.plugin.diagram.IDiagramUIModel;
 
-import plugins.vpcli.application.exporter.ExporterFactory;
+import plugins.vpcli.domain.mydiagram.*;
 import plugins.vpcli.domain.myuml.myproject.MyConverter;
 import plugins.vpcli.drivenadapter.FileFactory;
 import plugins.vpcli.drivenadapter.ProjectRepository;
 import plugins.vpcli.application.writers.WriterFactory;
-import plugins.vpcli.application.exporter.*;
 import plugins.vpcli.application.writers.*;
 import plugins.vpcli.drivenadapter.TreeDirMaker;
 import plugins.vpcli.util.UnfitForExportException;
@@ -21,69 +20,68 @@ public class ExportService {
 
     private final MyConverter convert;
     private final ProjectRepository projectRepository;
-    private final ExporterFactory exporterFactory;
+    private final MyDiagramFactory myDiagramFactory;
     private final WriterFactory writerFactory;
     private final FileFactory fileFactory;
     private final TreeDirMaker makeDir;
 
     public ExportService(MyConverter myConverter
         , ProjectRepository projectRepository
-        , ExporterFactory exporterFactory
+        , MyDiagramFactory myDiagramFactory
         , WriterFactory writerFactory
         , FileFactory fileFactory
         , TreeDirMaker treeDirMaker) {
 
         this.convert = myConverter;
         this.projectRepository = projectRepository;
-        this.exporterFactory = exporterFactory;
+        this.myDiagramFactory = myDiagramFactory;
         this.writerFactory = writerFactory;
         this.fileFactory = fileFactory;
         this.makeDir = treeDirMaker;
     }
 
-    public void export(IDiagramUIModel diagram, File exportLocation) throws IOException, UnfitForExportException {
-        String diagramType = diagram.getType();
-        String diagramTitle = diagram.getName();
+    public void exportADiagram(IDiagramUIModel vpDiagram
+        , File exportLocation) throws IOException, UnfitForExportException {
+
+        String diagramType = vpDiagram.getType();
+        String diagramTitle = vpDiagram.getName();
         File outputFile = createOutputFile(diagramTitle, "uml", exportLocation);
 
         try {
             switch (diagramType) {
                 case "ClassDiagram":
-                    ClassDiagramExporter cde = exporterFactory.createClassDiagramExporter(diagram);
-                    cde.extract();
-                    ClassUMLWriter classWriter = writerFactory.createClassUMLWriter(cde);
-                    classWriter.writeToFile(outputFile);
+                    exportClassDiagram(vpDiagram, outputFile);
                     break;
 
                 case "ComponentDiagram":
                 case "DeploymentDiagram":
-                    ComponentDeploymentDiagramExporter exporter = exporterFactory.createComponentDeploymentDiagramExporter(diagram);
+                    MyComponentDeploymentDiagram exporter = myDiagramFactory.createComponentDeploymentDiagramExporter(vpDiagram);
                     exporter.extract();
                     ComponentDeploymentUMLWriter componentWriter = writerFactory.createComponentDeploymentUMLWriter(exporter);
                     componentWriter.writeToFile(outputFile);
                     break;
 
                 case "InteractionDiagram":
-                    SequenceDiagramExporter seqde = exporterFactory.createSequenceDiagramExporter(diagram);
+                    MySequenceDiagram seqde = myDiagramFactory.createSequenceDiagramExporter(vpDiagram);
                     seqde.extract();
                     SequenceUMLWriter sequenceWriter = writerFactory.createSequenceUMLWriter(seqde);
                     sequenceWriter.writeToFile(outputFile);
                     break;
 
                 case "UseCaseDiagram":
-                    UseCaseDiagramExporter ucde = exporterFactory.createUseCaseDiagramExporter(diagram);
+                    MyUseCaseDiagram ucde = myDiagramFactory.createUseCaseDiagramExporter(vpDiagram);
                     ucde.extract();
                     UseCaseWriter useCaseWriter = writerFactory.createUseCaseWriter(ucde);
                     useCaseWriter.writeToFile(outputFile);
                     break;
                 case "StateDiagram":
-                    StateDiagramExporter stde = exporterFactory.createStateDiagramExporter(diagram);
+                    MyStateDiagram stde = myDiagramFactory.createStateDiagramExporter(vpDiagram);
                     stde.extract();
                     StateUMLWriter stateUMLWriter = writerFactory.createStateUMLWriter(stde);
                     stateUMLWriter.writeToFile(outputFile);
                     break;
                 case "ActivityDiagram":
-                    ActivityDiagramExporter acde = exporterFactory.createActivityDiagramExporter(diagram);
+                    MyActivityDiagram acde = myDiagramFactory.createActivityDiagramExporter(vpDiagram);
                     acde.extract();
                     ActivityUMLWriter activityUMLWriter = writerFactory.createActivityUMLWriter(acde);
                     activityUMLWriter.writeToFile(outputFile);
@@ -96,6 +94,14 @@ public class ExportService {
             throw ex;
 
         }
+    }
+
+    private void exportClassDiagram(IDiagramUIModel vpDiagram
+        , File outputFile) throws IOException {
+        MyClassDiagram exporter = myDiagramFactory.createClassDiagramExporter(vpDiagram);
+        exporter.extract();
+        ClassUMLWriter classWriter = writerFactory.createClassUMLWriter(exporter);
+        classWriter.writeToFile(outputFile);
     }
 
     File createOutputFile(String title, String contentType, File exportLocation) throws IOException {
@@ -111,11 +117,14 @@ public class ExportService {
         return outputFile;
     }
 
-    public boolean exportDiagramList(List<IDiagramUIModel> selectedDiagrams, File exportLocation) {
+    public boolean exportDiagrams(List<IDiagramUIModel> vpDiagrams
+        , File exportLocation) {
+
         boolean allSuccessful = true;
-        for (IDiagramUIModel activeDiagram : selectedDiagrams) {
+
+        for (var aDiagram : vpDiagrams) {
             try {
-                export(activeDiagram, exportLocation);
+                exportADiagram(aDiagram, exportLocation);
             } catch (IOException | UnsupportedOperationException | UnfitForExportException ex) {
                 //TODO 统一异常处理
                 allSuccessful = false;
@@ -132,14 +141,14 @@ public class ExportService {
         var packages = convert.fromVPElementsToPackages(project.toModelElementArray());
 		makeDir.forPackages(packages, exportLocation);
 
-        var allDiagrams = project.toDiagramArray();
+        var vpDiagrams = project.toDiagramArray();
 
-        this.exportDiagramList(Arrays.asList(allDiagrams), exportLocation);
+        this.exportDiagrams(Arrays.asList(vpDiagrams), exportLocation);
     }
 
     public void exportSpecificDiagram(String target, File exportLocation) throws IOException {
         IDiagramUIModel targetDiagram = projectRepository.getProject().getDiagramById(target);
-        this.export(targetDiagram, exportLocation);
+        this.exportADiagram(targetDiagram, exportLocation);
     }
 
 }

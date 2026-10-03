@@ -1,4 +1,4 @@
-package plugins.vpcli.application.exporter;
+package plugins.vpcli.domain.mydiagram;
 
 import com.vp.plugin.diagram.IDiagramElement;
 import com.vp.plugin.diagram.IDiagramUIModel;
@@ -14,7 +14,7 @@ import java.util.*;
 
 import static com.vp.plugin.diagram.IShapeTypeConstants.*;
 
-public class ActivityDiagramExporter extends DiagramExporter {
+public class MyActivityDiagram extends MyDiagram {
 
     private final IDiagramUIModel diagram;
     private MyFlowNode rootNode;
@@ -22,7 +22,7 @@ public class ActivityDiagramExporter extends DiagramExporter {
     private final Map<IModelElement, MyFlowNode> joinMap = new HashMap<>();
     private final Map<IModelElement, MyFlowNode> endMap = new HashMap<>();
 
-    public ActivityDiagramExporter(IDiagramUIModel diagram) {
+    public MyActivityDiagram(IDiagramUIModel diagram) {
         this.diagram = diagram;
     }
 

@@ -35,9 +35,9 @@ public class ClassUMLWriter extends PlantUMLWriter {
     public void writeToFile(File file) throws IOException {
         StringBuilder plantUMLContent = new StringBuilder("@startuml\n");
         
-        for (MyPackage uPackage : packages) {
-        	if(!uPackage.isSubpackage())
-        		plantUMLContent.append(writePackage(uPackage, ""));
+        for (MyPackage aPackage : packages) {
+        	if(!aPackage.isSubpackage())
+        		plantUMLContent.append(writePackage(aPackage, ""));
         }
 
         for (MyClass myClass : classes) {
@@ -75,22 +75,22 @@ public class ClassUMLWriter extends PlantUMLWriter {
 	}
 	
 
-	private String writePackage(MyPackage uPackage, String indent) {
+	private String writePackage(MyPackage myPackage, String indent) {
     	StringBuilder packageString = new StringBuilder();
-    	String name = formatName(uPackage.getName());
+    	String name = formatName(myPackage.getName());
     	
     	packageString.append(indent).append("package " ).append(name).append(" {\n");
     	
-    	for (MyClass myClass : uPackage.getClasses()) {
+    	for (MyClass myClass : myPackage.getClasses()) {
     		packageString.append(writeClass(myClass, indent + "\t"));
     		
     	}
     	
-    	for (MyNary myNary : uPackage.getNaries()) {
+    	for (MyNary myNary : myPackage.getNaries()) {
     		packageString.append(writeNary(myNary, indent + "\t"));
     	}
     	
-    	for (MyPackage subPackage : uPackage.getSubPackages()) {
+    	for (MyPackage subPackage : myPackage.getSubPackages()) {
     		packageString.append(writePackage(subPackage, indent + "\t"));
     		
     	}

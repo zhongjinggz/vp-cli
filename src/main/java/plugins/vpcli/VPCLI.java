@@ -10,13 +10,13 @@ import plugins.vpcli.drivenadapter.TreePrinter;
 import plugins.vpcli.drivingadapter.CLIController;
 import plugins.vpcli.application.ExportService;
 import plugins.vpcli.application.TreeService;
-import plugins.vpcli.application.exporter.ExporterFactory;
+import plugins.vpcli.domain.mydiagram.MyDiagramFactory;
 import plugins.vpcli.application.writers.WriterFactory;
 
 
 public class VPCLI implements VPPlugin, VPPluginCommandLineSupport {
     // Driven Adapters
-    private ExporterFactory exporterFactory;
+    private MyDiagramFactory myDiagramFactory;
     private WriterFactory writerFactory;
     private ProjectRepository projectRepository;
     private FileFactory fileFactory;
@@ -42,7 +42,7 @@ public class VPCLI implements VPPlugin, VPPluginCommandLineSupport {
     // TODO 优化依赖注入，按功能分开不同的控制器，只注入本次功能需要的依赖
     void injectDependencies() {
         // Driven Adapters
-        this.exporterFactory = new ExporterFactory();
+        this.myDiagramFactory = new MyDiagramFactory();
         this.writerFactory = new WriterFactory();
         this.projectRepository = new ProjectRepository();
         this.fileFactory = new FileFactory();
@@ -56,7 +56,7 @@ public class VPCLI implements VPPlugin, VPPluginCommandLineSupport {
         this.exportService = new ExportService(
             this.myConverter
             , this.projectRepository
-            , this.exporterFactory
+            , this.myDiagramFactory
             , this.writerFactory
             , this.fileFactory
             , this.treeDirMaker);
