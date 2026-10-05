@@ -5,6 +5,7 @@ import com.vp.plugin.action.VPAction;
 import com.vp.plugin.action.VPActionController;
 
 // DOING
+// - 使用 Visitor 模式浏览IProject, 并基于改模式重构 TreeService
 // - export：将图表放入目录结构
 
 // TODO
@@ -54,7 +55,7 @@ public class HelpController implements VPActionController {
             ApplicationManager.instance()
                 .getViewManager()
                 .getRootFrame()
-            , "bug fixing for TreeConverter -  12:55"
+            , "simplify visitor pattern for TreeService -  10:23"
         );
     }
 

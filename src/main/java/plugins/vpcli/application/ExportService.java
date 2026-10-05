@@ -2,6 +2,7 @@ package plugins.vpcli.application;
 
 import com.vp.plugin.diagram.IDiagramUIModel;
 
+import com.vp.plugin.model.IProject;
 import plugins.vpcli.domain.mydiagram.*;
 import plugins.vpcli.domain.myuml.myproject.TreeConverter;
 import plugins.vpcli.drivenadapter.FileFactory;
@@ -141,9 +142,23 @@ public class ExportService {
         var packages = convertPackage.fromVPProject(project);
         makeDir.forPackages(packages, exportLocation);
 
+        exportDiagramsUnderPackages(project, exportLocation);
+    }
+
+    private void exportDiagramsUnderPackages(IProject project, File exportLocation) {
         var vpDiagrams = project.toDiagramArray();
 
-        this.exportDiagrams(Arrays.asList(vpDiagrams), exportLocation);
+        boolean allSuccessful = true;
+
+        for (var aDiagram : Arrays.asList(vpDiagrams)) {
+            try {
+                exportADiagram(aDiagram, exportLocation);
+            } catch (IOException | UnsupportedOperationException | UnfitForExportException ex) {
+                //TODO 统一异常处理
+                allSuccessful = false;
+            }
+        }
+
     }
 
     public void exportSpecificDiagram(String target, File exportLocation) throws IOException {
