@@ -17,6 +17,9 @@ public class TreeVisitor implements VPVisitor {
             case IModelElementFactory.MODEL_TYPE_MODEL:
                 suffix = ".model";
                 break;
+            case IModelElementFactory.MODEL_TYPE_CLASS:
+                suffix = ".class";
+                break;
             default:
                 throw new RuntimeException("Bug: unknow MODE_TYPE" + structElement.getType());
         }

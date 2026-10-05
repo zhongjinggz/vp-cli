@@ -4,8 +4,7 @@ import com.vp.plugin.*;
 import plugins.vpcli.application.ListDiagramsService;
 import plugins.vpcli.domain.myuml.myproject.TreeConverter;
 import plugins.vpcli.domain.myuml.myproject.TreeVisitorFactory;
-import plugins.vpcli.domain.vpstruct.VPStructElementFactory;
-import plugins.vpcli.domain.vpstruct.VPVisitorFactory;
+import plugins.vpcli.domain.vpstruct.VPStructFactory;
 import plugins.vpcli.drivenadapter.FileFactory;
 import plugins.vpcli.drivenadapter.ProjectRepository;
 import plugins.vpcli.drivenadapter.TreeDirMaker;
@@ -26,7 +25,7 @@ public class VPCLI implements VPPlugin, VPPluginCommandLineSupport {
     private TreePrinter treePrinter;
     private TreeDirMaker treeDirMaker;
 
-    private VPStructElementFactory vpStructElementFactory;
+    private VPStructFactory vpStructFactory;
     private TreeVisitorFactory treeVisitorFactory;
 
     // Domain Services
@@ -55,7 +54,7 @@ public class VPCLI implements VPPlugin, VPPluginCommandLineSupport {
         this.treePrinter = new TreePrinter();
         this.treeDirMaker = new TreeDirMaker();
 
-        this.vpStructElementFactory = new VPStructElementFactory();
+        this.vpStructFactory = new VPStructFactory();
         this.treeVisitorFactory = new TreeVisitorFactory();
 
         // Domain Services
@@ -74,7 +73,7 @@ public class VPCLI implements VPPlugin, VPPluginCommandLineSupport {
             this.projectRepository
             , this.treeConverter
             , this.treePrinter
-            , this.vpStructElementFactory
+            , this.vpStructFactory
             , this.treeVisitorFactory);
 
         this.listDiagramsService = new ListDiagramsService(this.projectRepository);
