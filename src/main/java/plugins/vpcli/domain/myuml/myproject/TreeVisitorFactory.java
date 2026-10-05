@@ -7,6 +7,6 @@ public class TreeVisitorFactory implements VPVisitorFactory {
 
     @Override
     public VPVisitor create(VPVisitor preLevelVisitor) {
-        return new TreeVisitor() ;
+        return new TreeVisitor((TreeVisitor)preLevelVisitor) ;
     }
 }

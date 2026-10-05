@@ -31,9 +31,6 @@ public class TreeService {
     public void tree() {
         var project = projectRepository.getProject();
 
-//        var vpStruct = new VPStruct(project
-//            , new VPStructElementFactory());
-
         var vpStruct = vpStructFactory.create(project);
         vpStruct.setVisitorFactory(treeVisitorFactory);
         vpStruct.setElementTypes(

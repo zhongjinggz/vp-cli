@@ -55,7 +55,7 @@ public class HelpController implements VPActionController {
             ApplicationManager.instance()
                 .getViewManager()
                 .getRootFrame()
-            , "Add Element Type 'class' -  19:34"
+            , "Add branch to Tree -  22:21"
         );
     }
 

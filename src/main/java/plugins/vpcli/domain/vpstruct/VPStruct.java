@@ -16,8 +16,8 @@ public class VPStruct {
         this.createStructElement = elementFactory;
     }
 
-    public void setVisitorFactory(VPVisitorFactory treeVisitorFactory) {
-        this.visitorFactory = treeVisitorFactory;
+    public void setVisitorFactory(VPVisitorFactory visitorFactory) {
+        this.visitorFactory = visitorFactory;
     }
 
     public void setElementTypes(String[] elementTypes) {
@@ -31,8 +31,11 @@ public class VPStruct {
 
     private void elementsAccept(IModelElement[] vpElements, VPVisitor preLevelVisitor) {
 
+        int length = vpElements.length;
+        int i = 0;
         for (var aVPElement : vpElements) {
             var visitor = visitorFactory.create(preLevelVisitor);
+            visitor.setLast(i + 1 == length);
             var structElement = createStructElement.from(aVPElement);
             visitor.visit(structElement);
 
@@ -40,6 +43,8 @@ public class VPStruct {
                 aVPElement.toChildArray(elementTypes)
                 , visitor
             );
+
+            i++;
         }
     }
 }
