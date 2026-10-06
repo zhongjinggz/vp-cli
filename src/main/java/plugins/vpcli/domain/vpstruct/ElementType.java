@@ -11,8 +11,8 @@ public enum ElementType {
     CLASS(MODEL_ELEMENT, MODEL_TYPE_CLASS, ".class"),
     USECASE(MODEL_ELEMENT, MODEL_TYPE_USE_CASE, ".usecase"),
     ALL_DIAGRAMS(DIAGRAM, "",""),
-    CLASS_DIAGRAM(DIAGRAM, "ClassDiagram", ".class.diagram"),
-    USECASE_DIAGRAM(DIAGRAM, "UseCaseDiagram", ".usecase.diagram");
+    CLASS_DIAGRAM(DIAGRAM, "ClassDiagram", ".class-diagram"),
+    USECASE_DIAGRAM(DIAGRAM, "UseCaseDiagram", ".usecase-diagram");
 
     private final String vpModelType;
     private final Kind vpElementKind;
