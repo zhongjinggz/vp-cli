@@ -1,11 +1,15 @@
 package plugins.vpcli.application;
 
-import com.vp.plugin.model.factory.IModelElementFactory;
 import plugins.vpcli.domain.myuml.myproject.TreeConverter;
 import plugins.vpcli.domain.myuml.myproject.TreeVisitorFactory;
+import plugins.vpcli.domain.vpstruct.ElementType;
 import plugins.vpcli.domain.vpstruct.VPStructFactory;
 import plugins.vpcli.drivenadapter.ProjectRepository;
 import plugins.vpcli.drivenadapter.TreePrinter;
+
+import java.util.List;
+
+import static plugins.vpcli.domain.vpstruct.ElementType.*;
 
 public class TreeService {
 
@@ -31,13 +35,12 @@ public class TreeService {
     public void tree() {
         var project = projectRepository.getProject();
 
-        var vpStruct = vpStructFactory.create(project);
-        vpStruct.setVisitorFactory(treeVisitorFactory);
+        var vpStruct = vpStructFactory.create(project, treeVisitorFactory);
         vpStruct.setElementTypes(
-            new String[]{IModelElementFactory.MODEL_TYPE_PACKAGE
-            , IModelElementFactory.MODEL_TYPE_MODEL
-            , IModelElementFactory.MODEL_TYPE_CLASS}
-        );
+            List.of(PACKAGE
+                , MODEL
+                , CLASS
+                , ALL_DIAGRAMS));
 
         vpStruct.accept();
     }

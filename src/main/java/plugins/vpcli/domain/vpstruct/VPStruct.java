@@ -1,46 +1,63 @@
 package plugins.vpcli.domain.vpstruct;
 
-import com.vp.plugin.model.IModelElement;
 import com.vp.plugin.model.IProject;
+import org.checkerframework.checker.nullness.qual.NonNull;
 
-import java.util.Arrays;
+import java.util.ArrayList;
+import java.util.List;
 
 public class VPStruct {
     private final IProject project;
     private final VPStructElementFactory createStructElement;
-    private VPVisitorFactory visitorFactory;
-    private String[] elementTypes = new String[]{};
+    private final VPVisitorFactory visitorFactory;
+    private final List<ElementType> elementTypes = new ArrayList<>();
 
-    public VPStruct(IProject vpProject, VPStructElementFactory elementFactory) {
+    public VPStruct(IProject vpProject
+        , VPStructElementFactory elementFactory
+        , VPVisitorFactory visitorFactory) {
+
         this.project = vpProject;
         this.createStructElement = elementFactory;
-    }
-
-    public void setVisitorFactory(VPVisitorFactory visitorFactory) {
         this.visitorFactory = visitorFactory;
     }
 
-    public void setElementTypes(String[] elementTypes) {
-        this.elementTypes = Arrays.copyOf(elementTypes, elementTypes.length);
+    public void setElementTypes(List<ElementType> elementTypes) {
+        this.elementTypes.addAll(elementTypes);
     }
 
     public void accept() {
-        var topLevelElements = project.toModelElementArray(elementTypes);
-        elementsAccept(topLevelElements, null);
+        List<VPStructElement> elements = createTopLevelElements();
+
+        elementsAccept(elements, null);
     }
 
-    private void elementsAccept(IModelElement[] vpElements, VPVisitor preLevelVisitor) {
+    private @NonNull List<VPStructElement> createTopLevelElements() {
+        String[] vpModelTypes = elementTypes.stream()
+            .filter( t-> t.kindIs(ElementType.Kind.MODEL_ELEMENT))
+            .map( ElementType::getVPModelType)
+            .toArray(String[]::new);
+        var vpElements = project.toModelElementArray(vpModelTypes);
 
-        int length = vpElements.length;
+        List<VPStructElement> result = new ArrayList<>();
+        for (var anElement : vpElements) {
+            result.add(createStructElement.from(anElement));
+        }
+        return result;
+    }
+
+    private void elementsAccept(List<VPStructElement> elements
+        , VPVisitor preLevelVisitor) {
+
+        int size = elements.size();
         int i = 0;
-        for (var aVPElement : vpElements) {
+
+        for (var anElement : elements) {
             var visitor = visitorFactory.create(preLevelVisitor);
-            visitor.setLast(i + 1 == length);
-            var structElement = createStructElement.from(aVPElement);
-            visitor.visit(structElement);
+            visitor.setLast(i + 1 == size);
+            visitor.visit(anElement);
 
             elementsAccept(
-                aVPElement.toChildArray(elementTypes)
+                anElement.getChildren(elementTypes)
                 , visitor
             );
 

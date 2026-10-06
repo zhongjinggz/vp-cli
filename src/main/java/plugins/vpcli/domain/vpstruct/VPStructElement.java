@@ -1,23 +1,18 @@
 package plugins.vpcli.domain.vpstruct;
 
-import com.vp.plugin.model.IModelElement;
+import java.util.List;
 
-public class VPStructElement {
-    private final IModelElement vpElement;
+public abstract class VPStructElement {
 
-    public VPStructElement(IModelElement vpElement) {
-        this.vpElement = vpElement;
+    public VPStructElement() {
     }
-
     public void accept(VPVisitor visitor){
         visitor.visit(this);
     };
 
-    public String getName() {
-        return vpElement.getName();
-    }
+    public abstract String getName() ;
     
-    public String getType() {
-        return vpElement.getModelType();
-    }
+    public abstract ElementType getType();
+
+    public abstract List<VPStructElement> getChildren(List<ElementType> elementTypes) ;
 }
