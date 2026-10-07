@@ -2,8 +2,14 @@ package plugins.vpcli.application.writers;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
 import plugins.vpcli.domain.mydiagram.*;
+import plugins.vpcli.drivenadapter.FileFactory;
 
 public class WriterFactory {
+    private FileFactory fileFactory;
+    public WriterFactory(FileFactory fileFactory) {
+        this.fileFactory = fileFactory;
+    }
+
     @NonNull
     public ActivityUMLWriter createActivityUMLWriter(MyActivityDiagram exporter) {
         return new ActivityUMLWriter(
@@ -61,13 +67,9 @@ public class WriterFactory {
     }
 
     @NonNull
-    public ClassUMLWriter createClassUMLWriter(MyClassDiagram exporter) {
-        return new ClassUMLWriter(
-            exporter.getExportedClasses(),
-            exporter.getRelationshipDatas(),
-            exporter.getExportedPackages(),
-            exporter.getExportedNary(),
-            exporter.getNotes()
+    public ClassDiagramWriter createClassDiagramWriter(MyClassDiagram diagram) {
+        return new ClassDiagramWriter(
+            diagram, this.fileFactory
         );
     }
 }

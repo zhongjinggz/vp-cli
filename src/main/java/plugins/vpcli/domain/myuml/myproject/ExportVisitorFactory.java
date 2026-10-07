@@ -40,7 +40,7 @@ public class ExportVisitorFactory implements VPVisitorFactory {
             , this.fileIO
             , diagramFactory
             , writerFactory
-            , fileFactory);
+        );
 
         if (preLevelVisitor == null) {
             result.setParentDir(rootDir);

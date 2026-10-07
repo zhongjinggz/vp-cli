@@ -25,7 +25,7 @@ public class VPDiagram extends VPStructElement {
         return List.of();
     }
 
-    public IDiagramUIModel getVPDiagram() {
+    public IDiagramUIModel getVPDiagramUIModel() {
         return this.diagram;
     }
 }

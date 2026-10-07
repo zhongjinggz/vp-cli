@@ -60,9 +60,9 @@ public class VPCLI implements VPPlugin, VPPluginCommandLineSupport {
         this.projectRepository = new ProjectRepository();
 
         // Factory
-        this.myDiagramFactory = new MyDiagramFactory();
-        this.writerFactory = new WriterFactory();
         this.fileFactory = new FileFactory();
+        this.myDiagramFactory = new MyDiagramFactory();
+        this.writerFactory = new WriterFactory(this.fileFactory);
         this.treeDirMaker = new TreeDirMaker();
 
 

@@ -5,9 +5,8 @@ import com.vp.plugin.action.VPAction;
 import com.vp.plugin.action.VPActionController;
 
 // DOING
-// - export：将图表放入目录结构
-// TODO
 // - export: 重构/重写生成图表的程序
+// TODO
 // - export: fix bug of Class Diagram 包和类同名造成混乱
 // - 翻译和修改 README
 
@@ -29,6 +28,7 @@ import com.vp.plugin.action.VPActionController;
 // - 补充建立目录时的各种异常情况
 
 // DONE
+// - export：将图表放入目录结构
 // - export: 使用Visitor 创建目录
 // - Tree：显示 diagram
 // - 使用 Visitor 模式浏览IProject, 并基于改模式重构 TreeService
@@ -50,12 +50,17 @@ public class HelpController implements VPActionController {
 
     @Override
     public void performAction(VPAction action) {
+        String usage = "Usage:\n" +
+            "    vp-tree -project <project name.vpp>\n";
+
+        String changeLog = "Change Log:\n" +
+            "    - refactor ExportVisitor and others 23:10";
 
         ApplicationManager.instance().getViewManager().showMessageDialog(
             ApplicationManager.instance()
                 .getViewManager()
                 .getRootFrame()
-            , "Usage: \n\n Change Log: \n - bug fix: add diagram under directories -  19:36"
+            , usage + changeLog
         );
     }
 

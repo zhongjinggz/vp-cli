@@ -4,7 +4,6 @@ import com.vp.plugin.diagram.IDiagramUIModel;
 
 import plugins.vpcli.domain.mydiagram.*;
 import plugins.vpcli.domain.myuml.myproject.ExportVisitorFactory;
-import plugins.vpcli.domain.vpstruct.ElementType;
 import plugins.vpcli.domain.vpstruct.VPStructFactory;
 import plugins.vpcli.drivenadapter.FileFactory;
 import plugins.vpcli.drivenadapter.ProjectRepository;
@@ -102,9 +101,9 @@ public class ExportService {
 
     private void exportClassDiagram(IDiagramUIModel vpDiagram
         , File outputFile) throws IOException {
-        MyClassDiagram exporter = myDiagramFactory.createClassDiagramExporter(vpDiagram);
+        MyClassDiagram exporter = new MyClassDiagram(vpDiagram);
         exporter.extract();
-        ClassUMLWriter classWriter = writerFactory.createClassUMLWriter(exporter);
+        ClassDiagramWriter classWriter = writerFactory.createClassDiagramWriter(exporter);
         classWriter.writeToFile(outputFile);
     }
 

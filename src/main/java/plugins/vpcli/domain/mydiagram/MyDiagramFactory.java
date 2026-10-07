@@ -30,7 +30,9 @@ public class MyDiagramFactory {
     }
 
     @NonNull
-    public MyClassDiagram createClassDiagramExporter(IDiagramUIModel diagram) {
-        return new MyClassDiagram(diagram);
+    public MyClassDiagram createClassDiagram(IDiagramUIModel diagramUIModel) {
+        MyClassDiagram diagram = new MyClassDiagram(diagramUIModel);
+        diagram.extract();
+        return diagram;
     }
 }

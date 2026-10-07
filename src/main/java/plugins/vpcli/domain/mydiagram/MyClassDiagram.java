@@ -21,7 +21,7 @@ import static com.vp.plugin.diagram.IShapeTypeConstants.SHAPE_TYPE_PACKAGE;
 
 public class MyClassDiagram extends MyDiagram {
 
-	private final IDiagramUIModel diagram;
+	private final IDiagramUIModel diagramUIModel;
 
 	private final List<MyClass> exportedClasses = new ArrayList<>();
 	private final List<MyRelationship> myRelationships = new ArrayList<>();
@@ -31,15 +31,15 @@ public class MyClassDiagram extends MyDiagram {
 
     private final List<MyNary> allExportedNary = new ArrayList<>();
 
-	public MyClassDiagram(IDiagramUIModel diagram) {
-		this.diagram = diagram;
+	public MyClassDiagram(IDiagramUIModel diagramUIModel) {
+		this.diagramUIModel = diagramUIModel;
 	}
 
 	@Override
 	public void extract() {
-		IDiagramElement[] allElements = diagram.toDiagramElementArray();
+		IDiagramElement[] allElements = diagramUIModel.toDiagramElementArray();
 
-		IDiagramElement[] packageDiagramElems = diagram.toDiagramElementArray(SHAPE_TYPE_PACKAGE);
+		IDiagramElement[] packageDiagramElems = diagramUIModel.toDiagramElementArray(SHAPE_TYPE_PACKAGE);
 		for (IDiagramElement packageElement : packageDiagramElems) {
 			String packageModelId = packageElement.getModelElement().getId();
 			packageModelIds.add(packageModelId);
@@ -310,5 +310,9 @@ public class MyClassDiagram extends MyDiagram {
 	private String formatAlias(String name) {
 			// 与 PlantUMLWriter.formatAlias 保持一致：放行所有语言的字母和数字
 			return name.replaceAll("[^\\p{L}\\p{N}]", "_");
+	}
+
+	public IDiagramUIModel getDiagramUIModel() {
+		return diagramUIModel;
 	}
 }

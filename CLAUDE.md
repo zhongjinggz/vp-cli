@@ -45,7 +45,7 @@ plugins.vpcli/
 
 1. **`ExportService`** — 根据 `IDiagramUIModel.getType()`（如 `"ClassDiagram"`、`"InteractionDiagram"` 即时序图）分派到具体的 `MyDiagram`。
 2. **`MyDiagram`（抽象类）** — `extract()` 遍历 VP 图表模型并填充类型化的数据对象（如 `MyClass`、`MyUseCase`、`MessageData`）。子类：`MyClassDiagram`、`MyUseCaseDiagram`、`MySequenceDiagram`、`MyComponentDeploymentDiagram`（同时处理组件图和部署图）、`MyStateDiagram`、`MyActivityDiagram`。
-3. **`PlantUMLWriter`（抽象类）** — `writeToFile()` 将数据对象渲染为 PlantUML 语法。子类：`ClassUMLWriter`、`UseCaseWriter`、`SequenceUMLWriter`、`ComponentDeploymentUMLWriter`、`StateUMLWriter`、`ActivityUMLWriter`。
+3. **`PlantUMLWriter`（抽象类）** — `writeToFile()` 将数据对象渲染为 PlantUML 语法。子类：`ClassDiagramWriter`、`UseCaseWriter`、`SequenceUMLWriter`、`ComponentDeploymentUMLWriter`、`StateUMLWriter`、`ActivityUMLWriter`。
 
 ### 导入流水线 (`imports/`)
 
