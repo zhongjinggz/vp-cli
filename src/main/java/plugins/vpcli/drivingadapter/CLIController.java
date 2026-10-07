@@ -20,7 +20,7 @@ public class CLIController {
         this.listDiagramsService = listDiagramsService;
     }
 
-    public void invoke(String[] args) {
+    public void invoke(String[] args) throws IOException {
         CLIParams params = CLIParams.valueOf(args);
 
         if (params.isInvalid()) {
@@ -44,7 +44,7 @@ public class CLIController {
         }
     }
 
-    void performExport(String target, String path) {
+    void performExport(String target, String path) throws IOException {
         File exportLocation = new File(path);
 
         // Check if the given path exists and is a directory

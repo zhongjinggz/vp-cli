@@ -10,6 +10,8 @@ import com.vp.plugin.model.IProject;
 
 import org.junit.jupiter.api.Test;
 
+import java.io.IOException;
+
 class VPStructFactoryTest {
 
     private final VPVisitorFactory visitorFactory = pre -> new VPVisitor() {
@@ -27,11 +29,11 @@ class VPStructFactoryTest {
     }
 
     @Test
-    void shouldAcceptProjectThroughCreatedStruct() {
+    void shouldAcceptProjectThroughCreatedStruct() throws IOException {
         IProject project = mock(IProject.class);
         when(project.toModelElementArray(new String[0])).thenReturn(new IModelElement[0]);
         VPStruct struct = new VPStructFactory().create(project, visitorFactory);
-        struct.accept();
+        struct.accept(visitorFactory);
         verify(project).toModelElementArray(new String[0]);
     }
 }

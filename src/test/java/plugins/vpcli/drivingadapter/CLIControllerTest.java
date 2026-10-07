@@ -42,7 +42,7 @@ class CLIControllerTest {
     private final ListDiagramsService listDiagramsServiceMock = mock(ListDiagramsService.class);
     private final CLIController controller = new CLIController(exportServiceMock, treeServiceMock, this.listDiagramsServiceMock);
 
-    private void invoke(String[] args) {
+    private void invoke(String[] args) throws IOException {
         controller.invoke(args);
     }
 

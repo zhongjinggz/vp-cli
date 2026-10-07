@@ -3,31 +3,31 @@ package plugins.vpcli.domain.vpstruct;
 import com.vp.plugin.model.IProject;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
 public class VPStruct {
     private final IProject project;
     private final VPStructElementFactory createStructElement;
-    private final VPVisitorFactory visitorFactory;
+    private VPVisitorFactory visitorFactory;
     private final List<ElementType> elementTypes = new ArrayList<>();
 
     public VPStruct(IProject vpProject
-        , VPStructElementFactory elementFactory
-        , VPVisitorFactory visitorFactory) {
+        , VPStructElementFactory elementFactory) {
 
         this.project = vpProject;
         this.createStructElement = elementFactory;
-        this.visitorFactory = visitorFactory;
+//        this.visitorFactory = visitorFactory;
     }
 
     public void setElementTypes(List<ElementType> elementTypes) {
         this.elementTypes.addAll(elementTypes);
     }
 
-    public void accept() {
+    public void accept(VPVisitorFactory visitorFactory) throws IOException {
+        this.visitorFactory = visitorFactory;
         List<VPStructElement> elements = createTopLevelElements();
-
         elementsAccept(elements, null);
     }
 
@@ -46,7 +46,7 @@ public class VPStruct {
     }
 
     private void elementsAccept(List<VPStructElement> elements
-        , VPVisitor preLevelVisitor) {
+        , VPVisitor preLevelVisitor) throws IOException {
 
         int size = elements.size();
         int i = 0;

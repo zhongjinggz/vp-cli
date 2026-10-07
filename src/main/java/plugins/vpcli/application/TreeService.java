@@ -4,6 +4,7 @@ import plugins.vpcli.domain.myuml.myproject.TreeVisitorFactory;
 import plugins.vpcli.domain.vpstruct.VPStructFactory;
 import plugins.vpcli.drivenadapter.ProjectRepository;
 
+import java.io.IOException;
 import java.util.List;
 
 import static plugins.vpcli.domain.vpstruct.ElementType.*;
@@ -23,7 +24,7 @@ public class TreeService {
         this.treeVisitorFactory = treeVisitorFactory;
     }
 
-    public void tree() {
+    public void tree() throws IOException {
         var project = projectRepository.getProject();
 
         var vpStruct = vpStructFactory.create(project, treeVisitorFactory);
@@ -33,6 +34,6 @@ public class TreeService {
                 , CLASS
                 , ALL_DIAGRAMS));
 
-        vpStruct.accept();
+        vpStruct.accept(treeVisitorFactory);
     }
 }

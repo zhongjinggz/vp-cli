@@ -9,6 +9,7 @@ import static org.mockito.Mockito.when;
 import com.vp.plugin.model.IModelElement;
 import com.vp.plugin.model.IProject;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -20,6 +21,7 @@ class VPStructTest {
     private IProject project;
     private VPStruct struct;
     private final List<Call> calls = new ArrayList<>();
+    private final VPVisitorFactory exportVisitorFactory = pre -> new RecorderVisitor(calls, pre);
 
     private static class Call {
         final String name;
@@ -36,8 +38,7 @@ class VPStructTest {
     @BeforeEach
     void setUp() {
         project = mock(IProject.class);
-        VPVisitorFactory visitorFactory = pre -> new RecorderVisitor(calls, pre);
-        struct = new VPStruct(project, new VPStructElementFactory(), visitorFactory);
+        struct = new VPStruct(project, new VPStructElementFactory());
     }
 
     private static final class RecorderVisitor extends VPVisitor {
@@ -66,14 +67,14 @@ class VPStructTest {
     }
 
     @Test
-    void shouldVisitTopLevelAndChildrenWithLastFlag() {
+    void shouldVisitTopLevelAndChildrenWithLastFlag() throws IOException {
         IModelElement leaf = element("leaf");
         IModelElement root = element("root", leaf);
         when(project.toModelElementArray(new String[]{ElementType.PACKAGE.getVPModelType()}))
             .thenReturn(new IModelElement[]{root});
 
         struct.setElementTypes(List.of(ElementType.PACKAGE));
-        struct.accept();
+        struct.accept(this.exportVisitorFactory);
 
         assertEquals(Integer.valueOf(2), Integer.valueOf(calls.size()));
         Call r = calls.get(0);
@@ -88,14 +89,14 @@ class VPStructTest {
     }
 
     @Test
-    void shouldMarkNonLastWhenMultipleTopLevelElements() {
+    void shouldMarkNonLastWhenMultipleTopLevelElements() throws IOException {
         IModelElement a = element("a");
         IModelElement b = element("b");
         when(project.toModelElementArray(new String[]{ElementType.PACKAGE.getVPModelType()}))
             .thenReturn(new IModelElement[]{a, b});
 
         struct.setElementTypes(List.of(ElementType.PACKAGE));
-        struct.accept();
+        struct.accept(this.exportVisitorFactory);
 
         assertEquals(2, calls.size());
         assertFalse(calls.get(0).last);
@@ -103,18 +104,18 @@ class VPStructTest {
     }
 
     @Test
-    void shouldHandleNoTopLevelElements() {
+    void shouldHandleNoTopLevelElements() throws IOException {
         when(project.toModelElementArray(new String[0])).thenReturn(new IModelElement[0]);
         struct.setElementTypes(List.of());
-        struct.accept();
+        struct.accept(this.exportVisitorFactory);
         assertTrue(calls.isEmpty());
     }
 
     @Test
-    void shouldFilterNonModelElementTypes() {
+    void shouldFilterNonModelElementTypes() throws IOException {
         when(project.toModelElementArray(new String[0])).thenReturn(new IModelElement[0]);
         struct.setElementTypes(List.of(ElementType.CLASS_DIAGRAM));
-        struct.accept();
+        struct.accept(this.exportVisitorFactory);
         assertTrue(calls.isEmpty());
     }
 }

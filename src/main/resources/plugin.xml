@@ -14,9 +14,8 @@
 					label="CLI"
 					tooltip="VP CLI Help"
 					style="normal"
-					icon="icons/puml-icon.png"
+					icon="icons/vp_cli.png"
 					ribbonPath="Help/Update">
-<!--				ribbonPath="Project/Export/XML">-->
 				<actionController
 						class="plugins.vpcli.drivingadapter.HelpController"/>
 			</action>

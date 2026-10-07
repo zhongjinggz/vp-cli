@@ -47,4 +47,8 @@ public class VPModelElement extends VPStructElement {
         }
         return result;
     }
+
+    public IModelElement getVPModelElement() {
+        return this.vpElement;
+    }
 }

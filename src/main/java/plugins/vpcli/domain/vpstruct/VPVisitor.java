@@ -1,5 +1,7 @@
 package plugins.vpcli.domain.vpstruct;
 
+import java.io.IOException;
+
 public abstract class VPVisitor {
     private boolean lastOrNot = false;
 
@@ -11,6 +13,6 @@ public abstract class VPVisitor {
         return lastOrNot;
     }
 
-    abstract public void visit(VPStructElement vpStructElement);
+    abstract public void visit(VPStructElement vpStructElement) throws IOException;
 
 }

@@ -3,6 +3,7 @@ package plugins.vpcli.domain.vpstruct;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import java.io.IOException;
 import java.util.List;
 
 import org.junit.jupiter.api.Test;
@@ -36,7 +37,7 @@ class VPStructElementTest {
     }
 
     @Test
-    void shouldAcceptDelegatesToVisitor() {
+    void shouldAcceptDelegatesToVisitor() throws IOException {
         StubElement element = new StubElement();
         CapturingVisitor visitor = new CapturingVisitor();
         element.accept(visitor);

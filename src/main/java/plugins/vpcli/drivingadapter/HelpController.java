@@ -5,7 +5,6 @@ import com.vp.plugin.action.VPAction;
 import com.vp.plugin.action.VPActionController;
 
 // DOING
-// - export: 使用Visitor 创建目录
 // - export：将图表放入目录结构
 // TODO
 // - export: 重构/重写生成图表的程序
@@ -30,6 +29,7 @@ import com.vp.plugin.action.VPActionController;
 // - 补充建立目录时的各种异常情况
 
 // DONE
+// - export: 使用Visitor 创建目录
 // - Tree：显示 diagram
 // - 使用 Visitor 模式浏览IProject, 并基于改模式重构 TreeService
 // - export: 重构生成图表的程序(类名和包结构）
@@ -55,7 +55,7 @@ public class HelpController implements VPActionController {
             ApplicationManager.instance()
                 .getViewManager()
                 .getRootFrame()
-            , "make dir with Visitor pattern -  21:57"
+            , "Usage: \n\n Change Log: \n - bug fix: add diagram under directories -  19:36"
         );
     }
 

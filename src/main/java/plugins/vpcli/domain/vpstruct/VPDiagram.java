@@ -24,4 +24,8 @@ public class VPDiagram extends VPStructElement {
     public List<VPStructElement> getChildren(List<ElementType> elementTypes) {
         return List.of();
     }
+
+    public IDiagramUIModel getVPDiagram() {
+        return this.diagram;
+    }
 }

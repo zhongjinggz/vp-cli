@@ -138,7 +138,7 @@ public class ExportService {
         return allSuccessful;
     }
 
-    public void exportAll(File exportLocation) {
+    public void exportAll(File exportLocation) throws IOException {
 
         var project = projectRepository.getProject();
 
@@ -149,7 +149,7 @@ public class ExportService {
             , MODEL
             , ALL_DIAGRAMS));
 
-        struct.accept();
+        struct.accept(this.exportVisitorFactory);
 //
 //        var packages = convertPackage.fromVPProject(project);
 //        makeDir.forPackages(packages, exportLocation);

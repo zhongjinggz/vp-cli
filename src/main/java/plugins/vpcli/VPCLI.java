@@ -17,6 +17,8 @@ import plugins.vpcli.application.TreeService;
 import plugins.vpcli.domain.mydiagram.MyDiagramFactory;
 import plugins.vpcli.application.writers.WriterFactory;
 
+import java.io.IOException;
+
 
 public class VPCLI implements VPPlugin, VPPluginCommandLineSupport {
     // Factories
@@ -66,7 +68,12 @@ public class VPCLI implements VPPlugin, VPPluginCommandLineSupport {
 
         this.vpStructFactory = new VPStructFactory();
         this.treeVisitorFactory = new TreeVisitorFactory();
-        this.exportVisitorFactory = new ExportVisitorFactory(this.fileIO);
+        this.exportVisitorFactory = new ExportVisitorFactory(
+            this.fileIO,
+            this.myDiagramFactory,
+            this.writerFactory,
+            this.fileFactory
+        );
 
         // Domain Services
         this.treeConverter = new TreeConverter();
@@ -106,7 +113,11 @@ public class VPCLI implements VPPlugin, VPPluginCommandLineSupport {
     // CLI 入口：解析参数并分发到导入/导出逻辑
     @Override
     public void invoke(String[] args) {
-        cliController.invoke(args);
+        try {
+            cliController.invoke(args);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 
 
