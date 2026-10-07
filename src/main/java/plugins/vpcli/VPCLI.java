@@ -2,13 +2,15 @@ package plugins.vpcli;
 
 import com.vp.plugin.*;
 import plugins.vpcli.application.ListDiagramsService;
+import plugins.vpcli.domain.myuml.myproject.ExportVisitorFactory;
 import plugins.vpcli.domain.myuml.myproject.TreeConverter;
 import plugins.vpcli.domain.myuml.myproject.TreeVisitorFactory;
 import plugins.vpcli.domain.vpstruct.VPStructFactory;
 import plugins.vpcli.drivenadapter.FileFactory;
+import plugins.vpcli.drivenadapter.FileIO;
 import plugins.vpcli.drivenadapter.ProjectRepository;
 import plugins.vpcli.drivenadapter.TreeDirMaker;
-import plugins.vpcli.drivenadapter.TreePrinter;
+//import plugins.vpcli.drivenadapter.TreePrinter;
 import plugins.vpcli.drivingadapter.CLIController;
 import plugins.vpcli.application.ExportService;
 import plugins.vpcli.application.TreeService;
@@ -17,16 +19,19 @@ import plugins.vpcli.application.writers.WriterFactory;
 
 
 public class VPCLI implements VPPlugin, VPPluginCommandLineSupport {
-    // Driven Adapters
+    // Factories
     private MyDiagramFactory myDiagramFactory;
     private WriterFactory writerFactory;
-    private ProjectRepository projectRepository;
     private FileFactory fileFactory;
-    private TreePrinter treePrinter;
+    //private TreePrinter treePrinter;
     private TreeDirMaker treeDirMaker;
 
     private VPStructFactory vpStructFactory;
     private TreeVisitorFactory treeVisitorFactory;
+
+    // Repositories
+    private ProjectRepository projectRepository;
+
 
     // Domain Services
     private TreeConverter treeConverter;
@@ -38,6 +43,8 @@ public class VPCLI implements VPPlugin, VPPluginCommandLineSupport {
 
     // Driving Adapter
     private CLIController cliController;
+    private ExportVisitorFactory exportVisitorFactory;
+    private FileIO fileIO;
 
 
     public VPCLI() {
@@ -46,33 +53,36 @@ public class VPCLI implements VPPlugin, VPPluginCommandLineSupport {
 
     // TODO 优化依赖注入，按功能分开不同的控制器，只注入本次功能需要的依赖
     void injectDependencies() {
-        // Driven Adapters
+        // Repository
+        this.fileIO = new FileIO();
+        this.projectRepository = new ProjectRepository();
+
+        // Factory
         this.myDiagramFactory = new MyDiagramFactory();
         this.writerFactory = new WriterFactory();
-        this.projectRepository = new ProjectRepository();
         this.fileFactory = new FileFactory();
-        this.treePrinter = new TreePrinter();
         this.treeDirMaker = new TreeDirMaker();
+
 
         this.vpStructFactory = new VPStructFactory();
         this.treeVisitorFactory = new TreeVisitorFactory();
+        this.exportVisitorFactory = new ExportVisitorFactory(this.fileIO);
 
         // Domain Services
         this.treeConverter = new TreeConverter();
 
         // Application Services
         this.exportService = new ExportService(
-            this.treeConverter
-            , this.projectRepository
+            this.projectRepository
             , this.myDiagramFactory
             , this.writerFactory
             , this.fileFactory
-            , this.treeDirMaker);
+            , this.vpStructFactory
+            , this.exportVisitorFactory
+        );
 
         this.treeService = new TreeService(
             this.projectRepository
-            , this.treeConverter
-            , this.treePrinter
             , this.vpStructFactory
             , this.treeVisitorFactory);
 

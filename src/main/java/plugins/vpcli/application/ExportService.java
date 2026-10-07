@@ -2,43 +2,46 @@ package plugins.vpcli.application;
 
 import com.vp.plugin.diagram.IDiagramUIModel;
 
-import com.vp.plugin.model.IProject;
 import plugins.vpcli.domain.mydiagram.*;
-import plugins.vpcli.domain.myuml.myproject.TreeConverter;
+import plugins.vpcli.domain.myuml.myproject.ExportVisitorFactory;
+import plugins.vpcli.domain.vpstruct.ElementType;
+import plugins.vpcli.domain.vpstruct.VPStructFactory;
 import plugins.vpcli.drivenadapter.FileFactory;
 import plugins.vpcli.drivenadapter.ProjectRepository;
 import plugins.vpcli.application.writers.WriterFactory;
 import plugins.vpcli.application.writers.*;
-import plugins.vpcli.drivenadapter.TreeDirMaker;
 import plugins.vpcli.util.UnfitForExportException;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.Arrays;
 import java.util.List;
+
+import static plugins.vpcli.domain.vpstruct.ElementType.*;
 
 public class ExportService {
 
-    private final TreeConverter convertPackage;
+    //private final TreeConverter convertPackage;
     private final ProjectRepository projectRepository;
     private final MyDiagramFactory myDiagramFactory;
     private final WriterFactory writerFactory;
     private final FileFactory fileFactory;
-    private final TreeDirMaker makeDir;
+    private final VPStructFactory vpStructFactory;
+    private final ExportVisitorFactory exportVisitorFactory;
+    //private final TreeDirMaker makeDir;
 
-    public ExportService(TreeConverter treeConverter
-        , ProjectRepository projectRepository
+    public ExportService(ProjectRepository projectRepository
         , MyDiagramFactory myDiagramFactory
         , WriterFactory writerFactory
         , FileFactory fileFactory
-        , TreeDirMaker treeDirMaker) {
+        , VPStructFactory vpStructFactory
+        , ExportVisitorFactory exportVisitorFactory) {
 
-        this.convertPackage = treeConverter;
         this.projectRepository = projectRepository;
         this.myDiagramFactory = myDiagramFactory;
         this.writerFactory = writerFactory;
         this.fileFactory = fileFactory;
-        this.makeDir = treeDirMaker;
+        this.vpStructFactory = vpStructFactory;
+        this.exportVisitorFactory = exportVisitorFactory;
     }
 
     public void exportADiagram(IDiagramUIModel vpDiagram
@@ -139,26 +142,21 @@ public class ExportService {
 
         var project = projectRepository.getProject();
 
-        var packages = convertPackage.fromVPProject(project);
-        makeDir.forPackages(packages, exportLocation);
+        exportVisitorFactory.setRootDir(exportLocation);
+        var struct = vpStructFactory.create(project, this.exportVisitorFactory);
+        struct.setElementTypes(List.of(
+            PACKAGE
+            , MODEL
+            , ALL_DIAGRAMS));
 
-        exportDiagramsUnderPackages(project, exportLocation);
-    }
-
-    private void exportDiagramsUnderPackages(IProject project, File exportLocation) {
-        var vpDiagrams = project.toDiagramArray();
-
-        boolean allSuccessful = true;
-
-        for (var aDiagram : Arrays.asList(vpDiagrams)) {
-            try {
-                exportADiagram(aDiagram, exportLocation);
-            } catch (IOException | UnsupportedOperationException | UnfitForExportException ex) {
-                //TODO 统一异常处理
-                allSuccessful = false;
-            }
-        }
-
+        struct.accept();
+//
+//        var packages = convertPackage.fromVPProject(project);
+//        makeDir.forPackages(packages, exportLocation);
+//
+//        var vpDiagrams = project.toDiagramArray();
+//
+//        this.exportDiagrams(Arrays.asList(vpDiagrams), exportLocation);
     }
 
     public void exportSpecificDiagram(String target, File exportLocation) throws IOException {

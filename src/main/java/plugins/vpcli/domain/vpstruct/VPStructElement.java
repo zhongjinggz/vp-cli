@@ -15,4 +15,8 @@ public abstract class VPStructElement {
     public abstract ElementType getType();
 
     public abstract List<VPStructElement> getChildren(List<ElementType> elementTypes) ;
+
+    public boolean typeIs(ElementType elementType) {
+        return getType().equals(elementType);
+    }
 }

@@ -1,7 +1,5 @@
 package plugins.vpcli.domain.vpstruct;
 
-import java.util.Arrays;
-
 import static com.vp.plugin.model.factory.IModelElementFactory.*;
 import static plugins.vpcli.domain.vpstruct.ElementType.Kind.*;
 

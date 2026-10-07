@@ -5,6 +5,7 @@ import com.vp.plugin.action.VPAction;
 import com.vp.plugin.action.VPActionController;
 
 // DOING
+// - export: 使用Visitor 创建目录
 // - export：将图表放入目录结构
 // TODO
 // - export: 重构/重写生成图表的程序
@@ -54,7 +55,7 @@ public class HelpController implements VPActionController {
             ApplicationManager.instance()
                 .getViewManager()
                 .getRootFrame()
-            , "display diagrams -  21:57"
+            , "make dir with Visitor pattern -  21:57"
         );
     }
 
