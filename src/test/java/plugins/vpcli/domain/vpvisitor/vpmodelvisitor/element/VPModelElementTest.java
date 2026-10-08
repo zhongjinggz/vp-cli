@@ -72,7 +72,7 @@ class VPModelElementTest {
             .thenReturn(new IModelElement[0]);
 
         ViModelElement e = new ViModelElement(vp, factory);
-        e.getChildren(List.of(ElementType.CLASS, ElementType.CLASS_DIAGRAM));
+        e.getChildren(List.of(ElementType.CLASS, ElementType.DIAGRAM));
 
         verify(vp).toChildArray(new String[]{ElementType.CLASS.getVPModelType()});
     }

@@ -7,8 +7,6 @@ import plugins.vpcli.domain.myuml.mycommon.ElementType;
 import java.util.ArrayList;
 import java.util.List;
 
-import static plugins.vpcli.domain.myuml.mycommon.ElementType.Kind.MODEL_ELEMENT;
-
 public class ViModelElement extends ViElement {
     private final IModelElement vpElement;
     private final ViElementFactory createElement;
@@ -22,8 +20,8 @@ public class ViModelElement extends ViElement {
     }
     
     public ElementType getType() {
-        return ElementType.of(MODEL_ELEMENT
-            ,vpElement.getModelType());
+        return ElementType.of(
+            vpElement.getModelType());
     }
 
     @Override
@@ -38,7 +36,7 @@ public class ViModelElement extends ViElement {
         }
 
         String[] vpModelTypes = elementTypes.stream()
-            .filter(t -> t.kindIs(MODEL_ELEMENT))
+            .filter(t -> t.isModelElement())
             .map(t-> t.getVPModelType())
             .toArray(String[]::new);
 

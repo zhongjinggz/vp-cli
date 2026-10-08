@@ -27,13 +27,13 @@ public class TreeService {
     public void tree() throws IOException {
         var project = projectRepository.getProject();
 
-        var vpStruct = viProjectFactory.create(project);
-        vpStruct.setElementTypes(
+        var viProject = viProjectFactory.create(project);
+        viProject.setElementTypes(
             List.of(PACKAGE
                 , MODEL
                 , CLASS
                 , DIAGRAM));
 
-        vpStruct.accept(treeVisitorFactory);
+        viProject.accept(treeVisitorFactory);
     }
 }

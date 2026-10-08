@@ -1,30 +1,27 @@
 package plugins.vpcli.domain.myuml.mycommon;
 
+import java.util.Objects;
+
 import static com.vp.plugin.model.factory.IModelElementFactory.*;
-import static plugins.vpcli.domain.myuml.mycommon.ElementType.Kind.*;
 
 public enum ElementType {
-    PACKAGE(MODEL_ELEMENT, MODEL_TYPE_PACKAGE, ".package"),
-    MODEL(MODEL_ELEMENT, MODEL_TYPE_MODEL, ".model"),
-    CLASS(MODEL_ELEMENT, MODEL_TYPE_CLASS, ".class"),
-    USECASE(MODEL_ELEMENT, MODEL_TYPE_USE_CASE, ".usecase"),
-    DIAGRAM(Kind.DIAGRAM, "",""),
-    CLASS_DIAGRAM(Kind.DIAGRAM, "ClassDiagram", ".class-diagram"),
-    USECASE_DIAGRAM(Kind.DIAGRAM, "UseCaseDiagram", ".usecase-diagram");
+    PACKAGE(MODEL_TYPE_PACKAGE, ".package"),
+    MODEL(MODEL_TYPE_MODEL, ".model"),
+    CLASS(MODEL_TYPE_CLASS, ".class"),
+    USECASE(MODEL_TYPE_USE_CASE, ".usecase"),
+    DIAGRAM("",".diagram");
 
     private final String vpModelType;
-    private final Kind vpElementKind;
     private final String suffix;
 
-    ElementType(Kind vpElementKind, String vpModelType, String suffix) {
+    ElementType(String vpModelType, String suffix) {
         this.vpModelType = vpModelType;
-        this.vpElementKind = vpElementKind;
         this.suffix = suffix;
     }
 
-    public static ElementType of(Kind theKind, String vpElementType) {
+    public static ElementType of(String vpElementType) {
         for (var aValue : values()) {
-            if (aValue.kindIs(theKind) && aValue.vpModelTypeIs(vpElementType)) {
+            if (aValue.vpModelTypeIs(vpElementType)) {
                 return aValue;
             }
         }
@@ -36,23 +33,15 @@ public enum ElementType {
     }
 
     public boolean vpModelTypeIs(String theType) {
-        return this.vpModelType.equals(theType);
-    }
-
-    public boolean kindIs(Kind theKind ) {
-        return this.vpElementKind.equals(theKind);
+        //return this.vpModelType.equals(theType);
+        return Objects.equals(this.vpModelType, theType);
     }
 
     public String getSuffix() {
         return suffix;
     }
 
-    public enum Kind {
-        MODEL_ELEMENT,
-        DIAGRAM
+    public boolean isModelElement() {
+        return !Objects.equals(this, DIAGRAM);
     }
-
-
-
-
 }

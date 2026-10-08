@@ -25,17 +25,9 @@ class ViDiagramAsElementTest {
     @Test
     void shouldResolveTypeFromDiagramType() {
         IDiagramUIModel diagram = mock(IDiagramUIModel.class);
-        when(diagram.getType()).thenReturn(ElementType.CLASS_DIAGRAM.getVPModelType());
+        when(diagram.getType()).thenReturn(ElementType.DIAGRAM.getVPModelType());
         ViDiagramAsElement vp = new ViDiagramAsElement(diagram);
-        assertEquals(ElementType.CLASS_DIAGRAM, vp.getType());
-    }
-
-    @Test
-    void shouldResolveNullTypeForUnknownDiagramType() {
-        IDiagramUIModel diagram = mock(IDiagramUIModel.class);
-        when(diagram.getType()).thenReturn("UnknownDiagram");
-        ViDiagramAsElement vp = new ViDiagramAsElement(diagram);
-        assertEquals(null, vp.getType());
+        assertEquals(ElementType.DIAGRAM, vp.getType());
     }
 
     @Test

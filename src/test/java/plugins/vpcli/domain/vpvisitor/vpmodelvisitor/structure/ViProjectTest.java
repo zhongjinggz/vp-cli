@@ -119,7 +119,7 @@ class ViProjectTest {
     @Test
     void shouldFilterNonModelElementTypes() throws IOException {
         when(project.toModelElementArray(new String[0])).thenReturn(new IModelElement[0]);
-        struct.setElementTypes(List.of(ElementType.CLASS_DIAGRAM));
+        struct.setElementTypes(List.of(ElementType.DIAGRAM));
         struct.accept(this.exportVisitorFactory);
         assertTrue(calls.isEmpty());
     }

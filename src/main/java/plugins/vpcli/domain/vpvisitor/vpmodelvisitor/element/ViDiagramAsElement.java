@@ -5,8 +5,6 @@ import plugins.vpcli.domain.myuml.mycommon.ElementType;
 
 import java.util.List;
 
-import static plugins.vpcli.domain.myuml.mycommon.ElementType.Kind.DIAGRAM;
-
 public class ViDiagramAsElement extends ViElement {
     private final IDiagramUIModel diagram;
 
@@ -18,7 +16,7 @@ public class ViDiagramAsElement extends ViElement {
     }
     
     public ElementType getType() {
-        return ElementType.of(DIAGRAM, diagram.getType());
+        return ElementType.DIAGRAM;
     }
 
     @Override

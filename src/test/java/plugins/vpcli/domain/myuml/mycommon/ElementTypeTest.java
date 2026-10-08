@@ -4,8 +4,6 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import static plugins.vpcli.domain.myuml.mycommon.ElementType.Kind.DIAGRAM;
-import static plugins.vpcli.domain.myuml.mycommon.ElementType.Kind.MODEL_ELEMENT;
 
 import org.junit.jupiter.api.Test;
 
@@ -13,24 +11,24 @@ class ElementTypeTest {
 
     @Test
     void shouldResolveModelElementByType() {
-        ElementType t = ElementType.of(MODEL_ELEMENT, ElementType.CLASS.getVPModelType());
+        ElementType t = ElementType.of(ElementType.CLASS.getVPModelType());
         assertEquals(ElementType.CLASS, t);
     }
 
     @Test
     void shouldResolveDiagramByType() {
-        ElementType t = ElementType.of(DIAGRAM, ElementType.CLASS_DIAGRAM.getVPModelType());
-        assertEquals(ElementType.CLASS_DIAGRAM, t);
+        ElementType t = ElementType.of(ElementType.DIAGRAM.getVPModelType());
+        assertEquals(ElementType.DIAGRAM, t);
     }
 
     @Test
     void shouldReturnNullWhenNoTypeMatches() {
-        assertNull(ElementType.of(MODEL_ELEMENT, "no-such-type"));
+        assertNull(ElementType.of("no-such-type"));
     }
 
     @Test
     void shouldReturnNullWhenKindMismatchOnMatchingType() {
-        assertNull(ElementType.of(DIAGRAM, ElementType.CLASS.getVPModelType()));
+        assertNull(ElementType.of("unknown-type"));
     }
 
     @Test
@@ -49,9 +47,4 @@ class ElementTypeTest {
         assertFalse(ElementType.CLASS.vpModelTypeIs("nothing"));
     }
 
-    @Test
-    void shouldMatchKind() {
-        assertTrue(ElementType.CLASS.kindIs(MODEL_ELEMENT));
-        assertFalse(ElementType.CLASS.kindIs(DIAGRAM));
-    }
 }

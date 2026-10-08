@@ -5,7 +5,11 @@ import com.vp.plugin.action.VPAction;
 import com.vp.plugin.action.VPActionController;
 
 // DOING
-// - export: 重构/重写生成图表的程序
+// - export: 重写生成图表的程序 - Class / Package
+// - export: 重写生成图表的程序 - Association
+// - export: 重写生成图表的程序 - Dependency
+// - export: 重写生成图表的程序 - Stereotype/Keyword
+
 // TODO
 // - export: fix bug of Class Diagram 包和类同名造成混乱
 // - 翻译和修改 README
@@ -54,7 +58,7 @@ public class HelpController implements VPActionController {
             "    vp-tree -project <project name.vpp>\n";
 
         String changeLog = "Change Log:\n" +
-            "    - refactor ExportVisitor and others 23:10";
+            "    - refactor ElementType 不区分diagram type 20:25";
 
         ApplicationManager.instance().getViewManager().showMessageDialog(
             ApplicationManager.instance()

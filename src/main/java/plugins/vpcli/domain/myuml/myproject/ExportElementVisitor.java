@@ -47,7 +47,7 @@ public class ExportElementVisitor extends ViElementVisitor {
             case MODEL:
                 visitModel(element);
                 break;
-            case CLASS_DIAGRAM:
+            case DIAGRAM:
                 visitClassDiagram(element);
                 break;
             default:

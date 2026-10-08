@@ -37,7 +37,7 @@ public class ViProject {
 
     private @NonNull List<ViElement> createTopLevelElements() {
         String[] vpModelTypes = elementTypes.stream()
-            .filter( t-> t.kindIs(ElementType.Kind.MODEL_ELEMENT))
+            .filter(ElementType::isModelElement)
             .map( ElementType::getVPModelType)
             .toArray(String[]::new);
         var vpElements = project.toModelElementArray(vpModelTypes);

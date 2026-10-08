@@ -1,14 +1,12 @@
 package plugins.vpcli.application;
 
 import com.vp.plugin.diagram.IDiagramUIModel;
-
+import plugins.vpcli.application.writers.*;
 import plugins.vpcli.domain.myuml.mydiagram.*;
 import plugins.vpcli.domain.myuml.myproject.ExportElementVisitorFactory;
 import plugins.vpcli.domain.vpvisitor.vpmodelvisitor.structure.ViProjectFactory;
 import plugins.vpcli.drivenadapter.FileFactory;
 import plugins.vpcli.drivenadapter.ProjectRepository;
-import plugins.vpcli.application.writers.WriterFactory;
-import plugins.vpcli.application.writers.*;
 import plugins.vpcli.util.UnfitForExportException;
 
 import java.io.File;
@@ -17,16 +15,18 @@ import java.util.List;
 
 import static plugins.vpcli.domain.myuml.mycommon.ElementType.*;
 
-public class ExportService {
+public class ExportService2 {
 
+    //private final TreeConverter convertPackage;
     private final ProjectRepository projectRepository;
     private final MyDiagramFactory myDiagramFactory;
     private final WriterFactory writerFactory;
     private final FileFactory fileFactory;
     private final ViProjectFactory viProjectFactory;
     private final ExportElementVisitorFactory exportVisitorFactory;
+    //private final TreeDirMaker makeDir;
 
-    public ExportService(ProjectRepository projectRepository
+    public ExportService2(ProjectRepository projectRepository
         , MyDiagramFactory myDiagramFactory
         , WriterFactory writerFactory
         , FileFactory fileFactory

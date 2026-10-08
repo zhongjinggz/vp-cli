@@ -123,7 +123,7 @@ public class ClassDiagramWriter extends PlantUMLWriter {
         keywordStereotypes.put("entity", "entity");
 
         classString.append(indent);
-        classString.append(writeVisibility(myClass.getVisibility()));
+        // classString.append(writeVisibility(myClass.getVisibility()));
 
         if (myClass.isAbstract()) classString.append("abstract ");
         if (myClass.getStereotypes().size() == 1 && !myClass.isAbstract()) {
