@@ -9,8 +9,8 @@ import java.util.List;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.function.Executable;
-import plugins.vpcli.domain.vpstruct.ElementType;
-import plugins.vpcli.domain.vpstruct.VPStructElement;
+import plugins.vpcli.domain.myuml.mycommon.ElementType;
+import plugins.vpcli.domain.vpvisitor.vpmodelvisitor.element.VPElement;
 
 class TreeVisitorTest {
 
@@ -26,8 +26,8 @@ class TreeVisitorTest {
         return buffer.toString();
     }
 
-    private VPStructElement element(String name, ElementType type) {
-        return new VPStructElement() {
+    private VPElement element(String name, ElementType type) {
+        return new VPElement() {
             @Override
             public String getName() {
                 return name;
@@ -39,7 +39,7 @@ class TreeVisitorTest {
             }
 
             @Override
-            public List<VPStructElement> getChildren(List<ElementType> elementTypes) {
+            public List<VPElement> getChildren(List<ElementType> elementTypes) {
                 return List.of();
             }
         };
@@ -47,7 +47,7 @@ class TreeVisitorTest {
 
     @Test
     void shouldUseEmptyPrefixWhenParentIsNull() throws Throwable {
-        TreeVisitor visitor = new TreeVisitor(null);
+        TreeElementVisitor visitor = new TreeElementVisitor(null);
         visitor.setLast(true);
         String out = print(() -> visitor.visit(element("A", ElementType.CLASS)));
         assertEquals("└── A.class\n", out);
@@ -55,8 +55,8 @@ class TreeVisitorTest {
 
     @Test
     void shouldAppendVerticalBarWhenParentIsNotLast() throws Throwable {
-        TreeVisitor parent = new TreeVisitor(null);
-        TreeVisitor child = new TreeVisitor(parent);
+        TreeElementVisitor parent = new TreeElementVisitor(null);
+        TreeElementVisitor child = new TreeElementVisitor(parent);
         child.setLast(true);
         String out = print(() -> child.visit(element("A", ElementType.CLASS)));
         assertEquals("│   └── A.class\n", out);
@@ -64,9 +64,9 @@ class TreeVisitorTest {
 
     @Test
     void shouldAppendSpacesWhenParentIsLast() throws Throwable {
-        TreeVisitor parent = new TreeVisitor(null);
+        TreeElementVisitor parent = new TreeElementVisitor(null);
         parent.setLast(true);
-        TreeVisitor child = new TreeVisitor(parent);
+        TreeElementVisitor child = new TreeElementVisitor(parent);
         child.setLast(true);
         String out = print(() -> child.visit(element("A", ElementType.CLASS)));
         assertEquals("    └── A.class\n", out);
@@ -74,8 +74,8 @@ class TreeVisitorTest {
 
     @Test
     void shouldRenderNonLastChildWithAllBars() throws Throwable {
-        TreeVisitor parent = new TreeVisitor(null);
-        TreeVisitor child = new TreeVisitor(parent);
+        TreeElementVisitor parent = new TreeElementVisitor(null);
+        TreeElementVisitor child = new TreeElementVisitor(parent);
         child.setLast(false);
         String out = print(() -> child.visit(element("A", ElementType.CLASS)));
         assertEquals("│   ├── A.class\n", out);
@@ -83,9 +83,9 @@ class TreeVisitorTest {
 
     @Test
     void shouldAccumulatePrefixAcrossMultipleLevels() throws Throwable {
-        TreeVisitor root = new TreeVisitor(null);
-        TreeVisitor middle = new TreeVisitor(root);
-        TreeVisitor leaf = new TreeVisitor(middle);
+        TreeElementVisitor root = new TreeElementVisitor(null);
+        TreeElementVisitor middle = new TreeElementVisitor(root);
+        TreeElementVisitor leaf = new TreeElementVisitor(middle);
         leaf.setLast(true);
         String out = print(() -> leaf.visit(element("A", ElementType.CLASS)));
         assertEquals("│   │   └── A.class\n", out);

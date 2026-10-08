@@ -11,7 +11,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 
-import plugins.vpcli.domain.mydiagram.MyClassDiagram;
+import plugins.vpcli.domain.myuml.mydiagram.MyClassDiagram;
 import plugins.vpcli.domain.myuml.myclassifier.MyClass;
 import plugins.vpcli.domain.myuml.myclassifier.MyNary;
 import plugins.vpcli.domain.myuml.mypackage.MyPackage;

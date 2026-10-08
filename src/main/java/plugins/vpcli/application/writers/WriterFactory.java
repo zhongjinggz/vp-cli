@@ -1,7 +1,7 @@
 package plugins.vpcli.application.writers;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
-import plugins.vpcli.domain.mydiagram.*;
+import plugins.vpcli.domain.myuml.mydiagram.*;
 import plugins.vpcli.drivenadapter.FileFactory;
 
 public class WriterFactory {

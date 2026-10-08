@@ -26,7 +26,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 import org.junit.jupiter.api.function.Executable;
-import plugins.vpcli.domain.mydiagram.*;
+import plugins.vpcli.domain.myuml.mydiagram.*;
 import plugins.vpcli.drivenadapter.FileFactory;
 import plugins.vpcli.drivenadapter.ProjectRepository;
 import plugins.vpcli.application.writers.WriterFactory;

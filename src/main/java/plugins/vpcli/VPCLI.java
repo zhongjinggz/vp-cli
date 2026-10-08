@@ -2,10 +2,10 @@ package plugins.vpcli;
 
 import com.vp.plugin.*;
 import plugins.vpcli.application.ListDiagramsService;
-import plugins.vpcli.domain.myuml.myproject.ExportVisitorFactory;
+import plugins.vpcli.domain.myuml.myproject.ExportElementVisitorFactory;
 import plugins.vpcli.domain.myuml.myproject.TreeConverter;
-import plugins.vpcli.domain.myuml.myproject.TreeVisitorFactory;
-import plugins.vpcli.domain.vpstruct.VPStructFactory;
+import plugins.vpcli.domain.myuml.myproject.TreeElementVisitorFactory;
+import plugins.vpcli.domain.vpvisitor.vpmodelvisitor.structure.VPMetaModelFactory;
 import plugins.vpcli.drivenadapter.FileFactory;
 import plugins.vpcli.drivenadapter.FileIO;
 import plugins.vpcli.drivenadapter.ProjectRepository;
@@ -14,7 +14,7 @@ import plugins.vpcli.drivenadapter.TreeDirMaker;
 import plugins.vpcli.drivingadapter.CLIController;
 import plugins.vpcli.application.ExportService;
 import plugins.vpcli.application.TreeService;
-import plugins.vpcli.domain.mydiagram.MyDiagramFactory;
+import plugins.vpcli.domain.myuml.mydiagram.MyDiagramFactory;
 import plugins.vpcli.application.writers.WriterFactory;
 
 import java.io.IOException;
@@ -28,8 +28,8 @@ public class VPCLI implements VPPlugin, VPPluginCommandLineSupport {
     //private TreePrinter treePrinter;
     private TreeDirMaker treeDirMaker;
 
-    private VPStructFactory vpStructFactory;
-    private TreeVisitorFactory treeVisitorFactory;
+    private VPMetaModelFactory vpMetaModelFactory;
+    private TreeElementVisitorFactory treeVisitorFactory;
 
     // Repositories
     private ProjectRepository projectRepository;
@@ -45,7 +45,7 @@ public class VPCLI implements VPPlugin, VPPluginCommandLineSupport {
 
     // Driving Adapter
     private CLIController cliController;
-    private ExportVisitorFactory exportVisitorFactory;
+    private ExportElementVisitorFactory exportVisitorFactory;
     private FileIO fileIO;
 
 
@@ -66,9 +66,9 @@ public class VPCLI implements VPPlugin, VPPluginCommandLineSupport {
         this.treeDirMaker = new TreeDirMaker();
 
 
-        this.vpStructFactory = new VPStructFactory();
-        this.treeVisitorFactory = new TreeVisitorFactory();
-        this.exportVisitorFactory = new ExportVisitorFactory(
+        this.vpMetaModelFactory = new VPMetaModelFactory();
+        this.treeVisitorFactory = new TreeElementVisitorFactory();
+        this.exportVisitorFactory = new ExportElementVisitorFactory(
             this.fileIO,
             this.myDiagramFactory,
             this.writerFactory,
@@ -84,13 +84,13 @@ public class VPCLI implements VPPlugin, VPPluginCommandLineSupport {
             , this.myDiagramFactory
             , this.writerFactory
             , this.fileFactory
-            , this.vpStructFactory
+            , this.vpMetaModelFactory
             , this.exportVisitorFactory
         );
 
         this.treeService = new TreeService(
             this.projectRepository
-            , this.vpStructFactory
+            , this.vpMetaModelFactory
             , this.treeVisitorFactory);
 
         this.listDiagramsService = new ListDiagramsService(this.projectRepository);

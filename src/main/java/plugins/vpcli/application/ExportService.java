@@ -2,9 +2,9 @@ package plugins.vpcli.application;
 
 import com.vp.plugin.diagram.IDiagramUIModel;
 
-import plugins.vpcli.domain.mydiagram.*;
-import plugins.vpcli.domain.myuml.myproject.ExportVisitorFactory;
-import plugins.vpcli.domain.vpstruct.VPStructFactory;
+import plugins.vpcli.domain.myuml.mydiagram.*;
+import plugins.vpcli.domain.myuml.myproject.ExportElementVisitorFactory;
+import plugins.vpcli.domain.vpvisitor.vpmodelvisitor.structure.VPMetaModelFactory;
 import plugins.vpcli.drivenadapter.FileFactory;
 import plugins.vpcli.drivenadapter.ProjectRepository;
 import plugins.vpcli.application.writers.WriterFactory;
@@ -15,7 +15,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.List;
 
-import static plugins.vpcli.domain.vpstruct.ElementType.*;
+import static plugins.vpcli.domain.myuml.mycommon.ElementType.*;
 
 public class ExportService {
 
@@ -24,22 +24,22 @@ public class ExportService {
     private final MyDiagramFactory myDiagramFactory;
     private final WriterFactory writerFactory;
     private final FileFactory fileFactory;
-    private final VPStructFactory vpStructFactory;
-    private final ExportVisitorFactory exportVisitorFactory;
+    private final VPMetaModelFactory vpMetaModelFactory;
+    private final ExportElementVisitorFactory exportVisitorFactory;
     //private final TreeDirMaker makeDir;
 
     public ExportService(ProjectRepository projectRepository
         , MyDiagramFactory myDiagramFactory
         , WriterFactory writerFactory
         , FileFactory fileFactory
-        , VPStructFactory vpStructFactory
-        , ExportVisitorFactory exportVisitorFactory) {
+        , VPMetaModelFactory vpMetaModelFactory
+        , ExportElementVisitorFactory exportVisitorFactory) {
 
         this.projectRepository = projectRepository;
         this.myDiagramFactory = myDiagramFactory;
         this.writerFactory = writerFactory;
         this.fileFactory = fileFactory;
-        this.vpStructFactory = vpStructFactory;
+        this.vpMetaModelFactory = vpMetaModelFactory;
         this.exportVisitorFactory = exportVisitorFactory;
     }
 
@@ -142,7 +142,7 @@ public class ExportService {
         var project = projectRepository.getProject();
 
         exportVisitorFactory.setRootDir(exportLocation);
-        var struct = vpStructFactory.create(project, this.exportVisitorFactory);
+        var struct = vpMetaModelFactory.create(project, this.exportVisitorFactory);
         struct.setElementTypes(List.of(
             PACKAGE
             , MODEL
