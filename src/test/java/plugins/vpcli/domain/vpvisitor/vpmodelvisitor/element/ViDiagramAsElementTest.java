@@ -12,13 +12,13 @@ import java.util.List;
 import org.junit.jupiter.api.Test;
 import plugins.vpcli.domain.myuml.mycommon.ElementType;
 
-class VPDiagramAsElementTest {
+class ViDiagramAsElementTest {
 
     @Test
     void shouldReturnNameFromDiagram() {
         IDiagramUIModel diagram = mock(IDiagramUIModel.class);
         when(diagram.getName()).thenReturn("D");
-        VPDiagramAsElement vp = new VPDiagramAsElement(diagram);
+        ViDiagramAsElement vp = new ViDiagramAsElement(diagram);
         assertEquals("D", vp.getName());
     }
 
@@ -26,7 +26,7 @@ class VPDiagramAsElementTest {
     void shouldResolveTypeFromDiagramType() {
         IDiagramUIModel diagram = mock(IDiagramUIModel.class);
         when(diagram.getType()).thenReturn(ElementType.CLASS_DIAGRAM.getVPModelType());
-        VPDiagramAsElement vp = new VPDiagramAsElement(diagram);
+        ViDiagramAsElement vp = new ViDiagramAsElement(diagram);
         assertEquals(ElementType.CLASS_DIAGRAM, vp.getType());
     }
 
@@ -34,14 +34,14 @@ class VPDiagramAsElementTest {
     void shouldResolveNullTypeForUnknownDiagramType() {
         IDiagramUIModel diagram = mock(IDiagramUIModel.class);
         when(diagram.getType()).thenReturn("UnknownDiagram");
-        VPDiagramAsElement vp = new VPDiagramAsElement(diagram);
+        ViDiagramAsElement vp = new ViDiagramAsElement(diagram);
         assertEquals(null, vp.getType());
     }
 
     @Test
     void shouldReturnEmptyChildren() {
         IDiagramUIModel diagram = mock(IDiagramUIModel.class);
-        VPDiagramAsElement vp = new VPDiagramAsElement(diagram);
-        assertTrue(vp.getChildren(List.of(ElementType.ALL_DIAGRAMS)).isEmpty());
+        ViDiagramAsElement vp = new ViDiagramAsElement(diagram);
+        assertTrue(vp.getChildren(List.of(ElementType.DIAGRAM)).isEmpty());
     }
 }

@@ -1,9 +1,9 @@
 package plugins.vpcli.domain.myuml.myproject;
 
-import plugins.vpcli.domain.vpvisitor.vpmodelvisitor.element.VPElement;
-import plugins.vpcli.domain.vpvisitor.vpmodelvisitor.visitor.VPElementVisitor;
+import plugins.vpcli.domain.vpvisitor.vpmodelvisitor.element.ViElement;
+import plugins.vpcli.domain.vpvisitor.vpmodelvisitor.visitor.ViElementVisitor;
 
-public class TreeElementVisitor extends VPElementVisitor {
+public class TreeElementVisitor extends ViElementVisitor {
     private String prefix = "";
 
     public TreeElementVisitor(TreeElementVisitor preLevelVisitor) {
@@ -17,7 +17,7 @@ public class TreeElementVisitor extends VPElementVisitor {
     }
 
     @Override
-    public void visit(VPElement structElement) {
+    public void visit(ViElement structElement) {
         String suffix = structElement.getType().getSuffix();
         String branch = calcBranch();
         System.out.println(this.prefix + branch + structElement.getName() + suffix);

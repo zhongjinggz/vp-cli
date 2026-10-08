@@ -10,7 +10,7 @@ import java.util.List;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.function.Executable;
 import plugins.vpcli.domain.myuml.mycommon.ElementType;
-import plugins.vpcli.domain.vpvisitor.vpmodelvisitor.element.VPElement;
+import plugins.vpcli.domain.vpvisitor.vpmodelvisitor.element.ViElement;
 
 class TreeVisitorTest {
 
@@ -26,8 +26,8 @@ class TreeVisitorTest {
         return buffer.toString();
     }
 
-    private VPElement element(String name, ElementType type) {
-        return new VPElement() {
+    private ViElement element(String name, ElementType type) {
+        return new ViElement() {
             @Override
             public String getName() {
                 return name;
@@ -39,7 +39,7 @@ class TreeVisitorTest {
             }
 
             @Override
-            public List<VPElement> getChildren(List<ElementType> elementTypes) {
+            public List<ViElement> getChildren(List<ElementType> elementTypes) {
                 return List.of();
             }
         };

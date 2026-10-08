@@ -7,10 +7,10 @@ import java.util.List;
 
 import static plugins.vpcli.domain.myuml.mycommon.ElementType.Kind.DIAGRAM;
 
-public class VPDiagramAsElement extends VPElement {
+public class ViDiagramAsElement extends ViElement {
     private final IDiagramUIModel diagram;
 
-    public VPDiagramAsElement(IDiagramUIModel diagram) {
+    public ViDiagramAsElement(IDiagramUIModel diagram) {
         this.diagram = diagram;
     }
     public String getName() {
@@ -22,7 +22,7 @@ public class VPDiagramAsElement extends VPElement {
     }
 
     @Override
-    public List<VPElement> getChildren(List<ElementType> elementTypes) {
+    public List<ViElement> getChildren(List<ElementType> elementTypes) {
         return List.of();
     }
 

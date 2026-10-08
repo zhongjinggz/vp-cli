@@ -4,15 +4,15 @@ import plugins.vpcli.application.writers.ClassDiagramWriter;
 import plugins.vpcli.application.writers.WriterFactory;
 import plugins.vpcli.domain.myuml.mydiagram.MyClassDiagram;
 import plugins.vpcli.domain.myuml.mydiagram.MyDiagramFactory;
-import plugins.vpcli.domain.vpvisitor.vpmodelvisitor.element.VPDiagramAsElement;
-import plugins.vpcli.domain.vpvisitor.vpmodelvisitor.element.VPElement;
-import plugins.vpcli.domain.vpvisitor.vpmodelvisitor.visitor.VPElementVisitor;
+import plugins.vpcli.domain.vpvisitor.vpmodelvisitor.element.ViDiagramAsElement;
+import plugins.vpcli.domain.vpvisitor.vpmodelvisitor.element.ViElement;
+import plugins.vpcli.domain.vpvisitor.vpmodelvisitor.visitor.ViElementVisitor;
 import plugins.vpcli.drivenadapter.FileIO;
 
 import java.io.File;
 import java.io.IOException;
 
-public class ExportElementVisitor extends VPElementVisitor {
+public class ExportElementVisitor extends ViElementVisitor {
     private final FileIO fileIO;
     private final MyDiagramFactory diagramFactory;
     private final WriterFactory writerFactory;
@@ -39,7 +39,7 @@ public class ExportElementVisitor extends VPElementVisitor {
     }
 
     @Override
-    public void visit(VPElement element) throws IOException {
+    public void visit(ViElement element) throws IOException {
         switch (element.getType()) {
             case PACKAGE:
                 visitPackage(element);
@@ -55,18 +55,18 @@ public class ExportElementVisitor extends VPElementVisitor {
         }
     }
 
-    private void visitPackage(VPElement element) {
+    private void visitPackage(ViElement element) {
         this.path = fileIO.makeDir
             .named(element.getName() + element.getType().getSuffix())
             .under(parentDir);
     }
 
-    private void visitModel(VPElement element) {
+    private void visitModel(ViElement element) {
         visitPackage(element);
     }
 
-    private void visitClassDiagram(VPElement structElement) throws IOException {
-        var vpDiagram = (VPDiagramAsElement) structElement;
+    private void visitClassDiagram(ViElement structElement) throws IOException {
+        var vpDiagram = (ViDiagramAsElement) structElement;
         var diagramUIModel = vpDiagram.getVPDiagramUIModel();
         MyClassDiagram myDiagram = diagramFactory.createClassDiagram(diagramUIModel);
         ClassDiagramWriter classDiagramWriter = writerFactory.createClassDiagramWriter(myDiagram);

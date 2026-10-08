@@ -16,13 +16,13 @@ import plugins.vpcli.domain.myuml.mycommon.ElementType;
 
 class VPModelElementTest {
 
-    private final VPElementFactory factory = new VPElementFactory();
+    private final ViElementFactory factory = new ViElementFactory();
 
     @Test
     void shouldReturnNameFromVpElement() {
         IModelElement vp = mock(IModelElement.class);
         when(vp.getName()).thenReturn("Foo");
-        VPModelElement e = new VPModelElement(vp, factory);
+        ViModelElement e = new ViModelElement(vp, factory);
         assertEquals("Foo", e.getName());
     }
 
@@ -30,7 +30,7 @@ class VPModelElementTest {
     void shouldResolveTypeFromVpModelType() {
         IModelElement vp = mock(IModelElement.class);
         when(vp.getModelType()).thenReturn(ElementType.CLASS.getVPModelType());
-        VPModelElement e = new VPModelElement(vp, factory);
+        ViModelElement e = new ViModelElement(vp, factory);
         assertEquals(ElementType.CLASS, e.getType());
     }
 
@@ -43,12 +43,12 @@ class VPModelElementTest {
         when(vp.toChildArray(new String[]{ElementType.CLASS.getVPModelType()}))
             .thenReturn(new IModelElement[]{child});
 
-        VPModelElement e = new VPModelElement(vp, factory);
-        List<VPElement> children = e.getChildren(List.of(ElementType.CLASS));
+        ViModelElement e = new ViModelElement(vp, factory);
+        List<ViElement> children = e.getChildren(List.of(ElementType.CLASS));
 
         assertEquals(2, children.size());
-        assertTrue(children.get(0) instanceof VPDiagramAsElement);
-        assertTrue(children.get(1) instanceof VPModelElement);
+        assertTrue(children.get(0) instanceof ViDiagramAsElement);
+        assertTrue(children.get(1) instanceof ViModelElement);
         verify(vp).toChildArray(new String[]{ElementType.CLASS.getVPModelType()});
     }
 
@@ -58,8 +58,8 @@ class VPModelElementTest {
         when(vp.toSubDiagramArray()).thenReturn(null);
         when(vp.toChildArray(new String[0])).thenReturn(new IModelElement[0]);
 
-        VPModelElement e = new VPModelElement(vp, factory);
-        List<VPElement> children = e.getChildren(List.of());
+        ViModelElement e = new ViModelElement(vp, factory);
+        List<ViElement> children = e.getChildren(List.of());
 
         assertTrue(children.isEmpty());
     }
@@ -71,7 +71,7 @@ class VPModelElementTest {
         when(vp.toChildArray(new String[]{ElementType.CLASS.getVPModelType()}))
             .thenReturn(new IModelElement[0]);
 
-        VPModelElement e = new VPModelElement(vp, factory);
+        ViModelElement e = new ViModelElement(vp, factory);
         e.getChildren(List.of(ElementType.CLASS, ElementType.CLASS_DIAGRAM));
 
         verify(vp).toChildArray(new String[]{ElementType.CLASS.getVPModelType()});

@@ -8,21 +8,21 @@ import com.vp.plugin.model.IModelElement;
 
 import org.junit.jupiter.api.Test;
 
-class VPElementFactoryTest {
+class ViElementFactoryTest {
 
-    private final VPElementFactory factory = new VPElementFactory();
+    private final ViElementFactory factory = new ViElementFactory();
 
     @Test
     void shouldWrapModelElementAsVpModelElement() {
         IModelElement element = mock(IModelElement.class);
-        VPElement result = factory.from(element);
-        assertInstanceOf(VPModelElement.class, result);
+        ViElement result = factory.from(element);
+        assertInstanceOf(ViModelElement.class, result);
     }
 
     @Test
     void shouldWrapDiagramAsVpDiagram() {
         IDiagramUIModel diagram = mock(IDiagramUIModel.class);
-        VPElement result = factory.from(diagram);
-        assertInstanceOf(VPDiagramAsElement.class, result);
+        ViElement result = factory.from(diagram);
+        assertInstanceOf(ViDiagramAsElement.class, result);
     }
 }

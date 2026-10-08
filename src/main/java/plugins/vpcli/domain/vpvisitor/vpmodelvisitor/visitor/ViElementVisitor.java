@@ -1,10 +1,10 @@
 package plugins.vpcli.domain.vpvisitor.vpmodelvisitor.visitor;
 
-import plugins.vpcli.domain.vpvisitor.vpmodelvisitor.element.VPElement;
+import plugins.vpcli.domain.vpvisitor.vpmodelvisitor.element.ViElement;
 
 import java.io.IOException;
 
-public abstract class VPElementVisitor {
+public abstract class ViElementVisitor {
     private boolean lastOrNot = false;
 
     public void setLast(boolean lastOrNot) {
@@ -15,6 +15,6 @@ public abstract class VPElementVisitor {
         return lastOrNot;
     }
 
-    abstract public void visit(VPElement vpElement) throws IOException;
+    abstract public void visit(ViElement viElement) throws IOException;
 
 }

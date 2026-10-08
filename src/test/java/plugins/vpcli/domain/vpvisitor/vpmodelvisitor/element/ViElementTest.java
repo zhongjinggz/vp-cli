@@ -8,11 +8,11 @@ import java.util.List;
 
 import org.junit.jupiter.api.Test;
 import plugins.vpcli.domain.myuml.mycommon.ElementType;
-import plugins.vpcli.domain.vpvisitor.vpmodelvisitor.visitor.VPElementVisitor;
+import plugins.vpcli.domain.vpvisitor.vpmodelvisitor.visitor.ViElementVisitor;
 
-class VPElementTest {
+class ViElementTest {
 
-    private static final class StubElement extends VPElement {
+    private static final class StubElement extends ViElement {
         @Override
         public String getName() {
             return "stub";
@@ -24,17 +24,17 @@ class VPElementTest {
         }
 
         @Override
-        public List<VPElement> getChildren(List<ElementType> elementTypes) {
+        public List<ViElement> getChildren(List<ElementType> elementTypes) {
             return List.of();
         }
     }
 
-    private static final class CapturingElementVisitor extends VPElementVisitor {
-        VPElement visited;
+    private static final class CapturingElementVisitor extends ViElementVisitor {
+        ViElement visited;
 
         @Override
-        public void visit(VPElement vpElement) {
-            this.visited = vpElement;
+        public void visit(ViElement viElement) {
+            this.visited = viElement;
         }
     }
 

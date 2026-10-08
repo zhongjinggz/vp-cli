@@ -2,14 +2,14 @@ package plugins.vpcli.domain.myuml.myproject;
 
 import plugins.vpcli.application.writers.WriterFactory;
 import plugins.vpcli.domain.myuml.mydiagram.MyDiagramFactory;
-import plugins.vpcli.domain.vpvisitor.vpmodelvisitor.visitor.VPElementVisitor;
-import plugins.vpcli.domain.vpvisitor.vpmodelvisitor.visitor.VPElementVisitorFactory;
+import plugins.vpcli.domain.vpvisitor.vpmodelvisitor.visitor.ViElementVisitor;
+import plugins.vpcli.domain.vpvisitor.vpmodelvisitor.visitor.ViElementVisitorFactory;
 import plugins.vpcli.drivenadapter.FileFactory;
 import plugins.vpcli.drivenadapter.FileIO;
 
 import java.io.File;
 
-public class ExportElementVisitorFactory implements VPElementVisitorFactory {
+public class ExportElementVisitorFactory implements ViElementVisitorFactory {
 
     private final FileIO fileIO;
     private final MyDiagramFactory diagramFactory;
@@ -29,7 +29,7 @@ public class ExportElementVisitorFactory implements VPElementVisitorFactory {
     }
 
     @Override
-    public VPElementVisitor create(VPElementVisitor preLevelVisitor) {
+    public ViElementVisitor create(ViElementVisitor preLevelVisitor) {
 
         //TODO use NullObject pattern
         ExportElementVisitor preLevelExportVisitor = (preLevelVisitor == null ?

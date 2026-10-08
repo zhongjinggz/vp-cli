@@ -9,11 +9,11 @@ import java.util.List;
 
 import static plugins.vpcli.domain.myuml.mycommon.ElementType.Kind.MODEL_ELEMENT;
 
-public class VPModelElement extends VPElement {
+public class ViModelElement extends ViElement {
     private final IModelElement vpElement;
-    private final VPElementFactory createElement;
+    private final ViElementFactory createElement;
 
-    public VPModelElement(IModelElement vpElement, VPElementFactory elementFactory) {
+    public ViModelElement(IModelElement vpElement, ViElementFactory elementFactory) {
         this.vpElement = vpElement;
         this.createElement = elementFactory;
     }
@@ -27,8 +27,8 @@ public class VPModelElement extends VPElement {
     }
 
     @Override
-    public List<VPElement> getChildren(List<ElementType> elementTypes) {
-        List<VPElement> result = new ArrayList<>();
+    public List<ViElement> getChildren(List<ElementType> elementTypes) {
+        List<ViElement> result = new ArrayList<>();
 
         var vpDiagrams = this.vpElement.toSubDiagramArray();
         if (vpDiagrams != null) {

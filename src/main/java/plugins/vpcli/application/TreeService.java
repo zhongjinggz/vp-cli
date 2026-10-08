@@ -1,7 +1,7 @@
 package plugins.vpcli.application;
 
 import plugins.vpcli.domain.myuml.myproject.TreeElementVisitorFactory;
-import plugins.vpcli.domain.vpvisitor.vpmodelvisitor.structure.VPMetaModelFactory;
+import plugins.vpcli.domain.vpvisitor.vpmodelvisitor.structure.ViProjectFactory;
 import plugins.vpcli.drivenadapter.ProjectRepository;
 
 import java.io.IOException;
@@ -12,27 +12,27 @@ import static plugins.vpcli.domain.myuml.mycommon.ElementType.*;
 public class TreeService {
 
     private final ProjectRepository projectRepository;
-    private final VPMetaModelFactory vpMetaModelFactory;
+    private final ViProjectFactory viProjectFactory;
     private final TreeElementVisitorFactory treeVisitorFactory;
 
     public TreeService(ProjectRepository projectRepository
-        , VPMetaModelFactory vpMetaModelFactory
+        , ViProjectFactory viProjectFactory
         , TreeElementVisitorFactory treeVisitorFactory) {
 
         this.projectRepository = projectRepository;
-        this.vpMetaModelFactory = vpMetaModelFactory;
+        this.viProjectFactory = viProjectFactory;
         this.treeVisitorFactory = treeVisitorFactory;
     }
 
     public void tree() throws IOException {
         var project = projectRepository.getProject();
 
-        var vpStruct = vpMetaModelFactory.create(project, treeVisitorFactory);
+        var vpStruct = viProjectFactory.create(project);
         vpStruct.setElementTypes(
             List.of(PACKAGE
                 , MODEL
                 , CLASS
-                , ALL_DIAGRAMS));
+                , DIAGRAM));
 
         vpStruct.accept(treeVisitorFactory);
     }

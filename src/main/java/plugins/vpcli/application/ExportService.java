@@ -4,7 +4,7 @@ import com.vp.plugin.diagram.IDiagramUIModel;
 
 import plugins.vpcli.domain.myuml.mydiagram.*;
 import plugins.vpcli.domain.myuml.myproject.ExportElementVisitorFactory;
-import plugins.vpcli.domain.vpvisitor.vpmodelvisitor.structure.VPMetaModelFactory;
+import plugins.vpcli.domain.vpvisitor.vpmodelvisitor.structure.ViProjectFactory;
 import plugins.vpcli.drivenadapter.FileFactory;
 import plugins.vpcli.drivenadapter.ProjectRepository;
 import plugins.vpcli.application.writers.WriterFactory;
@@ -24,7 +24,7 @@ public class ExportService {
     private final MyDiagramFactory myDiagramFactory;
     private final WriterFactory writerFactory;
     private final FileFactory fileFactory;
-    private final VPMetaModelFactory vpMetaModelFactory;
+    private final ViProjectFactory viProjectFactory;
     private final ExportElementVisitorFactory exportVisitorFactory;
     //private final TreeDirMaker makeDir;
 
@@ -32,14 +32,14 @@ public class ExportService {
         , MyDiagramFactory myDiagramFactory
         , WriterFactory writerFactory
         , FileFactory fileFactory
-        , VPMetaModelFactory vpMetaModelFactory
+        , ViProjectFactory viProjectFactory
         , ExportElementVisitorFactory exportVisitorFactory) {
 
         this.projectRepository = projectRepository;
         this.myDiagramFactory = myDiagramFactory;
         this.writerFactory = writerFactory;
         this.fileFactory = fileFactory;
-        this.vpMetaModelFactory = vpMetaModelFactory;
+        this.viProjectFactory = viProjectFactory;
         this.exportVisitorFactory = exportVisitorFactory;
     }
 
@@ -101,9 +101,9 @@ public class ExportService {
 
     private void exportClassDiagram(IDiagramUIModel vpDiagram
         , File outputFile) throws IOException {
-        MyClassDiagram exporter = new MyClassDiagram(vpDiagram);
-        exporter.extract();
-        ClassDiagramWriter classWriter = writerFactory.createClassDiagramWriter(exporter);
+        MyClassDiagram diagram = new MyClassDiagram(vpDiagram);
+        diagram.extract();
+        ClassDiagramWriter classWriter = writerFactory.createClassDiagramWriter(diagram);
         classWriter.writeToFile(outputFile);
     }
 
@@ -142,11 +142,11 @@ public class ExportService {
         var project = projectRepository.getProject();
 
         exportVisitorFactory.setRootDir(exportLocation);
-        var struct = vpMetaModelFactory.create(project, this.exportVisitorFactory);
+        var struct = viProjectFactory.create(project);
         struct.setElementTypes(List.of(
             PACKAGE
             , MODEL
-            , ALL_DIAGRAMS));
+            , DIAGRAM));
 
         struct.accept(this.exportVisitorFactory);
 //

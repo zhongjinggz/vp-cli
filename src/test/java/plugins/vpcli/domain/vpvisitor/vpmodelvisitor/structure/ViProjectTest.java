@@ -16,17 +16,17 @@ import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import plugins.vpcli.domain.myuml.mycommon.ElementType;
-import plugins.vpcli.domain.vpvisitor.vpmodelvisitor.element.VPElement;
-import plugins.vpcli.domain.vpvisitor.vpmodelvisitor.element.VPElementFactory;
-import plugins.vpcli.domain.vpvisitor.vpmodelvisitor.visitor.VPElementVisitor;
-import plugins.vpcli.domain.vpvisitor.vpmodelvisitor.visitor.VPElementVisitorFactory;
+import plugins.vpcli.domain.vpvisitor.vpmodelvisitor.element.ViElement;
+import plugins.vpcli.domain.vpvisitor.vpmodelvisitor.element.ViElementFactory;
+import plugins.vpcli.domain.vpvisitor.vpmodelvisitor.visitor.ViElementVisitor;
+import plugins.vpcli.domain.vpvisitor.vpmodelvisitor.visitor.ViElementVisitorFactory;
 
-class VPMetaModelTest {
+class ViProjectTest {
 
     private IProject project;
-    private VPMetaModel struct;
+    private ViProject struct;
     private final List<Call> calls = new ArrayList<>();
-    private final VPElementVisitorFactory exportVisitorFactory = pre -> new RecorderElementVisitor(calls, pre);
+    private final ViElementVisitorFactory exportVisitorFactory = pre -> new RecorderElementVisitor(calls, pre);
 
     private static class Call {
         final String name;
@@ -43,21 +43,21 @@ class VPMetaModelTest {
     @BeforeEach
     void setUp() {
         project = mock(IProject.class);
-        struct = new VPMetaModel(project, new VPElementFactory());
+        struct = new ViProject(project, new ViElementFactory());
     }
 
-    private static final class RecorderElementVisitor extends VPElementVisitor {
+    private static final class RecorderElementVisitor extends ViElementVisitor {
         private final List<Call> calls;
         private final int depth;
 
-        RecorderElementVisitor(List<Call> calls, VPElementVisitor pre) {
+        RecorderElementVisitor(List<Call> calls, ViElementVisitor pre) {
             this.calls = calls;
             this.depth = pre instanceof RecorderElementVisitor ? ((RecorderElementVisitor) pre).depth + 1 : 0;
         }
 
         @Override
-        public void visit(VPElement vpElement) {
-            calls.add(new Call(vpElement.getName(), isLast(), depth));
+        public void visit(ViElement viElement) {
+            calls.add(new Call(viElement.getName(), isLast(), depth));
         }
     }
 

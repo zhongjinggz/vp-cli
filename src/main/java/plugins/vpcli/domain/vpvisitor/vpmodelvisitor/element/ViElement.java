@@ -1,17 +1,17 @@
 package plugins.vpcli.domain.vpvisitor.vpmodelvisitor.element;
 
 import plugins.vpcli.domain.myuml.mycommon.ElementType;
-import plugins.vpcli.domain.vpvisitor.vpmodelvisitor.visitor.VPElementVisitor;
+import plugins.vpcli.domain.vpvisitor.vpmodelvisitor.visitor.ViElementVisitor;
 
 import java.io.IOException;
 import java.util.List;
 
-public abstract class VPElement {
+public abstract class ViElement {
 
-    public VPElement() {
+    public ViElement() {
     }
 
-    public void accept(VPElementVisitor visitor) throws IOException {
+    public void accept(ViElementVisitor visitor) throws IOException {
         visitor.visit(this);
     }
 
@@ -21,7 +21,7 @@ public abstract class VPElement {
 
     public abstract ElementType getType();
 
-    public abstract List<VPElement> getChildren(List<ElementType> elementTypes);
+    public abstract List<ViElement> getChildren(List<ElementType> elementTypes);
 
     public boolean typeIs(ElementType elementType) {
         return getType().equals(elementType);
