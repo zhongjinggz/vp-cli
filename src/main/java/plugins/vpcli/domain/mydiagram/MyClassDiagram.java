@@ -52,8 +52,6 @@ public class MyClassDiagram extends MyDiagram {
 			IModelElement modelElement = diagramElement.getModelElement();
 
 			if (modelElement == null) {
-//				ApplicationManager.instance().getViewManager()
-//						.showMessage("Warning: modelElement is null for a diagram element.");
 				addWarning("ModelElement is null for a diagram element.");
 				continue;
 			}
@@ -77,9 +75,6 @@ public class MyClassDiagram extends MyDiagram {
 				deferredRelationships.add((IRelationship) modelElement); // Defer relationships
 			} else {
 				allExportedElements.remove(modelElement);
-//				ApplicationManager.instance().getViewManager()
-//						.showMessage("Warning: diagram element " + modelElement.getName()
-//								+ " is of unsupported type and will not be processed ... ");
 
 				addWarning("Diagram element " + modelElement.getName()
 								+ " is of unsupported type and was not processed. ");
@@ -152,13 +147,10 @@ public class MyClassDiagram extends MyDiagram {
 	private void extractRelationship(IRelationship relationship) {
 		IModelElement source = relationship.getFrom();
 		IModelElement target = relationship.getTo();
-//		ApplicationManager.instance().getViewManager().showMessage("rel type? " + relationship.getModelType());
 		if (!allExportedElements.contains(source) || !allExportedElements.contains(target)) {
 			return;
 		}
 		if (source.getName() == null || target.getName() == null) {
-//			ApplicationManager.instance().getViewManager()
-//					.showMessage("Warning: One of the relationship's " +(relationship.getName())+ " elements were null possibly due to illegal relationship (e.g. Anchor between classes) or a hanging connector End");
 			addWarning("One of the relationship's elements " + (relationship.getName()) + " were null possibly due to illegal relationship (e.g. Anchor between classes) or a hanging connector End");
 			return;
 		}

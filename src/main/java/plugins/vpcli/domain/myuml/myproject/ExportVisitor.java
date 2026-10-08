@@ -68,8 +68,8 @@ public class ExportVisitor extends VPVisitor {
     private void visitClassDiagram(VPStructElement structElement) throws IOException {
         var vpDiagram = (VPDiagram) structElement;
         var diagramUIModel = vpDiagram.getVPDiagramUIModel();
-        MyClassDiagram diagram = diagramFactory.createClassDiagram(diagramUIModel);
-        ClassDiagramWriter classDiagramWriter = writerFactory.createClassDiagramWriter(diagram);
+        MyClassDiagram myDiagram = diagramFactory.createClassDiagram(diagramUIModel);
+        ClassDiagramWriter classDiagramWriter = writerFactory.createClassDiagramWriter(myDiagram);
         classDiagramWriter.write(this.parentDir);
     }
 

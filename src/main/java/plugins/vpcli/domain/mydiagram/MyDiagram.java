@@ -46,7 +46,6 @@ public abstract class MyDiagram {
 		while (stereoIter.hasNext()) {
 			IStereotype stereotype = (IStereotype) stereoIter.next();
 			String stereotypeString = stereotype.getName();
-//			ApplicationManager.instance().getViewManager().showMessage("Stereotype: " + stereotypeString);
 			stereotypes.add(stereotypeString);
 		}
 		return stereotypes;

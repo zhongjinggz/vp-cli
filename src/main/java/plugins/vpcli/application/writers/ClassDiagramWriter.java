@@ -87,7 +87,7 @@ public class ClassDiagramWriter extends PlantUMLWriter {
         StringBuilder packageString = new StringBuilder();
         String name = formatName(myPackage.getName());
 
-        packageString.append(indent).append("package ").append(name).append(" {\n");
+        packageString.append(indent).append("namespace ").append(name).append(" {\n");
 
         for (MyClass myClass : myPackage.getClasses()) {
             packageString.append(writeClass(myClass, indent + "\t"));
