@@ -77,10 +77,8 @@ public class VPCLI implements VPPlugin, VPPluginCommandLineSupport {
         // Application Services
         this.exportService = new ExportService(
             this.projectRepository
-            , this.myDiagramFactory
-            , this.writerFactory
-            , this.fileFactory
-            , this.viProjectFactory
+            ,
+            this.viProjectFactory
             , this.exportVisitorFactory
         );
 
