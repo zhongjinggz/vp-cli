@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+
+    <!-- 静音 logback 初始化时打印的内部状态日志（"This is logback-classic version..." 等） -->
+    <statusListener class="ch.qos.logback.core.status.NopStatusListener" />
+
+    <!--
+      LOG_DIR 在插件 loaded 阶段注入（见 VPCLI.loaded），指向插件安装目录下 log/。
+      vpcli.log.appender 由同一阶段根据 vpcli.log.profile 决定：
+        dev  -> CONSOLE  （默认，未指定 vpcli.log.profile 时为 dev）
+        prod -> FILE
+    -->
+    <property name="LOG_DIR" value="${vpcli.log.dir:-}" />
+
+    <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <pattern>%d{HH:mm:ss.SSS} %-5level %logger{36} - %msg%n</pattern>
+            <charset>UTF-8</charset>
+        </encoder>
+    </appender>
+
+    <appender name="FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>${vpcli.log.dir}/vpcli.log</file>
+        <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+            <fileNamePattern>${vpcli.log.dir}/vpcli.%d{yyyy-MM-dd}.%i.log</fileNamePattern>
+            <maxFileSize>5MB</maxFileSize>
+            <maxHistory>30</maxHistory>
+            <totalSizeCap>50MB</totalSizeCap>
+        </rollingPolicy>
+        <encoder>
+            <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} %-5level [%thread] %logger{36} - %msg%n</pattern>
+            <charset>UTF-8</charset>
+        </encoder>
+    </appender>
+
+    <root level="INFO">
+        <appender-ref ref="${vpcli.log.appender:-CONSOLE}" />
+    </root>
+</configuration>
