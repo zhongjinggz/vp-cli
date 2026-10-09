@@ -17,27 +17,31 @@ public class ExportDiagramVisitor extends ViElementVisitor {
     private final MyDiagramFactory diagramFactory;
     private final WriterFactory writerFactory;
     private final File parentDir;
+    private final MyProject myProject;
     protected File path;
 
     ExportDiagramVisitor(
-        ExportDiagramVisitor preLevelVisitor
-        , FileIO fileIO
-        , MyDiagramFactory diagramFactory
-        , WriterFactory writerFactory) {
+        ExportDiagramVisitor preLevelVisitor,
+        FileIO fileIO,
+        MyDiagramFactory diagramFactory,
+        WriterFactory writerFactory,
+        MyProject myProject) {
 
         this.fileIO = fileIO;
         this.diagramFactory = diagramFactory;
         this.writerFactory = writerFactory;
         this.parentDir = preLevelVisitor.getPath();
+        this.myProject = myProject;
     }
 
     // used by RootExportDiagramVisitor only
     ExportDiagramVisitor(File path) {
-      this.path = path;
-      this.fileIO = null;
-      this.diagramFactory = null;
-      this.writerFactory = null;
-      this.parentDir = null;
+        this.myProject = null;
+        this.path = path;
+        this.fileIO = null;
+        this.diagramFactory = null;
+        this.writerFactory = null;
+        this.parentDir = null;
     }
 
     @Override

@@ -39,7 +39,8 @@ public class ExportElementVisitorFactory1 implements ViElementVisitorFactory {
             preLevelExportVisitor
             , this.fileIO
             , diagramFactory
-            , writerFactory
+            , writerFactory,
+            null
         );
 
 //        if (preLevelVisitor == null) {

@@ -34,7 +34,7 @@ public class ExportService {
         var vpProject = getIProject.fromVisualParadigm();
         var myProject = getMyProject.fromGlobal();
 
-        var viProject = createViProject.of(vpProject, myProject);
+        var viProject = createViProject.of(vpProject);
         viProject.setElementTypes(List.of(
             PACKAGE
             , MODEL

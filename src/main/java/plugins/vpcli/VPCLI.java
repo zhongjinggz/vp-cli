@@ -71,7 +71,7 @@ public class VPCLI implements VPPlugin, VPPluginCommandLineSupport {
             this.fileIO,
             this.myDiagramFactory,
             this.writerFactory,
-            this.fileFactory
+            this.myProjectFactory
         );
 
         // Domain Services

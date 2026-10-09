@@ -3,7 +3,6 @@ package plugins.vpcli.domain.vpvisitor.vpmodelvisitor.structure;
 import com.vp.plugin.model.IProject;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import plugins.vpcli.domain.myuml.mycommon.ElementType;
-import plugins.vpcli.domain.myuml.myproject.MyProject;
 import plugins.vpcli.domain.vpvisitor.vpmodelvisitor.element.ViElement;
 import plugins.vpcli.domain.vpvisitor.vpmodelvisitor.element.ViElementFactory;
 import plugins.vpcli.domain.vpvisitor.vpmodelvisitor.visitor.ViElementVisitor;
@@ -15,23 +14,15 @@ import java.util.List;
 
 public class ViProject {
     private final IProject project;
-    private final ViElementFactory createStructElement;
+    private final ViElementFactory createElement;
     private final List<ElementType> elementTypes = new ArrayList<>();
-    private final MyProject myProject ;
     private ViElementVisitorFactory createVisitor;
 
     public ViProject(IProject vpProject
         , ViElementFactory elementFactory) {
 
         this.project = vpProject;
-        this.createStructElement = elementFactory;
-        this.myProject = null;
-    }
-
-    public ViProject(IProject vpProject, MyProject myProject, ViElementFactory viElementFactory) {
-        this.project = vpProject;
-        this.createStructElement = viElementFactory;
-        this.myProject = myProject;
+        this.createElement = elementFactory;
     }
 
     public void setElementTypes(List<ElementType> elementTypes) {
@@ -54,7 +45,7 @@ public class ViProject {
 
         List<ViElement> result = new ArrayList<>();
         for (var anElement : vpElements) {
-            result.add(createStructElement.from(anElement));
+            result.add(createElement.from(anElement));
         }
         return result;
     }
