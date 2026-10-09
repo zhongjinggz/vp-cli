@@ -45,22 +45,22 @@ public class ExportDiagramVisitor extends ViElementVisitor {
         this.parentDir = null;
     }
 
-    @Override
-    public void visit(ViElement element) throws IOException {
-        switch (element.getType()) {
-            case PACKAGE:
-                visitPackage((ViModelElement) element);
-                break;
-            case MODEL:
-                visitModel((ViModelElement) element);
-                break;
-            case DIAGRAM:
-                visitClassDiagram((ViDiagramAsElement) element);
-                break;
-            default:
-                break;
-        }
-    }
+//    @Override
+//    public void visit(ViElement element) throws IOException {
+//        switch (element.getType()) {
+//            case PACKAGE:
+//                visitPackage((ViModelElement) element);
+//                break;
+//            case MODEL:
+//                visitModel((ViModelElement) element);
+//                break;
+//            case DIAGRAM:
+//                visitClassDiagram((ViDiagramAsElement) element);
+//                break;
+//            default:
+//                break;
+//        }
+//    }
 
     @Override
     public void visit(ViDiagramAsElement element) throws IOException {

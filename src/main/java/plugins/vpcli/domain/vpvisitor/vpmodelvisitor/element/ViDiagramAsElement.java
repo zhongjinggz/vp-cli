@@ -2,7 +2,9 @@ package plugins.vpcli.domain.vpvisitor.vpmodelvisitor.element;
 
 import com.vp.plugin.diagram.IDiagramUIModel;
 import plugins.vpcli.domain.myuml.mycommon.ElementType;
+import plugins.vpcli.domain.vpvisitor.vpmodelvisitor.visitor.ViElementVisitor;
 
+import java.io.IOException;
 import java.util.List;
 
 public class ViDiagramAsElement extends ViElement {
@@ -11,6 +13,12 @@ public class ViDiagramAsElement extends ViElement {
     public ViDiagramAsElement(IDiagramUIModel diagram) {
         this.diagram = diagram;
     }
+
+    @Override
+    public void accept(ViElementVisitor visitor) throws IOException {
+        visitor.visit(this);
+    }
+
     public String getName() {
         return diagram.getName();
     }

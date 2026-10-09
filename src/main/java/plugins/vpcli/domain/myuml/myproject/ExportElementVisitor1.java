@@ -39,26 +39,26 @@ public class ExportElementVisitor1 extends ViElementVisitor {
 
     }
 
-    @Override
-    public void visit(ViElement element) throws IOException {
-        switch (element.getType()) {
-            case PACKAGE:
-                visitPackage(element);
-                break;
-            case MODEL:
-                visitModel(element);
-                break;
-            case DIAGRAM:
-                visitClassDiagram(element);
-                break;
-            default:
-                break;
-        }
-    }
+//    @Override
+//    public void visit(ViElement element) throws IOException {
+//        switch (element.getType()) {
+//            case PACKAGE:
+//                visitPackage(element);
+//                break;
+//            case MODEL:
+//                visitModel(element);
+//                break;
+//            case DIAGRAM:
+//                visitClassDiagram(element);
+//                break;
+//            default:
+//                break;
+//        }
+//    }
 
     @Override
     public void visit(ViDiagramAsElement viElement) throws IOException {
-        
+
     }
 
     @Override

@@ -59,7 +59,8 @@ public class ViProject {
         for (var anElement : elements) {
             var visitor = createVisitor.under(higherVisitor);
             visitor.setLast(i + 1 == size);
-            visitor.visit(anElement);
+            //visitor.visit(anElement);
+            anElement.accept(visitor);
 
             elementsAccept(
                 anElement.getChildren(elementTypes)

@@ -3,7 +3,9 @@ package plugins.vpcli.domain.vpvisitor.vpmodelvisitor.element;
 import com.vp.plugin.diagram.IDiagramUIModel;
 import com.vp.plugin.model.IModelElement;
 import plugins.vpcli.domain.myuml.mycommon.ElementType;
+import plugins.vpcli.domain.vpvisitor.vpmodelvisitor.visitor.ViElementVisitor;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -15,10 +17,16 @@ public class ViModelElement extends ViElement {
         this.vpElement = vpElement;
         this.createElement = elementFactory;
     }
+
+    @Override
+    public void accept(ViElementVisitor visitor) throws IOException {
+        visitor.visit(this);
+    }
+
     public String getName() {
         return vpElement.getName();
     }
-    
+
     public ElementType getType() {
         return ElementType.of(
             vpElement.getModelType());
@@ -30,7 +38,7 @@ public class ViModelElement extends ViElement {
 
         var vpDiagrams = this.vpElement.toSubDiagramArray();
         if (vpDiagrams != null) {
-            for (IDiagramUIModel aDiagram: vpDiagrams) {
+            for (IDiagramUIModel aDiagram : vpDiagrams) {
                 result.add(createElement.from(aDiagram));
             }
         }
@@ -41,8 +49,8 @@ public class ViModelElement extends ViElement {
             .toArray(String[]::new);
 
         var vpModelElements = this.vpElement.toChildArray(vpModelTypes);
-        for (IModelElement anElement: vpModelElements) {
-           result.add(createElement.from(anElement));
+        for (IModelElement anElement : vpModelElements) {
+            result.add(createElement.from(anElement));
         }
         return result;
     }

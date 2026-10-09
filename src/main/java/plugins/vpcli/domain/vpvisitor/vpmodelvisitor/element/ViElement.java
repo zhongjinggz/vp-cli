@@ -11,11 +11,11 @@ public abstract class ViElement {
     public ViElement() {
     }
 
-    public void accept(ViElementVisitor visitor) throws IOException {
-        visitor.visit(this);
-    }
+    //    public void accept(ViElementVisitor visitor) throws IOException {
+//        visitor.visit(this);
+//    }
+    public abstract void accept(ViElementVisitor visitor) throws IOException;
 
-    ;
 
     public abstract String getName();
 

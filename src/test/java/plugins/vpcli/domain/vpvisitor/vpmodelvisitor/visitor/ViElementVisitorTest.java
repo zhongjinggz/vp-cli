@@ -11,9 +11,6 @@ import plugins.vpcli.domain.vpvisitor.vpmodelvisitor.element.ViModelElement;
 class ViElementVisitorTest {
 
     private static final class NoOpElementVisitor extends ViElementVisitor {
-        @Override
-        public void visit(ViElement viElement) {
-        }
 
         @Override
         public void visit(ViDiagramAsElement viElement) {

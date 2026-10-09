@@ -20,12 +20,12 @@ public class TreeElementVisitor extends ViElementVisitor {
         }
     }
 
-    @Override
-    public void visit(ViElement element) {
-        String suffix = element.getType().getSuffix();
-        String branch = calcBranch();
-        System.out.println(this.prefix + branch + element.getName() + suffix);
-    }
+//    @Override
+//    public void visit(ViElement element) {
+//        String suffix = element.getType().getSuffix();
+//        String branch = calcBranch();
+//        System.out.println(this.prefix + branch + element.getName() + suffix);
+//    }
 
     @Override
     public void visit(ViDiagramAsElement viElement) throws IOException {

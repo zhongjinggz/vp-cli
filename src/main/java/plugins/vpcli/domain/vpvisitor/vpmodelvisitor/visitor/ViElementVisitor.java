@@ -18,7 +18,7 @@ public abstract class ViElementVisitor {
         return lastOrNot;
     }
 
-    abstract public void visit(ViElement viElement) throws IOException;
+//    abstract public void visit(ViElement viElement) throws IOException;
     abstract public void visit(ViDiagramAsElement viElement) throws IOException;
     abstract public void visit(ViModelElement viElement) throws IOException;
 
