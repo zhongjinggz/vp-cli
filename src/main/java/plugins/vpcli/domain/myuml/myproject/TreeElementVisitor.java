@@ -1,7 +1,6 @@
 package plugins.vpcli.domain.myuml.myproject;
 
 import plugins.vpcli.domain.vpvisitor.vpmodelvisitor.element.ViDiagramAsElement;
-import plugins.vpcli.domain.vpvisitor.vpmodelvisitor.element.ViElement;
 import plugins.vpcli.domain.vpvisitor.vpmodelvisitor.element.ViModelElement;
 import plugins.vpcli.domain.vpvisitor.vpmodelvisitor.visitor.ViElementVisitor;
 
@@ -28,12 +27,19 @@ public class TreeElementVisitor extends ViElementVisitor {
 //    }
 
     @Override
-    public void visit(ViDiagramAsElement viElement) throws IOException {
+    public void visit(ViDiagramAsElement element) throws IOException {
+        printBranch(element.getName(), ".diagram");
 
     }
 
+    private void printBranch(String element, String suffix) {
+        String branch = calcBranch();
+        System.out.println(this.prefix + branch + element + suffix);
+    }
+
     @Override
-    public void visit(ViModelElement viElement) throws IOException {
+    public void visit(ViModelElement element) throws IOException {
+        printBranch(element.getName(), ".element");
 
     }
 
