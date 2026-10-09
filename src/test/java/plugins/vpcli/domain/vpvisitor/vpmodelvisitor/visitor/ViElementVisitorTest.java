@@ -4,13 +4,23 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.junit.jupiter.api.Test;
+import plugins.vpcli.domain.vpvisitor.vpmodelvisitor.element.ViDiagramAsElement;
 import plugins.vpcli.domain.vpvisitor.vpmodelvisitor.element.ViElement;
+import plugins.vpcli.domain.vpvisitor.vpmodelvisitor.element.ViModelElement;
 
 class ViElementVisitorTest {
 
     private static final class NoOpElementVisitor extends ViElementVisitor {
         @Override
         public void visit(ViElement viElement) {
+        }
+
+        @Override
+        public void visit(ViDiagramAsElement viElement) {
+        }
+
+        @Override
+        public void visit(ViModelElement viElement) {
         }
     }
 

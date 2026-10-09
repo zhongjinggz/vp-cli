@@ -6,6 +6,7 @@ import plugins.vpcli.domain.myuml.mydiagram1.MyClassDiagram;
 import plugins.vpcli.domain.myuml.mydiagram1.MyDiagramFactory;
 import plugins.vpcli.domain.vpvisitor.vpmodelvisitor.element.ViDiagramAsElement;
 import plugins.vpcli.domain.vpvisitor.vpmodelvisitor.element.ViElement;
+import plugins.vpcli.domain.vpvisitor.vpmodelvisitor.element.ViModelElement;
 import plugins.vpcli.domain.vpvisitor.vpmodelvisitor.visitor.ViElementVisitor;
 import plugins.vpcli.drivenadapter.FileIO;
 
@@ -53,6 +54,16 @@ public class ExportElementVisitor1 extends ViElementVisitor {
             default:
                 break;
         }
+    }
+
+    @Override
+    public void visit(ViDiagramAsElement viElement) throws IOException {
+        
+    }
+
+    @Override
+    public void visit(ViModelElement viElement) throws IOException {
+
     }
 
     private void visitPackage(ViElement element) {

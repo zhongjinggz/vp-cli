@@ -36,6 +36,14 @@ class ViElementTest {
         public void visit(ViElement viElement) {
             this.visited = viElement;
         }
+
+        @Override
+        public void visit(ViDiagramAsElement viElement) {
+        }
+
+        @Override
+        public void visit(ViModelElement viElement) {
+        }
     }
 
     @Test

@@ -109,16 +109,43 @@
             <scope>compile</scope>
         </dependency>
         <!--        <dependency>-->
-<!--            <groupId>org.junit.jupiter</groupId>-->
-<!--            <artifactId>junit-jupiter</artifactId>-->
-<!--            <version>5.12.0</version>-->
-<!--            <scope>test</scope>-->
-<!--        </dependency>-->
+        <!--            <groupId>org.junit.jupiter</groupId>-->
+        <!--            <artifactId>junit-jupiter</artifactId>-->
+        <!--            <version>5.12.0</version>-->
+        <!--            <scope>test</scope>-->
+        <!--        </dependency>-->
     </dependencies>
 
     <build>
         <finalName>plugins.vpcli</finalName>
         <plugins>
+            <plugin>
+                <!--
+                  Pin the build to a fixed JDK (Java 21) via Maven Toolchains.
+                  Mockito 5.12 / Byte Buddy 1.14 do not support Java 24+ when
+                  mocking concrete classes or using mockStatic, so the build
+                  must not fall back to whichever JDK is on PATH by default.
+                  The matching <toolchain> is declared in ~/.m2/toolchains.xml.
+                -->
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-toolchains-plugin</artifactId>
+                <version>3.2.0</version>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>toolchain</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <toolchains>
+                        <jdk>
+                            <version>21</version>
+                        </jdk>
+                    </toolchains>
+                </configuration>
+            </plugin>
+
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-jar-plugin</artifactId>
@@ -160,13 +187,13 @@
                 <artifactId>maven-surefire-plugin</artifactId>
                 <version>3.2.5</version>
                 <configuration>
-<!--                    <systemPropertyVariables>-->
-<!--                        &lt;!&ndash; Allow ByteBuddy (used by Mockito inline mocking) to support-->
-<!--                             the newest JDKs (e.g. 24+), where it would otherwise refuse-->
-<!--                             to mock classes. This must be a forked-JVM system property,-->
-<!--                             not an argLine override, so JaCoCo's agent still attaches. &ndash;&gt;-->
-<!--                        <net.bytebuddy.experimental>true</net.bytebuddy.experimental>-->
-<!--                    </systemPropertyVariables>-->
+                    <!--                    <systemPropertyVariables>-->
+                    <!--                        &lt;!&ndash; Allow ByteBuddy (used by Mockito inline mocking) to support-->
+                    <!--                             the newest JDKs (e.g. 24+), where it would otherwise refuse-->
+                    <!--                             to mock classes. This must be a forked-JVM system property,-->
+                    <!--                             not an argLine override, so JaCoCo's agent still attaches. &ndash;&gt;-->
+                    <!--                        <net.bytebuddy.experimental>true</net.bytebuddy.experimental>-->
+                    <!--                    </systemPropertyVariables>-->
                 </configuration>
             </plugin>
 

@@ -9,7 +9,9 @@ import com.vp.plugin.model.IModelElement;
 import com.vp.plugin.model.IProject;
 
 import org.junit.jupiter.api.Test;
+import plugins.vpcli.domain.vpvisitor.vpmodelvisitor.element.ViDiagramAsElement;
 import plugins.vpcli.domain.vpvisitor.vpmodelvisitor.element.ViElement;
+import plugins.vpcli.domain.vpvisitor.vpmodelvisitor.element.ViModelElement;
 import plugins.vpcli.domain.vpvisitor.vpmodelvisitor.visitor.ViElementVisitor;
 import plugins.vpcli.domain.vpvisitor.vpmodelvisitor.visitor.ViElementVisitorFactory;
 
@@ -25,6 +27,16 @@ class ViProjectFactoryTest {
                 public void visit(ViElement viElement) {
                     // no-op
                 }
+
+                @Override
+                public void visit(ViDiagramAsElement viElement) {
+                    // no-op
+                }
+
+                @Override
+                public void visit(ViModelElement viElement) {
+                    // no-op
+                }
             };
         }
 
@@ -33,6 +45,16 @@ class ViProjectFactoryTest {
             return new ViElementVisitor() {
                 @Override
                 public void visit(ViElement viElement) {
+                    // no-op
+                }
+
+                @Override
+                public void visit(ViDiagramAsElement viElement) {
+                    // no-op
+                }
+
+                @Override
+                public void visit(ViModelElement viElement) {
                     // no-op
                 }
             };

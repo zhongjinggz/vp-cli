@@ -16,8 +16,10 @@ import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import plugins.vpcli.domain.myuml.mycommon.ElementType;
+import plugins.vpcli.domain.vpvisitor.vpmodelvisitor.element.ViDiagramAsElement;
 import plugins.vpcli.domain.vpvisitor.vpmodelvisitor.element.ViElement;
 import plugins.vpcli.domain.vpvisitor.vpmodelvisitor.element.ViElementFactory;
+import plugins.vpcli.domain.vpvisitor.vpmodelvisitor.element.ViModelElement;
 import plugins.vpcli.domain.vpvisitor.vpmodelvisitor.visitor.ViElementVisitor;
 import plugins.vpcli.domain.vpvisitor.vpmodelvisitor.visitor.ViElementVisitorFactory;
 
@@ -37,6 +39,14 @@ class ViProjectTest {
             return new ViElementVisitor() {
                 @Override
                 public void visit(ViElement viElement) {
+                }
+
+                @Override
+                public void visit(ViDiagramAsElement viElement) {
+                }
+
+                @Override
+                public void visit(ViModelElement viElement) {
                 }
             };
         }
@@ -72,6 +82,14 @@ class ViProjectTest {
         @Override
         public void visit(ViElement viElement) {
             calls.add(new Call(viElement.getName(), isLast(), depth));
+        }
+
+        @Override
+        public void visit(ViDiagramAsElement viElement) {
+        }
+
+        @Override
+        public void visit(ViModelElement viElement) {
         }
     }
 

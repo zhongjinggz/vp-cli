@@ -36,8 +36,8 @@ public class ViModelElement extends ViElement {
         }
 
         String[] vpModelTypes = elementTypes.stream()
-            .filter(t -> t.isModelElement())
-            .map(t-> t.getVPModelType())
+            .filter(ElementType::isModelElement)
+            .map(ElementType::getVPModelType)
             .toArray(String[]::new);
 
         var vpModelElements = this.vpElement.toChildArray(vpModelTypes);

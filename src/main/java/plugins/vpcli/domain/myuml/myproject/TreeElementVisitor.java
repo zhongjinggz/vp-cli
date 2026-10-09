@@ -1,7 +1,11 @@
 package plugins.vpcli.domain.myuml.myproject;
 
+import plugins.vpcli.domain.vpvisitor.vpmodelvisitor.element.ViDiagramAsElement;
 import plugins.vpcli.domain.vpvisitor.vpmodelvisitor.element.ViElement;
+import plugins.vpcli.domain.vpvisitor.vpmodelvisitor.element.ViModelElement;
 import plugins.vpcli.domain.vpvisitor.vpmodelvisitor.visitor.ViElementVisitor;
+
+import java.io.IOException;
 
 public class TreeElementVisitor extends ViElementVisitor {
     private String prefix = "";
@@ -17,10 +21,20 @@ public class TreeElementVisitor extends ViElementVisitor {
     }
 
     @Override
-    public void visit(ViElement structElement) {
-        String suffix = structElement.getType().getSuffix();
+    public void visit(ViElement element) {
+        String suffix = element.getType().getSuffix();
         String branch = calcBranch();
-        System.out.println(this.prefix + branch + structElement.getName() + suffix);
+        System.out.println(this.prefix + branch + element.getName() + suffix);
+    }
+
+    @Override
+    public void visit(ViDiagramAsElement viElement) throws IOException {
+
+    }
+
+    @Override
+    public void visit(ViModelElement viElement) throws IOException {
+
     }
 
     private String calcBranch() {
