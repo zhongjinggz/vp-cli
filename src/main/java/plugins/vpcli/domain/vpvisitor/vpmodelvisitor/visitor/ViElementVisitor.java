@@ -1,9 +1,7 @@
 package plugins.vpcli.domain.vpvisitor.vpmodelvisitor.visitor;
 
 import plugins.vpcli.domain.vpvisitor.vpdiagramvisitor.element.ViDiagramElement;
-import plugins.vpcli.domain.vpvisitor.vpmodelvisitor.element.ViDiagramAsElement;
-import plugins.vpcli.domain.vpvisitor.vpmodelvisitor.element.ViElement;
-import plugins.vpcli.domain.vpvisitor.vpmodelvisitor.element.ViModelElement;
+import plugins.vpcli.domain.vpvisitor.vpmodelvisitor.element.*;
 
 import java.io.IOException;
 
@@ -18,8 +16,14 @@ public abstract class ViElementVisitor {
         return lastOrNot;
     }
 
-//    abstract public void visit(ViElement viElement) throws IOException;
-    abstract public void visit(ViDiagramAsElement viElement) throws IOException;
-    abstract public void visit(ViModelElement viElement) throws IOException;
+    abstract public void visit(ViDiagramAsElement element) throws IOException;
+
+    abstract public void visit(ViPackage element) throws IOException;
+
+    abstract public void visit(ViModel element) throws IOException;
+
+    abstract public void visit(ViClass element) throws IOException;
+
+    abstract public void visit(ViUseCase element) throws IOException;
 
 }

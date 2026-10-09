@@ -1,7 +1,6 @@
 package plugins.vpcli.domain.myuml.myproject;
 
-import plugins.vpcli.domain.vpvisitor.vpmodelvisitor.element.ViDiagramAsElement;
-import plugins.vpcli.domain.vpvisitor.vpmodelvisitor.element.ViModelElement;
+import plugins.vpcli.domain.vpvisitor.vpmodelvisitor.element.*;
 import plugins.vpcli.domain.vpvisitor.vpmodelvisitor.visitor.ViElementVisitor;
 
 import java.io.IOException;
@@ -32,19 +31,30 @@ public class TreeElementVisitor extends ViElementVisitor {
 
     }
 
-    private void printBranch(String element, String suffix) {
-        String branch = calcBranch();
-        System.out.println(this.prefix + branch + element + suffix);
+    @Override
+    public void visit(ViPackage element) throws IOException {
+        printBranch(element.getName(), ".package");
     }
 
     @Override
-    public void visit(ViModelElement element) throws IOException {
-        printBranch(element.getName(), ".element");
+    public void visit(ViModel element) throws IOException {
+        printBranch(element.getName(), ".model");
 
     }
 
-    private String calcBranch() {
-        return isLast() ? "└── " : "├── ";
+    @Override
+    public void visit(ViClass element) throws IOException {
+        printBranch(element.getName(), ".class");
+    }
+
+    @Override
+    public void visit(ViUseCase element) throws IOException {
+        printBranch(element.getName(), ".usecase");
+    }
+
+    private void printBranch(String element, String suffix) {
+        String branch = isLast() ? "└── " : "├── ";
+        System.out.println(this.prefix + branch + element + suffix);
     }
 
 }

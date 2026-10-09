@@ -9,7 +9,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ViModelElement extends ViElement {
+public abstract class ViModelElement extends ViElement {
     private final IModelElement vpElement;
     private final ViElementFactory createElement;
 
@@ -18,10 +18,10 @@ public class ViModelElement extends ViElement {
         this.createElement = elementFactory;
     }
 
-    @Override
-    public void accept(ViElementVisitor visitor) throws IOException {
-        visitor.visit(this);
-    }
+//    @Override
+//    public void accept(ViElementVisitor visitor) throws IOException {
+//        visitor.visit(this);
+//    }
 
     public String getName() {
         return vpElement.getName();

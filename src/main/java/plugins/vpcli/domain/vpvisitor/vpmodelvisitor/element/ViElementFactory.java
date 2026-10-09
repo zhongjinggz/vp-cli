@@ -1,14 +1,24 @@
 package plugins.vpcli.domain.vpvisitor.vpmodelvisitor.element;
 
 import com.vp.plugin.diagram.IDiagramUIModel;
+import com.vp.plugin.model.IModel;
 import com.vp.plugin.model.IModelElement;
+import com.vp.plugin.model.IPackage;
+import com.vp.plugin.model.factory.IModelElementFactory;
 
 public class ViElementFactory {
     public ViElement from(IModelElement element) {
-        return new ViModelElement(element, this);
+        switch (element.getModelType()) {
+            case IModelElementFactory.MODEL_TYPE_PACKAGE:
+                return new ViPackage(element, this);
+            case IModelElementFactory.MODEL_TYPE_MODEL:
+                return new ViModel(element, this);
+            default:
+                throw new IllegalArgumentException("Wrong element type:" + element.getModelType().toString());
+        }
     }
 
-    ViElement from (IDiagramUIModel diagram) {
+    ViElement from(IDiagramUIModel diagram) {
         return new ViDiagramAsElement(diagram);
     }
 }

@@ -4,9 +4,7 @@ import plugins.vpcli.application.writers.ClassDiagramWriter;
 import plugins.vpcli.application.writers.WriterFactory;
 import plugins.vpcli.domain.myuml.mydiagram1.MyClassDiagram;
 import plugins.vpcli.domain.myuml.mydiagram1.MyDiagramFactory;
-import plugins.vpcli.domain.vpvisitor.vpmodelvisitor.element.ViDiagramAsElement;
-import plugins.vpcli.domain.vpvisitor.vpmodelvisitor.element.ViElement;
-import plugins.vpcli.domain.vpvisitor.vpmodelvisitor.element.ViModelElement;
+import plugins.vpcli.domain.vpvisitor.vpmodelvisitor.element.*;
 import plugins.vpcli.domain.vpvisitor.vpmodelvisitor.visitor.ViElementVisitor;
 import plugins.vpcli.drivenadapter.FileIO;
 
@@ -64,42 +62,37 @@ public class ExportDiagramVisitor extends ViElementVisitor {
 
     @Override
     public void visit(ViDiagramAsElement element) throws IOException {
-        visitClassDiagram(element);
+        var diagramUIModel = element.getVPDiagramUIModel();
+        MyClassDiagram myDiagram = diagramFactory.createClassDiagram(diagramUIModel);
+        ClassDiagramWriter classDiagramWriter = writerFactory.createClassDiagramWriter(myDiagram);
+        classDiagramWriter.write(this.parentDir);
 
     }
-
 
     @Override
-    public void visit(ViModelElement element) throws IOException {
-        switch (element.getType()) {
-            case PACKAGE:
-                visitPackage(element);
-                break;
-            case MODEL:
-                visitModel(element);
-                break;
-            default:
-                break;
-        }
-
-    }
-
-    private void visitPackage(ViModelElement element) {
+    public void visit(ViPackage element) throws IOException {
         this.path = fileIO.makeDir
             .named(element.getName() + element.getType().getSuffix())
             .under(parentDir);
     }
 
-    private void visitModel(ViModelElement element) {
-        visitPackage(element);
+    @Override
+    public void visit(ViModel element) throws IOException {
+        this.path = fileIO.makeDir
+            .named(element.getName() + element.getType().getSuffix())
+            .under(parentDir);
     }
 
-    private void visitClassDiagram(ViDiagramAsElement vpDiagram) throws IOException {
-        var diagramUIModel = vpDiagram.getVPDiagramUIModel();
-        MyClassDiagram myDiagram = diagramFactory.createClassDiagram(diagramUIModel);
-        ClassDiagramWriter classDiagramWriter = writerFactory.createClassDiagramWriter(myDiagram);
-        classDiagramWriter.write(this.parentDir);
+    @Override
+    public void visit(ViClass element) throws IOException {
+
     }
+
+    @Override
+    public void visit(ViUseCase element) throws IOException {
+
+    }
+
 
     File getPath() {
         return path;

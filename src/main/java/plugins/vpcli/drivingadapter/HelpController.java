@@ -65,7 +65,7 @@ public class HelpController implements VPActionController {
             "    vp-tree -project <project name.vpp>\n";
 
         String changeLog = "Change Log:\n" +
-            "    - introduce Polymorphism-step2 to Visitor 15:46";
+            "    - introduce Polymorphism-step3 to Visitor 16:55";
 
         ApplicationManager.instance().getViewManager().showMessageDialog(
             ApplicationManager.instance()

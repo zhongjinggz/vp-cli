@@ -4,9 +4,7 @@ import plugins.vpcli.application.writers.ClassDiagramWriter;
 import plugins.vpcli.application.writers.WriterFactory;
 import plugins.vpcli.domain.myuml.mydiagram1.MyClassDiagram;
 import plugins.vpcli.domain.myuml.mydiagram1.MyDiagramFactory;
-import plugins.vpcli.domain.vpvisitor.vpmodelvisitor.element.ViDiagramAsElement;
-import plugins.vpcli.domain.vpvisitor.vpmodelvisitor.element.ViElement;
-import plugins.vpcli.domain.vpvisitor.vpmodelvisitor.element.ViModelElement;
+import plugins.vpcli.domain.vpvisitor.vpmodelvisitor.element.*;
 import plugins.vpcli.domain.vpvisitor.vpmodelvisitor.visitor.ViElementVisitor;
 import plugins.vpcli.drivenadapter.FileIO;
 
@@ -62,9 +60,25 @@ public class ExportElementVisitor1 extends ViElementVisitor {
     }
 
     @Override
-    public void visit(ViModelElement viElement) throws IOException {
+    public void visit(ViPackage element) throws IOException {
 
     }
+
+    @Override
+    public void visit(ViModel element) throws IOException {
+
+    }
+
+    @Override
+    public void visit(ViClass element) throws IOException {
+
+    }
+
+    @Override
+    public void visit(ViUseCase element) throws IOException {
+
+    }
+
 
     private void visitPackage(ViElement element) {
         this.path = fileIO.makeDir
