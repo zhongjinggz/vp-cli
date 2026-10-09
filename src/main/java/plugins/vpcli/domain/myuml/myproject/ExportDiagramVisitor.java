@@ -6,13 +6,13 @@ import plugins.vpcli.domain.myuml.mydiagram1.MyClassDiagram;
 import plugins.vpcli.domain.myuml.mydiagram1.MyDiagramFactory;
 import plugins.vpcli.domain.vpvisitor.vpmodelvisitor.element.*;
 import plugins.vpcli.domain.vpvisitor.vpmodelvisitor.visitor.ViElementVisitor;
-import plugins.vpcli.drivenadapter.FileIO;
+import plugins.vpcli.drivenadapter.DirMaker;
 
 import java.io.File;
 import java.io.IOException;
 
 public class ExportDiagramVisitor extends ViElementVisitor {
-    private final FileIO fileIO;
+    private final DirMaker makeDir;
     private final MyDiagramFactory diagramFactory;
     private final WriterFactory writerFactory;
     private final File parentDir;
@@ -21,44 +21,28 @@ public class ExportDiagramVisitor extends ViElementVisitor {
 
     ExportDiagramVisitor(
         ExportDiagramVisitor preLevelVisitor,
-        FileIO fileIO,
+        DirMaker dirMaker,
         MyDiagramFactory diagramFactory,
         WriterFactory writerFactory,
         MyProject myProject) {
 
-        this.fileIO = fileIO;
+        this.myProject = myProject;
         this.diagramFactory = diagramFactory;
         this.writerFactory = writerFactory;
+        this.makeDir = dirMaker;
+
         this.parentDir = preLevelVisitor.getPath();
-        this.myProject = myProject;
     }
 
     // used by RootExportDiagramVisitor only
     ExportDiagramVisitor(File path) {
         this.myProject = null;
         this.path = path;
-        this.fileIO = null;
+        this.makeDir = null;
         this.diagramFactory = null;
         this.writerFactory = null;
         this.parentDir = null;
     }
-
-//    @Override
-//    public void visit(ViElement element) throws IOException {
-//        switch (element.getType()) {
-//            case PACKAGE:
-//                visitPackage((ViModelElement) element);
-//                break;
-//            case MODEL:
-//                visitModel((ViModelElement) element);
-//                break;
-//            case DIAGRAM:
-//                visitClassDiagram((ViDiagramAsElement) element);
-//                break;
-//            default:
-//                break;
-//        }
-//    }
 
     @Override
     public void visit(ViDiagramAsElement element) throws IOException {
@@ -71,14 +55,14 @@ public class ExportDiagramVisitor extends ViElementVisitor {
 
     @Override
     public void visit(ViPackage element) throws IOException {
-        this.path = fileIO.makeDir
+        this.path = makeDir
             .named(element.getName() + element.getType().getSuffix())
             .under(parentDir);
     }
 
     @Override
     public void visit(ViModel element) throws IOException {
-        this.path = fileIO.makeDir
+        this.path = makeDir
             .named(element.getName() + element.getType().getSuffix())
             .under(parentDir);
     }

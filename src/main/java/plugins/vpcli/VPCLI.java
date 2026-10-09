@@ -6,10 +6,7 @@ import plugins.vpcli.domain.myuml.myproject.ExportDiagramVisitorFactory;
 import plugins.vpcli.domain.myuml.myproject.MyProjectFactory;
 import plugins.vpcli.domain.myuml.myproject.TreeElementVisitorFactory;
 import plugins.vpcli.domain.vpvisitor.vpmodelvisitor.structure.ViProjectFactory;
-import plugins.vpcli.drivenadapter.FileFactory;
-import plugins.vpcli.drivenadapter.FileIO;
-import plugins.vpcli.drivenadapter.VPProjectRepository;
-import plugins.vpcli.drivenadapter.TreeDirMaker;
+import plugins.vpcli.drivenadapter.*;
 import plugins.vpcli.drivingadapter.CLIController;
 import plugins.vpcli.application.ExportService;
 import plugins.vpcli.application.TreeService;
@@ -20,6 +17,10 @@ import java.io.IOException;
 
 
 public class VPCLI implements VPPlugin, VPPluginCommandLineSupport {
+    // Util
+    private DirMaker dirMaker;
+
+
     // Factories
     private MyDiagramFactory myDiagramFactory;
     private WriterFactory writerFactory;
@@ -44,7 +45,6 @@ public class VPCLI implements VPPlugin, VPPluginCommandLineSupport {
     // Driving Adapter
     private CLIController cliController;
     private ExportDiagramVisitorFactory exportVisitorFactory;
-    private FileIO fileIO;
     private MyProjectFactory myProjectFactory;
 
 
@@ -54,8 +54,9 @@ public class VPCLI implements VPPlugin, VPPluginCommandLineSupport {
 
     // TODO 优化依赖注入，按功能分开不同的控制器，只注入本次功能需要的依赖
     void injectDependencies() {
+        // Util
+        this.dirMaker = new DirMaker();
         // Repository
-        this.fileIO = new FileIO();
         this.vpProjectRepository = new VPProjectRepository();
 
         // Factory
@@ -68,7 +69,7 @@ public class VPCLI implements VPPlugin, VPPluginCommandLineSupport {
         this.viProjectFactory = new ViProjectFactory();
         this.treeVisitorFactory = new TreeElementVisitorFactory();
         this.exportVisitorFactory = new ExportDiagramVisitorFactory(
-            this.fileIO,
+            this.dirMaker,
             this.myDiagramFactory,
             this.writerFactory,
             this.myProjectFactory

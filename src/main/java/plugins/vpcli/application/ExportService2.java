@@ -3,7 +3,6 @@ package plugins.vpcli.application;
 import com.vp.plugin.diagram.IDiagramUIModel;
 import plugins.vpcli.application.writers.*;
 import plugins.vpcli.domain.myuml.mydiagram1.*;
-import plugins.vpcli.domain.myuml.myproject.ExportElementVisitorFactory1;
 import plugins.vpcli.domain.vpvisitor.vpmodelvisitor.structure.ViProjectFactory;
 import plugins.vpcli.drivenadapter.FileFactory;
 import plugins.vpcli.drivenadapter.VPProjectRepository;
@@ -23,7 +22,6 @@ public class ExportService2 {
     private final WriterFactory writerFactory;
     private final FileFactory fileFactory;
     private final ViProjectFactory viProjectFactory;
-    private final ExportElementVisitorFactory1 exportVisitorFactory;
     //private final TreeDirMaker makeDir;
 
     public ExportService2(VPProjectRepository vpProjectRepository
@@ -31,14 +29,13 @@ public class ExportService2 {
         , WriterFactory writerFactory
         , FileFactory fileFactory
         , ViProjectFactory viProjectFactory
-        , ExportElementVisitorFactory1 exportVisitorFactory) {
+        ) {
 
         this.vpProjectRepository = vpProjectRepository;
         this.myDiagramFactory = myDiagramFactory;
         this.writerFactory = writerFactory;
         this.fileFactory = fileFactory;
         this.viProjectFactory = viProjectFactory;
-        this.exportVisitorFactory = exportVisitorFactory;
     }
 
     public void exportADiagram(IDiagramUIModel vpDiagram
@@ -137,16 +134,16 @@ public class ExportService2 {
 
     public void exportAll(File exportLocation) throws IOException {
 
-        var project = vpProjectRepository.fromVisualParadigm();
-
-        exportVisitorFactory.setRootDir(exportLocation);
-        var struct = viProjectFactory.of(project);
-        struct.setElementTypes(List.of(
-            PACKAGE
-            , MODEL
-            , DIAGRAM));
-
-        struct.accept(this.exportVisitorFactory);
+//        var project = vpProjectRepository.fromVisualParadigm();
+//
+//        exportVisitorFactory.setRootDir(exportLocation);
+//        var struct = viProjectFactory.of(project);
+//        struct.setElementTypes(List.of(
+//            PACKAGE
+//            , MODEL
+//            , DIAGRAM));
+//
+//        struct.accept(this.exportVisitorFactory);
 //
 //        var packages = convertPackage.fromVPProject(project);
 //        makeDir.forPackages(packages, exportLocation);
