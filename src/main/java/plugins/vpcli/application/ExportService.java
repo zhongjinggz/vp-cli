@@ -1,10 +1,10 @@
 package plugins.vpcli.application;
 
-import plugins.vpcli.domain.myuml.myproject.ExportElementVisitorFactory;
+import plugins.vpcli.domain.myuml.myproject.ExportElementVisitorFactory1;
 import plugins.vpcli.domain.myuml.myproject.MyProjectFactory;
 import plugins.vpcli.domain.myuml.myproject.MyProject;
 import plugins.vpcli.domain.vpvisitor.vpmodelvisitor.structure.ViProjectFactory;
-import plugins.vpcli.drivenadapter.ProjectRepository;
+import plugins.vpcli.drivenadapter.VPProjectRepository;
 
 import java.io.File;
 import java.io.IOException;
@@ -14,17 +14,17 @@ import static plugins.vpcli.domain.myuml.mycommon.ElementType.*;
 
 public class ExportService {
 
-    private final ProjectRepository projectRepository;
+    private final VPProjectRepository vpProjectRepository;
     private final ViProjectFactory viProjectFactory;
-    private final ExportElementVisitorFactory exportVisitorFactory;
+    private final ExportElementVisitorFactory1 exportVisitorFactory;
     private MyProjectFactory myProjectFactory;
 
-    public ExportService(ProjectRepository projectRepository,
+    public ExportService(VPProjectRepository vpProjectRepository,
                          ViProjectFactory viProjectFactory,
-                         ExportElementVisitorFactory exportVisitorFactory,
+                         ExportElementVisitorFactory1 exportVisitorFactory,
                          MyProjectFactory myProjectFactory) {
 
-        this.projectRepository = projectRepository;
+        this.vpProjectRepository = vpProjectRepository;
         this.viProjectFactory = viProjectFactory;
         this.exportVisitorFactory = exportVisitorFactory;
         this.myProjectFactory = myProjectFactory;
@@ -32,7 +32,7 @@ public class ExportService {
 
     public void exportAll(File exportLocation) throws IOException {
 
-        var project = projectRepository.getProject();
+        var project = vpProjectRepository.getProject();
 
         exportVisitorFactory.setRootDir(exportLocation);
         var viProject = viProjectFactory.create(project);

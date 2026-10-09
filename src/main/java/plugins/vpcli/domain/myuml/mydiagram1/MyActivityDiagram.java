@@ -1,4 +1,4 @@
-package plugins.vpcli.domain.myuml.mydiagram;
+package plugins.vpcli.domain.myuml.mydiagram1;
 
 import com.vp.plugin.diagram.IDiagramElement;
 import com.vp.plugin.diagram.IDiagramUIModel;

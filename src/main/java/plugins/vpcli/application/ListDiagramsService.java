@@ -1,16 +1,16 @@
 package plugins.vpcli.application;
 
 import com.vp.plugin.diagram.IDiagramUIModel;
-import plugins.vpcli.drivenadapter.ProjectRepository;
+import plugins.vpcli.drivenadapter.VPProjectRepository;
 
 public class ListDiagramsService {
-    private final ProjectRepository projectRepository;
-    public ListDiagramsService(ProjectRepository projectRepository) {
-        this.projectRepository = projectRepository;
+    private final VPProjectRepository vpProjectRepository;
+    public ListDiagramsService(VPProjectRepository vpProjectRepository) {
+        this.vpProjectRepository = vpProjectRepository;
     }
 
     public void listDiagrams() {
-        IDiagramUIModel[] allDiagrams = projectRepository.getProject().toDiagramArray();
+        IDiagramUIModel[] allDiagrams = vpProjectRepository.getProject().toDiagramArray();
         for (IDiagramUIModel diagram : allDiagrams) {
             System.out.println(diagram.getName() + " | id: " + diagram.getId());
         }

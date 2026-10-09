@@ -9,7 +9,7 @@ import plugins.vpcli.drivenadapter.FileIO;
 
 import java.io.File;
 
-public class ExportElementVisitorFactory implements ViElementVisitorFactory {
+public class ExportElementVisitorFactory1 implements ViElementVisitorFactory {
 
     private final FileIO fileIO;
     private final MyDiagramFactory diagramFactory;
@@ -17,7 +17,7 @@ public class ExportElementVisitorFactory implements ViElementVisitorFactory {
     private File rootDir;
     private FileFactory fileFactory;
 
-    public ExportElementVisitorFactory(FileIO fileIO
+    public ExportElementVisitorFactory1(FileIO fileIO
         , MyDiagramFactory diagramFactory
         , WriterFactory writerFactory
         , FileFactory fileFactory) {

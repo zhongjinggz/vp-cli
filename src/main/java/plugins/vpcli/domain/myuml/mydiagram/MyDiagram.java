@@ -1,72 +1,54 @@
 package plugins.vpcli.domain.myuml.mydiagram;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.util.ArrayList;
-import java.util.HashSet;
+import java.util.Collections;
 import java.util.List;
-import java.util.Set;
-
-import com.vp.plugin.model.IModelElement;
-import com.vp.plugin.model.INOTE;
-import com.vp.plugin.model.IStereotype;
-
-import plugins.vpcli.domain.myuml.mycommon.MyNote;
-
-public abstract class MyDiagram {
-
-	public abstract void extract();
-	private final List<String> warnings = new ArrayList<>();
-
-	private final List<MyNote> myNotes = new ArrayList<>();
-
-	// Set of all exported elements for constant lookup so that no relationships with un-exported elements are written
-    protected final Set<IModelElement> allExportedElements = new HashSet<>();
-	protected final Set<String> packageModelIds = new HashSet<>();
-
-	protected void extractNote(INOTE noteModel) {
-		String name = noteModel.getName();
-		String content = noteModel.getDescription();
-		String id = noteModel.getId();
-		MyNote myNote = new MyNote(name, content, id);
-		myNotes.add(myNote);
-	}
-
-	protected String getNoteAliasById(String naryId) {
-		for (MyNote myNote : myNotes) {
-			if (myNote.getId().equals(naryId)) {
-				return myNote.getAlias();
-			}
-		}
-		return null;
-	}
-
-	protected List<String> extractStereotypes(IModelElement modelElement) {
-		List<String> stereotypes = new ArrayList<>();
-
-        var stereoIter = modelElement.stereotypeModelIterator();
-		while (stereoIter.hasNext()) {
-			IStereotype stereotype = (IStereotype) stereoIter.next();
-			String stereotypeString = stereotype.getName();
-			stereotypes.add(stereotypeString);
-		}
-		return stereotypes;
-	}
-
-	protected boolean isRootLevel(IModelElement element) {
-		return (element.getParent() == null);
-	}
-
-	protected boolean isRootLevelInDiagram(IModelElement modelElement) {
-		return isRootLevel(modelElement) || !packageModelIds.contains(modelElement.getParent().getId());
-	}
-
-	public List<MyNote> getNotes() {
-		return myNotes;
-	}
-
-	protected void addWarning(String warning) {
-		warnings.add(warning);
-	}
+import java.util.Objects;
 
 
+public class MyDiagram {
+    private String vpId;
+    private String name;
+    private DiagramType diagramType;
+    private List<MyShape> shapes = new ArrayList<>();
+    private List<MyEdge> edges  = new ArrayList<>();
+    
+    
+    
+    public MyDiagram(@NotNull String vpId
+        , @NotNull String name
+        , @NotNull DiagramType diagramType) {
+
+        Objects.requireNonNull(vpId, "vpId is null");
+        Objects.requireNonNull(name, "name is null");
+        Objects.requireNonNull(diagramType, "diagramType is null");
+
+        this.vpId = vpId;
+        this.name = name;
+        this.diagramType = diagramType;
+    }
+    
+    public DiagramType getType() {
+        return diagramType;
+    }
+
+    public List<MyShape> getShapes() {
+        return Collections.unmodifiableList(shapes);
+    }
+
+    public List<MyEdge> getEdges() {
+        return Collections.unmodifiableList(edges);
+    }
+
+    public void addShap(@NotNull MyShape shap) {
+        Objects.requireNonNull(shap, "shap is null");
+        shapes.add(shap);
+    }
+
+    public void addEdge(@NotNull MyEdge edge) {
+        Objects.requireNonNull(edge, "edge is null");
+        edges.add(edge);
+    }
 }
-

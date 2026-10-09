@@ -1,4 +1,4 @@
-package plugins.vpcli.domain.myuml.mydiagram;
+package plugins.vpcli.domain.myuml.mydiagram1;
 
 import java.util.*;
 import java.util.function.Supplier;

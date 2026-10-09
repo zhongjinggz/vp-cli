@@ -2,8 +2,8 @@ package plugins.vpcli.domain.myuml.myproject;
 
 import plugins.vpcli.application.writers.ClassDiagramWriter;
 import plugins.vpcli.application.writers.WriterFactory;
-import plugins.vpcli.domain.myuml.mydiagram.MyClassDiagram;
-import plugins.vpcli.domain.myuml.mydiagram.MyDiagramFactory;
+import plugins.vpcli.domain.myuml.mydiagram1.MyClassDiagram;
+import plugins.vpcli.domain.myuml.mydiagram1.MyDiagramFactory;
 import plugins.vpcli.domain.vpvisitor.vpmodelvisitor.element.ViDiagramAsElement;
 import plugins.vpcli.domain.vpvisitor.vpmodelvisitor.element.ViElement;
 import plugins.vpcli.domain.vpvisitor.vpmodelvisitor.visitor.ViElementVisitor;

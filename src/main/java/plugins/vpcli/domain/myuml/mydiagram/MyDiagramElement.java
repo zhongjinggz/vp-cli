@@ -1,4 +1,4 @@
-package plugins.vpcli.domain.myuml.mydiagram2;
+package plugins.vpcli.domain.myuml.mydiagram;
 
 import plugins.vpcli.domain.myuml.mycommon.MyElement;
 

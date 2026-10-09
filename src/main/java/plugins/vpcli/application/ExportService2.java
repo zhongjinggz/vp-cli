@@ -2,11 +2,11 @@ package plugins.vpcli.application;
 
 import com.vp.plugin.diagram.IDiagramUIModel;
 import plugins.vpcli.application.writers.*;
-import plugins.vpcli.domain.myuml.mydiagram.*;
-import plugins.vpcli.domain.myuml.myproject.ExportElementVisitorFactory;
+import plugins.vpcli.domain.myuml.mydiagram1.*;
+import plugins.vpcli.domain.myuml.myproject.ExportElementVisitorFactory1;
 import plugins.vpcli.domain.vpvisitor.vpmodelvisitor.structure.ViProjectFactory;
 import plugins.vpcli.drivenadapter.FileFactory;
-import plugins.vpcli.drivenadapter.ProjectRepository;
+import plugins.vpcli.drivenadapter.VPProjectRepository;
 import plugins.vpcli.util.UnfitForExportException;
 
 import java.io.File;
@@ -18,22 +18,22 @@ import static plugins.vpcli.domain.myuml.mycommon.ElementType.*;
 public class ExportService2 {
 
     //private final TreeConverter convertPackage;
-    private final ProjectRepository projectRepository;
+    private final VPProjectRepository vpProjectRepository;
     private final MyDiagramFactory myDiagramFactory;
     private final WriterFactory writerFactory;
     private final FileFactory fileFactory;
     private final ViProjectFactory viProjectFactory;
-    private final ExportElementVisitorFactory exportVisitorFactory;
+    private final ExportElementVisitorFactory1 exportVisitorFactory;
     //private final TreeDirMaker makeDir;
 
-    public ExportService2(ProjectRepository projectRepository
+    public ExportService2(VPProjectRepository vpProjectRepository
         , MyDiagramFactory myDiagramFactory
         , WriterFactory writerFactory
         , FileFactory fileFactory
         , ViProjectFactory viProjectFactory
-        , ExportElementVisitorFactory exportVisitorFactory) {
+        , ExportElementVisitorFactory1 exportVisitorFactory) {
 
-        this.projectRepository = projectRepository;
+        this.vpProjectRepository = vpProjectRepository;
         this.myDiagramFactory = myDiagramFactory;
         this.writerFactory = writerFactory;
         this.fileFactory = fileFactory;
@@ -137,7 +137,7 @@ public class ExportService2 {
 
     public void exportAll(File exportLocation) throws IOException {
 
-        var project = projectRepository.getProject();
+        var project = vpProjectRepository.getProject();
 
         exportVisitorFactory.setRootDir(exportLocation);
         var struct = viProjectFactory.create(project);
@@ -157,7 +157,7 @@ public class ExportService2 {
     }
 
     public void exportSpecificDiagram(String target, File exportLocation) throws IOException {
-        IDiagramUIModel targetDiagram = projectRepository.getProject().getDiagramById(target);
+        IDiagramUIModel targetDiagram = vpProjectRepository.getProject().getDiagramById(target);
         this.exportADiagram(targetDiagram, exportLocation);
     }
 

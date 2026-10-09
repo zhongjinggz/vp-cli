@@ -2,18 +2,18 @@ package plugins.vpcli;
 
 import com.vp.plugin.*;
 import plugins.vpcli.application.ListDiagramsService;
-import plugins.vpcli.domain.myuml.myproject.ExportElementVisitorFactory;
+import plugins.vpcli.domain.myuml.myproject.ExportElementVisitorFactory1;
 import plugins.vpcli.domain.myuml.myproject.MyProjectFactory;
 import plugins.vpcli.domain.myuml.myproject.TreeElementVisitorFactory;
 import plugins.vpcli.domain.vpvisitor.vpmodelvisitor.structure.ViProjectFactory;
 import plugins.vpcli.drivenadapter.FileFactory;
 import plugins.vpcli.drivenadapter.FileIO;
-import plugins.vpcli.drivenadapter.ProjectRepository;
+import plugins.vpcli.drivenadapter.VPProjectRepository;
 import plugins.vpcli.drivenadapter.TreeDirMaker;
 import plugins.vpcli.drivingadapter.CLIController;
 import plugins.vpcli.application.ExportService;
 import plugins.vpcli.application.TreeService;
-import plugins.vpcli.domain.myuml.mydiagram.MyDiagramFactory;
+import plugins.vpcli.domain.myuml.mydiagram1.MyDiagramFactory;
 import plugins.vpcli.application.writers.WriterFactory;
 
 import java.io.IOException;
@@ -31,7 +31,7 @@ public class VPCLI implements VPPlugin, VPPluginCommandLineSupport {
     private TreeElementVisitorFactory treeVisitorFactory;
 
     // Repositories
-    private ProjectRepository projectRepository;
+    private VPProjectRepository vpProjectRepository;
 
 
     // Domain Services
@@ -43,7 +43,7 @@ public class VPCLI implements VPPlugin, VPPluginCommandLineSupport {
 
     // Driving Adapter
     private CLIController cliController;
-    private ExportElementVisitorFactory exportVisitorFactory;
+    private ExportElementVisitorFactory1 exportVisitorFactory;
     private FileIO fileIO;
     private MyProjectFactory myProjectFactory;
 
@@ -56,7 +56,7 @@ public class VPCLI implements VPPlugin, VPPluginCommandLineSupport {
     void injectDependencies() {
         // Repository
         this.fileIO = new FileIO();
-        this.projectRepository = new ProjectRepository();
+        this.vpProjectRepository = new VPProjectRepository();
 
         // Factory
         this.fileFactory = new FileFactory();
@@ -67,7 +67,7 @@ public class VPCLI implements VPPlugin, VPPluginCommandLineSupport {
 
         this.viProjectFactory = new ViProjectFactory();
         this.treeVisitorFactory = new TreeElementVisitorFactory();
-        this.exportVisitorFactory = new ExportElementVisitorFactory(
+        this.exportVisitorFactory = new ExportElementVisitorFactory1(
             this.fileIO,
             this.myDiagramFactory,
             this.writerFactory,
@@ -78,18 +78,18 @@ public class VPCLI implements VPPlugin, VPPluginCommandLineSupport {
 
         // Application Services
         this.exportService = new ExportService(
-            this.projectRepository,
+            this.vpProjectRepository,
             this.viProjectFactory,
             this.exportVisitorFactory,
             this.myProjectFactory
         );
 
         this.treeService = new TreeService(
-            this.projectRepository
+            this.vpProjectRepository
             , this.viProjectFactory
             , this.treeVisitorFactory);
 
-        this.listDiagramsService = new ListDiagramsService(this.projectRepository);
+        this.listDiagramsService = new ListDiagramsService(this.vpProjectRepository);
 
         // Controller
         this.cliController = new CLIController(
