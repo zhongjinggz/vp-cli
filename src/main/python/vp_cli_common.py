@@ -114,6 +114,7 @@ def run_vp_plugin(params: CLIParams):
         "-Xms256m",
         "-Xmx768m",
         "-Djava.awt.headless=true",
+        "-Dvpcli.log.profile=prod",
         "-cp", ".:{0}/lib/*:{0}/ormlib/*".format(VP_APP),
         "com.vp.cmd.Plugin",
         "-pluginid", "plugins.vpcli",
