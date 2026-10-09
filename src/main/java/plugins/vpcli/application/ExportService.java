@@ -1,6 +1,8 @@
 package plugins.vpcli.application;
 
 import plugins.vpcli.domain.myuml.myproject.ExportElementVisitorFactory;
+import plugins.vpcli.domain.myuml.myproject.MyProjectFactory;
+import plugins.vpcli.domain.myuml.myproject.MyProject;
 import plugins.vpcli.domain.vpvisitor.vpmodelvisitor.structure.ViProjectFactory;
 import plugins.vpcli.drivenadapter.ProjectRepository;
 
@@ -15,14 +17,17 @@ public class ExportService {
     private final ProjectRepository projectRepository;
     private final ViProjectFactory viProjectFactory;
     private final ExportElementVisitorFactory exportVisitorFactory;
+    private MyProjectFactory myProjectFactory;
 
-    public ExportService(ProjectRepository projectRepository
-        , ViProjectFactory viProjectFactory
-        , ExportElementVisitorFactory exportVisitorFactory) {
+    public ExportService(ProjectRepository projectRepository,
+                         ViProjectFactory viProjectFactory,
+                         ExportElementVisitorFactory exportVisitorFactory,
+                         MyProjectFactory myProjectFactory) {
 
         this.projectRepository = projectRepository;
         this.viProjectFactory = viProjectFactory;
         this.exportVisitorFactory = exportVisitorFactory;
+        this.myProjectFactory = myProjectFactory;
     }
 
     public void exportAll(File exportLocation) throws IOException {
@@ -30,13 +35,17 @@ public class ExportService {
         var project = projectRepository.getProject();
 
         exportVisitorFactory.setRootDir(exportLocation);
-        var struct = viProjectFactory.create(project);
-        struct.setElementTypes(List.of(
+        var viProject = viProjectFactory.create(project);
+        viProject.setElementTypes(List.of(
             PACKAGE
             , MODEL
             , DIAGRAM));
 
-        struct.accept(this.exportVisitorFactory);
+
+        MyProject myProject = myProjectFactory.get();
+        viProject.setMyProject(myProject);
+
+        viProject.accept(this.exportVisitorFactory);
     }
 
     public void exportSpecificDiagram(String target, File exportLocation) throws IOException {

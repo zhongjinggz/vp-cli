@@ -3,6 +3,7 @@ package plugins.vpcli.domain.vpvisitor.vpmodelvisitor.structure;
 import com.vp.plugin.model.IProject;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import plugins.vpcli.domain.myuml.mycommon.ElementType;
+import plugins.vpcli.domain.myuml.myproject.MyProject;
 import plugins.vpcli.domain.vpvisitor.vpmodelvisitor.element.ViElement;
 import plugins.vpcli.domain.vpvisitor.vpmodelvisitor.element.ViElementFactory;
 import plugins.vpcli.domain.vpvisitor.vpmodelvisitor.visitor.ViElementVisitor;
@@ -17,6 +18,7 @@ public class ViProject {
     private final ViElementFactory createStructElement;
     private ViElementVisitorFactory visitorFactory;
     private final List<ElementType> elementTypes = new ArrayList<>();
+    private MyProject myProject ;
 
     public ViProject(IProject vpProject
         , ViElementFactory elementFactory) {
@@ -67,5 +69,9 @@ public class ViProject {
 
             i++;
         }
+    }
+
+    public void setMyProject(MyProject myProject) {
+       this.myProject = myProject;
     }
 }
