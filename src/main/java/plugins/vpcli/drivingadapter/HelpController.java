@@ -4,6 +4,11 @@ import com.vp.plugin.ApplicationManager;
 import com.vp.plugin.action.VPAction;
 import com.vp.plugin.action.VPActionController;
 
+// 关于创建图表和模型文件，有不同的策略：
+// 1）先遍历VP一遍，创建图表（创建包目录，写图标文件），在此过程中创建必要的模型（只缓存在内存中）；然后再遍历 VP 一遍，补充遗漏的模型并写模型文件（复用之前缓存的内存模型）
+// 2）先遍历VP一遍，创建模型（写文件，同时缓存）；然后再补图（不必树形遍历，用API一次性读出所有的图，利用已缓存的模型）
+// 第二中策略较通顺，但为了快些看到成效，先用第一种策略，之后再改成第二种。
+
 // DOING
 // - export: 重写生成图表的程序 - Class / Package
 // - export: 重写生成图表的程序 - Association

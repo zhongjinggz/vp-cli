@@ -32,10 +32,10 @@ public class ExportElementVisitorFactory implements ViElementVisitorFactory {
     public ViElementVisitor create(ViElementVisitor preLevelVisitor) {
 
         //TODO use NullObject pattern
-        ExportElementVisitor preLevelExportVisitor = (preLevelVisitor == null ?
-            null : (ExportElementVisitor) preLevelVisitor);
+        ExportDiagramVisitor preLevelExportVisitor = (preLevelVisitor == null ?
+            null : (ExportDiagramVisitor) preLevelVisitor);
 
-        ExportElementVisitor result = new ExportElementVisitor(
+        ExportDiagramVisitor result = new ExportDiagramVisitor(
             preLevelExportVisitor
             , this.fileIO
             , diagramFactory

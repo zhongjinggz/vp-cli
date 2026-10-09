@@ -1,6 +1,6 @@
 package plugins.vpcli.application;
 
-import plugins.vpcli.domain.myuml.myproject.ExportElementVisitorFactory1;
+import plugins.vpcli.domain.myuml.myproject.ExportElementVisitorFactory;
 import plugins.vpcli.domain.myuml.myproject.MyProjectFactory;
 import plugins.vpcli.domain.myuml.myproject.MyProject;
 import plugins.vpcli.domain.vpvisitor.vpmodelvisitor.structure.ViProjectFactory;
@@ -16,12 +16,12 @@ public class ExportService {
 
     private final VPProjectRepository vpProjectRepository;
     private final ViProjectFactory viProjectFactory;
-    private final ExportElementVisitorFactory1 exportVisitorFactory;
+    private final ExportElementVisitorFactory exportVisitorFactory;
     private MyProjectFactory myProjectFactory;
 
     public ExportService(VPProjectRepository vpProjectRepository,
                          ViProjectFactory viProjectFactory,
-                         ExportElementVisitorFactory1 exportVisitorFactory,
+                         ExportElementVisitorFactory exportVisitorFactory,
                          MyProjectFactory myProjectFactory) {
 
         this.vpProjectRepository = vpProjectRepository;

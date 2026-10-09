@@ -12,15 +12,15 @@ import plugins.vpcli.drivenadapter.FileIO;
 import java.io.File;
 import java.io.IOException;
 
-public class ExportElementVisitor extends ViElementVisitor {
+public class ExportElementVisitor1 extends ViElementVisitor {
     private final FileIO fileIO;
     private final MyDiagramFactory diagramFactory;
     private final WriterFactory writerFactory;
     private File path;
     private File parentDir;
 
-    public ExportElementVisitor(
-        ExportElementVisitor preLevelVisitor
+    public ExportElementVisitor1(
+        ExportElementVisitor1 preLevelVisitor
         , FileIO fileIO
         , MyDiagramFactory diagramFactory
         , WriterFactory writerFactory) {

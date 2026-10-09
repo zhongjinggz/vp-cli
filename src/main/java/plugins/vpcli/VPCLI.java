@@ -2,7 +2,7 @@ package plugins.vpcli;
 
 import com.vp.plugin.*;
 import plugins.vpcli.application.ListDiagramsService;
-import plugins.vpcli.domain.myuml.myproject.ExportElementVisitorFactory1;
+import plugins.vpcli.domain.myuml.myproject.ExportElementVisitorFactory;
 import plugins.vpcli.domain.myuml.myproject.MyProjectFactory;
 import plugins.vpcli.domain.myuml.myproject.TreeElementVisitorFactory;
 import plugins.vpcli.domain.vpvisitor.vpmodelvisitor.structure.ViProjectFactory;
@@ -43,7 +43,7 @@ public class VPCLI implements VPPlugin, VPPluginCommandLineSupport {
 
     // Driving Adapter
     private CLIController cliController;
-    private ExportElementVisitorFactory1 exportVisitorFactory;
+    private ExportElementVisitorFactory exportVisitorFactory;
     private FileIO fileIO;
     private MyProjectFactory myProjectFactory;
 
@@ -67,7 +67,7 @@ public class VPCLI implements VPPlugin, VPPluginCommandLineSupport {
 
         this.viProjectFactory = new ViProjectFactory();
         this.treeVisitorFactory = new TreeElementVisitorFactory();
-        this.exportVisitorFactory = new ExportElementVisitorFactory1(
+        this.exportVisitorFactory = new ExportElementVisitorFactory(
             this.fileIO,
             this.myDiagramFactory,
             this.writerFactory,
