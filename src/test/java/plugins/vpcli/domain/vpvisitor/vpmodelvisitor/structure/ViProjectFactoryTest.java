@@ -19,7 +19,7 @@ class ViProjectFactoryTest {
 
     private final ViElementVisitorFactory visitorFactory = new ViElementVisitorFactory() {
         @Override
-        public ViElementVisitor create(ViElementVisitor preLevelVisitor) {
+        public ViElementVisitor under(ViElementVisitor higherVisitor) {
             return new ViElementVisitor() {
                 @Override
                 public void visit(ViElement viElement) {

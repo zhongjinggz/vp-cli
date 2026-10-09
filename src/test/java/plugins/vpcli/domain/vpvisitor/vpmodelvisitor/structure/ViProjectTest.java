@@ -28,8 +28,8 @@ class ViProjectTest {
     private final List<Call> calls = new ArrayList<>();
     private final ViElementVisitorFactory exportVisitorFactory = new ViElementVisitorFactory() {
         @Override
-        public ViElementVisitor create(ViElementVisitor preLevelVisitor) {
-            return new RecorderElementVisitor(calls, preLevelVisitor);
+        public ViElementVisitor under(ViElementVisitor higherVisitor) {
+            return new RecorderElementVisitor(calls, higherVisitor);
         }
 
         @Override

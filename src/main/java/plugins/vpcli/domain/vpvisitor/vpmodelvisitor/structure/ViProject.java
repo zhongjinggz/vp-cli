@@ -18,7 +18,7 @@ public class ViProject {
     private final ViElementFactory createStructElement;
     private final List<ElementType> elementTypes = new ArrayList<>();
     private final MyProject myProject ;
-    private ViElementVisitorFactory visitorFactory;
+    private ViElementVisitorFactory createVisitor;
 
     public ViProject(IProject vpProject
         , ViElementFactory elementFactory) {
@@ -39,9 +39,9 @@ public class ViProject {
     }
 
     public void accept(ViElementVisitorFactory visitorFactory) throws IOException {
-        this.visitorFactory = visitorFactory;
+        this.createVisitor = visitorFactory;
         List<ViElement> elements = createTopLevelElements();
-        ViElementVisitor rootVisitor = this.visitorFactory.createRoot();
+        ViElementVisitor rootVisitor = this.createVisitor.createRoot();
         elementsAccept(elements, rootVisitor);
     }
 
@@ -60,13 +60,13 @@ public class ViProject {
     }
 
     private void elementsAccept(List<ViElement> elements
-        , ViElementVisitor preLevelVisitor) throws IOException {
+        , ViElementVisitor higherVisitor) throws IOException {
 
         int size = elements.size();
         int i = 0;
 
         for (var anElement : elements) {
-            var visitor = visitorFactory.create(preLevelVisitor);
+            var visitor = createVisitor.under(higherVisitor);
             visitor.setLast(i + 1 == size);
             visitor.visit(anElement);
 

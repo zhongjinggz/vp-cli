@@ -6,8 +6,8 @@ import plugins.vpcli.domain.vpvisitor.vpmodelvisitor.visitor.ViElementVisitorFac
 public class TreeElementVisitorFactory implements ViElementVisitorFactory {
 
     @Override
-    public ViElementVisitor create(ViElementVisitor preLevelVisitor) {
-        return new TreeElementVisitor((TreeElementVisitor)preLevelVisitor) ;
+    public ViElementVisitor under(ViElementVisitor higherVisitor) {
+        return new TreeElementVisitor((TreeElementVisitor) higherVisitor) ;
     }
 
     //TODO use NULL Object pattern

@@ -1,7 +1,7 @@
 package plugins.vpcli.domain.vpvisitor.vpmodelvisitor.visitor;
 
 public interface ViElementVisitorFactory {
-    ViElementVisitor create(ViElementVisitor preLevelVisitor);
+    ViElementVisitor under(ViElementVisitor higherVisitor);
 
     ViElementVisitor createRoot();
 }

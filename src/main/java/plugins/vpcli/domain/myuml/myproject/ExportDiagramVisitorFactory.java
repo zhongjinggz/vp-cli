@@ -30,11 +30,11 @@ public class ExportDiagramVisitorFactory implements ViElementVisitorFactory {
     }
 
     @Override
-    public ViElementVisitor create(@NotNull ViElementVisitor preLevelVisitor) {
+    public ViElementVisitor under(@NotNull ViElementVisitor higherVisitor) {
 
         //TODO use NullObject pattern
-        ExportDiagramVisitor preLevelExportVisitor = (preLevelVisitor == null ?
-            null : (ExportDiagramVisitor) preLevelVisitor);
+        ExportDiagramVisitor preLevelExportVisitor = (higherVisitor == null ?
+            null : (ExportDiagramVisitor) higherVisitor);
 
         ExportDiagramVisitor result = new ExportDiagramVisitor(
             preLevelExportVisitor
