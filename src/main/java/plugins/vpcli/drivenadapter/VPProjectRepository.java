@@ -5,7 +5,7 @@ import com.vp.plugin.model.IProject;
 
 public class VPProjectRepository {
 
-    public IProject getProject() {
+    public IProject fromVisualParadigm() {
         return ApplicationManager.instance().getProjectManager().getProject();
     }
 }

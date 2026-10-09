@@ -26,7 +26,21 @@ class ViProjectTest {
     private IProject project;
     private ViProject struct;
     private final List<Call> calls = new ArrayList<>();
-    private final ViElementVisitorFactory exportVisitorFactory = pre -> new RecorderElementVisitor(calls, pre);
+    private final ViElementVisitorFactory exportVisitorFactory = new ViElementVisitorFactory() {
+        @Override
+        public ViElementVisitor create(ViElementVisitor preLevelVisitor) {
+            return new RecorderElementVisitor(calls, preLevelVisitor);
+        }
+
+        @Override
+        public ViElementVisitor createRoot() {
+            return new ViElementVisitor() {
+                @Override
+                public void visit(ViElement viElement) {
+                }
+            };
+        }
+    };
 
     private static class Call {
         final String name;

@@ -42,12 +42,17 @@ public class ExportElementVisitorFactory1 implements ViElementVisitorFactory {
             , writerFactory
         );
 
-        if (preLevelVisitor == null) {
-            result.setParentDir(rootDir);
-        }
+//        if (preLevelVisitor == null) {
+//            result.setParentDir(rootDir);
+//        }
 
         return result;
 
+    }
+
+    @Override
+    public ViElementVisitor createRoot() {
+        return null;
     }
 
     public void setRootDir(File dir) {

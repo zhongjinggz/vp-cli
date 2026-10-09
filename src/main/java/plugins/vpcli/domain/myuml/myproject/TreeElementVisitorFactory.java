@@ -9,4 +9,10 @@ public class TreeElementVisitorFactory implements ViElementVisitorFactory {
     public ViElementVisitor create(ViElementVisitor preLevelVisitor) {
         return new TreeElementVisitor((TreeElementVisitor)preLevelVisitor) ;
     }
+
+    //TODO use NULL Object pattern
+    @Override
+    public ViElementVisitor createRoot() {
+        return null;
+    }
 }

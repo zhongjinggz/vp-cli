@@ -1,5 +1,6 @@
 package plugins.vpcli.domain.myuml.myproject;
 
+import org.jetbrains.annotations.NotNull;
 import plugins.vpcli.application.writers.WriterFactory;
 import plugins.vpcli.domain.myuml.mydiagram1.MyDiagramFactory;
 import plugins.vpcli.domain.vpvisitor.vpmodelvisitor.visitor.ViElementVisitor;
@@ -9,7 +10,7 @@ import plugins.vpcli.drivenadapter.FileIO;
 
 import java.io.File;
 
-public class ExportElementVisitorFactory implements ViElementVisitorFactory {
+public class ExportDiagramVisitorFactory implements ViElementVisitorFactory {
 
     private final FileIO fileIO;
     private final MyDiagramFactory diagramFactory;
@@ -17,7 +18,7 @@ public class ExportElementVisitorFactory implements ViElementVisitorFactory {
     private File rootDir;
     private FileFactory fileFactory;
 
-    public ExportElementVisitorFactory(FileIO fileIO
+    public ExportDiagramVisitorFactory(FileIO fileIO
         , MyDiagramFactory diagramFactory
         , WriterFactory writerFactory
         , FileFactory fileFactory) {
@@ -29,7 +30,7 @@ public class ExportElementVisitorFactory implements ViElementVisitorFactory {
     }
 
     @Override
-    public ViElementVisitor create(ViElementVisitor preLevelVisitor) {
+    public ViElementVisitor create(@NotNull ViElementVisitor preLevelVisitor) {
 
         //TODO use NullObject pattern
         ExportDiagramVisitor preLevelExportVisitor = (preLevelVisitor == null ?
@@ -42,12 +43,13 @@ public class ExportElementVisitorFactory implements ViElementVisitorFactory {
             , writerFactory
         );
 
-        if (preLevelVisitor == null) {
-            result.setParentDir(rootDir);
-        }
-
         return result;
 
+    }
+
+    @Override
+    public ViElementVisitor createRoot() {
+        return new RootExportDiagramVisitor(this.rootDir);
     }
 
     public void setRootDir(File dir) {

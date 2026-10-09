@@ -10,7 +10,7 @@ public class ListDiagramsService {
     }
 
     public void listDiagrams() {
-        IDiagramUIModel[] allDiagrams = vpProjectRepository.getProject().toDiagramArray();
+        IDiagramUIModel[] allDiagrams = vpProjectRepository.fromVisualParadigm().toDiagramArray();
         for (IDiagramUIModel diagram : allDiagrams) {
             System.out.println(diagram.getName() + " | id: " + diagram.getId());
         }

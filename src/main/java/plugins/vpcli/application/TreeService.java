@@ -25,9 +25,9 @@ public class TreeService {
     }
 
     public void tree() throws IOException {
-        var project = vpProjectRepository.getProject();
+        var project = vpProjectRepository.fromVisualParadigm();
 
-        var viProject = viProjectFactory.create(project);
+        var viProject = viProjectFactory.of(project);
         viProject.setElementTypes(
             List.of(PACKAGE
                 , MODEL

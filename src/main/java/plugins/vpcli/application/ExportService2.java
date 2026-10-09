@@ -137,10 +137,10 @@ public class ExportService2 {
 
     public void exportAll(File exportLocation) throws IOException {
 
-        var project = vpProjectRepository.getProject();
+        var project = vpProjectRepository.fromVisualParadigm();
 
         exportVisitorFactory.setRootDir(exportLocation);
-        var struct = viProjectFactory.create(project);
+        var struct = viProjectFactory.of(project);
         struct.setElementTypes(List.of(
             PACKAGE
             , MODEL
@@ -157,7 +157,7 @@ public class ExportService2 {
     }
 
     public void exportSpecificDiagram(String target, File exportLocation) throws IOException {
-        IDiagramUIModel targetDiagram = vpProjectRepository.getProject().getDiagramById(target);
+        IDiagramUIModel targetDiagram = vpProjectRepository.fromVisualParadigm().getDiagramById(target);
         this.exportADiagram(targetDiagram, exportLocation);
     }
 

@@ -1,8 +1,7 @@
 package plugins.vpcli.application;
 
-import plugins.vpcli.domain.myuml.myproject.ExportElementVisitorFactory;
+import plugins.vpcli.domain.myuml.myproject.ExportDiagramVisitorFactory;
 import plugins.vpcli.domain.myuml.myproject.MyProjectFactory;
-import plugins.vpcli.domain.myuml.myproject.MyProject;
 import plugins.vpcli.domain.vpvisitor.vpmodelvisitor.structure.ViProjectFactory;
 import plugins.vpcli.drivenadapter.VPProjectRepository;
 
@@ -14,38 +13,35 @@ import static plugins.vpcli.domain.myuml.mycommon.ElementType.*;
 
 public class ExportService {
 
-    private final VPProjectRepository vpProjectRepository;
-    private final ViProjectFactory viProjectFactory;
-    private final ExportElementVisitorFactory exportVisitorFactory;
-    private MyProjectFactory myProjectFactory;
+    private final VPProjectRepository getIProject;
+    private final ViProjectFactory createViProject;
+    private final ExportDiagramVisitorFactory exportDiagramVisitorFactory;
+    private MyProjectFactory getMyProject;
 
     public ExportService(VPProjectRepository vpProjectRepository,
                          ViProjectFactory viProjectFactory,
-                         ExportElementVisitorFactory exportVisitorFactory,
+                         ExportDiagramVisitorFactory exportDiagramVisitorFactory,
                          MyProjectFactory myProjectFactory) {
 
-        this.vpProjectRepository = vpProjectRepository;
-        this.viProjectFactory = viProjectFactory;
-        this.exportVisitorFactory = exportVisitorFactory;
-        this.myProjectFactory = myProjectFactory;
+        this.getIProject = vpProjectRepository;
+        this.createViProject = viProjectFactory;
+        this.exportDiagramVisitorFactory = exportDiagramVisitorFactory;
+        this.getMyProject = myProjectFactory;
     }
 
     public void exportAll(File exportLocation) throws IOException {
 
-        var project = vpProjectRepository.getProject();
+        var vpProject = getIProject.fromVisualParadigm();
+        var myProject = getMyProject.fromGlobal();
 
-        exportVisitorFactory.setRootDir(exportLocation);
-        var viProject = viProjectFactory.create(project);
+        var viProject = createViProject.of(vpProject, myProject);
         viProject.setElementTypes(List.of(
             PACKAGE
             , MODEL
             , DIAGRAM));
 
-
-        MyProject myProject = myProjectFactory.get();
-        viProject.setMyProject(myProject);
-
-        viProject.accept(this.exportVisitorFactory);
+        exportDiagramVisitorFactory.setRootDir(exportLocation);
+        viProject.accept(this.exportDiagramVisitorFactory);
     }
 
     public void exportSpecificDiagram(String target, File exportLocation) throws IOException {

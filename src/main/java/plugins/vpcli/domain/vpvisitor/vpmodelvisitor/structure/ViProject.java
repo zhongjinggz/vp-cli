@@ -16,15 +16,22 @@ import java.util.List;
 public class ViProject {
     private final IProject project;
     private final ViElementFactory createStructElement;
-    private ViElementVisitorFactory visitorFactory;
     private final List<ElementType> elementTypes = new ArrayList<>();
-    private MyProject myProject ;
+    private final MyProject myProject ;
+    private ViElementVisitorFactory visitorFactory;
 
     public ViProject(IProject vpProject
         , ViElementFactory elementFactory) {
 
         this.project = vpProject;
         this.createStructElement = elementFactory;
+        this.myProject = null;
+    }
+
+    public ViProject(IProject vpProject, MyProject myProject, ViElementFactory viElementFactory) {
+        this.project = vpProject;
+        this.createStructElement = viElementFactory;
+        this.myProject = myProject;
     }
 
     public void setElementTypes(List<ElementType> elementTypes) {
@@ -34,7 +41,8 @@ public class ViProject {
     public void accept(ViElementVisitorFactory visitorFactory) throws IOException {
         this.visitorFactory = visitorFactory;
         List<ViElement> elements = createTopLevelElements();
-        elementsAccept(elements, null);
+        ViElementVisitor rootVisitor = this.visitorFactory.createRoot();
+        elementsAccept(elements, rootVisitor);
     }
 
     private @NonNull List<ViElement> createTopLevelElements() {
@@ -71,7 +79,4 @@ public class ViProject {
         }
     }
 
-    public void setMyProject(MyProject myProject) {
-       this.myProject = myProject;
-    }
 }

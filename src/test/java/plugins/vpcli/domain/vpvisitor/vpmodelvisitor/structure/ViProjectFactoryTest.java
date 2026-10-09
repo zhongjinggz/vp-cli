@@ -17,17 +17,32 @@ import java.io.IOException;
 
 class ViProjectFactoryTest {
 
-    private final ViElementVisitorFactory visitorFactory = pre -> new ViElementVisitor() {
+    private final ViElementVisitorFactory visitorFactory = new ViElementVisitorFactory() {
         @Override
-        public void visit(ViElement viElement) {
-            // no-op
+        public ViElementVisitor create(ViElementVisitor preLevelVisitor) {
+            return new ViElementVisitor() {
+                @Override
+                public void visit(ViElement viElement) {
+                    // no-op
+                }
+            };
+        }
+
+        @Override
+        public ViElementVisitor createRoot() {
+            return new ViElementVisitor() {
+                @Override
+                public void visit(ViElement viElement) {
+                    // no-op
+                }
+            };
         }
     };
 
     @Test
     void shouldCreateVpStruct() {
         IProject project = mock(IProject.class);
-        ViProject struct = new ViProjectFactory().create(project);
+        ViProject struct = new ViProjectFactory().of(project);
         assertNotNull(struct);
     }
 
@@ -35,7 +50,7 @@ class ViProjectFactoryTest {
     void shouldAcceptProjectThroughCreatedStruct() throws IOException {
         IProject project = mock(IProject.class);
         when(project.toModelElementArray(new String[0])).thenReturn(new IModelElement[0]);
-        ViProject struct = new ViProjectFactory().create(project);
+        ViProject struct = new ViProjectFactory().of(project);
         struct.accept(visitorFactory);
         verify(project).toModelElementArray(new String[0]);
     }

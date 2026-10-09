@@ -1,11 +1,16 @@
 package plugins.vpcli.domain.vpvisitor.vpmodelvisitor.structure;
 
 import com.vp.plugin.model.IProject;
+import plugins.vpcli.domain.myuml.myproject.MyProject;
 import plugins.vpcli.domain.vpvisitor.vpmodelvisitor.element.ViElementFactory;
 
 public class ViProjectFactory {
-    public ViProject create(IProject project) {
+    public ViProject of(IProject project) {
         // TODO VPElementFactory should be injected instead of new directly
         return new ViProject(project, new ViElementFactory());
+    }
+
+    public ViProject of(IProject vpProject, MyProject myProject) {
+        return new ViProject(vpProject, myProject, new ViElementFactory());
     }
 }
