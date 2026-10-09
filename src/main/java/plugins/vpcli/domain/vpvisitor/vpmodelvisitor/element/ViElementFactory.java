@@ -13,6 +13,10 @@ public class ViElementFactory {
                 return new ViPackage(element, this);
             case IModelElementFactory.MODEL_TYPE_MODEL:
                 return new ViModel(element, this);
+            case IModelElementFactory.MODEL_TYPE_CLASS:
+                return new ViClass(element, this);
+            case IModelElementFactory.MODEL_TYPE_USE_CASE:
+                return new ViUseCase(element, this);
             default:
                 throw new IllegalArgumentException("Wrong element type:" + element.getModelType().toString());
         }
