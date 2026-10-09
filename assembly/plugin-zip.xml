@@ -30,6 +30,7 @@
             <outputDirectory>classes</outputDirectory>
             <includes>
                 <include>plugins/**</include>
+                <include>logback.xml</include>
             </includes>
         </fileSet>
 

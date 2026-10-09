@@ -10,6 +10,9 @@ import java.io.IOException;
 import static plugins.vpcli.drivingadapter.CLIParams.*;
 
 public class CLIController {
+    private static final org.slf4j.Logger LOG =
+        org.slf4j.LoggerFactory.getLogger(CLIController.class);
+
     private final ExportService exportService;
     private final TreeService treeService;
     private final ListDiagramsService listDiagramsService;
@@ -24,7 +27,7 @@ public class CLIController {
         CLIParams params = CLIParams.valueOf(args);
 
         if (params.isInvalid()) {
-            System.out.println(params.errorMessage());
+            LOG.info(params.errorMessage());
             return;
         }
 
@@ -51,17 +54,17 @@ public class CLIController {
         if (!exportLocation.exists()) {
             boolean created = exportLocation.mkdirs();
             if (!created) {
-                System.out.println("Error: Could not create the specified directory.");
+                LOG.error("Error: Could not create the specified directory.");
                 return;
             }
         }
 
         if (!exportLocation.isDirectory()) {
-            System.out.println("Error: The specified path is not a directory.");
+            LOG.error("Error: The specified path is not a directory.");
             return;
         }
 
-        System.out.println("Exporting diagram(s): " + target + " to path: " + path);
+        LOG.info("Exporting diagram(s): " + target + " to path: " + path);
 
         if (target.equalsIgnoreCase(CLIParams.VALUE_ALL)) {
             this.exportService.exportAll(exportLocation);
@@ -69,17 +72,17 @@ public class CLIController {
             try {
                 exportService.exportSpecificDiagram(target, exportLocation);
             } catch (IOException e) {
-                System.out.println("IO Error: Couldn't create file.");
+                LOG.error("IO Error: Couldn't create file.");
             }
         }
     }
 
     void performImport() {
-        System.out.println("Importing functions to be developed");
+        LOG.info("Importing functions to be developed");
     }
 
     void listAvailableDiagrams() {
-        System.out.println("Listing available diagrams in the project:");
+        LOG.info("Listing available diagrams in the project:");
         listDiagramsService.listDiagrams();
     }
 

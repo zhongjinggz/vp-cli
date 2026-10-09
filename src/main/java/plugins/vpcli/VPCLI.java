@@ -13,10 +13,14 @@ import plugins.vpcli.application.TreeService;
 import plugins.vpcli.domain.myuml.mydiagram1.MyDiagramFactory;
 import plugins.vpcli.application.writers.WriterFactory;
 
+import java.io.File;
 import java.io.IOException;
 
 
 public class VPCLI implements VPPlugin, VPPluginCommandLineSupport {
+    private static final org.slf4j.Logger LOG =
+        org.slf4j.LoggerFactory.getLogger(VPCLI.class);
+
     // Util
     private DirMaker dirMaker;
 
@@ -101,6 +105,27 @@ public class VPCLI implements VPPlugin, VPPluginCommandLineSupport {
 
     @Override
     public void loaded(VPPluginInfo pluginInfo) {
+        configureLogging(pluginInfo);
+    }
+
+    // 在插件加载阶段按 profile 选择日志输出目标，供 logback.xml 读取。
+    // 未指定 -Dvpcli.log.profile 时默认 dev（输出到控制台）。
+    private void configureLogging(VPPluginInfo pluginInfo) {
+        String profile = System.getProperty("vpcli.log.profile", "dev");
+        boolean prod = "prod".equalsIgnoreCase(profile);
+        System.setProperty("vpcli.log.appender", prod ? "FILE" : "CONSOLE");
+
+        if (pluginInfo != null) {
+            File pluginDir = pluginInfo.getPluginDir();
+            if (pluginDir != null) {
+                File logDir = new File(pluginDir, "log");
+                if (logDir.mkdirs() || logDir.isDirectory()) {
+                    System.setProperty("vpcli.log.dir", logDir.getAbsolutePath());
+                }
+            }
+        }
+        LOG.info("vpcli.log.profile={}, vpcli.log.dir={}",
+            profile, System.getProperty("vpcli.log.dir"));
     }
 
     @Override

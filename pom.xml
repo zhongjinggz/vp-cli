@@ -19,6 +19,9 @@
         <jackson.version>2.17.2</jackson.version>
         <plantuml.version>1.2024.7</plantuml.version>
 
+        <slf4j.version>2.0.13</slf4j.version>
+        <logback.version>1.4.14</logback.version>
+
         <junit.version>5.12.0</junit.version>
         <mockito.version>5.12.0</mockito.version>
 
@@ -87,6 +90,20 @@
             <groupId>com.fasterxml.jackson.core</groupId>
             <artifactId>jackson-databind</artifactId>
             <version>${jackson.version}</version>
+        </dependency>
+
+        <!-- Logging: SLF4J API + Logback backend.
+             Dev 输出到 console，正式环境输出到插件安装目录下 log/，由系统属性
+             -Dvpcli.log.profile=dev|prod 切换（默认 dev）。 -->
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-api</artifactId>
+            <version>${slf4j.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>ch.qos.logback</groupId>
+            <artifactId>logback-classic</artifactId>
+            <version>${logback.version}</version>
         </dependency>
 
         <!-- Test dependencies -->
