@@ -9,8 +9,8 @@ public class MyUseCase extends MyElement {
 	private boolean isInPackage;
 	private boolean isBusiness;
 	private String Uid;
-	
-	
+
+
 	public MyUseCase(String name) {
         super(name);
 	}
