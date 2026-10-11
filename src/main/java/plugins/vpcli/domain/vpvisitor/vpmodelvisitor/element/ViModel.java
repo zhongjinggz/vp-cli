@@ -23,7 +23,7 @@ public class ViModel extends ViPackage {
 
     @Override
     public MyPackage toMyElement(MyElement parent) {
-        return myElementFactory.createPackage(
+        return myElementFactory.createModel(
             parent,
             this.vpElement.getId(),
             this.vpElement.getName(),

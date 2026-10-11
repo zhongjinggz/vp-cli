@@ -71,14 +71,14 @@ public class ExportDiagramVisitor extends ViElementVisitor {
 
     @Override
     public void visit(ViDiagramAsElement element) throws IOException {
-        // 暂时不将图表放入全局模型缓存，一遍节省内存。未来视情况而定。
-        var vpDiagram = element.getVPDiagramUIModel();
-//        MyClassDiagram myDiagram = diagramFactory.createClassDiagram(diagramUIModel);
-//        ClassDiagramWriter classDiagramWriter = writerFactory.createClassDiagramWriter(myDiagram);
-//        classDiagramWriter.write(this.parentDir);
-        MyDiagram myDiagram = convertToMyDiagram.from(higherVisitor.myElement, vpDiagram);
-        PlantUMLDiagram puml = convertToPlantUML.from(myDiagram);
-        write.plantUML(puml);
+//        // 暂时不将图表放入全局模型缓存，一遍节省内存。未来视情况而定。
+//        var vpDiagram = element.getVPDiagramUIModel();
+////        MyClassDiagram myDiagram = diagramFactory.createClassDiagram(diagramUIModel);
+////        ClassDiagramWriter classDiagramWriter = writerFactory.createClassDiagramWriter(myDiagram);
+////        classDiagramWriter.write(this.parentDir);
+//        MyDiagram myDiagram = convertToMyDiagram.from(higherVisitor.myElement, vpDiagram);
+//        PlantUMLDiagram puml = convertToPlantUML.from(myDiagram);
+//        write.plantUML(puml);
     }
 
     @Override
@@ -89,6 +89,7 @@ public class ExportDiagramVisitor extends ViElementVisitor {
 
     @Override
     public void visit(ViModel viModel) throws IOException {
+        buildElementModel(viModel);
         makeDirOf(viModel);
     }
 

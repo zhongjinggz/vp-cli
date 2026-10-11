@@ -1,5 +1,6 @@
 package plugins.vpcli.domain.myuml.mycommon;
 
+import plugins.vpcli.domain.myuml.mypackage.MyModel;
 import plugins.vpcli.domain.myuml.mypackage.MyPackage;
 
 import java.util.HashMap;
@@ -13,11 +14,23 @@ public class MyElementFactory {
         String name,
         String description
     ) {
-        if (this.elementPool.containsKey(id)) {
+        if (hasElementOf(id)) {
             return (MyPackage) this.elementPool.get(id);
         } else {
             return new MyPackage(parent, id, name, description);
         }
 
+    }
+
+    public MyPackage createModel(MyElement parent, String id, String name, String description) {
+        if (hasElementOf(id)) {
+            return (MyModel) this.elementPool.get(id);
+        } else {
+            return new MyModel(parent, id, name, description);
+        }
+    }
+
+    private boolean hasElementOf(String id) {
+        return this.elementPool.containsKey(id);
     }
 }

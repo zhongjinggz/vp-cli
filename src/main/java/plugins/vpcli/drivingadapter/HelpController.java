@@ -29,6 +29,9 @@ import javax.swing.*;
 
 
 // DOING
+// - export: 重写生成图表的程序 - 引入抽象工厂方法创建MyElement
+// - visitor: 在超类中创建 visitor 树
+// - export: 递归构建父 MyElement
 // - export: 重写生成图表的程序 - Package / Model
 // - export: 重写生成图表的程序 - 为 Model 增加衍型
 
@@ -62,6 +65,7 @@ import javax.swing.*;
 // - 补充建立目录时的各种异常情况
 
 // DONE
+// - export: 重写生成图表的程序 - 建立 Package / Model 目录结构
 // - 增加日志机制 1）记录错误 2）记录内部运作轨迹
 // - export：将图表放入目录结构
 // - export: 使用Visitor 创建目录
@@ -89,7 +93,7 @@ public class HelpController implements VPActionController {
             "    vp-tree -project <project name.vpp>\n";
 
         String changeLog = "Change Log:\n" +
-            "    - introduce Polymorphism-step3 bug fix 17:22";
+            "    - rewrite ExportDiagramVisitor - pass compile - 09:48";
 
         ApplicationManager.instance().getViewManager().showMessageDialog(
             ApplicationManager.instance()
