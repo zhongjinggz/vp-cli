@@ -2,7 +2,6 @@ package plugins.vpcli.domain.vpvisitor.vpmodelvisitor.element;
 
 import com.vp.plugin.model.IModelElement;
 import plugins.vpcli.domain.myuml.mycommon.MyElement;
-import plugins.vpcli.domain.myuml.mycommon.MyElement_old;
 import plugins.vpcli.domain.myuml.mycommon.MyElementFactory;
 import plugins.vpcli.domain.myuml.mypackage.MyPackage;
 import plugins.vpcli.domain.vpvisitor.vpmodelvisitor.visitor.ViElementVisitor;
@@ -25,12 +24,10 @@ public class ViPackage extends ViModelElement {
 
     @Override
     public MyPackage toMyElement(MyElement parent) {
-        return myElementFactory.createPackage(
-            parent,
-            this.vpElement.getId(),
-            this.vpElement.getName(),
-            this.vpElement.getDescription()
-        );
+//        return myElementFactory.createPackage(
+//            parent,
+//            vpElement);
+        return (MyPackage) myElementFactory.create(parent, vpElement);
 
     }
 }

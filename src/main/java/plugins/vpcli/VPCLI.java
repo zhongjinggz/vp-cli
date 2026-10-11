@@ -3,6 +3,7 @@ package plugins.vpcli;
 import com.vp.plugin.*;
 import plugins.vpcli.application.ListDiagramsService;
 import plugins.vpcli.domain.myuml.mycommon.MyElementFactory;
+import plugins.vpcli.domain.myuml.mycommon.MyElementFactoryFactory;
 import plugins.vpcli.domain.myuml.mydiagram.MyDiagramFactory;
 import plugins.vpcli.domain.myuml.myproject.ExportDiagramVisitorFactory;
 import plugins.vpcli.domain.myuml.myproject.MyProjectFactory;
@@ -16,7 +17,6 @@ import plugins.vpcli.drivenadapter.*;
 import plugins.vpcli.drivingadapter.CLIController;
 import plugins.vpcli.application.ExportService;
 import plugins.vpcli.application.TreeService;
-import plugins.vpcli.domain.myuml.mydiagram_old.OldDiagramFactory;
 import plugins.vpcli.application.writers_old.WriterFactory;
 
 import java.io.File;
@@ -78,6 +78,7 @@ public class VPCLI implements VPPlugin, VPPluginCommandLineSupport {
     private ViElementFactory viElementFactory;
     private VPToMyDiagramConverter vpToMyDiagramConverter;
     private MyDiagramToPumlConverter myDiagramToPumlConverter;
+    private MyElementFactoryFactory myElementFactoryFactory;
 
 
     public VPCLI() {
@@ -104,8 +105,8 @@ public class VPCLI implements VPPlugin, VPPluginCommandLineSupport {
         this.writerFactory = new WriterFactory(this.fileFactory);
         this.treeDirMaker = new TreeDirMaker();
         this.myProjectFactory = new MyProjectFactory(vpProjectRepository);
-        this.myElementFactory = new MyElementFactory();
-        this.viElementFactory = new ViElementFactory(myElementFactory);
+        this.myElementFactoryFactory = new MyElementFactoryFactory();
+        this.viElementFactory = new ViElementFactory(myElementFactoryFactory);
         this.myDiagramElementFactory = new MyDiagramElementFactory();
 
         this.vpToMyDiagramConverter = new VPToMyDiagramConverter(myDiagramFactory, myDiagramElementFactory);

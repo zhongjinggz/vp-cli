@@ -1,36 +1,40 @@
 package plugins.vpcli.domain.myuml.mycommon;
 
-import plugins.vpcli.domain.myuml.mypackage.MyModel;
-import plugins.vpcli.domain.myuml.mypackage.MyPackage;
+import com.vp.plugin.model.IModelElement;
 
 import java.util.HashMap;
 import java.util.Map;
 
-public class MyElementFactory {
+public abstract class MyElementFactory {
     private Map<String, MyElement> elementPool = new HashMap<>();
-    public MyPackage createPackage(
-        MyElement parent,
-        String id,
-        String name,
-        String description
-    ) {
-        if (hasElementOf(id)) {
-            return (MyPackage) this.elementPool.get(id);
-        } else {
-            return new MyPackage(parent, id, name, description);
-        }
 
-    }
 
-    public MyPackage createModel(MyElement parent, String id, String name, String description) {
-        if (hasElementOf(id)) {
-            return (MyModel) this.elementPool.get(id);
-        } else {
-            return new MyModel(parent, id, name, description);
-        }
-    }
+    // TOBE abstract
+    public abstract MyElement create(MyElement parent, IModelElement vpElement);
 
-    private boolean hasElementOf(String id) {
+    private boolean hasMyElementOf(String id) {
         return this.elementPool.containsKey(id);
+    }
+
+    private MyElement MyElementOf(String vpElement) {
+        return this.elementPool.get(vpElement);
+    }
+
+    protected MyElement getOrCreateElement(
+        IModelElement vpElement,
+        MyElement parent,
+        MyElementCreator createMyElement
+    ) {
+        if (hasMyElementOf(vpElement.getId())) {
+            return MyElementOf(vpElement.getId());
+        } else {
+            return createMyElement.from(vpElement, parent);
+        }
+    }
+
+
+    @FunctionalInterface
+    protected static interface MyElementCreator {
+        MyElement from(IModelElement vpElement, MyElement parent);
     }
 }

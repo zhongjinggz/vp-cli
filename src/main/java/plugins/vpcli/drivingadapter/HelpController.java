@@ -29,7 +29,8 @@ import javax.swing.*;
 
 
 // DOING
-// - export: 重写生成图表的程序 - 引入抽象工厂方法创建MyElement
+// - MyElementFactory: 引入Lambda
+// - MyElementFactory: 引入抽象工厂方法创建MyElement
 // - visitor: 在超类中创建 visitor 树
 // - export: 递归构建父 MyElement
 // - export: 重写生成图表的程序 - Package / Model
@@ -93,7 +94,7 @@ public class HelpController implements VPActionController {
             "    vp-tree -project <project name.vpp>\n";
 
         String changeLog = "Change Log:\n" +
-            "    - rewrite ExportDiagramVisitor - pass compile - 09:48";
+            "    - rewrite MyElementFactory - abstract factory pattern - 13:19";
 
         ApplicationManager.instance().getViewManager().showMessageDialog(
             ApplicationManager.instance()

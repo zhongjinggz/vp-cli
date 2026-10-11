@@ -1,32 +1,31 @@
 package plugins.vpcli.domain.vpvisitor.vpmodelvisitor.element;
 
 import com.vp.plugin.diagram.IDiagramUIModel;
-import com.vp.plugin.model.IModel;
 import com.vp.plugin.model.IModelElement;
-import com.vp.plugin.model.IPackage;
-import com.vp.plugin.model.factory.IModelElementFactory;
-import plugins.vpcli.domain.myuml.mycommon.MyElementFactory;
+import plugins.vpcli.domain.myuml.mycommon.MyElementFactoryFactory;
+
+import static com.vp.plugin.model.factory.IModelElementFactory.*;
 
 public class ViElementFactory {
-    private MyElementFactory myElementFactory;
+    private final MyElementFactoryFactory myElementFactoryFactory;
 
-    public ViElementFactory(MyElementFactory myElementFactory) {
-        this.myElementFactory = myElementFactory;
+    public ViElementFactory(MyElementFactoryFactory myElementFactoryFactory) {
+        this.myElementFactoryFactory = myElementFactoryFactory;
     }
 
-
     public ViElement from(IModelElement element) {
+        var myElementFactory = myElementFactoryFactory.of(element.getModelType());
         switch (element.getModelType()) {
-            case IModelElementFactory.MODEL_TYPE_PACKAGE:
-                return new ViPackage(element, this, this.myElementFactory);
-            case IModelElementFactory.MODEL_TYPE_MODEL:
-                return new ViModel(element, this, this.myElementFactory);
-            case IModelElementFactory.MODEL_TYPE_CLASS:
-                return new ViClass(element, this, this.myElementFactory);
-            case IModelElementFactory.MODEL_TYPE_USE_CASE:
-                return new ViUseCase(element, this, this.myElementFactory);
+            case MODEL_TYPE_PACKAGE:
+                return new ViPackage(element, this, myElementFactory);
+            case MODEL_TYPE_MODEL:
+                return new ViModel(element, this, myElementFactory);
+            case MODEL_TYPE_CLASS:
+                return new ViClass(element, this, myElementFactory);
+            case MODEL_TYPE_USE_CASE:
+                return new ViUseCase(element, this, myElementFactory);
             default:
-                throw new IllegalArgumentException("Wrong element type:" + element.getModelType().toString());
+                throw new IllegalArgumentException("Wrong element type:" + element.getModelType());
         }
     }
 
