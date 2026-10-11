@@ -63,7 +63,6 @@ public class BeanFactory {
     private CLIController cliController;
     private ExportDiagramVisitorFactory exportVisitorFactory;
     private MyProjectFactory myProjectFactory;
-    private MyElementFactory myElementFactory;
     private ViElementFactory viElementFactory;
     private VPToMyDiagramConverter vpToMyDiagramConverter;
     private MyDiagramToPumlConverter myDiagramToPumlConverter;
@@ -83,7 +82,7 @@ public class BeanFactory {
 
         // Util
         this.dirMaker = new DirMaker();
-        this.myConsole = new MyConsole();
+//        this.myConsole = new MyConsole();
 
         // Repository
         this.vpProjectRepository = new VPProjectRepository();
@@ -116,31 +115,73 @@ public class BeanFactory {
         // Domain Services
 
         // Application Services
-        this.exportService = new ExportService(
-            this.vpProjectRepository,
-            this.viProjectFactory,
-            this.exportVisitorFactory,
-            this.myProjectFactory
-        );
-
-        this.treeService = new TreeService(
-            this.vpProjectRepository
-            , this.viProjectFactory
-            , this.treeVisitorFactory);
-
-        this.listDiagramsService = new ListDiagramsService(this.vpProjectRepository);
+//        this.exportService = new ExportService(
+//            this.vpProjectRepository,
+//            this.viProjectFactory,
+//            this.exportVisitorFactory,
+//            this.myProjectFactory
+//        );
+//
+//        this.treeService = new TreeService(
+//            this.vpProjectRepository
+//            , this.viProjectFactory
+//            , this.treeVisitorFactory);
+//
+//        this.listDiagramsService = new ListDiagramsService(this.vpProjectRepository);
 
         // Controller
-        this.cliController = new CLIController(
-            this.exportService
-            , this.treeService
-            , this.listDiagramsService, myConsole);
+//        this.cliController = new CLIController(
+//            this.exportService
+//            , this.treeService
+//            , this.listDiagramsService, myConsole);
     }
 
 
     public CLIController getCLIController() {
+        if (cliController == null) {
+            cliController = new CLIController(
+                getExportService(),
+                getTreeService(),
+                getListDiagramService(),
+                getMyConsole());
+        }
         return cliController;
     }
 
+    private MyConsole getMyConsole() {
+        if (myConsole == null) {
+            myConsole = new MyConsole();
+        }
+        return myConsole;
+    }
+
+    private ListDiagramsService getListDiagramService() {
+        if (listDiagramsService == null) {
+            listDiagramsService = new ListDiagramsService(this.vpProjectRepository);
+        }
+        return listDiagramsService;
+    }
+
+    private TreeService getTreeService() {
+        if (treeService == null) {
+            treeService = new TreeService(
+                this.vpProjectRepository
+                , this.viProjectFactory
+                , this.treeVisitorFactory);
+
+        }
+        return treeService;
+    }
+
+    private ExportService getExportService() {
+        if (exportService == null) {
+            exportService = new ExportService(
+                this.vpProjectRepository,
+                this.viProjectFactory,
+                this.exportVisitorFactory,
+                this.myProjectFactory);
+        }
+        return exportService;
+    }
 
 }
