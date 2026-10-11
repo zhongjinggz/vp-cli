@@ -19,9 +19,16 @@ public class MyElementFactoryFactory {
         MyUseCaseFactory myUseCaseFactory
     ) {
         this.myPackageFactory = myPackageFactory;
+        this.myPackageFactory.setFactoryFactory(this);
+
         this.myClassFactory = myClassFactory;
+        this.myClassFactory.setFactoryFactory(this);
+
         this.myModelFactory = myModelFactory;
+        this.myModelFactory.setFactoryFactory(this);
+
         this.myUseCaseFactory = myUseCaseFactory;
+        this.myUseCaseFactory.setFactoryFactory(this);
     }
 
     public MyElementFactory of(String vpElementType) {

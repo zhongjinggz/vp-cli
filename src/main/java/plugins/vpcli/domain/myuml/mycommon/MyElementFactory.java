@@ -1,39 +1,74 @@
 package plugins.vpcli.domain.myuml.mycommon;
 
 import com.vp.plugin.model.IModelElement;
+import org.slf4j.Logger;
+
+import static org.slf4j.LoggerFactory.getLogger;
 
 public abstract class MyElementFactory {
-//    private Map<String, MyElement> elementPool = new HashMap<>();
+
+    private final Logger logger;
 
     private final MyElementPool elementPool;
+    private MyElementFactoryFactory factoryFactory;
 
     public MyElementFactory(MyElementPool myElementPool) {
-        this.elementPool = myElementPool;
+        this(myElementPool, getLogger(MyElementFactory.class));
     }
 
-    // TOBE abstract
+    // 仅用于单元测试，可注入 Logger
+    MyElementFactory(MyElementPool myElementPool, Logger logger) {
+        this.elementPool = myElementPool;
+        this.logger = logger;
+    }
+
+    public void setFactoryFactory(MyElementFactoryFactory factoryFactory) {
+        this.factoryFactory = factoryFactory;
+    }
+
     public abstract MyElement reallyCreate(MyElement parent, IModelElement vpElement);
 
-    public MyElement create(MyElement parent, IModelElement vpElement) {
-        if (elementPool.contains(vpElement.getId())) {
-            return elementPool.get(vpElement.getId());
-        } else {
-            return reallyCreate(parent, vpElement);
-        }
-    }
-
     public MyElement create(IModelElement vpElement) {
-        var vpParentElement = vpElement.getParent();
-        var parentId = vpParentElement.getId();
-
         MyElement myParentElement;
+        var vpParentElement = vpElement.getParent();
 
-        if (elementPool.contains(parentId)) {
-            myParentElement = elementPool.get(parentId);
+        // 如果 parent 为空，意味着是顶层元素，其上级是项目本身
+        if (vpParentElement == null) {
+            myParentElement = elementPool.getMyProject();
         } else {
-            myParentElement = create(vpParentElement);
+            var parentId = vpParentElement.getId();
+            if (elementPool.contains(parentId)) {
+                myParentElement = elementPool.get(parentId);
+            } else {
+                var factory = factoryFactory.of(vpParentElement.getModelType());
+                myParentElement = factory.create(vpParentElement);
+            }
         }
-        return create(myParentElement, vpElement);
+        return createWithParent(myParentElement, vpElement);
     }
 
+    private MyElement createWithParent(MyElement parent, IModelElement vpElement) {
+        String id = vpElement.getId();
+
+        if (elementPool.contains(id)) {
+            return elementPool.get(id);
+        } else {
+            debug(vpElement); // to log, can be removed later
+            var result = reallyCreate(parent, vpElement);
+            elementPool.put(id, result);
+            return result;
+        }
+    }
+
+    private void debug(IModelElement vpElement) {
+        var vpParent = vpElement.getParent();
+        var vpId = vpElement.getId();
+        String parentId;
+        if (vpParent == null) {
+            parentId = "Parent is null";
+        } else {
+            parentId = vpParent.getId();
+        }
+        logger.debug("Creating MyElement: name=" + vpElement.getName() + " id=" + vpId + " parentId=" + parentId);
+    }
 }

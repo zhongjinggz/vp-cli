@@ -29,9 +29,7 @@ import javax.swing.*;
 
 
 // DOING
-// - MyElementFactory: 初始化缓存时就注入初始的 MyProject
-// - 重构依赖注入：直接初始化全局 IProject？
-// - MyElementFactory: 使用合适的 MyElementFactory 多态的创建上级 MyElement
+// - 问题：顶层元素的 parentId 可能不是 IProject ID, 这将影响缓存中对象图的构建
 // - export: 递归构建父 MyElement
 // - export: 重写生成图表的程序 - Package / Model
 // - export: 重写生成图表的程序 - 为 Model 增加衍型
@@ -66,6 +64,8 @@ import javax.swing.*;
 // - 重构依赖注入：用Map 保存 Bean ?
 
 // DONE
+// - MyElementFactory: 使用合适的 MyElementFactory 多态的创建上级 MyElement
+// - MyElementFactory: 初始化缓存时就注入初始的 MyProject
 // - MyElementFactory: 各种 MyElementFactory 成为单例
 // - MyElementFactory: 使缓存成为单例模式
 // - 重构依赖注入：用方法创建 Bean，而不是直接初始化属性，从而解决顺序上的依赖
@@ -101,7 +101,7 @@ public class HelpController implements VPActionController {
             "    vp-tree -project <project name.vpp>\n";
 
         String changeLog = "Change Log:\n" +
-            " Element Pool    - 20:24";
+            " Log project/element id  - 22:06";
 
         ApplicationManager.instance().getViewManager().showMessageDialog(
             ApplicationManager.instance()
