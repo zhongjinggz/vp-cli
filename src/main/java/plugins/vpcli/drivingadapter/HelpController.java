@@ -29,10 +29,6 @@ import javax.swing.*;
 
 
 // DOING
-// - 重构依赖注入：使用单独的 BeanFactory
-// - 重构依赖注入：用方法创建 Bean，而不是直接初始化属性，从而解决顺序上的依赖
-// - MyElementFactory: 使缓存成为单例模式
-// - MyElementFactory: 是各种 MyElementFactory 成为单例
 // - MyElementFactory: 初始化缓存时就注入初始的 MyProject
 // - 重构依赖注入：直接初始化全局 IProject？
 // - MyElementFactory: 使用合适的 MyElementFactory 多态的创建上级 MyElement
@@ -67,8 +63,13 @@ import javax.swing.*;
 // - 考虑将 python 改为 java ， 改为多模块项目
 // - 改用 NIO
 // - 补充建立目录时的各种异常情况
+// - 重构依赖注入：用Map 保存 Bean ?
 
 // DONE
+// - MyElementFactory: 各种 MyElementFactory 成为单例
+// - MyElementFactory: 使缓存成为单例模式
+// - 重构依赖注入：用方法创建 Bean，而不是直接初始化属性，从而解决顺序上的依赖
+// - 重构依赖注入：使用单独的 BeanFactory
 // - visitor: 在超类中创建 visitor 树
 // - MyElementFactory: 引入Lambda
 // - MyElementFactory: 引入抽象工厂方法创建MyElement
@@ -100,7 +101,7 @@ public class HelpController implements VPActionController {
             "    vp-tree -project <project name.vpp>\n";
 
         String changeLog = "Change Log:\n" +
-            "    bug fix - BeanFactory - step 3 - 19:52";
+            " Element Pool    - 20:24";
 
         ApplicationManager.instance().getViewManager().showMessageDialog(
             ApplicationManager.instance()

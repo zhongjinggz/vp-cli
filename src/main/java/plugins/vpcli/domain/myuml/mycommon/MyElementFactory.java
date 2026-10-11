@@ -2,19 +2,21 @@ package plugins.vpcli.domain.myuml.mycommon;
 
 import com.vp.plugin.model.IModelElement;
 
-import java.util.HashMap;
-import java.util.Map;
-
 public abstract class MyElementFactory {
-    private Map<String, MyElement> elementPool = new HashMap<>();
+//    private Map<String, MyElement> elementPool = new HashMap<>();
 
+    private final MyElementPool elementPool;
+
+    public MyElementFactory(MyElementPool myElementPool) {
+        this.elementPool = myElementPool;
+    }
 
     // TOBE abstract
     public abstract MyElement reallyCreate(MyElement parent, IModelElement vpElement);
 
     public MyElement create(MyElement parent, IModelElement vpElement) {
-        if (hasMyElementOf(vpElement.getId())) {
-            return MyElementOf(vpElement.getId());
+        if (elementPool.contains(vpElement.getId())) {
+            return elementPool.get(vpElement.getId());
         } else {
             return reallyCreate(parent, vpElement);
         }
@@ -26,19 +28,12 @@ public abstract class MyElementFactory {
 
         MyElement myParentElement;
 
-        if (hasMyElementOf(parentId)) {
-            myParentElement = MyElementOf(parentId);
+        if (elementPool.contains(parentId)) {
+            myParentElement = elementPool.get(parentId);
         } else {
             myParentElement = create(vpParentElement);
         }
         return create(myParentElement, vpElement);
     }
 
-    private boolean hasMyElementOf(String id) {
-        return this.elementPool.containsKey(id);
-    }
-
-    private MyElement MyElementOf(String vpElement) {
-        return this.elementPool.get(vpElement);
-    }
 }

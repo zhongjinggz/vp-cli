@@ -4,11 +4,16 @@ import plugins.vpcli.application.ExportService;
 import plugins.vpcli.application.ListDiagramsService;
 import plugins.vpcli.application.TreeService;
 import plugins.vpcli.application.writers_old.WriterFactory;
+import plugins.vpcli.domain.myuml.myclassifier.MyClassFactory;
 import plugins.vpcli.domain.myuml.mycommon.MyElementFactoryFactory;
+import plugins.vpcli.domain.myuml.mycommon.MyElementPool;
 import plugins.vpcli.domain.myuml.mydiagram.MyDiagramFactory;
+import plugins.vpcli.domain.myuml.mypackage.MyModelFactory;
+import plugins.vpcli.domain.myuml.mypackage.MyPackageFactory;
 import plugins.vpcli.domain.myuml.myproject.ExportDiagramVisitorFactory;
 import plugins.vpcli.domain.myuml.myproject.MyProjectFactory;
 import plugins.vpcli.domain.myuml.myproject.TreeVisitorFactory;
+import plugins.vpcli.domain.myuml.myusecase.MyUseCaseFactory;
 import plugins.vpcli.domain.outputmodel.ToPumlConverter;
 import plugins.vpcli.domain.vpvisitor.vpdiagramvisitor.element.MyDiagramElementFactory;
 import plugins.vpcli.domain.vpvisitor.vpdiagramvisitor.structure.ToMyDiagramConverter;
@@ -35,9 +40,16 @@ public class BeanFactory {
     private ViElementFactory viElementFactory;
 
     private MyProjectFactory myProjectFactory;
-    private MyElementFactoryFactory myElementFactoryFactory;
     private MyDiagramFactory myDiagramFactory;
     private MyDiagramElementFactory myDiagramElementFactory;
+
+    private MyElementPool myElementPool;
+    private MyPackageFactory myPackageFactory;
+    private MyModelFactory myModelFactory;
+    private MyClassFactory myClassFactory;
+    private MyUseCaseFactory myUseCaseFactory;
+
+    private MyElementFactoryFactory myElementFactoryFactory;
 
     private TreeVisitorFactory treeVisitorFactory;
     private ExportDiagramVisitorFactory exportDiagramVisitorFactory;
@@ -113,9 +125,51 @@ public class BeanFactory {
 
     private MyElementFactoryFactory getMyElementFactoryFactory() {
         if (myElementFactoryFactory == null) {
-            myElementFactoryFactory = new MyElementFactoryFactory();
+            myElementFactoryFactory = new MyElementFactoryFactory(
+                getMyPackageFactory(),
+                getMyClassFactory(),
+                getMyModelFactory(),
+                getMyUseCaseFactory()
+            );
         }
         return myElementFactoryFactory;
+    }
+
+    private MyUseCaseFactory getMyUseCaseFactory() {
+        if (myUseCaseFactory == null) {
+            myUseCaseFactory = new MyUseCaseFactory(getMyElementPool());
+        }
+        return myUseCaseFactory;
+    }
+
+    private MyModelFactory getMyModelFactory() {
+        if (myModelFactory == null) {
+            myModelFactory = new MyModelFactory(getMyElementPool());
+        }
+        return myModelFactory;
+    }
+
+
+
+    private MyClassFactory getMyClassFactory() {
+        if (myClassFactory == null) {
+            myClassFactory = new MyClassFactory(getMyElementPool());
+        }
+        return myClassFactory;
+    }
+
+    private MyPackageFactory getMyPackageFactory() {
+        if (myPackageFactory == null) {
+            myPackageFactory = new MyPackageFactory(getMyElementPool());
+        }
+        return myPackageFactory;
+    }
+
+    private MyElementPool getMyElementPool() {
+        if (myElementPool == null) {
+            myElementPool = new MyElementPool(getMyProjectFactory());
+        }
+        return myElementPool;
     }
 
     private ViElementFactory getViElementFactory() {

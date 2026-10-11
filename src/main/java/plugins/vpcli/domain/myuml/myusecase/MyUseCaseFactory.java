@@ -3,8 +3,13 @@ package plugins.vpcli.domain.myuml.myusecase;
 import com.vp.plugin.model.IModelElement;
 import plugins.vpcli.domain.myuml.mycommon.MyElement;
 import plugins.vpcli.domain.myuml.mycommon.MyElementFactory;
+import plugins.vpcli.domain.myuml.mycommon.MyElementPool;
 
 public class MyUseCaseFactory extends MyElementFactory {
+
+    public MyUseCaseFactory(MyElementPool myElementPool) {
+        super(myElementPool);
+    }
 
     @Override
     public MyUseCase reallyCreate(MyElement parent, IModelElement vpElement) {

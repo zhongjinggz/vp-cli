@@ -4,8 +4,12 @@ import com.vp.plugin.ApplicationManager;
 import com.vp.plugin.model.IProject;
 
 public class VPProjectRepository {
+    private IProject vpProject;
 
     public IProject fromVisualParadigm() {
-        return ApplicationManager.instance().getProjectManager().getProject();
+        if (vpProject == null) {
+            vpProject = ApplicationManager.instance().getProjectManager().getProject();
+        }
+        return vpProject;
     }
 }
