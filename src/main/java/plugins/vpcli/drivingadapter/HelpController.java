@@ -29,13 +29,18 @@ import javax.swing.*;
 
 
 // DOING
-// - visitor: 在超类中创建 visitor 树
+// - 重构依赖注入：使用单独的 BeanFactory
+// - 重构依赖注入：用方法创建 Bean，而不是直接初始化属性，从而解决顺序上的依赖
+// - MyElementFactory: 使缓存成为单例模式
+// - MyElementFactory: 是各种 MyElementFactory 成为单例
+// - MyElementFactory: 初始化缓存时就注入初始的 MyProject
+// - 重构依赖注入：直接初始化全局 IProject？
+// - MyElementFactory: 使用合适的 MyElementFactory 多态的创建上级 MyElement
 // - export: 递归构建父 MyElement
 // - export: 重写生成图表的程序 - Package / Model
 // - export: 重写生成图表的程序 - 为 Model 增加衍型
 
 // TODO
-// - 重构依赖注入：使用单独的 BeanFactory
 // - 重构依赖注入：通过内部类，将若干工具或工程组织在一起，简化依赖注入
 // - 重构依赖注入：使用DSL
 // - 从 ViXxx 中拿后缀，而不是从 ElementType(考虑删除 ElementType)
@@ -64,6 +69,7 @@ import javax.swing.*;
 // - 补充建立目录时的各种异常情况
 
 // DONE
+// - visitor: 在超类中创建 visitor 树
 // - MyElementFactory: 引入Lambda
 // - MyElementFactory: 引入抽象工厂方法创建MyElement
 // - export: 重写生成图表的程序 - 建立 Package / Model 目录结构
@@ -94,7 +100,7 @@ public class HelpController implements VPActionController {
             "    vp-tree -project <project name.vpp>\n";
 
         String changeLog = "Change Log:\n" +
-            "    bug fix - abstract factory pattern - 13:19";
+            "    bug fix - BeanFactory - step 1 - 13:19";
 
         ApplicationManager.instance().getViewManager().showMessageDialog(
             ApplicationManager.instance()

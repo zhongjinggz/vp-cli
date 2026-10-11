@@ -14,12 +14,7 @@ public class MyClass extends MyElement {
     // private String visibility;
     //private String Uid;
 
-    public MyClass(String name, boolean isAbstract) {
-    	super(name);
-        this.setAbstract(isAbstract);
-    }
-
-    public MyClass(MyElement parent, String id, String name, String description) {
+	public MyClass(MyElement parent, String id, String name, String description) {
     	super(parent, id, name, description);
 		isAbstract = false;
 

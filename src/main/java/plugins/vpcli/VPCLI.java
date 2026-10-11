@@ -41,112 +41,114 @@ public class VPCLI implements VPPlugin, VPPluginCommandLineSupport {
     private static final org.slf4j.Logger LOG =
         org.slf4j.LoggerFactory.getLogger(VPCLI.class);
 
-    // Util
-    private DirMaker dirMaker;
-    private MyConsole myConsole;
+    private static final BeanFactory beanFactory = new BeanFactory();
 
-    // Factories
-    private MyDiagramFactory myDiagramFactory;
-    private WriterFactory writerFactory;
-    private FileFactory fileFactory;
-
-
-
-    //private TreePrinter treePrinter;
-    private TreeDirMaker treeDirMaker;
-
-    private ViProjectFactory viProjectFactory;
-    private TreeElementVisitorFactory treeVisitorFactory;
-    private MyDiagramElementFactory myDiagramElementFactory;
-
-    // Repositories
-    private VPProjectRepository vpProjectRepository;
-
-
-    // Domain Services
-
-    // Application Services
-    private ExportService exportService;
-    private TreeService treeService;
-    private ListDiagramsService listDiagramsService;
-
-    // Driving Adapter
-    private CLIController cliController;
-    private ExportDiagramVisitorFactory exportVisitorFactory;
-    private MyProjectFactory myProjectFactory;
-    private MyElementFactory myElementFactory;
-    private ViElementFactory viElementFactory;
-    private VPToMyDiagramConverter vpToMyDiagramConverter;
-    private MyDiagramToPumlConverter myDiagramToPumlConverter;
-    private MyElementFactoryFactory myElementFactoryFactory;
-
-
-    public VPCLI() {
-        injectDependencies();
-    }
+//    // Util
+//    private DirMaker dirMaker;
+//    private MyConsole myConsole;
+//
+//    // Factories
+//    private MyDiagramFactory myDiagramFactory;
+//    private WriterFactory writerFactory;
+//    private FileFactory fileFactory;
+//
+//
+//
+//    //private TreePrinter treePrinter;
+//    private TreeDirMaker treeDirMaker;
+//
+//    private ViProjectFactory viProjectFactory;
+//    private TreeElementVisitorFactory treeVisitorFactory;
+//    private MyDiagramElementFactory myDiagramElementFactory;
+//
+//    // Repositories
+//    private VPProjectRepository vpProjectRepository;
+//
+//
+//    // Domain Services
+//
+//    // Application Services
+//    private ExportService exportService;
+//    private TreeService treeService;
+//    private ListDiagramsService listDiagramsService;
+//
+//    // Driving Adapter
+//    private CLIController cliController;
+//    private ExportDiagramVisitorFactory exportVisitorFactory;
+//    private MyProjectFactory myProjectFactory;
+//    private MyElementFactory myElementFactory;
+//    private ViElementFactory viElementFactory;
+//    private VPToMyDiagramConverter vpToMyDiagramConverter;
+//    private MyDiagramToPumlConverter myDiagramToPumlConverter;
+//    private MyElementFactoryFactory myElementFactoryFactory;
+//
+//
+//    public VPCLI() {
+//        injectDependencies();
+//    }
 
     // TODO 优化依赖注入，按功能分开不同的控制器，只注入本次功能需要的依赖
-    void injectDependencies() {
-
-        // Repository vs Factory
-        // Repository: 已有的内容的存取（不含 new）
-        // Factory: 从无到有创建（用 new）
-
-        // Util
-        this.dirMaker = new DirMaker();
-        this.myConsole = new MyConsole();
-
-        // Repository
-        this.vpProjectRepository = new VPProjectRepository();
-
-        // Factory
-        this.fileFactory = new FileFactory();
-        this.myDiagramFactory = new MyDiagramFactory();
-        this.writerFactory = new WriterFactory(this.fileFactory);
-        this.treeDirMaker = new TreeDirMaker();
-        this.myProjectFactory = new MyProjectFactory(vpProjectRepository);
-        this.myElementFactoryFactory = new MyElementFactoryFactory();
-        this.viElementFactory = new ViElementFactory(myElementFactoryFactory);
-        this.myDiagramElementFactory = new MyDiagramElementFactory();
-
-        this.vpToMyDiagramConverter = new VPToMyDiagramConverter(myDiagramFactory, myDiagramElementFactory);
-        this.myDiagramToPumlConverter = new MyDiagramToPumlConverter();
-
-
-        this.viProjectFactory = new ViProjectFactory(viElementFactory);
-        this.treeVisitorFactory = new TreeElementVisitorFactory();
-        this.exportVisitorFactory = new ExportDiagramVisitorFactory(
-            this.dirMaker,
-            this.myDiagramFactory,
-            this.writerFactory,
-            this.myProjectFactory,
-            this.vpToMyDiagramConverter,
-            this.myDiagramToPumlConverter
-        );
-
-        // Domain Services
-
-        // Application Services
-        this.exportService = new ExportService(
-            this.vpProjectRepository,
-            this.viProjectFactory,
-            this.exportVisitorFactory,
-            this.myProjectFactory
-        );
-
-        this.treeService = new TreeService(
-            this.vpProjectRepository
-            , this.viProjectFactory
-            , this.treeVisitorFactory);
-
-        this.listDiagramsService = new ListDiagramsService(this.vpProjectRepository);
-
-        // Controller
-        this.cliController = new CLIController(
-            this.exportService
-            , this.treeService
-            , this.listDiagramsService, myConsole);
-    }
+//    void injectDependencies() {
+//
+//        // Repository vs Factory
+//        // Repository: 已有的内容的存取（不含 new）
+//        // Factory: 从无到有创建（用 new）
+//
+//        // Util
+//        this.dirMaker = new DirMaker();
+//        this.myConsole = new MyConsole();
+//
+//        // Repository
+//        this.vpProjectRepository = new VPProjectRepository();
+//
+//        // Factory
+//        this.fileFactory = new FileFactory();
+//        this.myDiagramFactory = new MyDiagramFactory();
+//        this.writerFactory = new WriterFactory(this.fileFactory);
+//        this.treeDirMaker = new TreeDirMaker();
+//        this.myProjectFactory = new MyProjectFactory(vpProjectRepository);
+//        this.myElementFactoryFactory = new MyElementFactoryFactory();
+//        this.viElementFactory = new ViElementFactory(myElementFactoryFactory);
+//        this.myDiagramElementFactory = new MyDiagramElementFactory();
+//
+//        this.vpToMyDiagramConverter = new VPToMyDiagramConverter(myDiagramFactory, myDiagramElementFactory);
+//        this.myDiagramToPumlConverter = new MyDiagramToPumlConverter();
+//
+//
+//        this.viProjectFactory = new ViProjectFactory(viElementFactory);
+//        this.treeVisitorFactory = new TreeElementVisitorFactory();
+//        this.exportVisitorFactory = new ExportDiagramVisitorFactory(
+//            this.dirMaker,
+//            this.myDiagramFactory,
+//            this.writerFactory,
+//            this.myProjectFactory,
+//            this.vpToMyDiagramConverter,
+//            this.myDiagramToPumlConverter
+//        );
+//
+//        // Domain Services
+//
+//        // Application Services
+//        this.exportService = new ExportService(
+//            this.vpProjectRepository,
+//            this.viProjectFactory,
+//            this.exportVisitorFactory,
+//            this.myProjectFactory
+//        );
+//
+//        this.treeService = new TreeService(
+//            this.vpProjectRepository
+//            , this.viProjectFactory
+//            , this.treeVisitorFactory);
+//
+//        this.listDiagramsService = new ListDiagramsService(this.vpProjectRepository);
+//
+//        // Controller
+//        this.cliController = new CLIController(
+//            this.exportService
+//            , this.treeService
+//            , this.listDiagramsService, myConsole);
+//    }
 
     @Override
     public void loaded(VPPluginInfo pluginInfo) {
@@ -197,6 +199,7 @@ public class VPCLI implements VPPlugin, VPPluginCommandLineSupport {
     // CLI 入口：解析参数并分发到导入/导出逻辑
     @Override
     public void invoke(String[] args) {
+        CLIController cliController = beanFactory.getCLIController();
         try {
             cliController.invoke(args);
         } catch (IOException e) {

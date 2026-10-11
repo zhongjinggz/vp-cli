@@ -10,7 +10,29 @@ public abstract class MyElementFactory {
 
 
     // TOBE abstract
-    public abstract MyElement create(MyElement parent, IModelElement vpElement);
+    public abstract MyElement reallyCreate(MyElement parent, IModelElement vpElement);
+
+    public MyElement create(MyElement parent, IModelElement vpElement) {
+        if (hasMyElementOf(vpElement.getId())) {
+            return MyElementOf(vpElement.getId());
+        } else {
+            return reallyCreate(parent, vpElement);
+        }
+    }
+
+    public MyElement create(IModelElement vpElement) {
+        var vpParentElement = vpElement.getParent();
+        var parentId = vpParentElement.getId();
+
+        MyElement myParentElement;
+
+        if (hasMyElementOf(parentId)) {
+            myParentElement = MyElementOf(parentId);
+        } else {
+            myParentElement = create(vpParentElement);
+        }
+        return create(myParentElement, vpElement);
+    }
 
     private boolean hasMyElementOf(String id) {
         return this.elementPool.containsKey(id);
@@ -18,23 +40,5 @@ public abstract class MyElementFactory {
 
     private MyElement MyElementOf(String vpElement) {
         return this.elementPool.get(vpElement);
-    }
-
-    protected MyElement getOrCreateElement(
-        IModelElement vpElement,
-        MyElement parent,
-        MyElementCreator createMyElement
-    ) {
-        if (hasMyElementOf(vpElement.getId())) {
-            return MyElementOf(vpElement.getId());
-        } else {
-            return createMyElement.from(vpElement, parent);
-        }
-    }
-
-
-    @FunctionalInterface
-    protected static interface MyElementCreator {
-        MyElement from(IModelElement vpElement, MyElement parent);
     }
 }

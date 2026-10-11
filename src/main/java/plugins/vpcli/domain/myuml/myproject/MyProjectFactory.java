@@ -16,10 +16,10 @@ public class MyProjectFactory {
 
     public MyProject fromGlobal() {
         if (myProject == null) {
-            IProject viProject = vpProjectRepository.fromVisualParadigm();
+            IProject vpProject = vpProjectRepository.fromVisualParadigm();
             myProject = new MyProject(
-                viProject.getId(),
-                viProject.getName());
+                vpProject.getId(),
+                vpProject.getName());
         }
         return myProject;
     }

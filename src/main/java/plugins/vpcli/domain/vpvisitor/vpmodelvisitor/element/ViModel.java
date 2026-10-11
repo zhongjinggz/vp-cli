@@ -4,7 +4,6 @@ import com.vp.plugin.model.IModelElement;
 import plugins.vpcli.domain.myuml.mycommon.MyElement;
 import plugins.vpcli.domain.myuml.mycommon.MyElementFactory;
 import plugins.vpcli.domain.myuml.mypackage.MyModel;
-import plugins.vpcli.domain.myuml.mypackage.MyPackage;
 import plugins.vpcli.domain.vpvisitor.vpmodelvisitor.visitor.ViElementVisitor;
 
 import java.io.IOException;

@@ -7,16 +7,12 @@ import plugins.vpcli.domain.myuml.mycommon.MyElementFactory;
 public class MyUseCaseFactory extends MyElementFactory {
 
     @Override
-    public MyUseCase create(MyElement parent, IModelElement vpElement) {
-        return (MyUseCase) getOrCreateElement(
-            vpElement, parent,
-            (ele, par) ->
-                new MyUseCase(
-                    par,
-                    ele.getId(),
-                    ele.getName(),
-                    ele.getDescription()
-                )
+    public MyUseCase reallyCreate(MyElement parent, IModelElement vpElement) {
+        return new MyUseCase(
+            parent,
+            vpElement.getId(),
+            vpElement.getName(),
+            vpElement.getDescription()
         );
     }
 }
