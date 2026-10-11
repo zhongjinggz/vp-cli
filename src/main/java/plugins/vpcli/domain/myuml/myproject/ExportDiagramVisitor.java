@@ -4,10 +4,6 @@ import plugins.vpcli.application.writers_old.WriterFactory;
 import plugins.vpcli.domain.myuml.mycommon.MyElement;
 import plugins.vpcli.domain.myuml.mydiagram.MyDiagramFactory;
 import plugins.vpcli.domain.outputmodel.MyDiagramToPumlConverter;
-import plugins.vpcli.domain.outputmodel.PlantUMLDiagram;
-import plugins.vpcli.domain.myuml.mycommon.MyElement_old;
-import plugins.vpcli.domain.myuml.mydiagram.MyDiagram;
-import plugins.vpcli.domain.myuml.mydiagram_old.OldDiagramFactory;
 import plugins.vpcli.domain.vpvisitor.vpdiagramvisitor.structure.VPToMyDiagramConverter;
 import plugins.vpcli.domain.vpvisitor.vpmodelvisitor.element.*;
 import plugins.vpcli.domain.vpvisitor.vpmodelvisitor.visitor.ViElementVisitor;
@@ -21,9 +17,7 @@ public class ExportDiagramVisitor extends ViElementVisitor {
     private final DirMaker makeDir;
     private final MyDiagramFactory diagramFactory;
     private final WriterFactory writerFactory;
-    private final File parentDir;
     private final MyProject myProject;
-    private final ExportDiagramVisitor higherVisitor;
     private final VPToMyDiagramConverter convertToMyDiagram;
     private final MyDiagramToPumlConverter convertToPlantUML;
 
@@ -40,24 +34,24 @@ public class ExportDiagramVisitor extends ViElementVisitor {
         VPToMyDiagramConverter vpToMyDiagramConverter,
         MyDiagramToPumlConverter myDiagramToPumlConverter
     ) {
+        super(higherVisitor);
+
         this.myProject = myProject;
         this.diagramFactory = diagramFactory;
         this.writerFactory = writerFactory;
         this.makeDir = dirMaker;
-        this.higherVisitor = higherVisitor;
-        this.parentDir = higherVisitor.getPath();
         this.convertToMyDiagram = vpToMyDiagramConverter;
         this.convertToPlantUML = myDiagramToPumlConverter;
     }
 
     // used by RootExportDiagramVisitor only
     ExportDiagramVisitor(File path, MyProject myProject) {
+        super(null);
+
         this.myProject = myProject;
         this.diagramFactory = null;
         this.writerFactory = null;
         this.makeDir = null;
-        this.higherVisitor = null;
-        this.parentDir = null;
         this.convertToMyDiagram = null;
         this.convertToPlantUML = null;
 
@@ -104,11 +98,14 @@ public class ExportDiagramVisitor extends ViElementVisitor {
     }
 
     private void buildElementModel(ViPackage viPackage) {
-        MyElement myElement = viPackage.toMyElement(higherVisitor.myElement);
+        MyElement myElement = viPackage.toMyElementUnder(
+            ((ExportDiagramVisitor)higherVisitor).myElement);
         this.myElement = myElement;
     }
 
     private void makeDirOf(ViPackage viPackage) {
+
+        File parentDir = ((ExportDiagramVisitor) higherVisitor).getPath();
         this.path = makeDir
             .named(viPackage.getName() + viPackage.getType().getSuffix())
             .under(parentDir);

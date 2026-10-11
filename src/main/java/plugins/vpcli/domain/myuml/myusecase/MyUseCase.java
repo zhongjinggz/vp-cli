@@ -11,8 +11,8 @@ public class MyUseCase extends MyElement {
 	private String Uid;
 
 
-	public MyUseCase(String name) {
-        super(name);
+	public MyUseCase(MyElement parent, String id, String name, String Description) {
+        super(parent, id, name, Description);
 	}
 	public List<String> getStereotypes() {
 		return stereotypes;

@@ -1,11 +1,17 @@
 package plugins.vpcli.domain.vpvisitor.vpmodelvisitor.visitor;
 
+import plugins.vpcli.domain.myuml.myproject.ExportDiagramVisitor;
 import plugins.vpcli.domain.vpvisitor.vpmodelvisitor.element.*;
 
 import java.io.IOException;
 
 public abstract class ViElementVisitor {
+    protected final ViElementVisitor higherVisitor;
     private boolean lastOrNot = false;
+
+    protected ViElementVisitor(ViElementVisitor higherVisitor) {
+        this.higherVisitor = higherVisitor;
+    }
 
     public void setLast(boolean lastOrNot) {
         this.lastOrNot = lastOrNot;

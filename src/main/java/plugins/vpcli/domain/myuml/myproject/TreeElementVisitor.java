@@ -9,6 +9,7 @@ public class TreeElementVisitor extends ViElementVisitor {
     private String prefix = "";
 
     public TreeElementVisitor(TreeElementVisitor preLevelVisitor) {
+        super(null);
         if (preLevelVisitor == null) {
             this.prefix = "";
         } else if (preLevelVisitor.isLast()) {

@@ -22,7 +22,7 @@ public class ViClass extends ViModelElement {
     }
 
     @Override
-    public MyPackage toMyElement(MyElement parent) {
+    public MyPackage toMyElementUnder(MyElement parent) {
         return null;
     }
 }

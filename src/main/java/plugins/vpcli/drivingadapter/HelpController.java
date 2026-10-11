@@ -29,8 +29,6 @@ import javax.swing.*;
 
 
 // DOING
-// - MyElementFactory: 引入Lambda
-// - MyElementFactory: 引入抽象工厂方法创建MyElement
 // - visitor: 在超类中创建 visitor 树
 // - export: 递归构建父 MyElement
 // - export: 重写生成图表的程序 - Package / Model
@@ -66,6 +64,8 @@ import javax.swing.*;
 // - 补充建立目录时的各种异常情况
 
 // DONE
+// - MyElementFactory: 引入Lambda
+// - MyElementFactory: 引入抽象工厂方法创建MyElement
 // - export: 重写生成图表的程序 - 建立 Package / Model 目录结构
 // - 增加日志机制 1）记录错误 2）记录内部运作轨迹
 // - export：将图表放入目录结构
@@ -94,7 +94,7 @@ public class HelpController implements VPActionController {
             "    vp-tree -project <project name.vpp>\n";
 
         String changeLog = "Change Log:\n" +
-            "    - rewrite MyElementFactory - abstract factory pattern - 13:19";
+            "    bug fix - abstract factory pattern - 13:19";
 
         ApplicationManager.instance().getViewManager().showMessageDialog(
             ApplicationManager.instance()

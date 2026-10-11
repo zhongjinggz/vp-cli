@@ -105,13 +105,13 @@ public class MyUseCaseDiagram extends OldDiagram {
     	boolean isInPackage = !isRootLevelInDiagram(modelElement);
     	String name = modelElement.getName();
     	boolean isBusiness = modelElement.isBusinessModel();
-		MyUseCase uUseCase = new MyUseCase(name);
-		uUseCase.setInPackage(isInPackage);
+//		MyUseCase uUseCase = new MyUseCase(name);
+//		uUseCase.setInPackage(isInPackage);
 //        uUseCase.setDescription(modelElement.getDescription());
-		uUseCase.setStereotypes(extractStereotypes(modelElement));
-		uUseCase.setBusiness(isBusiness);
-		exportedUseCases.add(uUseCase);
-		if (uPackage != null) uPackage.getUseCases().add(uUseCase);
+//		uUseCase.setStereotypes(extractStereotypes(modelElement));
+//		uUseCase.setBusiness(isBusiness);
+//		exportedUseCases.add(uUseCase);
+//		if (uPackage != null) uPackage.getUseCases().add(uUseCase);
 	}
 
 

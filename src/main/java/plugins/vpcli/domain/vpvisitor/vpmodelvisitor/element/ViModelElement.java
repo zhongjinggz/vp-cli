@@ -60,5 +60,5 @@ public abstract class ViModelElement extends ViElement {
         return this.vpElement;
     }
 
-    public abstract MyPackage toMyElement(MyElement parent);
+    public abstract MyPackage toMyElementUnder(MyElement parent);
 }

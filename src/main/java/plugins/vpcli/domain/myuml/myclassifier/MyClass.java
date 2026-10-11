@@ -19,8 +19,9 @@ public class MyClass extends MyElement {
         this.setAbstract(isAbstract);
     }
 
-    public MyClass(String name) {
-    	super(name);
+    public MyClass(MyElement parent, String id, String name, String description) {
+    	super(parent, id, name, description);
+		isAbstract = false;
 
 	}
 

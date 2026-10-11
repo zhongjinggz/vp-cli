@@ -23,7 +23,7 @@ public class ViModel extends ViPackage {
     }
 
     @Override
-    public MyModel toMyElement(MyElement parent) {
+    public MyModel toMyElementUnder(MyElement parent) {
 //        return myElementFactory.createModel(parent, vpElement);
         return (MyModel) myElementFactory.create(parent, vpElement);
 
