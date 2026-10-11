@@ -3,9 +3,8 @@ package plugins.vpcli.domain.myuml.myproject;
 import org.jetbrains.annotations.NotNull;
 import plugins.vpcli.application.writers_old.WriterFactory;
 import plugins.vpcli.domain.myuml.mydiagram.MyDiagramFactory;
-import plugins.vpcli.domain.myuml.mydiagram_old.OldDiagramFactory;
-import plugins.vpcli.domain.outputmodel.MyDiagramToPumlConverter;
-import plugins.vpcli.domain.vpvisitor.vpdiagramvisitor.structure.VPToMyDiagramConverter;
+import plugins.vpcli.domain.outputmodel.ToPumlConverter;
+import plugins.vpcli.domain.vpvisitor.vpdiagramvisitor.structure.ToMyDiagramConverter;
 import plugins.vpcli.domain.vpvisitor.vpmodelvisitor.visitor.ViElementVisitor;
 import plugins.vpcli.domain.vpvisitor.vpmodelvisitor.visitor.ViElementVisitorFactory;
 import plugins.vpcli.drivenadapter.DirMaker;
@@ -18,8 +17,8 @@ public class ExportDiagramVisitorFactory implements ViElementVisitorFactory {
     private final WriterFactory writerFactory;
     private final MyProjectFactory myProjectFactory;
     private final DirMaker dirMaker;
-    private final VPToMyDiagramConverter vpToMyDiagramConverter;
-    private final MyDiagramToPumlConverter myDiagramToPumlConverter;
+    private final ToMyDiagramConverter toMyDiagramConverter;
+    private final ToPumlConverter toPumlConverter;
 
     private File rootDir;
 
@@ -28,15 +27,15 @@ public class ExportDiagramVisitorFactory implements ViElementVisitorFactory {
         MyDiagramFactory diagramFactory,
         WriterFactory writerFactory,
         MyProjectFactory myProjectFactory,
-        VPToMyDiagramConverter vpToMyDiagramConverter,
-        MyDiagramToPumlConverter myDiagramToPumlConverter
+        ToMyDiagramConverter toMyDiagramConverter,
+        ToPumlConverter toPumlConverter
     ) {
         this.dirMaker = dirMaker;
         this.diagramFactory = diagramFactory;
         this.writerFactory = writerFactory;
         this.myProjectFactory = myProjectFactory;
-        this.vpToMyDiagramConverter = vpToMyDiagramConverter;
-        this.myDiagramToPumlConverter = myDiagramToPumlConverter;
+        this.toMyDiagramConverter = toMyDiagramConverter;
+        this.toPumlConverter = toPumlConverter;
     }
 
     @Override
@@ -50,8 +49,8 @@ public class ExportDiagramVisitorFactory implements ViElementVisitorFactory {
             diagramFactory,
             writerFactory,
             myProject,
-            vpToMyDiagramConverter,
-            myDiagramToPumlConverter
+            toMyDiagramConverter,
+            toPumlConverter
         );
 
     }

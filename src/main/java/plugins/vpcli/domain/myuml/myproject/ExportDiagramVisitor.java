@@ -3,8 +3,8 @@ package plugins.vpcli.domain.myuml.myproject;
 import plugins.vpcli.application.writers_old.WriterFactory;
 import plugins.vpcli.domain.myuml.mycommon.MyElement;
 import plugins.vpcli.domain.myuml.mydiagram.MyDiagramFactory;
-import plugins.vpcli.domain.outputmodel.MyDiagramToPumlConverter;
-import plugins.vpcli.domain.vpvisitor.vpdiagramvisitor.structure.VPToMyDiagramConverter;
+import plugins.vpcli.domain.outputmodel.ToPumlConverter;
+import plugins.vpcli.domain.vpvisitor.vpdiagramvisitor.structure.ToMyDiagramConverter;
 import plugins.vpcli.domain.vpvisitor.vpmodelvisitor.element.*;
 import plugins.vpcli.domain.vpvisitor.vpmodelvisitor.visitor.ViElementVisitor;
 import plugins.vpcli.drivenadapter.DirMaker;
@@ -18,8 +18,8 @@ public class ExportDiagramVisitor extends ViElementVisitor {
     private final MyDiagramFactory diagramFactory;
     private final WriterFactory writerFactory;
     private final MyProject myProject;
-    private final VPToMyDiagramConverter convertToMyDiagram;
-    private final MyDiagramToPumlConverter convertToPlantUML;
+    private final ToMyDiagramConverter convertToMyDiagram;
+    private final ToPumlConverter convertToPlantUML;
 
     protected File path;
     private MyElement myElement;
@@ -31,8 +31,8 @@ public class ExportDiagramVisitor extends ViElementVisitor {
         MyDiagramFactory diagramFactory,
         WriterFactory writerFactory,
         MyProject myProject,
-        VPToMyDiagramConverter vpToMyDiagramConverter,
-        MyDiagramToPumlConverter myDiagramToPumlConverter
+        ToMyDiagramConverter toMyDiagramConverter,
+        ToPumlConverter toPumlConverter
     ) {
         super(higherVisitor);
 
@@ -40,8 +40,8 @@ public class ExportDiagramVisitor extends ViElementVisitor {
         this.diagramFactory = diagramFactory;
         this.writerFactory = writerFactory;
         this.makeDir = dirMaker;
-        this.convertToMyDiagram = vpToMyDiagramConverter;
-        this.convertToPlantUML = myDiagramToPumlConverter;
+        this.convertToMyDiagram = toMyDiagramConverter;
+        this.convertToPlantUML = toPumlConverter;
     }
 
     // used by RootExportDiagramVisitor only

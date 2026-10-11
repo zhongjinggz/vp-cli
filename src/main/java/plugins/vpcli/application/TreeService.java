@@ -1,6 +1,6 @@
 package plugins.vpcli.application;
 
-import plugins.vpcli.domain.myuml.myproject.TreeElementVisitorFactory;
+import plugins.vpcli.domain.myuml.myproject.TreeVisitorFactory;
 import plugins.vpcli.domain.vpvisitor.vpmodelvisitor.structure.ViProjectFactory;
 import plugins.vpcli.drivenadapter.VPProjectRepository;
 
@@ -13,11 +13,11 @@ public class TreeService {
 
     private final VPProjectRepository vpProjectRepository;
     private final ViProjectFactory viProjectFactory;
-    private final TreeElementVisitorFactory treeVisitorFactory;
+    private final TreeVisitorFactory treeVisitorFactory;
 
     public TreeService(VPProjectRepository vpProjectRepository
         , ViProjectFactory viProjectFactory
-        , TreeElementVisitorFactory treeVisitorFactory) {
+        , TreeVisitorFactory treeVisitorFactory) {
 
         this.vpProjectRepository = vpProjectRepository;
         this.viProjectFactory = viProjectFactory;

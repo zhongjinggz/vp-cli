@@ -12,7 +12,7 @@ import java.util.List;
 import org.junit.jupiter.api.Test;
 import plugins.vpcli.domain.myuml.mycommon.ElementType;
 
-class VPToMyDiagramConverterAsElementTest {
+class ToMyDiagramConverterAsElementTest {
 
     @Test
     void shouldReturnNameFromDiagram() {

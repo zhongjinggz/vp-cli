@@ -100,7 +100,7 @@ public class HelpController implements VPActionController {
             "    vp-tree -project <project name.vpp>\n";
 
         String changeLog = "Change Log:\n" +
-            "    bug fix - BeanFactory - step 1 - 13:19";
+            "    bug fix - BeanFactory - step 3 - 19:52";
 
         ApplicationManager.instance().getViewManager().showMessageDialog(
             ApplicationManager.instance()

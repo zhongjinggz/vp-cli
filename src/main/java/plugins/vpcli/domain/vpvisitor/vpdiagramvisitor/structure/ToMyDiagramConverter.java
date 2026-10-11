@@ -1,25 +1,21 @@
 package plugins.vpcli.domain.vpvisitor.vpdiagramvisitor.structure;
 
-import com.vp.plugin.diagram.IConnectorUIModel;
 import com.vp.plugin.diagram.IDiagramUIModel;
-import com.vp.plugin.diagram.IShapeUIModel;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import plugins.vpcli.domain.myuml.mycommon.MyElement;
 import plugins.vpcli.domain.myuml.mydiagram.MyDiagram;
-import plugins.vpcli.domain.myuml.mydiagram.BaseMyDiagramElement;
 import plugins.vpcli.domain.myuml.mydiagram.MyDiagramElement;
 import plugins.vpcli.domain.myuml.mydiagram.MyDiagramFactory;
 import plugins.vpcli.domain.vpvisitor.vpdiagramvisitor.element.MyDiagramElementFactory;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class VPToMyDiagramConverter {
+public class ToMyDiagramConverter {
     private final MyDiagramElementFactory createElement;
     private MyDiagramFactory myDiagramFactory;
 
-    public VPToMyDiagramConverter(
+    public ToMyDiagramConverter(
         MyDiagramFactory myDiagramFactory
         , MyDiagramElementFactory elementFactory) {
 

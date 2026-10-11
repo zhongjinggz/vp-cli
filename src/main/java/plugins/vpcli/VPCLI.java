@@ -1,23 +1,7 @@
 package plugins.vpcli;
 
 import com.vp.plugin.*;
-import plugins.vpcli.application.ListDiagramsService;
-import plugins.vpcli.domain.myuml.mycommon.MyElementFactory;
-import plugins.vpcli.domain.myuml.mycommon.MyElementFactoryFactory;
-import plugins.vpcli.domain.myuml.mydiagram.MyDiagramFactory;
-import plugins.vpcli.domain.myuml.myproject.ExportDiagramVisitorFactory;
-import plugins.vpcli.domain.myuml.myproject.MyProjectFactory;
-import plugins.vpcli.domain.myuml.myproject.TreeElementVisitorFactory;
-import plugins.vpcli.domain.outputmodel.MyDiagramToPumlConverter;
-import plugins.vpcli.domain.vpvisitor.vpdiagramvisitor.element.MyDiagramElementFactory;
-import plugins.vpcli.domain.vpvisitor.vpdiagramvisitor.structure.VPToMyDiagramConverter;
-import plugins.vpcli.domain.vpvisitor.vpmodelvisitor.element.ViElementFactory;
-import plugins.vpcli.domain.vpvisitor.vpmodelvisitor.structure.ViProjectFactory;
-import plugins.vpcli.drivenadapter.*;
 import plugins.vpcli.drivingadapter.CLIController;
-import plugins.vpcli.application.ExportService;
-import plugins.vpcli.application.TreeService;
-import plugins.vpcli.application.writers_old.WriterFactory;
 
 import java.io.File;
 import java.io.IOException;
