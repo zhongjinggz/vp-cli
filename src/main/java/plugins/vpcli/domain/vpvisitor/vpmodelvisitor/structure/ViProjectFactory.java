@@ -4,9 +4,15 @@ import com.vp.plugin.model.IProject;
 import plugins.vpcli.domain.vpvisitor.vpmodelvisitor.element.ViElementFactory;
 
 public class ViProjectFactory {
+
+    private ViElementFactory viElementFactory;
+
+    public ViProjectFactory(ViElementFactory viElementFactory) {
+        this.viElementFactory = viElementFactory;
+    }
     public ViProject of(IProject project) {
         // TODO VPElementFactory should be injected instead of new directly
-        return new ViProject(project, new ViElementFactory());
+        return new ViProject(project, viElementFactory);
     }
 }
 

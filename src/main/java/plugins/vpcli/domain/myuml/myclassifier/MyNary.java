@@ -1,19 +1,18 @@
 package plugins.vpcli.domain.myuml.myclassifier;
 
 import plugins.vpcli.domain.myuml.mycommon.MyElement;
+import plugins.vpcli.domain.myuml.mycommon.MyElement_old;
 
 public class MyNary extends MyElement {
     private final String name;
     private final String id;
-    private final boolean isInPackage;
     private final String alias;
     private String Uid;
-    
-    public MyNary(String name, String id, boolean isInPackage) {
+
+    public MyNary(String name, String id) {
         super(name);
     	this.name = (name != null && !name.isEmpty()) ? name : null;
         this.id = id;
-        this.isInPackage = isInPackage;
         this.alias = generateAlias();
     }
     
@@ -32,10 +31,6 @@ public class MyNary extends MyElement {
 
     public String getAlias() {
         return alias;
-    }
-
-    public boolean isInPackage() {
-        return isInPackage;
     }
 
 	public String getUid() {

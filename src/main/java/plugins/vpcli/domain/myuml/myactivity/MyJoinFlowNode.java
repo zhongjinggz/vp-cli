@@ -1,8 +1,8 @@
 package plugins.vpcli.domain.myuml.myactivity;
 
-import plugins.vpcli.domain.myuml.mycommon.MyElement;
+import plugins.vpcli.domain.myuml.mycommon.MyElement_old;
 
-public class MyJoinFlowNode extends MyElement implements MyFlowNode {
+public class MyJoinFlowNode extends MyElement_old implements MyFlowNode {
 
     private MyFlowNode nextNode;
     private String prevLabel;

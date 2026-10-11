@@ -1,4 +1,9 @@
 package plugins.vpcli.domain.myuml.mydiagram;
 
-public class MyEdge extends MyDiagramElement {
+import plugins.vpcli.domain.myuml.mycommon.MyElement;
+
+public class MyEdge extends BaseMyDiagramElement {
+    public MyEdge(String id, DiagramElementType diagramElementType, MyElement modelElement, MyDiagramElement parentDiagramElement) {
+        super(id, diagramElementType, modelElement, parentDiagramElement);
+    }
 }

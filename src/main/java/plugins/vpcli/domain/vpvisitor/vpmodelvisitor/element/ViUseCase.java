@@ -1,13 +1,22 @@
 package plugins.vpcli.domain.vpvisitor.vpmodelvisitor.element;
 
 import com.vp.plugin.model.IModelElement;
+import plugins.vpcli.domain.myuml.mycommon.MyElement;
+import plugins.vpcli.domain.myuml.mycommon.MyElement_old;
+import plugins.vpcli.domain.myuml.mycommon.MyElementFactory;
+import plugins.vpcli.domain.myuml.mypackage.MyPackage;
 import plugins.vpcli.domain.vpvisitor.vpmodelvisitor.visitor.ViElementVisitor;
 
 import java.io.IOException;
 
 public class ViUseCase extends ViModelElement {
-    public ViUseCase(IModelElement vpElement, ViElementFactory elementFactory) {
-        super(vpElement, elementFactory);
+    public ViUseCase(IModelElement vpElement, ViElementFactory viElementFactory, MyElementFactory myElementFactory) {
+        super(vpElement, viElementFactory, myElementFactory);
+    }
+
+    @Override
+    public MyPackage toMyElement(MyElement parent) {
+        return null;
     }
 
     @Override

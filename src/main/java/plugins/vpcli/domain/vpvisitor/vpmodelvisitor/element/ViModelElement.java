@@ -3,25 +3,26 @@ package plugins.vpcli.domain.vpvisitor.vpmodelvisitor.element;
 import com.vp.plugin.diagram.IDiagramUIModel;
 import com.vp.plugin.model.IModelElement;
 import plugins.vpcli.domain.myuml.mycommon.ElementType;
-import plugins.vpcli.domain.vpvisitor.vpmodelvisitor.visitor.ViElementVisitor;
+import plugins.vpcli.domain.myuml.mycommon.MyElement;
+import plugins.vpcli.domain.myuml.mycommon.MyElementFactory;
+import plugins.vpcli.domain.myuml.mypackage.MyPackage;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
 public abstract class ViModelElement extends ViElement {
-    private final IModelElement vpElement;
+    protected final IModelElement vpElement;
     private final ViElementFactory createElement;
+    protected MyElementFactory myElementFactory;
 
-    public ViModelElement(IModelElement vpElement, ViElementFactory elementFactory) {
+    public ViModelElement(IModelElement vpElement,
+                          ViElementFactory elementFactory,
+                          MyElementFactory myElementFactory
+    ) {
         this.vpElement = vpElement;
         this.createElement = elementFactory;
+        this.myElementFactory = myElementFactory;
     }
-
-//    @Override
-//    public void accept(ViElementVisitor visitor) throws IOException {
-//        visitor.visit(this);
-//    }
 
     public String getName() {
         return vpElement.getName();
@@ -58,4 +59,6 @@ public abstract class ViModelElement extends ViElement {
     public IModelElement getVPModelElement() {
         return this.vpElement;
     }
+
+    public abstract MyPackage toMyElement(MyElement parent);
 }

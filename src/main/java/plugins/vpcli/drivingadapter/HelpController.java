@@ -11,10 +11,33 @@ import javax.swing.*;
 // 2）先遍历VP一遍，创建模型（写文件，同时缓存）；然后再补图（不必树形遍历，用API一次性读出所有的图，利用已缓存的模型）
 // 第二中策略较通顺，但为了快些看到成效，先用第一种策略，之后再改成第二种。
 
+
+// 三种模型
+// 1）Visual Paradigm 模型
+//    简述：Visual Paradigm 的插件机制所公开的模型
+//    参考：https://www.visual-paradigm.com/support/documents/pluginjavadoc/index.html
+//    类名：即 Visual Paradigm 中的类名。例如 IPoject, IClass, IDiagramUIModel
+//    属性/变量名：vpXxx (vp 是 Visual Paradigm 的简称），例如 vpProject, vpClass, vpDiagram
+// 2）Visitor 模型
+//    简述：为了使用 Visitor 模式遍历 Visual Paradigm 中的模型，对其中的元素进行的简单包装
+//    类名：ViXxx （Vi 是 Visitor 的简称），例如 ViProject, ViClass, ViDiagram
+//    属性/变量名： viXxx，例如 viProject, viClass, viDiagram
+// 3）内部UML元模型
+//    简述：本项目的核心元模型。由 Visual Paradigm 模型转换为内部UML模型，再基于此进行导出
+//    类名：MyXxx，例如 MyProject, MyClass, MyDiagram
+//    变量名：myXxx，例如 myProject, myClass, myDiagram
+
+
 // DOING
-// - export: 重写生成图表的程序 - Class / Package
+// - export: 重写生成图表的程序 - Package / Model
+// - export: 重写生成图表的程序 - 为 Model 增加衍型
 
 // TODO
+// - 重构依赖注入：使用单独的 BeanFactory
+// - 重构依赖注入：通过内部类，将若干工具或工程组织在一起，简化依赖注入
+// - 重构依赖注入：使用DSL
+// - 从 ViXxx 中拿后缀，而不是从 ElementType(考虑删除 ElementType)
+// - export: 重写生成图表的程序 - Class
 // - export: 重写生成图表的程序 - Association
 // - export: 重写生成图表的程序 - Dependency
 // - export: 重写生成图表的程序 - Stereotype/Keyword
@@ -22,12 +45,12 @@ import javax.swing.*;
 // - export：将图表放入 markdown
 // - 翻译和修改 README
 
+
 // - 清理测试
 // - 统一处理错误
 // - 清理 IDEA 警告
 // - 拆分成多个 Controller， 分别依赖注入
 
-// - 增加日志机制 1）记录错误 2）记录内部运作轨迹
 // - Tree: 根据参数控制 Tree 的类型和深度
 // - export: 图表 markdown 中放入交叉引用
 // - export: 根据模型内容生成 markdown
@@ -39,6 +62,7 @@ import javax.swing.*;
 // - 补充建立目录时的各种异常情况
 
 // DONE
+// - 增加日志机制 1）记录错误 2）记录内部运作轨迹
 // - export：将图表放入目录结构
 // - export: 使用Visitor 创建目录
 // - Tree：显示 diagram

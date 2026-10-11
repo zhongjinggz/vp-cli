@@ -1,11 +1,11 @@
 package plugins.vpcli.domain.myuml.myactivity;
 
-import plugins.vpcli.domain.myuml.mycommon.MyElement;
+import plugins.vpcli.domain.myuml.mycommon.MyElement_old;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class MySplitFlowNode extends MyElement implements MyFlowNode {
+public class MySplitFlowNode extends MyElement_old implements MyFlowNode {
 
     private final String type;
     private final List<MyFlowNode> branches = new ArrayList<>();

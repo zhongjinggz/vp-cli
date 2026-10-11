@@ -2,6 +2,7 @@ package plugins.vpcli.domain.vpvisitor.vpmodelvisitor.structure;
 
 import com.vp.plugin.model.IProject;
 import org.checkerframework.checker.nullness.qual.NonNull;
+import org.jetbrains.annotations.NotNull;
 import plugins.vpcli.domain.myuml.mycommon.ElementType;
 import plugins.vpcli.domain.vpvisitor.vpmodelvisitor.element.ViElement;
 import plugins.vpcli.domain.vpvisitor.vpmodelvisitor.element.ViElementFactory;
@@ -37,10 +38,7 @@ public class ViProject {
     }
 
     private @NonNull List<ViElement> createTopLevelElements() {
-        String[] vpModelTypes = elementTypes.stream()
-            .filter(ElementType::isModelElement)
-            .map( ElementType::getVPModelType)
-            .toArray(String[]::new);
+        String[] vpModelTypes = getVpModelTypeArray();
         var vpElements = project.toModelElementArray(vpModelTypes);
 
         List<ViElement> result = new ArrayList<>();
@@ -48,6 +46,14 @@ public class ViProject {
             result.add(createElement.from(anElement));
         }
         return result;
+    }
+
+    private String @NotNull [] getVpModelTypeArray() {
+        String[] vpModelTypes = elementTypes.stream()
+            .filter(ElementType::isModelElement)
+            .map( ElementType::getVPModelType)
+            .toArray(String[]::new);
+        return vpModelTypes;
     }
 
     private void elementsAccept(List<ViElement> elements

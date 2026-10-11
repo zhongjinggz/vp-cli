@@ -1,6 +1,5 @@
 package plugins.vpcli.domain.vpvisitor.vpmodelvisitor.visitor;
 
-import plugins.vpcli.domain.vpvisitor.vpdiagramvisitor.element.ViDiagramElement;
 import plugins.vpcli.domain.vpvisitor.vpmodelvisitor.element.*;
 
 import java.io.IOException;

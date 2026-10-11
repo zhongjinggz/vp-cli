@@ -1,11 +1,11 @@
 package plugins.vpcli.domain.myuml.myinteraction;
 
-import plugins.vpcli.domain.myuml.mycommon.MyElement;
+import plugins.vpcli.domain.myuml.mycommon.MyElement_old;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class MyLifeline extends MyElement {
+public class MyLifeline extends MyElement_old {
 
 	private List<String> stereotypes = new ArrayList<>();
 	private boolean isCreatedByMessage;

@@ -5,31 +5,12 @@ import plugins.vpcli.domain.myuml.mycommon.MyElement;
 import java.util.List;
 
 public class MyActor extends MyElement {
-	private List<String> stereotypes;
-	private boolean isInPackage;
 	private boolean isBusiness;
-	private String Uid;
-	
+
 	public MyActor(String name) {
 		super(name);
 	}
 
-
-	public List<String> getStereotypes() {
-		return stereotypes;
-	}
-
-	public void setStereotypes(List<String> stereotypes) {
-		this.stereotypes = stereotypes;
-	}
-
-	public boolean isInPackage() {
-		return isInPackage;
-	}
-
-	public void setInPackage(boolean isInPackage) {
-		this.isInPackage = isInPackage;
-	}
 
 	public boolean isBusiness() {
 		return isBusiness;
@@ -39,12 +20,4 @@ public class MyActor extends MyElement {
 		this.isBusiness = isBusiness;
 	}
 
-
-    public String getUid() {
-        return Uid;
-    }
-
-    public void setUid(String uid) {
-        Uid = uid;
-    }
 }

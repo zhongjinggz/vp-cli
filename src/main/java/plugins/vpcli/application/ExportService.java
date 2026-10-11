@@ -32,7 +32,6 @@ public class ExportService {
     public void exportAll(File exportLocation) throws IOException {
 
         var vpProject = getIProject.fromVisualParadigm();
-        var myProject = getMyProject.fromGlobal();
 
         var viProject = createViProject.of(vpProject);
         viProject.setElementTypes(List.of(
@@ -40,7 +39,7 @@ public class ExportService {
             , MODEL
             , DIAGRAM));
 
-        exportDiagramVisitorFactory.setRootDir(exportLocation);
+        this.exportDiagramVisitorFactory.setRootDir(exportLocation);
         viProject.accept(this.exportDiagramVisitorFactory);
     }
 

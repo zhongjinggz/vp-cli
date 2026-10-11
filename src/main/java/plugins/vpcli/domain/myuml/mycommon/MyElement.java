@@ -1,27 +1,33 @@
 package plugins.vpcli.domain.myuml.mycommon;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 
 public class MyElement {
     private String id = "";
     private String name = "";
-    private String alias = "";
     private String description = "";
-    private String elementType = "";
-    private MyElement parent;
-    private final List<MyElement> children = new ArrayList<>();
+    private ElementType elementType;
 
-    public String getAlias() {
-        return alias;
+    protected MyElement parentElement;
+    protected final List<MyElement> subElements = new ArrayList<>();
+
+    public MyElement(
+        MyElement parentElement,
+        String id,
+        String name,
+        String description
+    ) {
+        this.parentElement = parentElement;
+        this.id = id;
+        this.name = name;
+        this.description = description;
+        this.parentElement.addSubElement(this);
     }
-
-    public void setAlias(String alias) {
-        this.alias = alias;
-    }
-
-    private final List<MyReference> references = new ArrayList<>();
 
     public MyElement(String name) {
         this.name = name;
@@ -48,45 +54,30 @@ public class MyElement {
         this.name = name;
     }
 
-    public String getElementType() {
+    public ElementType getElementType() {
         return elementType;
-    }
-
-    public void setElementType(String elementType) {
-        this.elementType = elementType;
     }
 
     public String getDescription() {
         return description;
     }
 
-    public void setDescription(String description) {
-        this.description = description;
+    public List<MyElement> getSubElements() {
+        return Collections.unmodifiableList(subElements);
     }
 
-    public List<MyElement> getChildren() {
-        return Collections.unmodifiableList(children);
+    public void addSubElement(MyElement subElement) {
+        this.subElements.add(subElement);
     }
 
-    public void addChild(MyElement element) {
-        element.parent = this;
-        this.children.add(element);
-    }
-
-    public void addChildren(List<? extends MyElement> elements) {
-        if (elements != null) {
-            for (var element : elements) {
-               addChild(element);
-            }
+    public void addSubElements(@NotNull List<? extends MyElement> elements) {
+        Objects.requireNonNull(elements, "Bug: elements can't be null");
+        for (var element : elements) {
+            addSubElement(element);
         }
     }
 
-    public List<MyReference> getReferences() {
-        return Collections.unmodifiableList(references);
+    public MyElement getParentElement() {
+        return parentElement;
     }
-
-    public void addReference(MyReference myReference) {
-        this.references.add(myReference);
-    }
-
 }

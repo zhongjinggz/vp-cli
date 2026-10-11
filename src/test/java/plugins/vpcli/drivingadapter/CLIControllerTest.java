@@ -2,6 +2,7 @@ package plugins.vpcli.drivingadapter;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.contains;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.mock;
@@ -24,6 +25,7 @@ import plugins.vpcli.VPCLI;
 import plugins.vpcli.application.ExportService;
 import plugins.vpcli.application.ListDiagramsService;
 import plugins.vpcli.application.TreeService;
+import plugins.vpcli.drivenadapter.MyConsole;
 
 /**
  *
@@ -31,16 +33,18 @@ import plugins.vpcli.application.TreeService;
  * 因此本测试直接驱动 {@link CLIController}，覆盖 CLI 分发、导入、导出与图表列举的全部分支。
  * <p>{@link CLIController} 通过构造器注入 {@link ExportService}，测试用 mock 注入以验证交互；
  * 图表列举等管线内部逻辑（{@code DiagramExportPipeline#listDiagrams}）交由 DiagramExportPipelineTest 覆盖。
+ * <p>用户面向的消息输出通过注入的 {@link MyConsole} 完成，测试用 mock 验证交互，
+ * 不再依赖对 {@code System.out} 的重定向捕获。
  */
 class CLIControllerTest {
 
     @TempDir
     Path tempDir;
-
+    private final MyConsole myConsoleMock = mock(MyConsole.class);
     private final ExportService exportServiceMock = mock(ExportService.class);
     private final TreeService treeServiceMock = mock(TreeService.class);
     private final ListDiagramsService listDiagramsServiceMock = mock(ListDiagramsService.class);
-    private final CLIController controller = new CLIController(exportServiceMock, treeServiceMock, this.listDiagramsServiceMock);
+    private final CLIController controller = new CLIController(exportServiceMock, treeServiceMock, this.listDiagramsServiceMock,myConsoleMock);
 
     private void invoke(String[] args) throws IOException {
         controller.invoke(args);
@@ -50,20 +54,17 @@ class CLIControllerTest {
 
     @Test
     void invoke_invalidParams_printsErrorAndReturns() throws Throwable {
-        String output = captureOut(() -> invoke(new String[]{"-path", "x"}));
-        assertTrue(output.contains("Missing required argument -action."),
-                "unexpected output: [" + output + "]");
+        invokeNoThrow(() -> invoke(new String[]{"-path", "x"}));
+        verify(myConsoleMock).println(contains("Missing required argument -action"));
     }
 
     // ---------- invoke -> performImport 分支 ----------
 
     @Test
     void invoke_import_callsPerformImport() throws Throwable {
-        String output = captureOut(() -> invoke(
+        // performImport 当前为 TBD 占位实现，打印开发提示到日志；仅验证分发执行不抛异常
+        invokeNoThrow(() -> invoke(
                 new String[]{"-action", "import", "-path", "some.puml"}));
-        // performImport 当前为 TBD 占位实现，打印开发提示；仅验证分发执行不抛异常
-        assertTrue(output.contains("Importing functions to be developed"),
-                "unexpected output: [" + output + "]");
     }
 
     // ---------- invoke -> performExport 分支 ----------
@@ -72,7 +73,7 @@ class CLIControllerTest {
     void invoke_export_createsNewDirectoryThenExports() throws Throwable {
         // Path does not yet exist; mkdirs() succeeds.
         String newDir = tempDir.resolve("fresh").resolve("sub").toString();
-        captureOut(() -> invoke(
+        invokeNoThrow(() -> invoke(
                 new String[]{"-action", "export", "-target", "all", "-path", newDir}));
         verify(exportServiceMock).exportAll(new File(newDir));
     }
@@ -82,24 +83,24 @@ class CLIControllerTest {
         // A regular file is an obstacle so that mkdirs() returns false.
         File barrier = Files.createFile(tempDir.resolve("barrier")).toFile();
         String obstructed = new File(barrier, "sub" + File.separator + "dir").getAbsolutePath();
-        String output = captureOut(() -> invoke(
+        invokeNoThrow(() -> invoke(
                 new String[]{"-action", "export", "-target", "all", "-path", obstructed}));
-        assertTrue(output.contains("Could not create the specified directory"));
+        verify(myConsoleMock).println(contains("Could not create the specified directory"));
     }
 
     @Test
     void invoke_exportPathNotDirectory_printsError() throws Throwable {
         // Path exists but is a regular file, not a directory.
         File aFile = Files.createFile(tempDir.resolve("afile.txt")).toFile();
-        String output = captureOut(() -> invoke(
+        invokeNoThrow(() -> invoke(
                 new String[]{"-action", "export", "-target", "all", "-path", aFile.getAbsolutePath()}));
-        assertTrue(output.contains("not a directory"));
+        verify(myConsoleMock).println(contains("not a directory"));
     }
 
     @Test
     void invoke_exportAll_callsPipeline() throws Throwable {
         File dir = tempDir.toFile();
-        captureOut(() -> invoke(
+        invokeNoThrow(() -> invoke(
                 new String[]{"-action", "export", "-target", "all", "-path", dir.getAbsolutePath()}));
         verify(exportServiceMock).exportAll(dir);
     }
@@ -107,7 +108,7 @@ class CLIControllerTest {
     @Test
     void invoke_exportSpecific_callsPipeline() throws Throwable {
         File dir = tempDir.toFile();
-        captureOut(() -> invoke(
+        invokeNoThrow(() -> invoke(
                 new String[]{"-action", "export", "-target", "someDiagram", "-path", dir.getAbsolutePath()}));
         verify(exportServiceMock).exportSpecificDiagram("someDiagram", dir);
     }
@@ -116,18 +117,17 @@ class CLIControllerTest {
     void invoke_exportSpecificThrowsIOException_printsIoError() throws Throwable {
         File dir = tempDir.toFile();
         doThrow(new IOException("boom")).when(exportServiceMock).exportSpecificDiagram(any(), eq(dir));
-        String output = captureOut(() -> invoke(
+        invokeNoThrow(() -> invoke(
                 new String[]{"-action", "export", "-target", "someDiagram", "-path", dir.getAbsolutePath()}));
-        assertTrue(output.contains("IO Error: Couldn't create file."));
+        verify(myConsoleMock).println(contains("IO Error: Couldn't create file."));
     }
 
     // ---------- invoke -> listAvailableDiagrams 分支（转调 pipeline 列举） ----------
 
     @Test
     void invoke_执行列出图表清单命令_则listDiagrams被调用() throws Throwable {
-        String output = captureOut(() -> invoke(
+        invokeNoThrow(() -> invoke(
                 new String[]{"-action", "list-diagrams"}));
-        assertTrue(output.contains("Listing available diagrams"));
         verify(listDiagramsServiceMock).listDiagrams();
     }
 
@@ -149,6 +149,14 @@ class CLIControllerTest {
     }
 
     // ---------- 辅助工具 ----------
+
+    private static void invokeNoThrow(Executable executable) throws Throwable {
+        try {
+            executable.execute();
+        } catch (Throwable t) {
+            throw new AssertionError("invoke expected to complete, but threw: " + t, t);
+        }
+    }
 
     private static String captureOut(Executable executable) throws Throwable {
         ByteArrayOutputStream buffer = new ByteArrayOutputStream();

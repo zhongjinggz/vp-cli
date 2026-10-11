@@ -1,8 +1,8 @@
 package plugins.vpcli.domain.myuml.myactivity;
 
-import plugins.vpcli.domain.myuml.mycommon.MyElement;
+import plugins.vpcli.domain.myuml.mycommon.MyElement_old;
 
-public class MyAction extends MyElement implements MyFlowNode {
+public class MyAction extends MyElement_old implements MyFlowNode {
     private boolean isInitial;
     private boolean isFinal;
     private boolean isFinalFlow;

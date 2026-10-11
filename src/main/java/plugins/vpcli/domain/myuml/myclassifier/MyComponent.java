@@ -1,7 +1,7 @@
 package plugins.vpcli.domain.myuml.myclassifier;
 
 import plugins.vpcli.domain.myuml.mycommon.MyElement;
-import plugins.vpcli.domain.myuml.mydeployment.MyArtifact;
+import plugins.vpcli.domain.myuml.mydeployment.MyArtifact_old;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -15,7 +15,7 @@ public class MyComponent extends MyElement {
     private boolean isResident;
 	private final List<PortData> ports;
 	private boolean isNodeComponent; // components and nodes are basically the same.
-	private final List<MyArtifact> artifacts;
+	private final List<MyArtifact_old> artifacts;
 	private List<AttributeData> attributes;
 	private List<MyOperation> operations;
 
@@ -43,7 +43,7 @@ public class MyComponent extends MyElement {
 		return isInPackage;
 	}
 
-	public List<MyArtifact> getArtifacts() {
+	public List<MyArtifact_old> getArtifacts() {
 		return artifacts;
 	}
 

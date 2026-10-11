@@ -2,16 +2,22 @@ package plugins.vpcli;
 
 import com.vp.plugin.*;
 import plugins.vpcli.application.ListDiagramsService;
+import plugins.vpcli.domain.myuml.mycommon.MyElementFactory;
+import plugins.vpcli.domain.myuml.mydiagram.MyDiagramFactory;
 import plugins.vpcli.domain.myuml.myproject.ExportDiagramVisitorFactory;
 import plugins.vpcli.domain.myuml.myproject.MyProjectFactory;
 import plugins.vpcli.domain.myuml.myproject.TreeElementVisitorFactory;
+import plugins.vpcli.domain.outputmodel.MyDiagramToPumlConverter;
+import plugins.vpcli.domain.vpvisitor.vpdiagramvisitor.element.MyDiagramElementFactory;
+import plugins.vpcli.domain.vpvisitor.vpdiagramvisitor.structure.VPToMyDiagramConverter;
+import plugins.vpcli.domain.vpvisitor.vpmodelvisitor.element.ViElementFactory;
 import plugins.vpcli.domain.vpvisitor.vpmodelvisitor.structure.ViProjectFactory;
 import plugins.vpcli.drivenadapter.*;
 import plugins.vpcli.drivingadapter.CLIController;
 import plugins.vpcli.application.ExportService;
 import plugins.vpcli.application.TreeService;
-import plugins.vpcli.domain.myuml.mydiagram1.MyDiagramFactory;
-import plugins.vpcli.application.writers.WriterFactory;
+import plugins.vpcli.domain.myuml.mydiagram_old.OldDiagramFactory;
+import plugins.vpcli.application.writers_old.WriterFactory;
 
 import java.io.File;
 import java.io.IOException;
@@ -37,17 +43,21 @@ public class VPCLI implements VPPlugin, VPPluginCommandLineSupport {
 
     // Util
     private DirMaker dirMaker;
-
+    private MyConsole myConsole;
 
     // Factories
     private MyDiagramFactory myDiagramFactory;
     private WriterFactory writerFactory;
     private FileFactory fileFactory;
+
+
+
     //private TreePrinter treePrinter;
     private TreeDirMaker treeDirMaker;
 
     private ViProjectFactory viProjectFactory;
     private TreeElementVisitorFactory treeVisitorFactory;
+    private MyDiagramElementFactory myDiagramElementFactory;
 
     // Repositories
     private VPProjectRepository vpProjectRepository;
@@ -64,6 +74,10 @@ public class VPCLI implements VPPlugin, VPPluginCommandLineSupport {
     private CLIController cliController;
     private ExportDiagramVisitorFactory exportVisitorFactory;
     private MyProjectFactory myProjectFactory;
+    private MyElementFactory myElementFactory;
+    private ViElementFactory viElementFactory;
+    private VPToMyDiagramConverter vpToMyDiagramConverter;
+    private MyDiagramToPumlConverter myDiagramToPumlConverter;
 
 
     public VPCLI() {
@@ -72,8 +86,15 @@ public class VPCLI implements VPPlugin, VPPluginCommandLineSupport {
 
     // TODO 优化依赖注入，按功能分开不同的控制器，只注入本次功能需要的依赖
     void injectDependencies() {
+
+        // Repository vs Factory
+        // Repository: 已有的内容的存取（不含 new）
+        // Factory: 从无到有创建（用 new）
+
         // Util
         this.dirMaker = new DirMaker();
+        this.myConsole = new MyConsole();
+
         // Repository
         this.vpProjectRepository = new VPProjectRepository();
 
@@ -82,15 +103,24 @@ public class VPCLI implements VPPlugin, VPPluginCommandLineSupport {
         this.myDiagramFactory = new MyDiagramFactory();
         this.writerFactory = new WriterFactory(this.fileFactory);
         this.treeDirMaker = new TreeDirMaker();
-        this.myProjectFactory = new MyProjectFactory();
+        this.myProjectFactory = new MyProjectFactory(vpProjectRepository);
+        this.myElementFactory = new MyElementFactory();
+        this.viElementFactory = new ViElementFactory(myElementFactory);
+        this.myDiagramElementFactory = new MyDiagramElementFactory();
 
-        this.viProjectFactory = new ViProjectFactory();
+        this.vpToMyDiagramConverter = new VPToMyDiagramConverter(myDiagramFactory, myDiagramElementFactory);
+        this.myDiagramToPumlConverter = new MyDiagramToPumlConverter();
+
+
+        this.viProjectFactory = new ViProjectFactory(viElementFactory);
         this.treeVisitorFactory = new TreeElementVisitorFactory();
         this.exportVisitorFactory = new ExportDiagramVisitorFactory(
             this.dirMaker,
             this.myDiagramFactory,
             this.writerFactory,
-            this.myProjectFactory
+            this.myProjectFactory,
+            this.vpToMyDiagramConverter,
+            this.myDiagramToPumlConverter
         );
 
         // Domain Services
@@ -114,7 +144,7 @@ public class VPCLI implements VPPlugin, VPPluginCommandLineSupport {
         this.cliController = new CLIController(
             this.exportService
             , this.treeService
-            , this.listDiagramsService);
+            , this.listDiagramsService, myConsole);
     }
 
     @Override

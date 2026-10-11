@@ -3,6 +3,7 @@ package plugins.vpcli.drivingadapter;
 import plugins.vpcli.application.ExportService;
 import plugins.vpcli.application.ListDiagramsService;
 import plugins.vpcli.application.TreeService;
+import plugins.vpcli.drivenadapter.MyConsole;
 
 import java.io.File;
 import java.io.IOException;
@@ -10,24 +11,31 @@ import java.io.IOException;
 import static plugins.vpcli.drivingadapter.CLIParams.*;
 
 public class CLIController {
-    private static final org.slf4j.Logger LOG =
+    private static final org.slf4j.Logger logger =
         org.slf4j.LoggerFactory.getLogger(CLIController.class);
 
     private final ExportService exportService;
     private final TreeService treeService;
     private final ListDiagramsService listDiagramsService;
+    private final MyConsole myConsole;
 
-    public CLIController(ExportService exportService, TreeService treeService, ListDiagramsService listDiagramsService) {
+    public CLIController(
+        ExportService exportService,
+        TreeService treeService,
+        ListDiagramsService listDiagramsService,
+        MyConsole myConsole) {
+
         this.exportService = exportService;
         this.treeService = treeService;
         this.listDiagramsService = listDiagramsService;
+        this.myConsole = myConsole;
     }
 
     public void invoke(String[] args) throws IOException {
         CLIParams params = CLIParams.valueOf(args);
 
         if (params.isInvalid()) {
-            LOG.info(params.errorMessage());
+            myConsole.println(params.errorMessage());
             return;
         }
 
@@ -52,19 +60,18 @@ public class CLIController {
 
         // Check if the given path exists and is a directory
         if (!exportLocation.exists()) {
-            boolean created = exportLocation.mkdirs();
-            if (!created) {
-                LOG.error("Error: Could not create the specified directory.");
+            if (!exportLocation.mkdirs()) {
+                myConsole.println("Error: Could not create the specified directory.");
                 return;
             }
         }
 
         if (!exportLocation.isDirectory()) {
-            LOG.error("Error: The specified path is not a directory.");
+            myConsole.println("Error: The specified path is not a directory.");
             return;
         }
 
-        LOG.info("Exporting diagram(s): " + target + " to path: " + path);
+        logger.info("Exporting diagram(s): " + target + " to path: " + path);
 
         if (target.equalsIgnoreCase(CLIParams.VALUE_ALL)) {
             this.exportService.exportAll(exportLocation);
@@ -72,17 +79,17 @@ public class CLIController {
             try {
                 exportService.exportSpecificDiagram(target, exportLocation);
             } catch (IOException e) {
-                LOG.error("IO Error: Couldn't create file.");
+                myConsole.println("IO Error: Couldn't create file.");
             }
         }
     }
 
     void performImport() {
-        LOG.info("Importing functions to be developed");
+        logger.info("TO Be DEV: Importing functions");
     }
 
     void listAvailableDiagrams() {
-        LOG.info("Listing available diagrams in the project:");
+        logger.info("Listing available diagrams in the project:");
         listDiagramsService.listDiagrams();
     }
 

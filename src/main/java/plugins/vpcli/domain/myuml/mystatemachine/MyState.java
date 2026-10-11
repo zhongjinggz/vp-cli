@@ -1,12 +1,12 @@
 package plugins.vpcli.domain.myuml.mystatemachine;
 
 import plugins.vpcli.domain.myuml.mycommon.MyRelationship;
-import plugins.vpcli.domain.myuml.mycommon.MyElement;
+import plugins.vpcli.domain.myuml.mycommon.MyElement_old;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class MyState extends MyElement {
+public class MyState extends MyElement_old {
 
     private String Uid;
     private boolean isStart;

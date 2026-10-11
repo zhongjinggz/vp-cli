@@ -1,12 +1,13 @@
 package plugins.vpcli.domain.myuml.mydiagram;
 
 import plugins.vpcli.domain.myuml.mycommon.MyElement;
+import plugins.vpcli.domain.myuml.mycommon.MyElement_old;
 
-import java.util.List;
+public interface MyDiagramElement {
+    public String getId();
+    public DiagramElementType getDiagramElementType();
+    public MyElement getModelElement();
+    public MyDiagramElement getParentDiagramElement();
 
-public class MyDiagramElement {
-    protected MyElement modelElement;
-    protected List<MyShape> subShapes;
-    protected List<MyEdge> subEdges;
-
+    void addSubDiagramElement(BaseMyDiagramElement baseMyDiagramElement);
 }

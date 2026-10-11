@@ -1,32 +1,23 @@
 package plugins.vpcli.domain.myuml.mydiagram;
 
 import org.jetbrains.annotations.NotNull;
+import plugins.vpcli.domain.myuml.mycommon.MyElement;
+import plugins.vpcli.domain.myuml.mycommon.MyElement_old;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Objects;
-
-
-public class MyDiagram {
-    private String vpId;
+public class MyDiagram extends MyElement implements MyDiagramElement {
     private String name;
     private DiagramType diagramType;
-    private List<MyShape> shapes = new ArrayList<>();
-    private List<MyEdge> edges  = new ArrayList<>();
-    
-    
-    
-    public MyDiagram(@NotNull String vpId
-        , @NotNull String name
-        , @NotNull DiagramType diagramType) {
+    private MyElement_old parentModelElement;
 
-        Objects.requireNonNull(vpId, "vpId is null");
-        Objects.requireNonNull(name, "name is null");
-        Objects.requireNonNull(diagramType, "diagramType is null");
-
-        this.vpId = vpId;
-        this.name = name;
+    
+    public MyDiagram(
+        @NotNull MyElement  parentElement,
+        @NotNull String id ,
+        @NotNull String name ,
+        @NotNull String description,
+        @NotNull DiagramType diagramType
+    ) {
+        super(parentElement, id, name, description);
         this.diagramType = diagramType;
     }
     
@@ -34,21 +25,28 @@ public class MyDiagram {
         return diagramType;
     }
 
-    public List<MyShape> getShapes() {
-        return Collections.unmodifiableList(shapes);
+    @Override
+    public String getId() {
+        return super.getId();
     }
 
-    public List<MyEdge> getEdges() {
-        return Collections.unmodifiableList(edges);
+    @Override
+    public DiagramElementType getDiagramElementType() {
+        return DiagramElementType.DIAGRAM;
     }
 
-    public void addShap(@NotNull MyShape shap) {
-        Objects.requireNonNull(shap, "shap is null");
-        shapes.add(shap);
+    @Override
+    public MyElement getModelElement() {
+        return null;
     }
 
-    public void addEdge(@NotNull MyEdge edge) {
-        Objects.requireNonNull(edge, "edge is null");
-        edges.add(edge);
+    @Override
+    public MyDiagramElement getParentDiagramElement() {
+        return null;
+    }
+
+    @Override
+    public void addSubDiagramElement(BaseMyDiagramElement baseMyDiagramElement) {
+
     }
 }
