@@ -68,7 +68,7 @@ public class ExportDiagramVisitor extends ViElementVisitor {
     public void visit(ViDiagramAsElement viDiagram) throws IOException {
 //        // 暂时不将图表放入全局模型缓存，以便节省内存。未来视情况而定。
         var vpDiagram = viDiagram.getVPDiagramUIModel();
-        MyDiagram myDiagram = diagramFactory.createMyDiagram(diagramUIModel);
+//        MyDiagram myDiagram = diagramFactory.createMyDiagram(diagramUIModel);
 ////        ClassDiagramWriter classDiagramWriter = writerFactory.createClassDiagramWriter(myDiagram);
 ////        classDiagramWriter.write(this.parentDir);
 //        MyDiagram myDiagram = convertToMyDiagram.from(higherVisitor.myElement, vpDiagram);
