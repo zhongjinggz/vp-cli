@@ -1,9 +1,8 @@
 package plugins.vpcli.domain.myuml.mydiagram;
 
 import plugins.vpcli.domain.myuml.mycommon.MyElement;
-import plugins.vpcli.domain.myuml.mycommon.MyElement_old;
 
-public class MyShape extends BaseMyDiagramElement {
+public class MyShape extends ProperMyDiagramElement {
     public MyShape(
         String id,
         DiagramElementType diagramElementType,

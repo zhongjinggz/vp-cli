@@ -11,34 +11,32 @@ import javax.swing.*;
 // - export: 重写生成图表的程序 - 为 Model 增加衍型
 
 // TODO
+// - export：将图表放入 markdown
 // - export: 重写生成图表的程序 - Class
 // - export: 重写生成图表的程序 - Association
 // - export: 重写生成图表的程序 - Dependency
 // - export: 重写生成图表的程序 - Stereotype/Keyword
 // - 全局只有一个地方根据 MODEL_TYPE 进行判断，其他所有地方都用多态处理(类似抽象工厂模式）
-// - 从 ViXxx 中拿后缀，而不是从 ElementType(考虑删除 ElementType)
+// - 从 ViXxx 中拿后缀，而不是从 ElementType(考虑删除 ElementType?)
 // - export: fix bug of Class Diagram 包和类同名造成混乱
-// - export：将图表放入 markdown
 // - 翻译和修改 README
 // - 使用DSL
-// - 重构依赖注入：通过内部类，将若干工具或工程组织在一起，简化依赖注入
+// - 重构依赖注入：通过内部类，将若干工具或工程组织在一起，简化依赖注入(例如 IO)
 
 
 // - 清理测试
 // - 统一处理错误
 // - 清理 IDEA 警告
-// - 拆分成多个 Controller， 分别依赖注入
 
 // - Tree: 根据参数控制 Tree 的类型和深度
-// - export: 图表 markdown 中放入交叉引用
 // - export: 根据模型内容生成 markdown
-// - export：链接交叉引用
-// - tree: 补测试
-// - tree: 增加一个虚拟的根包 ProjectVirtualPackage 对应于 VP Project
-// - 考虑将 python 改为 java ， 改为多模块项目
+// - export: 图表 markdown 中放入交叉引用
+// - 考虑将 python 改为 java
+// - 引入 picocli
+// - 引入第三方 IOC 框架（micronaut）
+// - 拆分成多个 Controller， 分别依赖注入?
 // - 改用 NIO
 // - 补充建立目录时的各种异常情况
-// - 重构依赖注入：用Map 保存 Bean ?
 
 // DONE
 // - export: 递归构建父 MyElement
