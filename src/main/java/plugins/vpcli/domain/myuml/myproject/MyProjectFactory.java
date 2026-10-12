@@ -15,7 +15,6 @@ public class MyProjectFactory {
     private final VPProjectRepository vpProjectRepository;
 
     public MyProjectFactory(VPProjectRepository vpProjectRepository) {
-        // this.vpProjectRepository = vpProjectRepository;
         this(vpProjectRepository, getLogger(MyProjectFactory.class));
     }
 

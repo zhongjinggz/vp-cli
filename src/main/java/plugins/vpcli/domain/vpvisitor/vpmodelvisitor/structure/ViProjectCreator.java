@@ -3,11 +3,11 @@ package plugins.vpcli.domain.vpvisitor.vpmodelvisitor.structure;
 import com.vp.plugin.model.IProject;
 import plugins.vpcli.domain.vpvisitor.vpmodelvisitor.element.ViElementFactory;
 
-public class ViProjectFactory {
+public class ViProjectCreator {
 
     private ViElementFactory viElementFactory;
 
-    public ViProjectFactory(ViElementFactory viElementFactory) {
+    public ViProjectCreator(ViElementFactory viElementFactory) {
         this.viElementFactory = viElementFactory;
     }
     public ViProject of(IProject project) {

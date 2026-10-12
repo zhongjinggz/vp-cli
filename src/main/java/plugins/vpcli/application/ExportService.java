@@ -1,8 +1,8 @@
 package plugins.vpcli.application;
 
-import plugins.vpcli.domain.myuml.myproject.ExportDiagramVisitorFactory;
+import plugins.vpcli.domain.myuml.myproject.ExportDiagramVisitorCreator;
 import plugins.vpcli.domain.myuml.myproject.MyProjectFactory;
-import plugins.vpcli.domain.vpvisitor.vpmodelvisitor.structure.ViProjectFactory;
+import plugins.vpcli.domain.vpvisitor.vpmodelvisitor.structure.ViProjectCreator;
 import plugins.vpcli.drivenadapter.VPProjectRepository;
 
 import java.io.File;
@@ -14,18 +14,18 @@ import static plugins.vpcli.domain.myuml.mycommon.ElementType.*;
 public class ExportService {
 
     private final VPProjectRepository getIProject;
-    private final ViProjectFactory createViProject;
-    private final ExportDiagramVisitorFactory exportDiagramVisitorFactory;
+    private final ViProjectCreator createViProject;
+    private final ExportDiagramVisitorCreator exportDiagramVisitorCreator;
     private MyProjectFactory getMyProject;
 
     public ExportService(VPProjectRepository vpProjectRepository,
-                         ViProjectFactory viProjectFactory,
-                         ExportDiagramVisitorFactory exportDiagramVisitorFactory,
+                         ViProjectCreator viProjectCreator,
+                         ExportDiagramVisitorCreator exportDiagramVisitorCreator,
                          MyProjectFactory myProjectFactory) {
 
         this.getIProject = vpProjectRepository;
-        this.createViProject = viProjectFactory;
-        this.exportDiagramVisitorFactory = exportDiagramVisitorFactory;
+        this.createViProject = viProjectCreator;
+        this.exportDiagramVisitorCreator = exportDiagramVisitorCreator;
         this.getMyProject = myProjectFactory;
     }
 
@@ -39,8 +39,8 @@ public class ExportService {
             , MODEL
             , DIAGRAM));
 
-        this.exportDiagramVisitorFactory.setRootDir(exportLocation);
-        viProject.accept(this.exportDiagramVisitorFactory);
+        this.exportDiagramVisitorCreator.setRootDir(exportLocation);
+        viProject.accept(this.exportDiagramVisitorCreator);
     }
 
     public void exportSpecificDiagram(String target, File exportLocation) throws IOException {

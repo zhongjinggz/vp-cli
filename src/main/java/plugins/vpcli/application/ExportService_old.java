@@ -3,8 +3,8 @@ package plugins.vpcli.application;
 import com.vp.plugin.diagram.IDiagramUIModel;
 import plugins.vpcli.application.writers_old.*;
 import plugins.vpcli.domain.myuml.mydiagram_old.*;
-import plugins.vpcli.domain.vpvisitor.vpmodelvisitor.structure.ViProjectFactory;
-import plugins.vpcli.drivenadapter.FileFactory;
+import plugins.vpcli.domain.vpvisitor.vpmodelvisitor.structure.ViProjectCreator;
+import plugins.vpcli.drivenadapter.FileCreator;
 import plugins.vpcli.drivenadapter.VPProjectRepository;
 import plugins.vpcli.util.UnfitForExportException;
 
@@ -17,23 +17,23 @@ public class ExportService_old {
     //private final TreeConverter convertPackage;
     private final VPProjectRepository vpProjectRepository;
     private final OldDiagramFactory myDiagramFactory;
-    private final WriterFactory writerFactory;
-    private final FileFactory fileFactory;
-    private final ViProjectFactory viProjectFactory;
+    private final WriterCreator writerCreator;
+    private final FileCreator fileCreator;
+    private final ViProjectCreator viProjectCreator;
     //private final TreeDirMaker makeDir;
 
     public ExportService_old(VPProjectRepository vpProjectRepository
         , OldDiagramFactory myDiagramFactory
-        , WriterFactory writerFactory
-        , FileFactory fileFactory
-        , ViProjectFactory viProjectFactory
+        , WriterCreator writerCreator
+        , FileCreator fileCreator
+        , ViProjectCreator viProjectCreator
         ) {
 
         this.vpProjectRepository = vpProjectRepository;
         this.myDiagramFactory = myDiagramFactory;
-        this.writerFactory = writerFactory;
-        this.fileFactory = fileFactory;
-        this.viProjectFactory = viProjectFactory;
+        this.writerCreator = writerCreator;
+        this.fileCreator = fileCreator;
+        this.viProjectCreator = viProjectCreator;
     }
 
     public void exportADiagram(IDiagramUIModel vpDiagram
@@ -53,33 +53,33 @@ public class ExportService_old {
                 case "DeploymentDiagram":
                     MyComponentDeploymentDiagram exporter = myDiagramFactory.createComponentDeploymentDiagramExporter(vpDiagram);
                     exporter.extract();
-                    ComponentDeploymentUMLWriter componentWriter = writerFactory.createComponentDeploymentUMLWriter(exporter);
+                    ComponentDeploymentUMLWriter componentWriter = writerCreator.createComponentDeploymentUMLWriter(exporter);
                     componentWriter.writeToFile(outputFile);
                     break;
 
                 case "InteractionDiagram":
                     MySequenceDiagram seqde = myDiagramFactory.createSequenceDiagramExporter(vpDiagram);
                     seqde.extract();
-                    SequenceUMLWriter sequenceWriter = writerFactory.createSequenceUMLWriter(seqde);
+                    SequenceUMLWriter sequenceWriter = writerCreator.createSequenceUMLWriter(seqde);
                     sequenceWriter.writeToFile(outputFile);
                     break;
 
                 case "UseCaseDiagram":
                     MyUseCaseDiagram ucde = myDiagramFactory.createUseCaseDiagramExporter(vpDiagram);
                     ucde.extract();
-                    UseCaseWriter useCaseWriter = writerFactory.createUseCaseWriter(ucde);
+                    UseCaseWriter useCaseWriter = writerCreator.createUseCaseWriter(ucde);
                     useCaseWriter.writeToFile(outputFile);
                     break;
                 case "StateDiagram":
                     MyStateDiagram stde = myDiagramFactory.createStateDiagramExporter(vpDiagram);
                     stde.extract();
-                    StateUMLWriter stateUMLWriter = writerFactory.createStateUMLWriter(stde);
+                    StateUMLWriter stateUMLWriter = writerCreator.createStateUMLWriter(stde);
                     stateUMLWriter.writeToFile(outputFile);
                     break;
                 case "ActivityDiagram":
                     MyActivityDiagram acde = myDiagramFactory.createActivityDiagramExporter(vpDiagram);
                     acde.extract();
-                    ActivityUMLWriter activityUMLWriter = writerFactory.createActivityUMLWriter(acde);
+                    ActivityUMLWriter activityUMLWriter = writerCreator.createActivityUMLWriter(acde);
                     activityUMLWriter.writeToFile(outputFile);
                     break;
                 default:
@@ -96,7 +96,7 @@ public class ExportService_old {
         , File outputFile) throws IOException {
         OldClassDiagram diagram = new OldClassDiagram(vpDiagram);
         diagram.extract();
-        ClassDiagramWriter classWriter = writerFactory.createClassDiagramWriter(diagram);
+        ClassDiagramWriter classWriter = writerCreator.createClassDiagramWriter(diagram);
         classWriter.writeToFile(outputFile);
     }
 
@@ -106,7 +106,7 @@ public class ExportService_old {
         fileName.append(title.replaceAll("[^\\p{L}\\p{N}]", "_"));
         if (contentType.equals("json")) fileName.append("_semantics");
         fileName.append(".puml");
-        File outputFile = fileFactory.createFile(exportLocation, fileName.toString());
+        File outputFile = fileCreator.under(exportLocation, fileName.toString());
         if (!outputFile.exists() && !outputFile.createNewFile()) {
             throw new IOException("Failed to create file: " + outputFile.getAbsolutePath());
         }

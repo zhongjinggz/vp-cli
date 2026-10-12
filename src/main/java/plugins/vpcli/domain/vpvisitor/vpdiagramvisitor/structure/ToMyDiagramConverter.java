@@ -5,7 +5,7 @@ import org.checkerframework.checker.nullness.qual.NonNull;
 import plugins.vpcli.domain.myuml.mycommon.MyElement;
 import plugins.vpcli.domain.myuml.mydiagram.MyDiagram;
 import plugins.vpcli.domain.myuml.mydiagram.MyDiagramElement;
-import plugins.vpcli.domain.myuml.mydiagram.MyDiagramFactory;
+import plugins.vpcli.domain.myuml.mydiagram.MyDiagramCreator;
 import plugins.vpcli.domain.vpvisitor.vpdiagramvisitor.element.MyDiagramElementFactory;
 
 import java.util.ArrayList;
@@ -13,14 +13,14 @@ import java.util.List;
 
 public class ToMyDiagramConverter {
     private final MyDiagramElementFactory createElement;
-    private MyDiagramFactory myDiagramFactory;
+    private MyDiagramCreator myDiagramCreator;
 
     public ToMyDiagramConverter(
-        MyDiagramFactory myDiagramFactory
+        MyDiagramCreator myDiagramCreator
         , MyDiagramElementFactory elementFactory) {
 
         this.createElement = elementFactory;
-        this.myDiagramFactory = myDiagramFactory;
+        this.myDiagramCreator = myDiagramCreator;
     }
 
     private @NonNull List<MyDiagramElement> createTopLevelElements(IDiagramUIModel vpDiagram) {
@@ -64,7 +64,7 @@ public class ToMyDiagramConverter {
 //    }
 
     public MyDiagram from(MyElement parentElement, IDiagramUIModel vpDiagram) {
-        MyDiagram myDiagram = myDiagramFactory.create(parentElement, vpDiagram);
+        MyDiagram myDiagram = myDiagramCreator.create(parentElement, vpDiagram);
 //        List<MyDiagramElement> myElements = createTopLevelElements(vpDiagram);
 //        createSubElements(myElements, myDiagram);
         return null;

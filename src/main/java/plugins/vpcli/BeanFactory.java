@@ -3,22 +3,22 @@ package plugins.vpcli;
 import plugins.vpcli.application.ExportService;
 import plugins.vpcli.application.ListDiagramsService;
 import plugins.vpcli.application.TreeService;
-import plugins.vpcli.application.writers_old.WriterFactory;
+import plugins.vpcli.application.writers_old.WriterCreator;
 import plugins.vpcli.domain.myuml.myclassifier.MyClassFactory;
 import plugins.vpcli.domain.myuml.mycommon.MyElementFactoryFactory;
 import plugins.vpcli.domain.myuml.mycommon.MyElementPool;
-import plugins.vpcli.domain.myuml.mydiagram.MyDiagramFactory;
+import plugins.vpcli.domain.myuml.mydiagram.MyDiagramCreator;
 import plugins.vpcli.domain.myuml.mypackage.MyModelFactory;
 import plugins.vpcli.domain.myuml.mypackage.MyPackageFactory;
-import plugins.vpcli.domain.myuml.myproject.ExportDiagramVisitorFactory;
+import plugins.vpcli.domain.myuml.myproject.ExportDiagramVisitorCreator;
 import plugins.vpcli.domain.myuml.myproject.MyProjectFactory;
-import plugins.vpcli.domain.myuml.myproject.TreeVisitorFactory;
+import plugins.vpcli.domain.myuml.myproject.TreeVisitorCreator;
 import plugins.vpcli.domain.myuml.myusecase.MyUseCaseFactory;
 import plugins.vpcli.domain.outputmodel.ToPumlConverter;
 import plugins.vpcli.domain.vpvisitor.vpdiagramvisitor.element.MyDiagramElementFactory;
 import plugins.vpcli.domain.vpvisitor.vpdiagramvisitor.structure.ToMyDiagramConverter;
 import plugins.vpcli.domain.vpvisitor.vpmodelvisitor.element.ViElementFactory;
-import plugins.vpcli.domain.vpvisitor.vpmodelvisitor.structure.ViProjectFactory;
+import plugins.vpcli.domain.vpvisitor.vpmodelvisitor.structure.ViProjectCreator;
 import plugins.vpcli.drivenadapter.*;
 import plugins.vpcli.drivingadapter.CLIController;
 
@@ -33,14 +33,14 @@ public class BeanFactory {
     private MyConsole myConsole;
 
     // Factories
-    private FileFactory fileFactory;
-    private WriterFactory writerFactory;
+    private FileCreator fileCreator;
+    private WriterCreator writerCreator;
 
-    private ViProjectFactory viProjectFactory;
+    private ViProjectCreator viProjectCreator;
     private ViElementFactory viElementFactory;
 
     private MyProjectFactory myProjectFactory;
-    private MyDiagramFactory myDiagramFactory;
+    private MyDiagramCreator myDiagramCreator;
     private MyDiagramElementFactory myDiagramElementFactory;
 
     private MyElementPool myElementPool;
@@ -51,8 +51,8 @@ public class BeanFactory {
 
     private MyElementFactoryFactory myElementFactoryFactory;
 
-    private TreeVisitorFactory treeVisitorFactory;
-    private ExportDiagramVisitorFactory exportDiagramVisitorFactory;
+    private TreeVisitorCreator treeVisitorCreator;
+    private ExportDiagramVisitorCreator exportDiagramVisitorCreator;
 
     // Repositories
     private VPProjectRepository vpProjectRepository;
@@ -95,25 +95,25 @@ public class BeanFactory {
     }
 
     // Factory
-    private FileFactory getFileFactory() {
-        if (fileFactory == null) {
-            fileFactory = new FileFactory();
+    private FileCreator getFileFactory() {
+        if (fileCreator == null) {
+            fileCreator = new FileCreator();
         }
-        return fileFactory;
+        return fileCreator;
     }
 
-    private MyDiagramFactory getMyDiagramFactory() {
-        if (myDiagramFactory == null) {
-            myDiagramFactory = new MyDiagramFactory();
+    private MyDiagramCreator getMyDiagramFactory() {
+        if (myDiagramCreator == null) {
+            myDiagramCreator = new MyDiagramCreator();
         }
-        return myDiagramFactory;
+        return myDiagramCreator;
     }
 
-    private WriterFactory getWriterFactory() {
-        if (writerFactory == null) {
-            writerFactory = new WriterFactory(getFileFactory());
+    private WriterCreator getWriterFactory() {
+        if (writerCreator == null) {
+            writerCreator = new WriterCreator(getFileFactory());
         }
-        return writerFactory;
+        return writerCreator;
     }
 
     private MyProjectFactory getMyProjectFactory() {
@@ -205,23 +205,23 @@ public class BeanFactory {
     }
 
 
-    private ViProjectFactory getViProjectFactory() {
-        if (viProjectFactory == null) {
-            viProjectFactory = new ViProjectFactory(getViElementFactory());
+    private ViProjectCreator getViProjectFactory() {
+        if (viProjectCreator == null) {
+            viProjectCreator = new ViProjectCreator(getViElementFactory());
         }
-        return viProjectFactory;
+        return viProjectCreator;
     }
 
-    private TreeVisitorFactory getTreeVisitorFactory() {
-        if (treeVisitorFactory == null) {
-            treeVisitorFactory = new TreeVisitorFactory();
+    private TreeVisitorCreator getTreeVisitorFactory() {
+        if (treeVisitorCreator == null) {
+            treeVisitorCreator = new TreeVisitorCreator();
         }
-        return treeVisitorFactory;
+        return treeVisitorCreator;
     }
 
-    private ExportDiagramVisitorFactory getExportDiagramVisitorFactory() {
-        if (exportDiagramVisitorFactory == null) {
-            exportDiagramVisitorFactory = new ExportDiagramVisitorFactory(
+    private ExportDiagramVisitorCreator getExportDiagramVisitorFactory() {
+        if (exportDiagramVisitorCreator == null) {
+            exportDiagramVisitorCreator = new ExportDiagramVisitorCreator(
                 getDirMaker(),
                 getMyDiagramFactory(),
                 getWriterFactory(),
@@ -230,7 +230,7 @@ public class BeanFactory {
                 getToPumlConverter()
             );
         }
-        return exportDiagramVisitorFactory;
+        return exportDiagramVisitorCreator;
     }
 
     public CLIController getCLIController() {

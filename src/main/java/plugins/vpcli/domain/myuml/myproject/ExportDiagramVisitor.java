@@ -1,9 +1,10 @@
 package plugins.vpcli.domain.myuml.myproject;
 
-import plugins.vpcli.application.writers_old.WriterFactory;
+import plugins.vpcli.application.writers_old.WriterCreator;
 import plugins.vpcli.domain.myuml.mycommon.MyElement;
 import plugins.vpcli.domain.myuml.mydiagram.MyDiagram;
-import plugins.vpcli.domain.myuml.mydiagram.MyDiagramFactory;
+import plugins.vpcli.domain.myuml.mydiagram.MyDiagramCreator;
+import plugins.vpcli.domain.outputmodel.PlantUMLDiagram;
 import plugins.vpcli.domain.outputmodel.ToPumlConverter;
 import plugins.vpcli.domain.vpvisitor.vpdiagramvisitor.structure.ToMyDiagramConverter;
 import plugins.vpcli.domain.vpvisitor.vpmodelvisitor.element.*;
@@ -16,12 +17,11 @@ import java.io.IOException;
 
 public class ExportDiagramVisitor extends ViElementVisitor {
     private final DirMaker makeDir;
-    private final MyDiagramFactory diagramFactory;
-    private final WriterFactory writerFactory;
+    private final MyDiagramCreator diagramFactory;
+    private final WriterCreator writerCreator;
     private final MyProject myProject;
     private final ToMyDiagramConverter convertToMyDiagram;
     private final ToPumlConverter convertToPlantUML;
-
     protected File path;
     private MyElement myElement;
     private DocWriter write;
@@ -29,8 +29,8 @@ public class ExportDiagramVisitor extends ViElementVisitor {
     ExportDiagramVisitor(
         ExportDiagramVisitor higherVisitor,
         DirMaker dirMaker,
-        MyDiagramFactory diagramFactory,
-        WriterFactory writerFactory,
+        MyDiagramCreator diagramFactory,
+        WriterCreator writerCreator,
         MyProject myProject,
         ToMyDiagramConverter toMyDiagramConverter,
         ToPumlConverter toPumlConverter
@@ -39,7 +39,7 @@ public class ExportDiagramVisitor extends ViElementVisitor {
 
         this.myProject = myProject;
         this.diagramFactory = diagramFactory;
-        this.writerFactory = writerFactory;
+        this.writerCreator = writerCreator;
         this.makeDir = dirMaker;
         this.convertToMyDiagram = toMyDiagramConverter;
         this.convertToPlantUML = toPumlConverter;
@@ -51,7 +51,7 @@ public class ExportDiagramVisitor extends ViElementVisitor {
 
         this.myProject = myProject;
         this.diagramFactory = null;
-        this.writerFactory = null;
+        this.writerCreator = null;
         this.makeDir = null;
         this.convertToMyDiagram = null;
         this.convertToPlantUML = null;
@@ -68,12 +68,15 @@ public class ExportDiagramVisitor extends ViElementVisitor {
     public void visit(ViDiagramAsElement viDiagram) throws IOException {
 //        // 暂时不将图表放入全局模型缓存，以便节省内存。未来视情况而定。
         var vpDiagram = viDiagram.getVPDiagramUIModel();
-//        MyDiagram myDiagram = diagramFactory.createMyDiagram(diagramUIModel);
+//        MyDiagram myDiagram = diagramFactory.create(((ExportDiagramVisitor)higherVisitor).myElement, vpDiagram);
 ////        ClassDiagramWriter classDiagramWriter = writerFactory.createClassDiagramWriter(myDiagram);
 ////        classDiagramWriter.write(this.parentDir);
-//        MyDiagram myDiagram = convertToMyDiagram.from(higherVisitor.myElement, vpDiagram);
-//        PlantUMLDiagram puml = convertToPlantUML.from(myDiagram);
-//        write.plantUML(puml);
+        MyDiagram myDiagram = convertToMyDiagram.from(
+            ((ExportDiagramVisitor) higherVisitor).myElement,
+            vpDiagram
+        );
+        PlantUMLDiagram puml = convertToPlantUML.from(myDiagram);
+        write.plantUML(puml);
     }
 
     @Override
@@ -100,7 +103,7 @@ public class ExportDiagramVisitor extends ViElementVisitor {
 
     private void buildElementModel(ViPackage viPackage) {
         MyElement myElement = viPackage.toMyElementUnder(
-            ((ExportDiagramVisitor)higherVisitor).myElement);
+            ((ExportDiagramVisitor) higherVisitor).myElement);
         this.myElement = myElement;
     }
 

@@ -55,6 +55,11 @@ A Visual Paradigm Plugin to provide CLI for AI
     - 简述：本项目的核心元模型。由 Visual Paradigm 模型转换为内部UML模型，再基于此实现导入导出等逻辑
     - 类名：MyXxx，例如 MyProject, MyClass, MyDiagram
     - 变量名：myXxx，例如 myProject, myClass, myDiagram
+    
+    
+- Factory vs Creator
+  - Factory 有逻辑，没有 new
+  - Creator 单纯的 new，没有逻辑
 
    
 

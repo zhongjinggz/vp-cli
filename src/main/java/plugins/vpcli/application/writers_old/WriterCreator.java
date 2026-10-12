@@ -2,12 +2,12 @@ package plugins.vpcli.application.writers_old;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
 import plugins.vpcli.domain.myuml.mydiagram_old.*;
-import plugins.vpcli.drivenadapter.FileFactory;
+import plugins.vpcli.drivenadapter.FileCreator;
 
-public class WriterFactory {
-    private FileFactory fileFactory;
-    public WriterFactory(FileFactory fileFactory) {
-        this.fileFactory = fileFactory;
+public class WriterCreator {
+    private FileCreator fileCreator;
+    public WriterCreator(FileCreator fileCreator) {
+        this.fileCreator = fileCreator;
     }
 
     @NonNull
@@ -69,7 +69,7 @@ public class WriterFactory {
     @NonNull
     public ClassDiagramWriter createClassDiagramWriter(OldClassDiagram diagram) {
         return new ClassDiagramWriter(
-            diagram, this.fileFactory
+            diagram, this.fileCreator
         );
     }
 }

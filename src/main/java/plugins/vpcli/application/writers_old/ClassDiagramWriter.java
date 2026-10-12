@@ -16,7 +16,7 @@ import plugins.vpcli.domain.myuml.myclassifier.MyClass_old;
 import plugins.vpcli.domain.myuml.myclassifier.MyNary_old;
 import plugins.vpcli.domain.myuml.mypackage.MyPackage;
 import plugins.vpcli.domain.myuml.mycommon.MyRelationship;
-import plugins.vpcli.drivenadapter.FileFactory;
+import plugins.vpcli.drivenadapter.FileCreator;
 
 public class ClassDiagramWriter extends PlantUMLWriter {
 
@@ -24,12 +24,12 @@ public class ClassDiagramWriter extends PlantUMLWriter {
     private final List<MyClass_old> classes;
     private final List<MyRelationship> relationships;
     private List<MyNary_old> naries;
-    private FileFactory fileFactory;
+    private FileCreator fileCreator;
     private OldClassDiagram myDiagram;
 
     public ClassDiagramWriter(
         OldClassDiagram myDiagram,
-        FileFactory fileFactory) {
+        FileCreator fileCreator) {
 
         super(myDiagram.getNotes());
         this.myDiagram = myDiagram;
@@ -37,7 +37,7 @@ public class ClassDiagramWriter extends PlantUMLWriter {
         this.classes = myDiagram.getExportedClasses();
         this.relationships = myDiagram.getRelationshipDatas();
         this.setNaries(myDiagram.getExportedNary());
-        this.fileFactory = fileFactory;
+        this.fileCreator = fileCreator;
     }
 
     public void writeToFile(File file) throws IOException {
@@ -177,7 +177,7 @@ public class ClassDiagramWriter extends PlantUMLWriter {
         // 放行所有语言的字母和数字（中文文件名）；空格、符号及 Windows 保留字符仍转下划线
         String fileName = title.replaceAll("[^\\p{L}\\p{N}]", "_") +
             ".puml";
-        File outputFile = this.fileFactory.createFile(exportLocation, fileName);
+        File outputFile = this.fileCreator.under(exportLocation, fileName);
         if (!outputFile.exists() && !outputFile.createNewFile()) {
             throw new IOException("Failed to create file: " + outputFile.getAbsolutePath());
         }
