@@ -6,45 +6,22 @@ import com.vp.plugin.action.VPActionController;
 
 import javax.swing.*;
 
-// 关于创建图表和模型文件，有不同的策略：
-// 1）先遍历VP一遍，创建图表（创建包目录，写图标文件），在此过程中创建必要的模型（只缓存在内存中）；然后再遍历 VP 一遍，补充遗漏的模型并写模型文件（复用之前缓存的内存模型）
-// 2）先遍历VP一遍，创建模型（写文件，同时缓存）；然后再补图（不必树形遍历，用API一次性读出所有的图，利用已缓存的模型）
-// 第二中策略较通顺，但为了快些看到成效，先用第一种策略，之后再改成第二种。
-
-
-// 三种模型
-// 1）Visual Paradigm 模型
-//    简述：Visual Paradigm 的插件机制所公开的模型
-//    参考：https://www.visual-paradigm.com/support/documents/pluginjavadoc/index.html
-//    类名：即 Visual Paradigm 中的类名。例如 IPoject, IClass, IDiagramUIModel
-//    属性/变量名：vpXxx (vp 是 Visual Paradigm 的简称），例如 vpProject, vpClass, vpDiagram
-// 2）Visitor 模型
-//    简述：为了使用 Visitor 模式遍历 Visual Paradigm 中的模型，对其中的元素进行的简单包装
-//    类名：ViXxx （Vi 是 Visitor 的简称），例如 ViProject, ViClass, ViDiagram
-//    属性/变量名： viXxx，例如 viProject, viClass, viDiagram
-// 3）内部UML元模型
-//    简述：本项目的核心元模型。由 Visual Paradigm 模型转换为内部UML模型，再基于此进行导出
-//    类名：MyXxx，例如 MyProject, MyClass, MyDiagram
-//    变量名：myXxx，例如 myProject, myClass, myDiagram
-
-
 // DOING
-// - 问题：顶层元素的 parentId 可能不是 IProject ID, 这将影响缓存中对象图的构建
-// - export: 递归构建父 MyElement
 // - export: 重写生成图表的程序 - Package / Model
 // - export: 重写生成图表的程序 - 为 Model 增加衍型
 
 // TODO
-// - 重构依赖注入：通过内部类，将若干工具或工程组织在一起，简化依赖注入
-// - 重构依赖注入：使用DSL
-// - 从 ViXxx 中拿后缀，而不是从 ElementType(考虑删除 ElementType)
 // - export: 重写生成图表的程序 - Class
 // - export: 重写生成图表的程序 - Association
 // - export: 重写生成图表的程序 - Dependency
 // - export: 重写生成图表的程序 - Stereotype/Keyword
+// - 全局只有一个地方根据 MODEL_TYPE 进行判断，其他所有地方都用多态处理(类似抽象工厂模式）
+// - 从 ViXxx 中拿后缀，而不是从 ElementType(考虑删除 ElementType)
 // - export: fix bug of Class Diagram 包和类同名造成混乱
 // - export：将图表放入 markdown
 // - 翻译和修改 README
+// - 使用DSL
+// - 重构依赖注入：通过内部类，将若干工具或工程组织在一起，简化依赖注入
 
 
 // - 清理测试
@@ -64,6 +41,8 @@ import javax.swing.*;
 // - 重构依赖注入：用Map 保存 Bean ?
 
 // DONE
+// - export: 递归构建父 MyElement
+// - 问题：顶层元素的 parentId 可能不是 IProject ID, 这将影响缓存中对象图的构建
 // - MyElementFactory: 使用合适的 MyElementFactory 多态的创建上级 MyElement
 // - MyElementFactory: 初始化缓存时就注入初始的 MyProject
 // - MyElementFactory: 各种 MyElementFactory 成为单例
