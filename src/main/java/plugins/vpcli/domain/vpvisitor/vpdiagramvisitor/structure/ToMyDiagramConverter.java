@@ -1,6 +1,7 @@
 package plugins.vpcli.domain.vpvisitor.vpdiagramvisitor.structure;
 
 import com.vp.plugin.diagram.IDiagramUIModel;
+import com.vp.plugin.diagram.IShapeUIModel;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import plugins.vpcli.domain.myuml.mycommon.MyElement;
 import plugins.vpcli.domain.myuml.mydiagram.MyDiagram;
@@ -13,14 +14,14 @@ import java.util.List;
 
 public class ToMyDiagramConverter {
     private final MyDiagramElementFactory createElement;
-    private MyDiagramCreator myDiagramCreator;
+    private MyDiagramCreator createMyDiagram;
 
     public ToMyDiagramConverter(
         MyDiagramCreator myDiagramCreator
         , MyDiagramElementFactory elementFactory) {
 
         this.createElement = elementFactory;
-        this.myDiagramCreator = myDiagramCreator;
+        this.createMyDiagram = myDiagramCreator;
     }
 
     private @NonNull List<MyDiagramElement> createTopLevelElements(IDiagramUIModel vpDiagram) {
@@ -64,9 +65,29 @@ public class ToMyDiagramConverter {
 //    }
 
     public MyDiagram from(MyElement parentElement, IDiagramUIModel vpDiagram) {
-        MyDiagram myDiagram = myDiagramCreator.create(parentElement, vpDiagram);
+        MyDiagram myDiagram = createMyDiagram.from(parentElement, vpDiagram);
 //        List<MyDiagramElement> myElements = createTopLevelElements(vpDiagram);
 //        createSubElements(myElements, myDiagram);
+
+        var vpShapes = vpDiagram.toShapeUIModelArray();
+        if (vpShapes != null) {
+            for (IShapeUIModel aShape : vpShapes) {
+//                result.add(createElement.from(aShape, modelElement, parentDiagramElement));
+            }
+        }
+//
+//        var vpConnectors = vpDiagram.toConnectorUIModelArray();
+//        if (vpConnectors != null) {
+//            for (IConnectorUIModel aConnector : vpConnectors) {
+//                result.add(createElement.from(aConnector, modelElement, parentDiagramElement));
+//            }
+//        }
+
+
+
+
+
+
         return null;
     }
 }

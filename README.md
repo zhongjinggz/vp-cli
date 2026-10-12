@@ -58,8 +58,8 @@ A Visual Paradigm Plugin to provide CLI for AI
     
     
 - Factory vs Creator
-  - Factory 有逻辑，没有 new
-  - Creator 单纯的 new，没有逻辑
+  - Factory 有逻辑，没有 new, 动词可用 'build'
+  - Creator 单纯的 new，没有逻辑，动词可用 'create'
 
    
 

@@ -13,21 +13,21 @@ public class MyDiagram extends MyElement implements MyDiagramElement {
     private String name;
     private DiagramType diagramType;
     private MyElement parentModelElement;
-    protected List<MyShape> subShapes;
-    protected List<MyEdge> subEdges;
+    protected List<ProperMyDiagramElement> subShapes;
+    protected List<ProperMyDiagramElement> subEdges;
 
-    
+
     public MyDiagram(
-        @NotNull MyElement  parentElement,
-        @NotNull String id ,
-        @NotNull String name ,
+        @NotNull MyElement parentElement,
+        @NotNull String id,
+        @NotNull String name,
         @NotNull String description,
         @NotNull DiagramType diagramType
     ) {
         super(parentElement, id, name, description);
         this.diagramType = diagramType;
     }
-    
+
     public DiagramType getType() {
         return diagramType;
     }
@@ -50,10 +50,10 @@ public class MyDiagram extends MyElement implements MyDiagramElement {
 
     @Override
     public void addSubDiagramElement(ProperMyDiagramElement subDiagramElement) {
-        if (subDiagramElement instanceof MyShape) {
-            this.subShapes.add((MyShape) subDiagramElement);
-        } else if (subDiagramElement instanceof MyEdge) {
-            this.subEdges.add((MyEdge) subDiagramElement);
+        if (subDiagramElement.isShape()) {
+            this.subShapes.add(subDiagramElement);
+        } else if (subDiagramElement.isEdge()) {
+            this.subEdges.add(subDiagramElement);
         }
 
     }

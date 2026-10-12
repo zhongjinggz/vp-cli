@@ -5,15 +5,17 @@ import java.util.Objects;
 import static com.vp.plugin.diagram.IShapeTypeConstants.*;
 
 public enum DiagramElementType {
-    DIAGRAM(""),
-    PACKAGE(SHAPE_TYPE_PACKAGE),
-    CLASS(SHAPE_TYPE_CLASS),
-    USECASE(SHAPE_TYPE_USE_CASE);
+    DIAGRAM("", Kind.DIAGRAM),
+    PACKAGE(SHAPE_TYPE_PACKAGE, Kind.ShAPE),
+    CLASS(SHAPE_TYPE_CLASS, Kind.ShAPE),
+    USECASE(SHAPE_TYPE_USE_CASE, Kind.ShAPE);
 
     private final String vpShapeType;
+    private final Kind kind;
 
-    DiagramElementType(String vpShapeType) {
+    DiagramElementType(String vpShapeType, Kind kind) {
         this.vpShapeType = vpShapeType;
+        this.kind = kind;
     }
 
     public static DiagramElementType of(String vpShapeType) {
@@ -29,4 +31,19 @@ public enum DiagramElementType {
     public boolean vpShapeTypeIs(String theType) {
         return Objects.equals(this.vpShapeType, theType);
     }
+
+    public boolean isShape() {
+        return Objects.equals(this.kind, Kind.ShAPE);
+    }
+
+    public boolean isEdge(){
+        return Objects.equals(this.kind, Kind.EDGE);
+    }
+
+    public static enum Kind {
+        DIAGRAM,
+        ShAPE,
+        EDGE
+    }
+
 }

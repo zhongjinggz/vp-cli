@@ -12,8 +12,8 @@ public class ProperMyDiagramElement implements MyDiagramElement {
     protected DiagramElementType diagramElementType;
     protected MyElement modelElement;
     protected MyDiagramElement parentDiagramElement;
-    protected List<MyShape> subShapes;
-    protected List<MyEdge> subEdges;
+    protected List<ProperMyDiagramElement> subShapes;
+    protected List<ProperMyDiagramElement> subEdges;
 
     public ProperMyDiagramElement(
         String id,
@@ -43,16 +43,24 @@ public class ProperMyDiagramElement implements MyDiagramElement {
         return modelElement;
     }
 
+    public boolean isShape() {
+        return this.diagramElementType.isShape();
+    }
+
+    public boolean isEdge() {
+        return this.diagramElementType.isEdge();
+    }
+
     public MyDiagramElement getParentDiagramElement() {
         return parentDiagramElement;
     }
 
     @Override
     public void addSubDiagramElement(ProperMyDiagramElement subDiagramElement) {
-        if (subDiagramElement instanceof MyShape) {
-            this.subShapes.add((MyShape) subDiagramElement);
-        } else if (subDiagramElement instanceof MyEdge) {
-            this.subEdges.add((MyEdge) subDiagramElement);
+        if (subDiagramElement.isShape()) {
+            this.subShapes.add(subDiagramElement);
+        } else if (subDiagramElement.isEdge()) {
+            this.subEdges.add(subDiagramElement);
         }
     }
 }
