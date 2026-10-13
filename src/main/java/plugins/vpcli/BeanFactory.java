@@ -207,7 +207,7 @@ public class BeanFactory {
 
     private PumlFactory getToPumlConverter() {
         if (pumlFactory == null) {
-            pumlFactory = new PumlFactory(getPumlDiagramCreator());
+//            pumlFactory = new PumlFactory(getPumlDiagramCreator());
         }
         return pumlFactory;
     }

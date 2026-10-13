@@ -2,6 +2,7 @@ package plugins.vpcli.domain.myuml.mydiagram;
 
 import plugins.vpcli.domain.myuml.mycommon.MyElement;
 
+import java.util.Collections;
 import java.util.List;
 
 // 除了 MyDiagram 之外，其他 MyDiagramElement 的父类
@@ -62,5 +63,10 @@ public class ProperMyDiagramElement implements MyDiagramElement {
         } else if (subDiagramElement.isEdge()) {
             this.subEdges.add(subDiagramElement);
         }
+    }
+
+    @Override
+    public List<ProperMyDiagramElement> getShapes() {
+        return Collections.unmodifiableList(this.subShapes);
     }
 }

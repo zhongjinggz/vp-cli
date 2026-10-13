@@ -2,9 +2,9 @@ package plugins.vpcli.domain.myuml.mydiagram;
 
 import org.jetbrains.annotations.NotNull;
 import plugins.vpcli.domain.myuml.mycommon.MyElement;
-import plugins.vpcli.domain.myuml.mycommon.MyElement_old;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import static plugins.vpcli.domain.myuml.mydiagram.DiagramElementType.DIAGRAM;
@@ -57,5 +57,10 @@ public class MyDiagram extends MyElement implements MyDiagramElement {
             this.subEdges.add(subDiagramElement);
         }
 
+    }
+
+    @Override
+    public List<ProperMyDiagramElement> getShapes() {
+        return Collections.unmodifiableList(this.subShapes);
     }
 }
