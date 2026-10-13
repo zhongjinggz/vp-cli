@@ -1,12 +1,10 @@
 package plugins.vpcli.domain.myuml.myproject;
 
-import plugins.vpcli.application.writers_old.WriterCreator;
 import plugins.vpcli.domain.myuml.mycommon.MyElement;
 import plugins.vpcli.domain.myuml.mydiagram.MyDiagram;
-import plugins.vpcli.domain.myuml.mydiagram.MyDiagramCreator;
 import plugins.vpcli.domain.outputmodel.PlantUMLDiagram;
-import plugins.vpcli.domain.outputmodel.ToPumlConverter;
-import plugins.vpcli.domain.vpvisitor.vpdiagramvisitor.structure.ToMyDiagramConverter;
+import plugins.vpcli.domain.outputmodel.PumlFactory;
+import plugins.vpcli.domain.vpvisitor.mydiagramfactory.MyDiagramFactory;
 import plugins.vpcli.domain.vpvisitor.vpmodelvisitor.element.*;
 import plugins.vpcli.domain.vpvisitor.vpmodelvisitor.visitor.ViElementVisitor;
 import plugins.vpcli.drivenadapter.DirMaker;
@@ -17,11 +15,8 @@ import java.io.IOException;
 
 public class ExportDiagramVisitor extends ViElementVisitor {
     private final DirMaker makeDir;
-    private final MyDiagramCreator diagramFactory;
-    private final WriterCreator writerCreator;
-    private final MyProject myProject;
-    private final ToMyDiagramConverter convertToMyDiagram;
-    private final ToPumlConverter convertToPlantUML;
+    private final MyDiagramFactory myDiagramFactory;
+    private final PumlFactory buildPlantUML;
     protected File path;
     private MyElement myElement;
     private DocWriter write;
@@ -29,32 +24,25 @@ public class ExportDiagramVisitor extends ViElementVisitor {
     ExportDiagramVisitor(
         ExportDiagramVisitor higherVisitor,
         DirMaker dirMaker,
-        MyDiagramCreator diagramFactory,
-        WriterCreator writerCreator,
-        MyProject myProject,
-        ToMyDiagramConverter toMyDiagramConverter,
-        ToPumlConverter toPumlConverter
-    ) {
+        MyDiagramFactory myDiagramFactory,
+        PumlFactory pumlFactory,
+        DocWriter docWriter) {
         super(higherVisitor);
 
-        this.myProject = myProject;
-        this.diagramFactory = diagramFactory;
-        this.writerCreator = writerCreator;
         this.makeDir = dirMaker;
-        this.convertToMyDiagram = toMyDiagramConverter;
-        this.convertToPlantUML = toPumlConverter;
+        this.myDiagramFactory = myDiagramFactory;
+        this.buildPlantUML = pumlFactory;
+        this.write = docWriter;
     }
 
     // used by RootExportDiagramVisitor only
     ExportDiagramVisitor(File path, MyProject myProject) {
         super(null);
+        this.write = null;
 
-        this.myProject = myProject;
-        this.diagramFactory = null;
-        this.writerCreator = null;
         this.makeDir = null;
-        this.convertToMyDiagram = null;
-        this.convertToPlantUML = null;
+        this.myDiagramFactory = null;
+        this.buildPlantUML = null;
 
         this.myElement = myProject;
         this.path = path;
@@ -71,11 +59,11 @@ public class ExportDiagramVisitor extends ViElementVisitor {
 //        MyDiagram myDiagram = diagramFactory.create(((ExportDiagramVisitor)higherVisitor).myElement, vpDiagram);
 ////        ClassDiagramWriter classDiagramWriter = writerFactory.createClassDiagramWriter(myDiagram);
 ////        classDiagramWriter.write(this.parentDir);
-        MyDiagram myDiagram = convertToMyDiagram.from(
+        MyDiagram myDiagram = myDiagramFactory.from(
             ((ExportDiagramVisitor) higherVisitor).myElement,
             vpDiagram
         );
-        PlantUMLDiagram puml = convertToPlantUML.from(myDiagram);
+        PlantUMLDiagram puml = buildPlantUML.of(myDiagram);
         write.plantUML(puml);
     }
 

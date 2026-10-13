@@ -2,8 +2,8 @@ package plugins.vpcli.domain.outputmodel;
 
 import plugins.vpcli.domain.myuml.mydiagram.MyDiagram;
 
-public class ToPumlConverter {
-    public PlantUMLDiagram from(MyDiagram myDiagram) {
+public class PumlFactory {
+    public PlantUMLDiagram of(MyDiagram myDiagram) {
         return null;
     }
 }

@@ -7,6 +7,7 @@ import static com.vp.plugin.diagram.IShapeTypeConstants.*;
 public enum DiagramElementType {
     DIAGRAM("", Kind.DIAGRAM),
     PACKAGE(SHAPE_TYPE_PACKAGE, Kind.ShAPE),
+    MODEL(SHAPE_TYPE_MODEL, Kind.ShAPE),
     CLASS(SHAPE_TYPE_CLASS, Kind.ShAPE),
     USECASE(SHAPE_TYPE_USE_CASE, Kind.ShAPE);
 
@@ -24,7 +25,7 @@ public enum DiagramElementType {
                 return aValue;
             }
         }
-        return null;
+        throw new IllegalArgumentException("'" + vpShapeType + "' is not a valid shape type.");
     }
 
 

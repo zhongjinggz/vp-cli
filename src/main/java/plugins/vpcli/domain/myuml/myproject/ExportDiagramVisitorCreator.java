@@ -1,57 +1,46 @@
 package plugins.vpcli.domain.myuml.myproject;
 
 import org.jetbrains.annotations.NotNull;
-import plugins.vpcli.application.writers_old.WriterCreator;
-import plugins.vpcli.domain.myuml.mydiagram.MyDiagramCreator;
-import plugins.vpcli.domain.outputmodel.ToPumlConverter;
-import plugins.vpcli.domain.vpvisitor.vpdiagramvisitor.structure.ToMyDiagramConverter;
+import plugins.vpcli.domain.outputmodel.PumlFactory;
+import plugins.vpcli.domain.vpvisitor.mydiagramfactory.MyDiagramFactory;
 import plugins.vpcli.domain.vpvisitor.vpmodelvisitor.visitor.ViElementVisitor;
 import plugins.vpcli.domain.vpvisitor.vpmodelvisitor.visitor.ViElementVisitorFactory;
 import plugins.vpcli.drivenadapter.DirMaker;
+import plugins.vpcli.drivenadapter.DocWriter;
 
 import java.io.File;
 
 public class ExportDiagramVisitorCreator implements ViElementVisitorFactory {
 
-    private final MyDiagramCreator diagramFactory;
-    private final WriterCreator writerCreator;
     private final MyProjectFactory myProjectFactory;
     private final DirMaker dirMaker;
-    private final ToMyDiagramConverter toMyDiagramConverter;
-    private final ToPumlConverter toPumlConverter;
-
+    private final MyDiagramFactory myDiagramFactory;
+    private final PumlFactory pumlFactory;
+    private final DocWriter docWriter;
     private File rootDir;
 
     public ExportDiagramVisitorCreator(
         DirMaker dirMaker,
-        MyDiagramCreator diagramFactory,
-        WriterCreator writerCreator,
         MyProjectFactory myProjectFactory,
-        ToMyDiagramConverter toMyDiagramConverter,
-        ToPumlConverter toPumlConverter
+        MyDiagramFactory myDiagramFactory,
+        PumlFactory pumlFactory,
+        DocWriter docWriter
     ) {
         this.dirMaker = dirMaker;
-        this.diagramFactory = diagramFactory;
-        this.writerCreator = writerCreator;
         this.myProjectFactory = myProjectFactory;
-        this.toMyDiagramConverter = toMyDiagramConverter;
-        this.toPumlConverter = toPumlConverter;
+        this.myDiagramFactory = myDiagramFactory;
+        this.pumlFactory = pumlFactory;
+        this.docWriter = docWriter;
     }
 
     @Override
     public ViElementVisitor under(@NotNull ViElementVisitor higherVisitor) {
-
-        var myProject = myProjectFactory.fromGlobal();
-
         return new ExportDiagramVisitor(
             (ExportDiagramVisitor) higherVisitor,
             this.dirMaker,
-            diagramFactory,
-            writerCreator,
-            myProject,
-            toMyDiagramConverter,
-            toPumlConverter
-        );
+            myDiagramFactory,
+            pumlFactory,
+            docWriter);
 
     }
 

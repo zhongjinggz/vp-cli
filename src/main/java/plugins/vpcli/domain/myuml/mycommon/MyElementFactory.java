@@ -28,7 +28,7 @@ public abstract class MyElementFactory {
 
     public abstract MyElement reallyCreate(MyElement parent, IModelElement vpElement);
 
-    public MyElement create(IModelElement vpElement) {
+    public MyElement of(IModelElement vpElement) {
         MyElement myParentElement;
         var vpParentElement = vpElement.getParent();
 
@@ -41,7 +41,7 @@ public abstract class MyElementFactory {
                 myParentElement = elementPool.get(parentId);
             } else {
                 var factory = factoryFactory.of(vpParentElement.getModelType());
-                myParentElement = factory.create(vpParentElement);
+                myParentElement = factory.of(vpParentElement);
             }
         }
         return createWithParent(myParentElement, vpElement);

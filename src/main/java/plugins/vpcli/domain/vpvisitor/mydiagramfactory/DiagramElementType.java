@@ -1,6 +1,4 @@
-package plugins.vpcli.domain.vpvisitor.vpdiagramvisitor.element;
-
-import plugins.vpcli.domain.myuml.mycommon.ElementType;
+package plugins.vpcli.domain.vpvisitor.mydiagramfactory;
 
 import static com.vp.plugin.diagram.IShapeTypeConstants.*;
 

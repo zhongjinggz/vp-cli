@@ -4,6 +4,7 @@ import org.jetbrains.annotations.NotNull;
 import plugins.vpcli.domain.myuml.mycommon.MyElement;
 import plugins.vpcli.domain.myuml.mycommon.MyElement_old;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import static plugins.vpcli.domain.myuml.mydiagram.DiagramElementType.DIAGRAM;
@@ -13,8 +14,8 @@ public class MyDiagram extends MyElement implements MyDiagramElement {
     private String name;
     private DiagramType diagramType;
     private MyElement parentModelElement;
-    protected List<ProperMyDiagramElement> subShapes;
-    protected List<ProperMyDiagramElement> subEdges;
+    protected List<ProperMyDiagramElement> subShapes = new ArrayList<>();
+    protected List<ProperMyDiagramElement> subEdges = new ArrayList<>();
 
 
     public MyDiagram(

@@ -14,9 +14,10 @@ import plugins.vpcli.domain.myuml.myproject.ExportDiagramVisitorCreator;
 import plugins.vpcli.domain.myuml.myproject.MyProjectFactory;
 import plugins.vpcli.domain.myuml.myproject.TreeVisitorCreator;
 import plugins.vpcli.domain.myuml.myusecase.MyUseCaseFactory;
-import plugins.vpcli.domain.outputmodel.ToPumlConverter;
-import plugins.vpcli.domain.vpvisitor.vpdiagramvisitor.element.MyDiagramElementFactory;
-import plugins.vpcli.domain.vpvisitor.vpdiagramvisitor.structure.ToMyDiagramConverter;
+import plugins.vpcli.domain.outputmodel.PumlFactory;
+import plugins.vpcli.domain.vpvisitor.mydiagramfactory.MyDiagramElementCreator;
+import plugins.vpcli.domain.vpvisitor.mydiagramfactory.MyDiagramElementFactory;
+import plugins.vpcli.domain.vpvisitor.mydiagramfactory.MyDiagramFactory;
 import plugins.vpcli.domain.vpvisitor.vpmodelvisitor.element.ViElementFactory;
 import plugins.vpcli.domain.vpvisitor.vpmodelvisitor.structure.ViProjectCreator;
 import plugins.vpcli.drivenadapter.*;
@@ -35,6 +36,7 @@ public class BeanFactory {
     // Factories
     private FileCreator fileCreator;
     private WriterCreator writerCreator;
+    private MyDiagramElementCreator myDiagramElementCreator;
 
     private ViProjectCreator viProjectCreator;
     private ViElementFactory viElementFactory;
@@ -67,8 +69,9 @@ public class BeanFactory {
 
 
     // Domain Service
-    private ToMyDiagramConverter toMyDiagramConverter;
-    private ToPumlConverter toPumlConverter;
+    private MyDiagramFactory myDiagramFactory;
+    private PumlFactory pumlFactory;
+    private DocWriter docWriter;
 
 
     public BeanFactory() {
@@ -102,7 +105,7 @@ public class BeanFactory {
         return fileCreator;
     }
 
-    private MyDiagramCreator getMyDiagramFactory() {
+    private MyDiagramCreator getMyDiagramCreator() {
         if (myDiagramCreator == null) {
             myDiagramCreator = new MyDiagramCreator();
         }
@@ -150,7 +153,6 @@ public class BeanFactory {
     }
 
 
-
     private MyClassFactory getMyClassFactory() {
         if (myClassFactory == null) {
             myClassFactory = new MyClassFactory(getMyElementPool());
@@ -179,29 +181,38 @@ public class BeanFactory {
         return viElementFactory;
     }
 
+    private MyDiagramElementCreator getMyDiagramElementCreator() {
+        if (myDiagramElementCreator == null) {
+            myDiagramElementCreator = new MyDiagramElementCreator();
+        }
+        return myDiagramElementCreator;
+    }
 
     private MyDiagramElementFactory getMyDiagramElementFactory() {
         if (myDiagramElementFactory == null) {
-            myDiagramElementFactory = new MyDiagramElementFactory();
+            myDiagramElementFactory = new MyDiagramElementFactory(
+                getMyElementFactoryFactory(),
+                getMyDiagramElementCreator()
+            );
         }
         return myDiagramElementFactory;
     }
 
-    private ToMyDiagramConverter getToMyDiagramConverter() {
-        if (toMyDiagramConverter == null) {
-            toMyDiagramConverter = new ToMyDiagramConverter(
-                getMyDiagramFactory(),
+    private MyDiagramFactory getMyDiagramFactory() {
+        if (myDiagramFactory == null) {
+            myDiagramFactory = new MyDiagramFactory(
+                getMyDiagramCreator(),
                 getMyDiagramElementFactory()
             );
         }
-        return toMyDiagramConverter;
+        return myDiagramFactory;
     }
 
-    private ToPumlConverter getToPumlConverter() {
-        if (toPumlConverter == null) {
-            toPumlConverter = new ToPumlConverter();
+    private PumlFactory getToPumlConverter() {
+        if (pumlFactory == null) {
+            pumlFactory = new PumlFactory();
         }
-        return toPumlConverter;
+        return pumlFactory;
     }
 
 
@@ -219,15 +230,21 @@ public class BeanFactory {
         return treeVisitorCreator;
     }
 
+    private DocWriter getDocWriter() {
+        if (docWriter == null) {
+            docWriter = new DocWriter();
+        }
+        return docWriter;
+    }
+
     private ExportDiagramVisitorCreator getExportDiagramVisitorFactory() {
         if (exportDiagramVisitorCreator == null) {
             exportDiagramVisitorCreator = new ExportDiagramVisitorCreator(
                 getDirMaker(),
-                getMyDiagramFactory(),
-                getWriterFactory(),
                 getMyProjectFactory(),
-                getToMyDiagramConverter(),
-                getToPumlConverter()
+                getMyDiagramFactory(),
+                getToPumlConverter(),
+                getDocWriter()
             );
         }
         return exportDiagramVisitorCreator;
