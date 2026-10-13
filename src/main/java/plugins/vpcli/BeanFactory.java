@@ -14,6 +14,7 @@ import plugins.vpcli.domain.myuml.myproject.ExportDiagramVisitorCreator;
 import plugins.vpcli.domain.myuml.myproject.MyProjectFactory;
 import plugins.vpcli.domain.myuml.myproject.TreeVisitorCreator;
 import plugins.vpcli.domain.myuml.myusecase.MyUseCaseFactory;
+import plugins.vpcli.domain.outputmodel.PumlDiagramCreator;
 import plugins.vpcli.domain.outputmodel.PumlFactory;
 import plugins.vpcli.domain.vpvisitor.mydiagramfactory.MyDiagramElementCreator;
 import plugins.vpcli.domain.vpvisitor.mydiagramfactory.MyDiagramElementFactory;
@@ -25,52 +26,48 @@ import plugins.vpcli.drivingadapter.CLIController;
 
 
 public class BeanFactory {
-    // Repository vs Factory
-    // Repository: 已有的内容的存取（不含 new）
-    // Factory: 从无到有创建（用 new）
+    // Repository vs Factory vs Creator:
+    // - Creator: 从无到有创建, 无逻辑，单纯 new
+    // - Factory: 从无到有创建, 有逻辑，无 new （调用 Creator 或其他 Factory）
+    // - Repository: 已有的内容的存取（不含 new）
 
     // Util
     private DirMaker dirMaker;
     private MyConsole myConsole;
 
-    // Factories
+    // Creator
     private FileCreator fileCreator;
     private WriterCreator writerCreator;
     private MyDiagramElementCreator myDiagramElementCreator;
-
     private ViProjectCreator viProjectCreator;
-    private ViElementFactory viElementFactory;
-
-    private MyProjectFactory myProjectFactory;
     private MyDiagramCreator myDiagramCreator;
-    private MyDiagramElementFactory myDiagramElementFactory;
+    private PumlDiagramCreator pumlDiagramCreator;
+    private TreeVisitorCreator treeVisitorCreator;
+    private ExportDiagramVisitorCreator exportDiagramVisitorCreator;
 
-    private MyElementPool myElementPool;
+    // Factories
+    private ViElementFactory viElementFactory;
+    private MyProjectFactory myProjectFactory;
+    private MyDiagramElementFactory myDiagramElementFactory;
     private MyPackageFactory myPackageFactory;
     private MyModelFactory myModelFactory;
     private MyClassFactory myClassFactory;
     private MyUseCaseFactory myUseCaseFactory;
-
     private MyElementFactoryFactory myElementFactoryFactory;
+    private MyDiagramFactory myDiagramFactory;
+    private PumlFactory pumlFactory;
 
-    private TreeVisitorCreator treeVisitorCreator;
-    private ExportDiagramVisitorCreator exportDiagramVisitorCreator;
-
-    // Repositories
-    private VPProjectRepository vpProjectRepository;
+    // Domain
+    private MyElementPool myElementPool;
 
     // Application Services
     private ExportService exportService;
     private TreeService treeService;
     private ListDiagramsService listDiagramsService;
 
-    // Controller
+    // Adapter
     private CLIController cliController;
-
-
-    // Domain Service
-    private MyDiagramFactory myDiagramFactory;
-    private PumlFactory pumlFactory;
+    private VPProjectRepository vpProjectRepository;
     private DocWriter docWriter;
 
 
@@ -210,9 +207,16 @@ public class BeanFactory {
 
     private PumlFactory getToPumlConverter() {
         if (pumlFactory == null) {
-            pumlFactory = new PumlFactory();
+            pumlFactory = new PumlFactory(getPumlDiagramCreator());
         }
         return pumlFactory;
+    }
+
+    private PumlDiagramCreator getPumlDiagramCreator() {
+        if (pumlDiagramCreator == null ) {
+            pumlDiagramCreator = new PumlDiagramCreator();
+        }
+        return pumlDiagramCreator;
     }
 
 

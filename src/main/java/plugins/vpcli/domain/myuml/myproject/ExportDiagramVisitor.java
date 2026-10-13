@@ -2,7 +2,7 @@ package plugins.vpcli.domain.myuml.myproject;
 
 import plugins.vpcli.domain.myuml.mycommon.MyElement;
 import plugins.vpcli.domain.myuml.mydiagram.MyDiagram;
-import plugins.vpcli.domain.outputmodel.PlantUMLDiagram;
+import plugins.vpcli.domain.outputmodel.PumlDiagram;
 import plugins.vpcli.domain.outputmodel.PumlFactory;
 import plugins.vpcli.domain.vpvisitor.mydiagramfactory.MyDiagramFactory;
 import plugins.vpcli.domain.vpvisitor.vpmodelvisitor.element.*;
@@ -15,7 +15,7 @@ import java.io.IOException;
 
 public class ExportDiagramVisitor extends ViElementVisitor {
     private final DirMaker makeDir;
-    private final MyDiagramFactory myDiagramFactory;
+    private final MyDiagramFactory buildMyDiagram;
     private final PumlFactory buildPlantUML;
     protected File path;
     private MyElement myElement;
@@ -30,7 +30,7 @@ public class ExportDiagramVisitor extends ViElementVisitor {
         super(higherVisitor);
 
         this.makeDir = dirMaker;
-        this.myDiagramFactory = myDiagramFactory;
+        this.buildMyDiagram = myDiagramFactory;
         this.buildPlantUML = pumlFactory;
         this.write = docWriter;
     }
@@ -41,7 +41,7 @@ public class ExportDiagramVisitor extends ViElementVisitor {
         this.write = null;
 
         this.makeDir = null;
-        this.myDiagramFactory = null;
+        this.buildMyDiagram = null;
         this.buildPlantUML = null;
 
         this.myElement = myProject;
@@ -54,13 +54,13 @@ public class ExportDiagramVisitor extends ViElementVisitor {
 
     @Override
     public void visit(ViDiagramAsElement viDiagram) throws IOException {
-//        // 暂时不将图表放入全局模型缓存，以便节省内存。未来视情况而定。
+        // 暂时不将图表放入全局模型缓存，以便节省内存。未来视情况而定。
         var vpDiagram = viDiagram.getVPDiagramUIModel();
-        MyDiagram myDiagram = myDiagramFactory.from(
-            ((ExportDiagramVisitor) higherVisitor).myElement,
-            vpDiagram
+        MyDiagram myDiagram = buildMyDiagram.of(
+            vpDiagram,
+            ((ExportDiagramVisitor) higherVisitor).myElement
         );
-        PlantUMLDiagram puml = buildPlantUML.of(myDiagram);
+        PumlDiagram puml = buildPlantUML.of(myDiagram);
         write.plantUML(puml);
     }
 

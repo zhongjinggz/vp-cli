@@ -1,13 +1,13 @@
 package plugins.vpcli.drivenadapter;
 
-import plugins.vpcli.domain.outputmodel.PlantUMLDiagram;
+import plugins.vpcli.domain.outputmodel.PumlDiagram;
 
 public class DocWriter {
     void markdown() {
 
     }
 
-    public void plantUML(PlantUMLDiagram puml) {
+    public void plantUML(PumlDiagram puml) {
 
     }
 }

@@ -3,7 +3,13 @@ package plugins.vpcli.domain.outputmodel;
 import plugins.vpcli.domain.myuml.mydiagram.MyDiagram;
 
 public class PumlFactory {
-    public PlantUMLDiagram of(MyDiagram myDiagram) {
-        return null;
+    private PumlDiagramCreator createPumlDiagram;
+
+    public PumlFactory(PumlDiagramCreator pumlDiagramCreator) {
+        this.createPumlDiagram = pumlDiagramCreator;
+    }
+
+    public PumlDiagram of(MyDiagram myDiagram) {
+        var result = createPumlDiagram.of(myDiagram.getName(), myDiagram.getType());
     }
 }

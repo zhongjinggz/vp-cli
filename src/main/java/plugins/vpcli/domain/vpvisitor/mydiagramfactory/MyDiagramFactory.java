@@ -1,8 +1,6 @@
 package plugins.vpcli.domain.vpvisitor.mydiagramfactory;
 
-import com.vp.plugin.diagram.IConnectorUIModel;
 import com.vp.plugin.diagram.IDiagramUIModel;
-import com.vp.plugin.diagram.IShapeUIModel;
 import plugins.vpcli.domain.myuml.mycommon.MyElement;
 import plugins.vpcli.domain.myuml.mydiagram.MyDiagram;
 import plugins.vpcli.domain.myuml.mydiagram.MyDiagramCreator;
@@ -19,7 +17,7 @@ public class MyDiagramFactory {
         this.createMyDiagram = myDiagramCreator;
     }
 
-    public MyDiagram from(MyElement parentElement, IDiagramUIModel vpDiagram) {
+    public MyDiagram of(IDiagramUIModel vpDiagram, MyElement parentElement) {
         MyDiagram result = createMyDiagram.from(parentElement, vpDiagram);
 
         var vpDiagramElements = vpDiagram.toDiagramElementArray();
