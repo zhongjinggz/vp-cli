@@ -22,19 +22,19 @@ public class MyDiagramFactory {
     public MyDiagram from(MyElement parentElement, IDiagramUIModel vpDiagram) {
         MyDiagram result = createMyDiagram.from(parentElement, vpDiagram);
 
-        var vpShapes = vpDiagram.toShapeUIModelArray();
-        if (vpShapes != null) {
-            for (IShapeUIModel aShape : vpShapes) {
-                buildMyDiagramElement.of(aShape, result);
+        var vpDiagramElements = vpDiagram.toDiagramElementArray();
+        if (vpDiagramElements != null) {
+            for (var aVPDiagramElement : vpDiagramElements) {
+                buildMyDiagramElement.of(aVPDiagramElement, result);
             }
         }
 
-        var vpConnectors = vpDiagram.toConnectorUIModelArray();
-        if (vpConnectors != null) {
-            for (IConnectorUIModel aConnector : vpConnectors) {
-                buildMyDiagramElement.of(aConnector, result);
-            }
-        }
+//        var vpConnectors = vpDiagram.toConnectorUIModelArray();
+//        if (vpConnectors != null) {
+//            for (IConnectorUIModel aConnector : vpConnectors) {
+//                buildMyDiagramElement.of(aConnector, result);
+//            }
+//        }
 
 
         return result;
