@@ -23,24 +23,22 @@ public class PumlDiagram {
         indentLevel--;
     }
 
-    public void beginPackage(String name, List<String> stereotypes) {
-        StringBuilder text = new StringBuilder("namespace \"" + name + "\"");
-        for (var aStereotype : stereotypes) {
-            text.append(" <<").append(aStereotype).append(">> ");
-        }
-        text.append("{");
+    public void beginBlock(String name) {
 
-        addStatement(indentLevel, text.toString());
+        addStatement(name + " {");
         indent();
     }
 
-    public void end() {
+    public void endBlock() {
         outdent();
-        addStatement(indentLevel, "}");
+        addStatement("}");
     }
 
-    private void addStatement(int indentLevel, String text) {
-        this.statements.add(new PumlStatement(indentLevel, text));
+    public void writeTerminalElement(String elementText) {
+        addStatement (elementText);
     }
 
+    private void addStatement(String text) {
+        this.statements.add(new PumlStatement(this.indentLevel, text));
+    }
 }

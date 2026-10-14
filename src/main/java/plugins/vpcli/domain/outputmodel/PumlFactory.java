@@ -4,19 +4,17 @@ import plugins.vpcli.domain.myuml.mydiagram.MyDiagram;
 
 public class PumlFactory {
     private final PumlDiagramCreator createPumlDiagram;
-    private final PumlElementExporterFactory pumlElementExporterFactory;
 
-    public PumlFactory(PumlDiagramCreator pumlDiagramCreator, PumlElementExporterFactory pumlElementExporterFactory) {
+    public PumlFactory(PumlDiagramCreator pumlDiagramCreator) {
         this.createPumlDiagram = pumlDiagramCreator;
-        this.pumlElementExporterFactory = pumlElementExporterFactory;
     }
 
     public PumlDiagram of(MyDiagram myDiagram) {
         var result = createPumlDiagram.of(myDiagram.getName(), myDiagram.getType());
-        for (var aShape : myDiagram.getShapes()) {
+        for (var aShape : myDiagram.getSubShapes()) {
             var myElement = aShape.getModelElement();
-            var exporter = myElement.getElementType().getPumlElementExporter();
-//            exporter.to(result, myElement); TO BE Continue
+            var exportMyElement = myElement.getElementType().getPumlElementExporter();
+            exportMyElement.to(result, aShape);
         }
         return result;
     }

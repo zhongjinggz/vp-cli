@@ -13,5 +13,5 @@ public interface MyDiagramElement {
 
     void addSubDiagramElement(ProperMyDiagramElement properMyDiagramElement);
 
-    List<ProperMyDiagramElement> getShapes();
+    List<ProperMyDiagramElement> getSubShapes();
 }

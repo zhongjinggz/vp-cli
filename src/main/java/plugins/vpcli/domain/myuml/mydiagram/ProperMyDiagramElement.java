@@ -66,7 +66,7 @@ public class ProperMyDiagramElement implements MyDiagramElement {
     }
 
     @Override
-    public List<ProperMyDiagramElement> getShapes() {
+    public List<ProperMyDiagramElement> getSubShapes() {
         return Collections.unmodifiableList(this.subShapes);
     }
 }

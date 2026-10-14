@@ -62,7 +62,7 @@ public class MyDiagram extends MyElement implements MyDiagramElement {
     }
 
     @Override
-    public List<ProperMyDiagramElement> getShapes() {
+    public List<ProperMyDiagramElement> getSubShapes() {
         return Collections.unmodifiableList(this.subShapes);
     }
 }
