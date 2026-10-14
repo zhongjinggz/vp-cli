@@ -2,6 +2,7 @@ package plugins.vpcli.domain.myuml.mycommon;
 
 import com.vp.plugin.model.IModelElement;
 import org.slf4j.Logger;
+import plugins.vpcli.domain.myuml.mycommon.myelementtype.MyElementTypes;
 
 import static org.slf4j.LoggerFactory.getLogger;
 
@@ -11,15 +12,18 @@ public abstract class MyElementFactory {
 
     private final MyElementPool elementPool;
     private MyElementFactoryFactory factoryFactory;
+    protected MyElementTypes myElementTypes;
 
-    public MyElementFactory(MyElementPool myElementPool) {
-        this(myElementPool, getLogger(MyElementFactory.class));
+    public MyElementFactory(MyElementPool myElementPool, MyElementTypes myElementTypes) {
+        this(myElementPool, myElementTypes, getLogger(MyElementFactory.class));
     }
 
     // 仅用于单元测试，可注入 Logger
-    MyElementFactory(MyElementPool myElementPool, Logger logger) {
+    MyElementFactory(MyElementPool myElementPool, MyElementTypes myElementTypes, Logger logger) {
         this.elementPool = myElementPool;
+        this.myElementTypes = myElementTypes;
         this.logger = logger;
+
     }
 
     public void setFactoryFactory(MyElementFactoryFactory factoryFactory) {

@@ -1,6 +1,7 @@
 package plugins.vpcli.domain.myuml.mycommon;
 
 import org.jetbrains.annotations.NotNull;
+import plugins.vpcli.domain.myuml.mycommon.myelementtype.MyElementType;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -11,7 +12,7 @@ public class MyElement {
     private String id = "";
     private String name = "";
     private String description = "";
-    private ElementType elementType;
+    private MyElementType myElementType;
 
     protected MyElement parentElement;
     protected final List<MyElement> subElements = new ArrayList<>();
@@ -20,12 +21,14 @@ public class MyElement {
         MyElement parentElement,
         String id,
         String name,
+        MyElementType myElementType,
         String description
     ) {
         this.parentElement = parentElement;
         this.id = id;
         this.name = name;
         this.description = description;
+        this.myElementType = myElementType;
         this.parentElement.addSubElement(this);
     }
 
@@ -33,9 +36,10 @@ public class MyElement {
         this.name = name;
     }
 
-    public MyElement(String id, String name) {
+    public MyElement(String id, String name, MyElementType myElementType) {
         this.id = id;
         this.name = name;
+        this.myElementType = myElementType;
     }
 
     public String getId() {
@@ -54,8 +58,8 @@ public class MyElement {
         this.name = name;
     }
 
-    public ElementType getElementType() {
-        return elementType;
+    public MyElementType getElementType() {
+        return myElementType;
     }
 
     public String getDescription() {

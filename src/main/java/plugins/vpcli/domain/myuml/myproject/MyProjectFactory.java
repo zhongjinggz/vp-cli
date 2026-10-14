@@ -2,26 +2,29 @@ package plugins.vpcli.domain.myuml.myproject;
 
 import com.vp.plugin.model.IProject;
 import org.slf4j.Logger;
-import plugins.vpcli.domain.myuml.mycommon.MyElementFactory;
+import plugins.vpcli.domain.myuml.mycommon.myelementtype.MyElementTypes;
 import plugins.vpcli.drivenadapter.VPProjectRepository;
 
 import static org.slf4j.LoggerFactory.getLogger;
 
+// TODO extend MyElementFactory?
 // Singleton
 // 由于MyProjectFactory 被依赖注入机制保证了全局唯一，因此不用传统的基于静态属性的单例机制
 public class MyProjectFactory {
-    private final Logger logger ;
+    private final Logger logger;
 
     private final VPProjectRepository vpProjectRepository;
+    private final MyElementTypes myElementTypes;
 
-    public MyProjectFactory(VPProjectRepository vpProjectRepository) {
-        this(vpProjectRepository, getLogger(MyProjectFactory.class));
+    public MyProjectFactory(VPProjectRepository vpProjectRepository, MyElementTypes myElementTypes) {
+        this(vpProjectRepository, myElementTypes, getLogger(MyProjectFactory.class));
     }
 
     // 用于单元测试注入 logger
-    public MyProjectFactory(VPProjectRepository vpProjectRepository, Logger logger) {
+    public MyProjectFactory(VPProjectRepository vpProjectRepository, MyElementTypes myElementTypes, Logger logger) {
         this.vpProjectRepository = vpProjectRepository;
         this.logger = logger;
+        this.myElementTypes = myElementTypes;
     }
 
     private MyProject myProject;
@@ -31,9 +34,11 @@ public class MyProjectFactory {
             IProject vpProject = vpProjectRepository.fromVisualParadigm();
             myProject = new MyProject(
                 vpProject.getId(),
-                vpProject.getName());
+                vpProject.getName(),
+                myElementTypes.PROJECT
+            );
 
-            logger.debug("Creating MyProject: name=" + vpProject.getName()+ " id=" + vpProject.getId());
+            logger.debug("Creating MyProject: name=" + vpProject.getName() + " id=" + vpProject.getId());
         }
         return myProject;
     }

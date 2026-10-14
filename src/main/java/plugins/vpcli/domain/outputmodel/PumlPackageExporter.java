@@ -1,4 +1,4 @@
 package plugins.vpcli.domain.outputmodel;
 
-public class PumlPackageExporter extends PumlElementExporter {
+public class PumlPackageExporter implements PumlElementExporter {
 }

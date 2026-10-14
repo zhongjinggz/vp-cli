@@ -15,7 +15,7 @@ public class PumlFactory {
         var result = createPumlDiagram.of(myDiagram.getName(), myDiagram.getType());
         for (var aShape : myDiagram.getShapes()) {
             var myElement = aShape.getModelElement();
-            var exporter = pumlElementExporterFactory.getExporter(myElement.getElementType());
+            var exporter = myElement.getElementType().getPumlElementExporter();
 //            exporter.to(result, myElement); TO BE Continue
         }
         return result;

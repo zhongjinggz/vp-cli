@@ -1,6 +1,7 @@
 package plugins.vpcli.domain.myuml.myclassifier;
 
 import plugins.vpcli.domain.myuml.mycommon.MyElement;
+import plugins.vpcli.domain.myuml.mycommon.myelementtype.MyElementType;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -14,13 +15,18 @@ public class MyClass extends MyElement {
     // private String visibility;
     //private String Uid;
 
-	public MyClass(MyElement parent, String id, String name, String description) {
-    	super(parent, id, name, description);
-		isAbstract = false;
+    public MyClass(
+        MyElement parent, String id,
+        String name,
+        MyElementType myElementType,
+        String description
+    ) {
+        super(parent, id, name, myElementType, description);
+        isAbstract = false;
 
-	}
+    }
 
-	public void addAttribute(AttributeData attribute) {
+    public void addAttribute(AttributeData attribute) {
         getAttributes().add(attribute);
     }
 
@@ -28,29 +34,29 @@ public class MyClass extends MyElement {
         getOperations().add(operation);
     }
 
-	public List<AttributeData> getAttributes() {
-		return attributes;
-	}
+    public List<AttributeData> getAttributes() {
+        return attributes;
+    }
 
-	public void setAttributes(List<AttributeData> attributes) {
-		this.attributes = attributes;
-	}
-	
-	public List<MyOperation> getOperations() {
-		return operations;
-	}
+    public void setAttributes(List<AttributeData> attributes) {
+        this.attributes = attributes;
+    }
 
-	public void setOperations(List<MyOperation> operations) {
-		this.operations = operations;
-	}
+    public List<MyOperation> getOperations() {
+        return operations;
+    }
 
-	public boolean isAbstract() {
-		return isAbstract;
-	}
+    public void setOperations(List<MyOperation> operations) {
+        this.operations = operations;
+    }
 
-	public void setAbstract(boolean isAbstract) {
-		this.isAbstract = isAbstract;
-	}
+    public boolean isAbstract() {
+        return isAbstract;
+    }
+
+    public void setAbstract(boolean isAbstract) {
+        this.isAbstract = isAbstract;
+    }
 
 
 }

@@ -2,6 +2,7 @@ package plugins.vpcli.domain.myuml.mydiagram;
 
 import org.jetbrains.annotations.NotNull;
 import plugins.vpcli.domain.myuml.mycommon.MyElement;
+import plugins.vpcli.domain.myuml.mycommon.myelementtype.MyElementType;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -22,10 +23,11 @@ public class MyDiagram extends MyElement implements MyDiagramElement {
         @NotNull MyElement parentElement,
         @NotNull String id,
         @NotNull String name,
+        @NotNull MyElementType myElementType,
         @NotNull String description,
         @NotNull DiagramType diagramType
     ) {
-        super(parentElement, id, name, description);
+        super(parentElement, id, name, myElementType, description);
         this.diagramType = diagramType;
     }
 

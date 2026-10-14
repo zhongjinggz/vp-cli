@@ -1,6 +1,7 @@
 package plugins.vpcli.domain.myuml.myusecase;
 
 import plugins.vpcli.domain.myuml.mycommon.MyElement;
+import plugins.vpcli.domain.myuml.mycommon.myelementtype.MyElementType;
 
 import java.util.List;
 
@@ -11,8 +12,8 @@ public class MyUseCase extends MyElement {
 	private String Uid;
 
 
-	public MyUseCase(MyElement parent, String id, String name, String Description) {
-        super(parent, id, name, Description);
+	public MyUseCase(MyElement parent, String id, String name, MyElementType myElementType, String Description) {
+        super(parent, id, name, myElementType, Description);
 	}
 	public List<String> getStereotypes() {
 		return stereotypes;
