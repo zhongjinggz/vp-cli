@@ -2,13 +2,14 @@ package plugins.vpcli.domain.outputmodel;
 
 import plugins.vpcli.domain.myuml.mydiagram.DiagramType;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class PumlDiagram {
     private String name;
     private DiagramType diagramType;
     private int indentLevel = 0;
-    private List<PumlStatement> statements;
+    private List<PumlStatement> statements = new ArrayList<>();
 
     public PumlDiagram(String name, DiagramType diagramType) {
         this.name = name;
@@ -40,5 +41,19 @@ public class PumlDiagram {
 
     private void addStatement(String text) {
         this.statements.add(new PumlStatement(this.indentLevel, text));
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder("@startuml\n");
+
+        for (PumlStatement statement : this.statements) {
+            sb.append(statement.toString()).append("\n");
+        }
+        return sb.toString();
     }
 }

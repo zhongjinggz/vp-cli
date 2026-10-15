@@ -9,6 +9,7 @@ public class MyElementTypes {
     public final MyElementTypeModel MODEL;
     public final MyElementTypeUseCase USE_CASE;
     public final MyElementTypeDiagram DIAGRAM;
+    public final MyElementTypeAssociation ASSOCIATION;
 
     public MyElementTypes(
         MyElementTypeProject myElementTypeProject,
@@ -16,7 +17,8 @@ public class MyElementTypes {
         MyElementTypePackage myElementTypePackage,
         MyElementTypeModel myElementTypeModel,
         MyElementTypeUseCase myElementTypeUseCase,
-        MyElementTypeDiagram elementTypeDiagram
+        MyElementTypeDiagram elementTypeDiagram,
+        MyElementTypeAssociation myElementTypeAssociation
     ) {
         this.PROJECT = myElementTypeProject;
         this.CLASS = myElementTypeClass;
@@ -24,6 +26,7 @@ public class MyElementTypes {
         this.MODEL = myElementTypeModel;
         this.USE_CASE = myElementTypeUseCase;
         this.DIAGRAM = elementTypeDiagram;
+        this.ASSOCIATION = myElementTypeAssociation;
     }
 
     public MyElementType ofVPModelType(String vpModelType) {
@@ -36,6 +39,8 @@ public class MyElementTypes {
                 return CLASS;
             case MODEL_TYPE_USE_CASE:
                 return USE_CASE;
+            case MODEL_TYPE_ASSOCIATION:
+                return ASSOCIATION;
             default:
                 throw new IllegalArgumentException("Unknown visual paradigm model type: " + vpModelType);
         }

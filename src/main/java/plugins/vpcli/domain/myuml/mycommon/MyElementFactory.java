@@ -2,6 +2,7 @@ package plugins.vpcli.domain.myuml.mycommon;
 
 import com.vp.plugin.model.IModelElement;
 import org.slf4j.Logger;
+import plugins.vpcli.domain.myuml.mycommon.myelementtype.MyElementType;
 import plugins.vpcli.domain.myuml.mycommon.myelementtype.MyElementTypes;
 
 import static org.slf4j.LoggerFactory.getLogger;
@@ -12,16 +13,16 @@ public abstract class MyElementFactory {
 
     private final MyElementPool elementPool;
     private MyElementFactoryFactory factoryFactory;
-    protected MyElementTypes myElementTypes;
+    protected MyElementType myElementType;
 
-    public MyElementFactory(MyElementPool myElementPool, MyElementTypes myElementTypes) {
-        this(myElementPool, myElementTypes, getLogger(MyElementFactory.class));
+    public MyElementFactory(MyElementPool myElementPool, MyElementType myElementType) {
+        this(myElementPool, myElementType, getLogger(MyElementFactory.class));
     }
 
     // 仅用于单元测试，可注入 Logger
-    MyElementFactory(MyElementPool myElementPool, MyElementTypes myElementTypes, Logger logger) {
+    MyElementFactory(MyElementPool myElementPool, MyElementType myElementType, Logger logger) {
         this.elementPool = myElementPool;
-        this.myElementTypes = myElementTypes;
+        this.myElementType = myElementType;
         this.logger = logger;
 
     }
@@ -45,6 +46,8 @@ public abstract class MyElementFactory {
                 myParentElement = elementPool.get(parentId);
             } else {
                 var factory = factoryFactory.of(vpParentElement.getModelType());
+
+               // var factory = myElementType.getMyElementFactory();
                 myParentElement = factory.of(vpParentElement);
             }
         }
@@ -73,6 +76,13 @@ public abstract class MyElementFactory {
         } else {
             parentId = vpParent.getId();
         }
-        logger.debug("Creating MyElement: name=" + vpElement.getName() + " id=" + vpId + " parentId=" + parentId);
+        logger.debug("Creating MyElement: name=" 
+            + vpElement.getName() 
+            + " id=" + vpId 
+            + " parentId=" 
+            + parentId
+            + "model type=" 
+            + vpElement.getModelType()
+        );
     }
 }

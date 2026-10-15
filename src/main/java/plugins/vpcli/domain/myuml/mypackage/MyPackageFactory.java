@@ -4,12 +4,12 @@ import com.vp.plugin.model.IModelElement;
 import plugins.vpcli.domain.myuml.mycommon.MyElement;
 import plugins.vpcli.domain.myuml.mycommon.MyElementFactory;
 import plugins.vpcli.domain.myuml.mycommon.MyElementPool;
-import plugins.vpcli.domain.myuml.mycommon.myelementtype.MyElementTypes;
+import plugins.vpcli.domain.myuml.mycommon.myelementtype.MyElementTypePackage;
 
 public class MyPackageFactory extends MyElementFactory {
 
-    public MyPackageFactory(MyElementPool myElementPool, MyElementTypes myElementTypes) {
-        super(myElementPool, myElementTypes);
+    public MyPackageFactory(MyElementPool myElementPool, MyElementTypePackage myElementType) {
+        super(myElementPool, myElementType);
     }
 
     @Override
@@ -18,7 +18,7 @@ public class MyPackageFactory extends MyElementFactory {
             parent,
             vpElement.getId(),
             vpElement.getName(),
-            myElementTypes.PACKAGE,
+            myElementType,
             vpElement.getDescription()
         );
     }

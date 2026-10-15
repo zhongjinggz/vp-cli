@@ -13,6 +13,7 @@ public class MyElement {
     private String name = "";
     private String description = "";
     private MyElementType myElementType;
+    private List<String> stereotypes = new ArrayList<>();
 
     protected MyElement parentElement;
     protected final List<MyElement> subElements = new ArrayList<>();

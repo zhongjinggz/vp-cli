@@ -5,11 +5,13 @@ import plugins.vpcli.application.ExportService;
 import plugins.vpcli.application.ListDiagramsService;
 import plugins.vpcli.application.TreeService;
 import plugins.vpcli.application.writers_old.WriterCreator;
+import plugins.vpcli.domain.myuml.myassociation.MyAssociationFactory;
 import plugins.vpcli.domain.myuml.myclassifier.MyClassFactory;
 import plugins.vpcli.domain.myuml.mycommon.MyElementFactoryFactory;
 import plugins.vpcli.domain.myuml.mycommon.MyElementPool;
 import plugins.vpcli.domain.myuml.mycommon.myelementtype.*;
 import plugins.vpcli.domain.myuml.mydiagram.MyDiagramCreator;
+import plugins.vpcli.domain.myuml.mymodelrelationshipcontainer.MyModelRelationshipContainerFactory;
 import plugins.vpcli.domain.myuml.mypackage.MyModelFactory;
 import plugins.vpcli.domain.myuml.mypackage.MyPackageFactory;
 import plugins.vpcli.domain.myuml.myproject.ExportDiagramVisitorCreator;
@@ -24,6 +26,7 @@ import plugins.vpcli.domain.vpvisitor.vpmodelvisitor.element.ViElementFactory;
 import plugins.vpcli.domain.vpvisitor.vpmodelvisitor.structure.ViProjectCreator;
 import plugins.vpcli.drivenadapter.*;
 import plugins.vpcli.drivingadapter.CLIController;
+import plugins.vpcli.util.MyIO;
 
 import static com.vp.plugin.model.factory.IModelElementFactory.*;
 
@@ -37,6 +40,7 @@ public class BeanFactory {
     // Util
     private DirMaker dirMaker;
     private MyConsole myConsole;
+    private MyIO myIO;
 
     // Creator
     private FileCreator fileCreator;
@@ -52,7 +56,7 @@ public class BeanFactory {
     private ViElementFactory viElementFactory;
     private MyProjectFactory myProjectFactory;
     private MyDiagramElementFactory myDiagramElementFactory;
-    private PumlFactory pumlFactory;
+    private PumlDiagramFactory pumlDiagramFactory;
     private MyDiagramFactory myDiagramFactory;
 
     // Abstract Factory Pattern: MyElementFactory
@@ -61,6 +65,8 @@ public class BeanFactory {
     private MyModelFactory myModelFactory;
     private MyClassFactory myClassFactory;
     private MyUseCaseFactory myUseCaseFactory;
+    private MyAssociationFactory myAssociationFactory ;
+    private MyModelRelationshipContainerFactory myModelRelationshipContainerFactory;
 
 
     // Domain
@@ -81,6 +87,8 @@ public class BeanFactory {
     private PumlClassExporter pumlClassExporter;
     private PumlModelExporter pumlModelExporter;
     private PumlUseCaseExporter pumlUseCaseExporter;
+    private PumlAssociationExporter pumlAssociationExporter;
+    private PumlModelRelationshipContainerExporter pumlModelRelationshipContainerExporter ;
 
     // MyElementType
     private MyElementTypes myElementTypes;
@@ -90,6 +98,8 @@ public class BeanFactory {
     private MyElementTypeModel myElementTypeModel;
     private MyElementTypeUseCase myElementTypeUseCase;
     private MyElementTypeDiagram myElementTypeDiagram;
+    private MyElementTypeAssociation myElementTypeAssociation ;
+    private MyElementTypeModelRelationshipContainer myElementTypeModelRelationshipContainer;
 
 
     public BeanFactory() {
@@ -139,7 +149,7 @@ public class BeanFactory {
 
     private MyProjectFactory getMyProjectFactory() {
         if (myProjectFactory == null) {
-            myProjectFactory = new MyProjectFactory(getVPProjectRepository(), getMyElementTypes());
+            myProjectFactory = new MyProjectFactory(getVPProjectRepository(), getMyElementTypeProject());
         }
         return myProjectFactory;
     }
@@ -150,22 +160,78 @@ public class BeanFactory {
                 getMyPackageFactory(),
                 getMyClassFactory(),
                 getMyModelFactory(),
-                getMyUseCaseFactory()
+                getMyUseCaseFactory(),
+                getMyAssociationFactory(),
+                getMyModelRelationshipFactory()
             );
         }
         return myElementFactoryFactory;
     }
 
+    private MyModelRelationshipContainerFactory getMyModelRelationshipFactory() {
+        if (myModelRelationshipContainerFactory == null) {
+            myModelRelationshipContainerFactory = new MyModelRelationshipContainerFactory(getMyElementPool(), getMyElementTypeModeRelationshipContainer());
+        }
+        return myModelRelationshipContainerFactory;
+    }
+
+    private MyElementTypeModelRelationshipContainer getMyElementTypeModeRelationshipContainer() {
+        if (myElementTypeModelRelationshipContainer == null) {
+            myElementTypeModelRelationshipContainer = new MyElementTypeModelRelationshipContainer(
+                "ModelRelationshipContainer",
+                MODEL_TYPE_MODEL_RELATIONSHIP_CONTAINER,
+                getPumlModelRelationshipContainerExporter()
+            );
+            // TODO 在对象内部进行双向关联
+            myElementTypeModelRelationshipContainer.setMyElementFactory(getMyModelRelationshipFactory() );
+        }
+        return myElementTypeModelRelationshipContainer;
+    }
+
+    private PumlModelRelationshipContainerExporter getPumlModelRelationshipContainerExporter() {
+        if (pumlModelRelationshipContainerExporter == null) {
+            pumlModelRelationshipContainerExporter = new PumlModelRelationshipContainerExporter();
+        }
+        return pumlModelRelationshipContainerExporter;
+    }
+
+    private MyAssociationFactory getMyAssociationFactory() {
+        if (myAssociationFactory == null ) {
+            myAssociationFactory = new MyAssociationFactory(
+                getMyElementPool(), getMyElementTypeAssociation());
+        }
+        return myAssociationFactory;
+    }
+
+    private MyElementTypeAssociation getMyElementTypeAssociation() {
+        if (myElementTypeAssociation == null) {
+            myElementTypeAssociation = new MyElementTypeAssociation(
+                "Association",
+                MODEL_TYPE_ASSOCIATION,
+                getPumlAssociationExporter()
+            );
+            myElementTypeAssociation.setMyElementFactory(getMyAssociationFactory());
+        }
+        return myElementTypeAssociation;
+    }
+
+    private PumlAssociationExporter getPumlAssociationExporter() {
+        if (pumlAssociationExporter == null) {
+            pumlAssociationExporter = new PumlAssociationExporter();
+        }
+        return pumlAssociationExporter;
+    }
+
     private MyUseCaseFactory getMyUseCaseFactory() {
         if (myUseCaseFactory == null) {
-            myUseCaseFactory = new MyUseCaseFactory(getMyElementPool(), getMyElementTypes());
+            myUseCaseFactory = new MyUseCaseFactory(getMyElementPool(), getMyElementTypeUseCase());
         }
         return myUseCaseFactory;
     }
 
     private MyModelFactory getMyModelFactory() {
         if (myModelFactory == null) {
-            myModelFactory = new MyModelFactory(getMyElementPool(), getMyElementTypes());
+            myModelFactory = new MyModelFactory(getMyElementPool(), getMyElementTypeModel());
         }
         return myModelFactory;
     }
@@ -173,14 +239,14 @@ public class BeanFactory {
 
     private MyClassFactory getMyClassFactory() {
         if (myClassFactory == null) {
-            myClassFactory = new MyClassFactory(getMyElementPool(), getMyElementTypes());
+            myClassFactory = new MyClassFactory(getMyElementPool(), getMyElementTypeClass());
         }
         return myClassFactory;
     }
 
     private MyPackageFactory getMyPackageFactory() {
         if (myPackageFactory == null) {
-            myPackageFactory = new MyPackageFactory(getMyElementPool(), getMyElementTypes());
+            myPackageFactory = new MyPackageFactory(getMyElementPool(), getMyElementTypePackage());
         }
         return myPackageFactory;
     }
@@ -227,11 +293,11 @@ public class BeanFactory {
         return myDiagramFactory;
     }
 
-    private PumlFactory getToPumlConverter() {
-        if (pumlFactory == null) {
-//            pumlFactory = new PumlFactory(getPumlDiagramCreator());
+    private PumlDiagramFactory getPumlFactory() {
+        if (pumlDiagramFactory == null) {
+            pumlDiagramFactory = new PumlDiagramFactory(getPumlDiagramCreator());
         }
-        return pumlFactory;
+        return pumlDiagramFactory;
     }
 
     private PumlDiagramCreator getPumlDiagramCreator() {
@@ -258,9 +324,16 @@ public class BeanFactory {
 
     private DocWriter getDocWriter() {
         if (docWriter == null) {
-            docWriter = new DocWriter();
+            docWriter = new DocWriter(getMyIO());
         }
         return docWriter;
+    }
+
+    private MyIO getMyIO() {
+        if (myIO == null) {
+            myIO = new MyIO();
+        }
+        return myIO;
     }
 
     private ExportDiagramVisitorCreator getExportDiagramVisitorFactory() {
@@ -269,7 +342,7 @@ public class BeanFactory {
                 getDirMaker(),
                 getMyProjectFactory(),
                 getMyDiagramFactory(),
-                getToPumlConverter(),
+                getPumlFactory(),
                 getDocWriter()
             );
         }
@@ -362,7 +435,9 @@ public class BeanFactory {
                 getMyElementTypePackage(),
                 getMyElementTypeModel(),
                 getMyElementTypeUseCase(),
-                getMyElementTypeDiagram()
+                getMyElementTypeDiagram(),
+                getMyElementTypeAssociation()
+
             );
         }
         return myElementTypes;
@@ -385,9 +460,9 @@ public class BeanFactory {
             myElementTypeClass = new MyElementTypeClass(
                 "Class",
                 IModelElementFactory.MODEL_TYPE_CLASS,
-                getPumlClassExporter(),
-                getMyClassFactory()
+                getPumlClassExporter()
             );
+            myElementTypeClass.setMyElementFactory(getMyClassFactory());
         }
         return myElementTypeClass;
     }
@@ -397,9 +472,9 @@ public class BeanFactory {
             myElementTypePackage = new MyElementTypePackage(
                 "Package",
                 MODEL_TYPE_PACKAGE,
-                getPumlPackageExporter(),
-                getMyPackageFactory()
+                getPumlPackageExporter()
             );
+            myElementTypePackage.setMyElementFactory(getMyPackageFactory());
         }
         return myElementTypePackage;
     }
@@ -410,9 +485,9 @@ public class BeanFactory {
             myElementTypeModel = new MyElementTypeModel(
                 "Model",
                 MODEL_TYPE_MODEL,
-                getPumlModelExporter(),
-                getMyModelFactory()
+                getPumlModelExporter()
             );
+            myElementTypeModel.setMyElementFactory(getMyModelFactory());
         }
         return myElementTypeModel;
     }
@@ -422,9 +497,9 @@ public class BeanFactory {
             myElementTypeUseCase = new MyElementTypeUseCase(
                 "UseCase",
                 MODEL_TYPE_USE_CASE,
-                getPumlUseCaseExporter(),
-                getMyUseCaseFactory()
+                getPumlUseCaseExporter()
             );
+            myElementTypeUseCase.setMyElementFactory(getMyUseCaseFactory());
         }
         return myElementTypeUseCase;
     }

@@ -2,10 +2,10 @@ package plugins.vpcli.domain.outputmodel;
 
 import plugins.vpcli.domain.myuml.mydiagram.MyDiagram;
 
-public class PumlFactory {
+public class PumlDiagramFactory {
     private final PumlDiagramCreator createPumlDiagram;
 
-    public PumlFactory(PumlDiagramCreator pumlDiagramCreator) {
+    public PumlDiagramFactory(PumlDiagramCreator pumlDiagramCreator) {
         this.createPumlDiagram = pumlDiagramCreator;
     }
 

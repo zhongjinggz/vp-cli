@@ -6,10 +6,11 @@ import static com.vp.plugin.diagram.IShapeTypeConstants.*;
 
 public enum DiagramElementType {
     DIAGRAM("", Kind.DIAGRAM),
-    PACKAGE(SHAPE_TYPE_PACKAGE, Kind.ShAPE),
-    MODEL(SHAPE_TYPE_MODEL, Kind.ShAPE),
-    CLASS(SHAPE_TYPE_CLASS, Kind.ShAPE),
-    USECASE(SHAPE_TYPE_USE_CASE, Kind.ShAPE);
+    PACKAGE(SHAPE_TYPE_PACKAGE, Kind.SHAPE),
+    MODEL(SHAPE_TYPE_MODEL, Kind.SHAPE),
+    CLASS(SHAPE_TYPE_CLASS, Kind.SHAPE),
+    USECASE(SHAPE_TYPE_USE_CASE, Kind.SHAPE),
+    ASSOCIATION(SHAPE_TYPE_ASSOCIATION, Kind.SHAPE);
 
     private final String vpShapeType;
     private final Kind kind;
@@ -34,7 +35,7 @@ public enum DiagramElementType {
     }
 
     public boolean isShape() {
-        return Objects.equals(this.kind, Kind.ShAPE);
+        return Objects.equals(this.kind, Kind.SHAPE);
     }
 
     public boolean isEdge(){
@@ -43,7 +44,7 @@ public enum DiagramElementType {
 
     public static enum Kind {
         DIAGRAM,
-        ShAPE,
+        SHAPE,
         EDGE
     }
 

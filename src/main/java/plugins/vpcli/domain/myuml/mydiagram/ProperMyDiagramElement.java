@@ -2,6 +2,7 @@ package plugins.vpcli.domain.myuml.mydiagram;
 
 import plugins.vpcli.domain.myuml.mycommon.MyElement;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -13,8 +14,8 @@ public class ProperMyDiagramElement implements MyDiagramElement {
     protected DiagramElementType diagramElementType;
     protected MyElement modelElement;
     protected MyDiagramElement parentDiagramElement;
-    protected List<ProperMyDiagramElement> subShapes;
-    protected List<ProperMyDiagramElement> subEdges;
+    protected List<ProperMyDiagramElement> subShapes = new ArrayList<>();
+    protected List<ProperMyDiagramElement> subEdges = new ArrayList<>();
 
     public ProperMyDiagramElement(
         String id,

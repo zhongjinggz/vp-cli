@@ -3,7 +3,7 @@ package plugins.vpcli.domain.myuml.myproject;
 import plugins.vpcli.domain.myuml.mycommon.MyElement;
 import plugins.vpcli.domain.myuml.mydiagram.MyDiagram;
 import plugins.vpcli.domain.outputmodel.PumlDiagram;
-import plugins.vpcli.domain.outputmodel.PumlFactory;
+import plugins.vpcli.domain.outputmodel.PumlDiagramFactory;
 import plugins.vpcli.domain.vpvisitor.mydiagramfactory.MyDiagramFactory;
 import plugins.vpcli.domain.vpvisitor.vpmodelvisitor.element.*;
 import plugins.vpcli.domain.vpvisitor.vpmodelvisitor.visitor.ViElementVisitor;
@@ -16,7 +16,7 @@ import java.io.IOException;
 public class ExportDiagramVisitor extends ViElementVisitor {
     private final DirMaker makeDir;
     private final MyDiagramFactory buildMyDiagram;
-    private final PumlFactory buildPlantUML;
+    private final PumlDiagramFactory buildPlantUML;
     protected File path;
     private MyElement myElement;
     private DocWriter write;
@@ -25,13 +25,13 @@ public class ExportDiagramVisitor extends ViElementVisitor {
         ExportDiagramVisitor higherVisitor,
         DirMaker dirMaker,
         MyDiagramFactory myDiagramFactory,
-        PumlFactory pumlFactory,
+        PumlDiagramFactory pumlDiagramFactory,
         DocWriter docWriter) {
         super(higherVisitor);
 
         this.makeDir = dirMaker;
         this.buildMyDiagram = myDiagramFactory;
-        this.buildPlantUML = pumlFactory;
+        this.buildPlantUML = pumlDiagramFactory;
         this.write = docWriter;
     }
 

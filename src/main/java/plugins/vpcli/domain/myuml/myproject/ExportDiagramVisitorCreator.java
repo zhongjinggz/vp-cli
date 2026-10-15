@@ -1,7 +1,7 @@
 package plugins.vpcli.domain.myuml.myproject;
 
 import org.jetbrains.annotations.NotNull;
-import plugins.vpcli.domain.outputmodel.PumlFactory;
+import plugins.vpcli.domain.outputmodel.PumlDiagramFactory;
 import plugins.vpcli.domain.vpvisitor.mydiagramfactory.MyDiagramFactory;
 import plugins.vpcli.domain.vpvisitor.vpmodelvisitor.visitor.ViElementVisitor;
 import plugins.vpcli.domain.vpvisitor.vpmodelvisitor.visitor.ViElementVisitorFactory;
@@ -15,7 +15,7 @@ public class ExportDiagramVisitorCreator implements ViElementVisitorFactory {
     private final MyProjectFactory myProjectFactory;
     private final DirMaker dirMaker;
     private final MyDiagramFactory myDiagramFactory;
-    private final PumlFactory pumlFactory;
+    private final PumlDiagramFactory pumlDiagramFactory;
     private final DocWriter docWriter;
     private File rootDir;
 
@@ -23,13 +23,13 @@ public class ExportDiagramVisitorCreator implements ViElementVisitorFactory {
         DirMaker dirMaker,
         MyProjectFactory myProjectFactory,
         MyDiagramFactory myDiagramFactory,
-        PumlFactory pumlFactory,
+        PumlDiagramFactory pumlDiagramFactory,
         DocWriter docWriter
     ) {
         this.dirMaker = dirMaker;
         this.myProjectFactory = myProjectFactory;
         this.myDiagramFactory = myDiagramFactory;
-        this.pumlFactory = pumlFactory;
+        this.pumlDiagramFactory = pumlDiagramFactory;
         this.docWriter = docWriter;
     }
 
@@ -39,7 +39,7 @@ public class ExportDiagramVisitorCreator implements ViElementVisitorFactory {
             (ExportDiagramVisitor) higherVisitor,
             this.dirMaker,
             myDiagramFactory,
-            pumlFactory,
+            pumlDiagramFactory,
             docWriter);
 
     }
