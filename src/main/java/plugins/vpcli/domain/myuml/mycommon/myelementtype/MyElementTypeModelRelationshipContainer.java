@@ -1,10 +1,14 @@
 package plugins.vpcli.domain.myuml.mycommon.myelementtype;
 
 import plugins.vpcli.domain.outputmodel.PumlModelRelationshipContainerExporter;
-import plugins.vpcli.domain.outputmodel.PumlPackageExporter;
 
-public class MyElementTypeModelRelationshipContainer extends MyElementType{
-    public MyElementTypeModelRelationshipContainer(String name, String vpModelType, PumlModelRelationshipContainerExporter pumlModelRelationshipContainerExporter) {
-        super(name, vpModelType, pumlModelRelationshipContainerExporter);
+import static com.vp.plugin.model.factory.IModelElementFactory.MODEL_TYPE_MODEL_RELATIONSHIP_CONTAINER;
+
+public class MyElementTypeModelRelationshipContainer extends MyElementType {
+    public MyElementTypeModelRelationshipContainer(PumlModelRelationshipContainerExporter pumlModelRelationshipContainerExporter) {
+        super( "ModelRelationshipContainer",
+            MODEL_TYPE_MODEL_RELATIONSHIP_CONTAINER,
+            pumlModelRelationshipContainerExporter
+        );
     }
 }

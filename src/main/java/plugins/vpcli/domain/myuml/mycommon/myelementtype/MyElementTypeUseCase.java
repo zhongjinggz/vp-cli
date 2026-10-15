@@ -1,20 +1,15 @@
 package plugins.vpcli.domain.myuml.mycommon.myelementtype;
 
-import plugins.vpcli.domain.myuml.mycommon.MyElementFactory;
-import plugins.vpcli.domain.outputmodel.PumlElementExporter;
 import plugins.vpcli.domain.outputmodel.PumlUseCaseExporter;
 
-public class MyElementTypeUseCase extends MyElementType {
-    public MyElementTypeUseCase(
-        String name,
-        String vpModelType,
-        PumlElementExporter pumlElementExporter,
-        MyElementFactory myElementFactory
-    ) {
-        super(name, vpModelType, pumlElementExporter, myElementFactory);
-    }
+import static com.vp.plugin.model.factory.IModelElementFactory.MODEL_TYPE_USE_CASE;
 
-    public MyElementTypeUseCase(String name, String vpModelType, PumlUseCaseExporter pumlUseCaseExporter) {
-        super(name, vpModelType, pumlUseCaseExporter);
+public class MyElementTypeUseCase extends MyElementType {
+
+    public MyElementTypeUseCase(PumlUseCaseExporter pumlUseCaseExporter) {
+        super("UseCase",
+            MODEL_TYPE_USE_CASE,
+            pumlUseCaseExporter
+        );
     }
 }

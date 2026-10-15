@@ -1,6 +1,5 @@
 package plugins.vpcli;
 
-import com.vp.plugin.model.factory.IModelElementFactory;
 import plugins.vpcli.application.ExportService;
 import plugins.vpcli.application.ListDiagramsService;
 import plugins.vpcli.application.TreeService;
@@ -65,7 +64,7 @@ public class BeanFactory {
     private MyModelFactory myModelFactory;
     private MyClassFactory myClassFactory;
     private MyUseCaseFactory myUseCaseFactory;
-    private MyAssociationFactory myAssociationFactory ;
+    private MyAssociationFactory myAssociationFactory;
     private MyModelRelationshipContainerFactory myModelRelationshipContainerFactory;
 
 
@@ -88,7 +87,7 @@ public class BeanFactory {
     private PumlModelExporter pumlModelExporter;
     private PumlUseCaseExporter pumlUseCaseExporter;
     private PumlAssociationExporter pumlAssociationExporter;
-    private PumlModelRelationshipContainerExporter pumlModelRelationshipContainerExporter ;
+    private PumlModelRelationshipContainerExporter pumlModelRelationshipContainerExporter;
 
     // MyElementType
     private MyElementTypes myElementTypes;
@@ -98,7 +97,7 @@ public class BeanFactory {
     private MyElementTypeModel myElementTypeModel;
     private MyElementTypeUseCase myElementTypeUseCase;
     private MyElementTypeDiagram myElementTypeDiagram;
-    private MyElementTypeAssociation myElementTypeAssociation ;
+    private MyElementTypeAssociation myElementTypeAssociation;
     private MyElementTypeModelRelationshipContainer myElementTypeModelRelationshipContainer;
 
 
@@ -178,12 +177,10 @@ public class BeanFactory {
     private MyElementTypeModelRelationshipContainer getMyElementTypeModeRelationshipContainer() {
         if (myElementTypeModelRelationshipContainer == null) {
             myElementTypeModelRelationshipContainer = new MyElementTypeModelRelationshipContainer(
-                "ModelRelationshipContainer",
-                MODEL_TYPE_MODEL_RELATIONSHIP_CONTAINER,
                 getPumlModelRelationshipContainerExporter()
             );
             // TODO 在对象内部进行双向关联
-            myElementTypeModelRelationshipContainer.setMyElementFactory(getMyModelRelationshipFactory() );
+            myElementTypeModelRelationshipContainer.setMyElementFactory(getMyModelRelationshipFactory());
         }
         return myElementTypeModelRelationshipContainer;
     }
@@ -196,7 +193,7 @@ public class BeanFactory {
     }
 
     private MyAssociationFactory getMyAssociationFactory() {
-        if (myAssociationFactory == null ) {
+        if (myAssociationFactory == null) {
             myAssociationFactory = new MyAssociationFactory(
                 getMyElementPool(), getMyElementTypeAssociation());
         }
@@ -458,8 +455,6 @@ public class BeanFactory {
     private MyElementTypeClass getMyElementTypeClass() {
         if (myElementTypeClass == null) {
             myElementTypeClass = new MyElementTypeClass(
-                "Class",
-                IModelElementFactory.MODEL_TYPE_CLASS,
                 getPumlClassExporter()
             );
             myElementTypeClass.setMyElementFactory(getMyClassFactory());
@@ -470,8 +465,6 @@ public class BeanFactory {
     private MyElementTypePackage getMyElementTypePackage() {
         if (myElementTypePackage == null) {
             myElementTypePackage = new MyElementTypePackage(
-                "Package",
-                MODEL_TYPE_PACKAGE,
                 getPumlPackageExporter()
             );
             myElementTypePackage.setMyElementFactory(getMyPackageFactory());
@@ -483,8 +476,6 @@ public class BeanFactory {
     private MyElementTypeModel getMyElementTypeModel() {
         if (myElementTypeModel == null) {
             myElementTypeModel = new MyElementTypeModel(
-                "Model",
-                MODEL_TYPE_MODEL,
                 getPumlModelExporter()
             );
             myElementTypeModel.setMyElementFactory(getMyModelFactory());
@@ -494,11 +485,7 @@ public class BeanFactory {
 
     private MyElementTypeUseCase getMyElementTypeUseCase() {
         if (myElementTypeUseCase == null) {
-            myElementTypeUseCase = new MyElementTypeUseCase(
-                "UseCase",
-                MODEL_TYPE_USE_CASE,
-                getPumlUseCaseExporter()
-            );
+            myElementTypeUseCase = new MyElementTypeUseCase(getPumlUseCaseExporter());
             myElementTypeUseCase.setMyElementFactory(getMyUseCaseFactory());
         }
         return myElementTypeUseCase;

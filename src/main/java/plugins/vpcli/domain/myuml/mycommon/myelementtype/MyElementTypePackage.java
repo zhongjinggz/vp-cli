@@ -1,20 +1,15 @@
 package plugins.vpcli.domain.myuml.mycommon.myelementtype;
 
-import plugins.vpcli.domain.myuml.mycommon.MyElementFactory;
-import plugins.vpcli.domain.outputmodel.PumlElementExporter;
 import plugins.vpcli.domain.outputmodel.PumlPackageExporter;
 
-public class MyElementTypePackage extends MyElementType {
-    public MyElementTypePackage(
-        String name,
-        String vpModelType,
-        PumlElementExporter pumlElementExporter,
-        MyElementFactory myElementFactory
-    ) {
-        super(name, vpModelType, pumlElementExporter, myElementFactory);
-    }
+import static com.vp.plugin.model.factory.IModelElementFactory.MODEL_TYPE_PACKAGE;
 
-    public MyElementTypePackage(String name, String vpModelType, PumlPackageExporter pumlPackageExporter) {
-        super(name, vpModelType, pumlPackageExporter);
+public class MyElementTypePackage extends MyElementType {
+
+    public MyElementTypePackage(PumlPackageExporter pumlPackageExporter) {
+        super("Package",
+            MODEL_TYPE_PACKAGE,
+            pumlPackageExporter
+        );
     }
 }
