@@ -7,17 +7,14 @@ import com.vp.plugin.action.VPActionController;
 import javax.swing.*;
 
 // DOING
-// - export: 重写生成图表的程序 - Package / Model
-// - export: 重写生成图表的程序 - 为 Model 增加衍型
+// - 用 MyElementType 取代 FactoryFactory？
+// - 引入 Micronaut Inject?
 
 // TODO
-// - export：将图表放入 markdown
-// - export: 重写生成图表的程序 - Class
 // - export: 重写生成图表的程序 - Association
-// - export: 重写生成图表的程序 - Dependency
+// - export: 重写生成图表的程序 - Dependency(various kinds of dependency)
 // - export: 重写生成图表的程序 - Stereotype/Keyword
-// - 全局只有一个地方根据 MODEL_TYPE 进行判断，其他所有地方都用多态处理(类似抽象工厂模式）
-// - 从 ViXxx 中拿后缀，而不是从 ElementType(考虑删除 ElementType?)
+// - export：将图表放入 markdown
 // - export: fix bug of Class Diagram 包和类同名造成混乱
 // - 翻译和修改 README
 // - 使用DSL
@@ -28,6 +25,8 @@ import javax.swing.*;
 // - 统一处理错误
 // - 清理 IDEA 警告
 
+// - export: 重写生成图表的程序 - Class 属性和操作
+// - export: circle or class style of Interface
 // - Tree: 根据参数控制 Tree 的类型和深度
 // - export: 根据模型内容生成 markdown
 // - export: 图表 markdown 中放入交叉引用
@@ -39,6 +38,8 @@ import javax.swing.*;
 // - 补充建立目录时的各种异常情况
 
 // DONE
+// - export: 重写生成图表的程序 - Package / Model
+// - export: 重写生成图表的程序 - 为 Model 增加衍型
 // - export: 递归构建父 MyElement
 // - 问题：顶层元素的 parentId 可能不是 IProject ID, 这将影响缓存中对象图的构建
 // - MyElementFactory: 使用合适的 MyElementFactory 多态的创建上级 MyElement

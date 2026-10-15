@@ -6,7 +6,7 @@ public class PumlModelExporter implements PumlElementExporter {
     @Override
     public void to(PumlDiagram result, ProperMyDiagramElement myDiagramElement) {
         var myElement = myDiagramElement.getModelElement();
-        result.beginBlock("namespace <<model>> " + myElement.getName());
+        result.beginBlock("namespace " + myElement.getName() +" <<model>> ");
         for (var aSubShape : myDiagramElement.getSubShapes()) {
             var exporter = aSubShape.getModelElement().getElementType().getPumlElementExporter();
             exporter.to(result, aSubShape);

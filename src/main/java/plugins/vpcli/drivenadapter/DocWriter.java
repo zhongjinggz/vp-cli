@@ -1,16 +1,28 @@
 package plugins.vpcli.drivenadapter;
 
+import org.slf4j.Logger;
+import plugins.vpcli.domain.myuml.mycommon.MyElementFactory;
+import plugins.vpcli.domain.myuml.mycommon.MyElementPool;
+import plugins.vpcli.domain.myuml.mycommon.myelementtype.MyElementType;
 import plugins.vpcli.domain.outputmodel.PumlDiagram;
 import plugins.vpcli.util.MyIO;
 
 import java.io.File;
 import java.io.IOException;
 
+import static org.slf4j.LoggerFactory.getLogger;
+
 public class DocWriter {
+    private final Logger logger ;
     private MyIO io;
 
-    public DocWriter(MyIO io) {
+    public DocWriter(MyIO myIO) {
+        this(myIO, getLogger(DocWriter.class));
+    }
+    
+    public DocWriter(MyIO io, Logger  logger) {
         this.io = io;
+        this.logger = logger;
     }
 
     void markdown() {
@@ -21,6 +33,7 @@ public class DocWriter {
         String fileName = puml.getName() + ".puml";
         String pumlText = puml.toString();
 
+        logger.info("Writing file {}, under {} text={}", fileName, parentDir, pumlText);
         io.writeFile(parentDir, fileName, pumlText);
     }
 }

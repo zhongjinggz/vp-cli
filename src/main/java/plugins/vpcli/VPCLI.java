@@ -161,8 +161,8 @@ public class VPCLI implements VPPlugin, VPPluginCommandLineSupport {
         if (prod) {
             reloadLogbackConfiguration();
         }
-        LOG.info("vpcli.log.profile={}, vpcli.log.dir={}",
-            profile, System.getProperty("vpcli.log.dir"));
+//        LOG.info("vpcli.log.profile={}, vpcli.log.dir={}",
+//            profile, System.getProperty("vpcli.log.dir"));
     }
 
     // 重读 classpath 上的 logback.xml 并重建 appender，使 FILE 采用最新的 vpcli.log.dir。

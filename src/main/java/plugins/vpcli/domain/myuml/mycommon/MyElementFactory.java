@@ -47,7 +47,7 @@ public abstract class MyElementFactory {
             } else {
                 var factory = factoryFactory.of(vpParentElement.getModelType());
 
-               // var factory = myElementType.getMyElementFactory();
+                // var factory = myElementType.getMyElementFactory();
                 myParentElement = factory.of(vpParentElement);
             }
         }
@@ -76,13 +76,14 @@ public abstract class MyElementFactory {
         } else {
             parentId = vpParent.getId();
         }
-        logger.debug("Creating MyElement: name=" 
-            + vpElement.getName() 
-            + " id=" + vpId 
-            + " parentId=" 
-            + parentId
-            + "model type=" 
+        logger.debug("Creating MyElement: "
+            + " type="
             + vpElement.getModelType()
+            + " name="
+            + vpElement.getName()
+            + " id=" + vpId
+            + " parent="
+            + parentId
         );
     }
 }

@@ -4,13 +4,13 @@ import org.jetbrains.annotations.NotNull;
 import plugins.vpcli.domain.outputmodel.PumlDiagramFactory;
 import plugins.vpcli.domain.vpvisitor.mydiagramfactory.MyDiagramFactory;
 import plugins.vpcli.domain.vpvisitor.vpmodelvisitor.visitor.ViElementVisitor;
-import plugins.vpcli.domain.vpvisitor.vpmodelvisitor.visitor.ViElementVisitorFactory;
+import plugins.vpcli.domain.vpvisitor.vpmodelvisitor.visitor.ViElementVisitorCreator;
 import plugins.vpcli.drivenadapter.DirMaker;
 import plugins.vpcli.drivenadapter.DocWriter;
 
 import java.io.File;
 
-public class ExportDiagramVisitorCreator implements ViElementVisitorFactory {
+public class ExportDiagramVisitorCreator implements ViElementVisitorCreator {
 
     private final MyProjectFactory myProjectFactory;
     private final DirMaker dirMaker;

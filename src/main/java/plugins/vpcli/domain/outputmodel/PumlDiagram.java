@@ -32,7 +32,8 @@ public class PumlDiagram {
 
     public void endBlock() {
         outdent();
-        addStatement("}");
+        addStatement("}\n");
+
     }
 
     public void writeTerminalElement(String elementText) {
@@ -49,11 +50,14 @@ public class PumlDiagram {
 
     @Override
     public String toString() {
-        StringBuilder sb = new StringBuilder("@startuml\n");
+        StringBuilder sb = new StringBuilder("@startuml\nallowmixing\n\n");
 
         for (PumlStatement statement : this.statements) {
             sb.append(statement.toString()).append("\n");
         }
+
+        sb.append("@enduml\n");
+
         return sb.toString();
     }
 }
