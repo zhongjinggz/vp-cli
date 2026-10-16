@@ -5,7 +5,6 @@ import plugins.vpcli.domain.myuml.mycommon.MyElement;
 import plugins.vpcli.domain.myuml.mycommon.MyElementFactory;
 import plugins.vpcli.domain.myuml.mycommon.MyElementPool;
 import plugins.vpcli.domain.myuml.mycommon.myelementtype.MyElementTypeClass;
-import plugins.vpcli.domain.myuml.mycommon.myelementtype.MyElementTypes;
 
 public class MyClassFactory extends MyElementFactory {
 

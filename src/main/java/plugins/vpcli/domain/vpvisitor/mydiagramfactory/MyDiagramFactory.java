@@ -4,7 +4,7 @@ import com.vp.plugin.diagram.IDiagramUIModel;
 import com.vp.plugin.diagram.IShapeUIModel;
 import org.slf4j.Logger;
 import plugins.vpcli.domain.myuml.mycommon.MyElement;
-import plugins.vpcli.domain.myuml.mycommon.myelementtype.MyElementTypes;
+import plugins.vpcli.domain.myuml.mycommon.MyElementTypes;
 import plugins.vpcli.domain.myuml.mydiagram.MyDiagram;
 import plugins.vpcli.domain.myuml.mydiagram.MyDiagramCreator;
 

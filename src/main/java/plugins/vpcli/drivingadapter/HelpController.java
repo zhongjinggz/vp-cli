@@ -7,8 +7,9 @@ import com.vp.plugin.action.VPActionController;
 import javax.swing.*;
 
 // DOING
-// - 用 MyElementType 取代 FactoryFactory？
+// - 用 MyElementType 取代 FactoryFactory; MyElementFactory should depend on MyElementTypes instead MyElementType, and the circle dependency should be bypassed
 // - 引入 Micronaut Inject?
+// - ViElementFactory : use Abstract Factory pattern
 
 // TODO
 // - export: 重写生成图表的程序 - Association

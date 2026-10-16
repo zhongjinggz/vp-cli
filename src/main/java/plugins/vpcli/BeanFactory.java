@@ -3,11 +3,11 @@ package plugins.vpcli;
 import plugins.vpcli.application.ExportService;
 import plugins.vpcli.application.ListDiagramsService;
 import plugins.vpcli.application.TreeService;
-import plugins.vpcli.application.writers_old.WriterCreator;
 import plugins.vpcli.domain.myuml.myassociation.MyAssociationFactory;
 import plugins.vpcli.domain.myuml.myclassifier.MyClassFactory;
 import plugins.vpcli.domain.myuml.mycommon.MyElementFactoryFactory;
 import plugins.vpcli.domain.myuml.mycommon.MyElementPool;
+import plugins.vpcli.domain.myuml.mycommon.MyElementTypes;
 import plugins.vpcli.domain.myuml.mycommon.myelementtype.*;
 import plugins.vpcli.domain.myuml.mydiagram.MyDiagramCreator;
 import plugins.vpcli.domain.myuml.mymodelrelationshipcontainer.MyModelRelationshipContainerFactory;
@@ -42,8 +42,6 @@ public class BeanFactory {
     private MyIO myIO;
 
     // Creator
-    private FileCreator fileCreator;
-    private WriterCreator writerCreator;
     private MyDiagramElementCreator myDiagramElementCreator;
     private ViProjectCreator viProjectCreator;
     private MyDiagramCreator myDiagramCreator;
@@ -124,26 +122,11 @@ public class BeanFactory {
         return vpProjectRepository;
     }
 
-    // Factory
-    private FileCreator getFileFactory() {
-        if (fileCreator == null) {
-            fileCreator = new FileCreator();
-        }
-        return fileCreator;
-    }
-
     private MyDiagramCreator getMyDiagramCreator() {
         if (myDiagramCreator == null) {
             myDiagramCreator = new MyDiagramCreator();
         }
         return myDiagramCreator;
-    }
-
-    private WriterCreator getWriterFactory() {
-        if (writerCreator == null) {
-            writerCreator = new WriterCreator(getFileFactory());
-        }
-        return writerCreator;
     }
 
     private MyProjectFactory getMyProjectFactory() {
@@ -433,7 +416,8 @@ public class BeanFactory {
                 getMyElementTypeModel(),
                 getMyElementTypeUseCase(),
                 getMyElementTypeDiagram(),
-                getMyElementTypeAssociation()
+                getMyElementTypeAssociation(),
+                getMyElementTypeModeRelationshipContainer()
 
             );
         }
@@ -493,12 +477,7 @@ public class BeanFactory {
 
     private MyElementTypeDiagram getMyElementTypeDiagram() {
         if (myElementTypeDiagram == null) {
-            myElementTypeDiagram = new MyElementTypeDiagram(
-                "Diagram",
-                "diagram_has_no_visual_paradigm_model_type",
-                null,
-                null
-            );
+            myElementTypeDiagram = new MyElementTypeDiagram();
         }
         return myElementTypeDiagram;
     }

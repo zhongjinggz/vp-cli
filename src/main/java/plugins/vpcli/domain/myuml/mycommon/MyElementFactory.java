@@ -3,7 +3,6 @@ package plugins.vpcli.domain.myuml.mycommon;
 import com.vp.plugin.model.IModelElement;
 import org.slf4j.Logger;
 import plugins.vpcli.domain.myuml.mycommon.myelementtype.MyElementType;
-import plugins.vpcli.domain.myuml.mycommon.myelementtype.MyElementTypes;
 
 import static org.slf4j.LoggerFactory.getLogger;
 
@@ -14,6 +13,7 @@ public abstract class MyElementFactory {
     private final MyElementPool elementPool;
     private MyElementFactoryFactory factoryFactory;
     protected MyElementType myElementType;
+    protected MyElementTypes myElementTypes;
 
     public MyElementFactory(MyElementPool myElementPool, MyElementType myElementType) {
         this(myElementPool, myElementType, getLogger(MyElementFactory.class));
@@ -24,7 +24,6 @@ public abstract class MyElementFactory {
         this.elementPool = myElementPool;
         this.myElementType = myElementType;
         this.logger = logger;
-
     }
 
     public void setFactoryFactory(MyElementFactoryFactory factoryFactory) {
@@ -85,5 +84,13 @@ public abstract class MyElementFactory {
             + " parent="
             + parentId
         );
+    }
+
+    //call by MyElementTypes to create the cycle dependency:
+    // MyElementTypes --> MyElementType --> MyElementFactory
+    //     ^----------------------------------------|
+    // Do not call it other than here
+    void setMyElementTypes(MyElementTypes myElementTypes) {
+       this.myElementTypes = myElementTypes;
     }
 }
