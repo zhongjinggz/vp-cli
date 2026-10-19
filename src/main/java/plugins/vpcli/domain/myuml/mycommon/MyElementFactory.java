@@ -65,9 +65,13 @@ public abstract class MyElementFactory {
             if (elementPool.contains(parentId)) {
                 myParentElement = elementPool.get(parentId);
             } else {
-                var factory = factoryFactory.of(vpParentElement.getModelType());
+                //var factory = factoryFactory.of(vpParentElement.getModelType());
 
                 // var factory = myElementType.getMyElementFactory();
+                var factory = myElementTypeRepository
+                    .findByVPModelType(vpParentElement.getModelType())
+                    .getMyElementFactory();
+
                 myParentElement = factory.of(vpParentElement);
             }
         }
@@ -114,6 +118,6 @@ public abstract class MyElementFactory {
     }
 
     public MyElementType getMyElementType() {
-       return myElementType;
+        return myElementType;
     }
 }

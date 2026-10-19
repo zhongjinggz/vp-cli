@@ -2,12 +2,13 @@ package plugins.vpcli.domain.vpvisitor.vpmodelvisitor.element;
 
 import com.vp.plugin.diagram.IDiagramUIModel;
 import com.vp.plugin.model.IModelElement;
+import plugins.vpcli.domain.myuml.mycommon.MyElementFactory;
 import plugins.vpcli.domain.myuml.mycommon.MyElementFactoryFactory;
 
 import static com.vp.plugin.model.factory.IModelElementFactory.*;
 
 public class ViElementFactory {
-    private final MyElementFactoryFactory myElementFactoryFactory;
+    protected final MyElementFactoryFactory myElementFactoryFactory;
 
     public ViElementFactory(MyElementFactoryFactory myElementFactoryFactory) {
         this.myElementFactoryFactory = myElementFactoryFactory;
@@ -31,5 +32,9 @@ public class ViElementFactory {
 
     ViElement from(IDiagramUIModel diagram) {
         return new ViDiagramAsElement(diagram);
+    }
+
+    protected MyElementFactory getMyElementFactory(IModelElement element) {
+        return myElementFactoryFactory.of(element.getModelType());
     }
 }
