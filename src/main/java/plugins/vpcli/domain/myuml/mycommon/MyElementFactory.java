@@ -14,16 +14,37 @@ public abstract class MyElementFactory {
     private MyElementFactoryFactory factoryFactory;
     protected MyElementType myElementType;
     protected MyElementTypes myElementTypes;
+    protected MyElementTypeRepository myElementTypeRepository;
 
-    public MyElementFactory(MyElementPool myElementPool, MyElementType myElementType) {
-        this(myElementPool, myElementType, getLogger(MyElementFactory.class));
+    public MyElementFactory(MyElementPool myElementPool
+        , MyElementType myElementType
+        , MyElementTypeRepository myElementTypeRepository) {
+        this(myElementPool
+            , myElementType
+            , myElementTypeRepository
+            , getLogger(MyElementFactory.class));
     }
 
     // 仅用于单元测试，可注入 Logger
-    MyElementFactory(MyElementPool myElementPool, MyElementType myElementType, Logger logger) {
+    MyElementFactory(MyElementPool myElementPool
+        , MyElementType myElementType
+        , MyElementTypeRepository myElementTypeRepository
+        , Logger logger
+    ) {
         this.elementPool = myElementPool;
         this.myElementType = myElementType;
+        this.myElementTypeRepository = myElementTypeRepository;
         this.logger = logger;
+
+
+        // below statement will build the circle dependency:
+        // MyElementTypeRepository --> MyElementType --> MyElementFactory
+        //     ^----------------------------------------|
+        // Even though circle circle dependency is not a best practices in normal case,
+        // but it is necessary here
+        this.myElementTypeRepository.register(this);
+
+
     }
 
     public void setFactoryFactory(MyElementFactoryFactory factoryFactory) {
@@ -75,22 +96,24 @@ public abstract class MyElementFactory {
         } else {
             parentId = vpParent.getId();
         }
-        logger.debug("Creating MyElement: "
-            + " type="
-            + vpElement.getModelType()
-            + " name="
-            + vpElement.getName()
-            + " id=" + vpId
-            + " parent="
-            + parentId
+        logger.debug("Creating MyElement:  type={} name={} id={} parent={}"
+            , vpElement.getModelType()
+            , vpElement.getName()
+            , vpId
+            , parentId
         );
     }
 
+    // TODO remove it
     //call by MyElementTypes to create the cycle dependency:
     // MyElementTypes --> MyElementType --> MyElementFactory
     //     ^----------------------------------------|
     // Do not call it other than here
     void setMyElementTypes(MyElementTypes myElementTypes) {
-       this.myElementTypes = myElementTypes;
+        this.myElementTypes = myElementTypes;
+    }
+
+    public MyElementType getMyElementType() {
+       return myElementType;
     }
 }

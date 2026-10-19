@@ -1,16 +1,21 @@
 package plugins.vpcli.domain.myuml.mycommon.myelementtype;
 
-import plugins.vpcli.domain.myuml.mycommon.MyElementFactory;
 import plugins.vpcli.domain.outputmodel.PumlElementExporter;
 
 public class MyElementTypeProject extends MyElementType {
 
     public MyElementTypeProject(
-        String name,
-        String vpModelType,
-        PumlElementExporter pumlElementExporter,
-        MyElementFactory myElementFactory
+        PumlElementExporter pumlElementExporter
     ) {
-        super(name, vpModelType, pumlElementExporter, myElementFactory);
+        super("Project",
+            "project_has_no_visual_paradigm_model_type",
+            pumlElementExporter
+        );
+    }
+
+    public MyElementTypeProject() {
+        super("Project"
+            , "project_has_no_visual_paradigm_model_type"
+        );
     }
 }

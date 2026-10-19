@@ -5,7 +5,7 @@ import plugins.vpcli.domain.outputmodel.PumlElementExporter;
 import plugins.vpcli.domain.outputmodel.PumlPackageExporter;
 
 public class MyElementType {
-    private final PumlElementExporter pumlElementExporter;
+    private PumlElementExporter pumlElementExporter;
     private MyElementFactory myElementFactory;
     private String name;
     private String vpModelType;
@@ -28,8 +28,17 @@ public class MyElementType {
         this.pumlElementExporter = pumlElementExporter;
     }
 
+    public MyElementType(String name, String vpModelType) {
+       this.name = name;
+       this.vpModelType = vpModelType;
+    }
+
     public PumlElementExporter getPumlElementExporter() {
         return pumlElementExporter;
+    }
+
+    public void setPumlElementExporter(PumlElementExporter pumlElementExporter) {
+        this.pumlElementExporter = pumlElementExporter;
     }
 
     public MyElementFactory getMyElementFactory() {
@@ -38,5 +47,9 @@ public class MyElementType {
 
     public void setMyElementFactory(MyElementFactory myElementFactory) {
         this.myElementFactory = myElementFactory;
+    }
+
+    public String getVPModelType() {
+        return vpModelType;
     }
 }

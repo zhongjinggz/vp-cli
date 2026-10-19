@@ -2,6 +2,7 @@ package plugins.vpcli.domain.myuml.myproject;
 
 import com.vp.plugin.model.IProject;
 import org.slf4j.Logger;
+import plugins.vpcli.domain.myuml.mycommon.MyElementTypeRepository;
 import plugins.vpcli.domain.myuml.mycommon.myelementtype.MyElementTypeProject;
 import plugins.vpcli.drivenadapter.VPProjectRepository;
 
@@ -16,7 +17,11 @@ public class MyProjectFactory {
     private final VPProjectRepository vpProjectRepository;
     private final MyElementTypeProject myElementTypeProject;
 
-    public MyProjectFactory(VPProjectRepository vpProjectRepository, MyElementTypeProject myElementTypeProject) {
+    public MyProjectFactory(
+        VPProjectRepository vpProjectRepository
+        , MyElementTypeProject myElementTypeProject
+        , MyElementTypeRepository myElementTypeRepository
+    ) {
         this(vpProjectRepository, myElementTypeProject, getLogger(MyProjectFactory.class));
     }
 

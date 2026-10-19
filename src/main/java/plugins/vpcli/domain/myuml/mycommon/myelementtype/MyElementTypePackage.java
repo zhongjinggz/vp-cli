@@ -12,4 +12,10 @@ public class MyElementTypePackage extends MyElementType {
             pumlPackageExporter
         );
     }
+
+    public MyElementTypePackage() {
+        super("Package"
+            , MODEL_TYPE_PACKAGE
+        );
+    }
 }

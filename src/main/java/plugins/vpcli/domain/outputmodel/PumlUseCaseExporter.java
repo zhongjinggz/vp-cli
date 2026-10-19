@@ -1,8 +1,14 @@
 package plugins.vpcli.domain.outputmodel;
 
+import plugins.vpcli.domain.myuml.mycommon.MyElementTypeRepository;
+import plugins.vpcli.domain.myuml.mycommon.myelementtype.MyElementTypeUseCase;
 import plugins.vpcli.domain.myuml.mydiagram.ProperMyDiagramElement;
 
-public class PumlUseCaseExporter implements PumlElementExporter {
+public class PumlUseCaseExporter extends PumlElementExporter {
+    public PumlUseCaseExporter(MyElementTypeRepository myElementTypeRepository) {
+        super(myElementTypeRepository, MyElementTypeUseCase.class);
+    }
+
     public void to(PumlDiagram result, ProperMyDiagramElement myDiagramElement) {
         var myElement = myDiagramElement.getModelElement();
         result.writeTerminalElement("usecase " + myElement.getName());

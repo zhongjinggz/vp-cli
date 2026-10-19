@@ -6,9 +6,15 @@ import static com.vp.plugin.model.factory.IModelElementFactory.MODEL_TYPE_MODEL_
 
 public class MyElementTypeModelRelationshipContainer extends MyElementType {
     public MyElementTypeModelRelationshipContainer(PumlModelRelationshipContainerExporter pumlModelRelationshipContainerExporter) {
-        super( "ModelRelationshipContainer",
+        super("ModelRelationshipContainer",
             MODEL_TYPE_MODEL_RELATIONSHIP_CONTAINER,
             pumlModelRelationshipContainerExporter
+        );
+    }
+
+    public MyElementTypeModelRelationshipContainer() {
+        super("ModelRelationshipContainer"
+            , MODEL_TYPE_MODEL_RELATIONSHIP_CONTAINER
         );
     }
 }

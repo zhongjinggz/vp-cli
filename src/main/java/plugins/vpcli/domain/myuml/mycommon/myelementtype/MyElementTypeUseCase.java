@@ -12,4 +12,11 @@ public class MyElementTypeUseCase extends MyElementType {
             pumlUseCaseExporter
         );
     }
+
+    public MyElementTypeUseCase() {
+
+        super("UseCase"
+            , MODEL_TYPE_USE_CASE
+        );
+    }
 }

@@ -11,4 +11,10 @@ public class MyElementTypeClass extends MyElementType {
             pumlClassExporter
         );
     }
+
+    public MyElementTypeClass() {
+        super("Class"
+            , IModelElementFactory.MODEL_TYPE_CLASS
+        );
+    }
 }

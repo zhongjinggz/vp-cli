@@ -4,16 +4,18 @@ import com.vp.plugin.model.IModelElement;
 import plugins.vpcli.domain.myuml.mycommon.MyElement;
 import plugins.vpcli.domain.myuml.mycommon.MyElementFactory;
 import plugins.vpcli.domain.myuml.mycommon.MyElementPool;
+import plugins.vpcli.domain.myuml.mycommon.MyElementTypeRepository;
 import plugins.vpcli.domain.myuml.mycommon.myelementtype.MyElementTypeModelRelationshipContainer;
 import plugins.vpcli.domain.myuml.mycommon.myelementtype.MyElementTypePackage;
 import plugins.vpcli.domain.myuml.mypackage.MyPackage;
 
 public class MyModelRelationshipContainerFactory extends MyElementFactory {
     public MyModelRelationshipContainerFactory(
-        MyElementPool myElementPool,
-        MyElementTypeModelRelationshipContainer myElementType
+        MyElementPool myElementPool
+        , MyElementTypeModelRelationshipContainer myElementType
+        , MyElementTypeRepository myElementTypeRepository
     ) {
-        super(myElementPool, myElementType);
+        super(myElementPool, myElementType, myElementTypeRepository);
     }
 
     @Override

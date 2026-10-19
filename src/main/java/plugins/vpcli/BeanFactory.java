@@ -7,6 +7,7 @@ import plugins.vpcli.domain.myuml.myassociation.MyAssociationFactory;
 import plugins.vpcli.domain.myuml.myclassifier.MyClassFactory;
 import plugins.vpcli.domain.myuml.mycommon.MyElementFactoryFactory;
 import plugins.vpcli.domain.myuml.mycommon.MyElementPool;
+import plugins.vpcli.domain.myuml.mycommon.MyElementTypeRepository;
 import plugins.vpcli.domain.myuml.mycommon.MyElementTypes;
 import plugins.vpcli.domain.myuml.mycommon.myelementtype.*;
 import plugins.vpcli.domain.myuml.mydiagram.MyDiagramCreator;
@@ -26,8 +27,6 @@ import plugins.vpcli.domain.vpvisitor.vpmodelvisitor.structure.ViProjectCreator;
 import plugins.vpcli.drivenadapter.*;
 import plugins.vpcli.drivingadapter.CLIController;
 import plugins.vpcli.util.MyIO;
-
-import static com.vp.plugin.model.factory.IModelElementFactory.*;
 
 
 public class BeanFactory {
@@ -88,6 +87,7 @@ public class BeanFactory {
     private PumlModelRelationshipContainerExporter pumlModelRelationshipContainerExporter;
 
     // MyElementType
+    private MyElementTypeRepository myElementTypeRepository;
     private MyElementTypes myElementTypes;
     private MyElementTypeProject myElementTypeProject;
     private MyElementTypeClass myElementTypeClass;
@@ -99,12 +99,15 @@ public class BeanFactory {
     private MyElementTypeModelRelationshipContainer myElementTypeModelRelationshipContainer;
 
 
+    // TODO 优化依赖注入，按功能分开不同的控制器，只注入本次功能需要的依赖
     public BeanFactory() {
-        injectDependencies();
     }
 
-    // TODO 优化依赖注入，按功能分开不同的控制器，只注入本次功能需要的依赖
-    void injectDependencies() {
+    private MyElementTypeRepository getMyElementTypeRepository() {
+        if (myElementTypeRepository == null) {
+            myElementTypeRepository = new MyElementTypeRepository();
+        }
+        return myElementTypeRepository;
 
     }
 
@@ -131,7 +134,10 @@ public class BeanFactory {
 
     private MyProjectFactory getMyProjectFactory() {
         if (myProjectFactory == null) {
-            myProjectFactory = new MyProjectFactory(getVPProjectRepository(), getMyElementTypeProject());
+            myProjectFactory = new MyProjectFactory(getVPProjectRepository()
+                , getMyElementTypeProject()
+                , getMyElementTypeRepository()
+            );
         }
         return myProjectFactory;
     }
@@ -152,7 +158,11 @@ public class BeanFactory {
 
     private MyModelRelationshipContainerFactory getMyModelRelationshipFactory() {
         if (myModelRelationshipContainerFactory == null) {
-            myModelRelationshipContainerFactory = new MyModelRelationshipContainerFactory(getMyElementPool(), getMyElementTypeModeRelationshipContainer());
+            myModelRelationshipContainerFactory = new MyModelRelationshipContainerFactory(
+                getMyElementPool()
+                , getMyElementTypeModeRelationshipContainer()
+                , getMyElementTypeRepository()
+            );
         }
         return myModelRelationshipContainerFactory;
     }
@@ -170,7 +180,7 @@ public class BeanFactory {
 
     private PumlModelRelationshipContainerExporter getPumlModelRelationshipContainerExporter() {
         if (pumlModelRelationshipContainerExporter == null) {
-            pumlModelRelationshipContainerExporter = new PumlModelRelationshipContainerExporter();
+            pumlModelRelationshipContainerExporter = new PumlModelRelationshipContainerExporter(getMyElementTypeRepository());
         }
         return pumlModelRelationshipContainerExporter;
     }
@@ -178,7 +188,9 @@ public class BeanFactory {
     private MyAssociationFactory getMyAssociationFactory() {
         if (myAssociationFactory == null) {
             myAssociationFactory = new MyAssociationFactory(
-                getMyElementPool(), getMyElementTypeAssociation());
+                getMyElementPool()
+                , getMyElementTypeAssociation()
+                , getMyElementTypeRepository());
         }
         return myAssociationFactory;
     }
@@ -186,8 +198,6 @@ public class BeanFactory {
     private MyElementTypeAssociation getMyElementTypeAssociation() {
         if (myElementTypeAssociation == null) {
             myElementTypeAssociation = new MyElementTypeAssociation(
-                "Association",
-                MODEL_TYPE_ASSOCIATION,
                 getPumlAssociationExporter()
             );
             myElementTypeAssociation.setMyElementFactory(getMyAssociationFactory());
@@ -197,21 +207,28 @@ public class BeanFactory {
 
     private PumlAssociationExporter getPumlAssociationExporter() {
         if (pumlAssociationExporter == null) {
-            pumlAssociationExporter = new PumlAssociationExporter();
+            pumlAssociationExporter = new PumlAssociationExporter(getMyElementTypeRepository());
         }
         return pumlAssociationExporter;
     }
 
     private MyUseCaseFactory getMyUseCaseFactory() {
         if (myUseCaseFactory == null) {
-            myUseCaseFactory = new MyUseCaseFactory(getMyElementPool(), getMyElementTypeUseCase());
+            myUseCaseFactory = new MyUseCaseFactory(getMyElementPool()
+                , getMyElementTypeUseCase()
+                , getMyElementTypeRepository()
+            );
         }
         return myUseCaseFactory;
     }
 
     private MyModelFactory getMyModelFactory() {
         if (myModelFactory == null) {
-            myModelFactory = new MyModelFactory(getMyElementPool(), getMyElementTypeModel());
+            myModelFactory = new MyModelFactory(
+                getMyElementPool()
+                , getMyElementTypeModel()
+                , getMyElementTypeRepository()
+            );
         }
         return myModelFactory;
     }
@@ -219,14 +236,19 @@ public class BeanFactory {
 
     private MyClassFactory getMyClassFactory() {
         if (myClassFactory == null) {
-            myClassFactory = new MyClassFactory(getMyElementPool(), getMyElementTypeClass());
+            myClassFactory = new MyClassFactory(
+                getMyElementPool()
+                , getMyElementTypeClass()
+                , getMyElementTypeRepository());
         }
         return myClassFactory;
     }
 
     private MyPackageFactory getMyPackageFactory() {
         if (myPackageFactory == null) {
-            myPackageFactory = new MyPackageFactory(getMyElementPool(), getMyElementTypePackage());
+            myPackageFactory = new MyPackageFactory(getMyElementPool()
+                , getMyElementTypePackage()
+                , getMyElementTypeRepository());
         }
         return myPackageFactory;
     }
@@ -288,7 +310,7 @@ public class BeanFactory {
     }
 
 
-    private ViProjectCreator getViProjectFactory() {
+    private ViProjectCreator getViProjectCreator() {
         if (viProjectCreator == null) {
             viProjectCreator = new ViProjectCreator(getViElementFactory());
         }
@@ -358,7 +380,7 @@ public class BeanFactory {
         if (treeService == null) {
             treeService = new TreeService(
                 getVPProjectRepository(),
-                getViProjectFactory(),
+                getViProjectCreator(),
                 getTreeVisitorFactory()
             );
         }
@@ -369,7 +391,7 @@ public class BeanFactory {
         if (exportService == null) {
             exportService = new ExportService(
                 getVPProjectRepository(),
-                getViProjectFactory(),
+                getViProjectCreator(),
                 getExportDiagramVisitorFactory(),
                 getMyProjectFactory()
             );
@@ -380,28 +402,28 @@ public class BeanFactory {
     // PumlElementExporter
     private PumlPackageExporter getPumlPackageExporter() {
         if (pumlPackageExporter == null) {
-            pumlPackageExporter = new PumlPackageExporter();
+            pumlPackageExporter = new PumlPackageExporter(getMyElementTypeRepository());
         }
         return pumlPackageExporter;
     }
 
     private PumlClassExporter getPumlClassExporter() {
         if (pumlClassExporter == null) {
-            pumlClassExporter = new PumlClassExporter();
+            pumlClassExporter = new PumlClassExporter(getMyElementTypeRepository());
         }
         return pumlClassExporter;
     }
 
     private PumlModelExporter getPumlModelExporter() {
         if (pumlModelExporter == null) {
-            pumlModelExporter = new PumlModelExporter();
+            pumlModelExporter = new PumlModelExporter(getMyElementTypeRepository());
         }
         return pumlModelExporter;
     }
 
     private PumlUseCaseExporter getPumlUseCaseExporter() {
         if (pumlUseCaseExporter == null) {
-            pumlUseCaseExporter = new PumlUseCaseExporter();
+            pumlUseCaseExporter = new PumlUseCaseExporter(getMyElementTypeRepository());
         }
         return pumlUseCaseExporter;
     }
@@ -427,9 +449,6 @@ public class BeanFactory {
     private MyElementTypeProject getMyElementTypeProject() {
         if (myElementTypeProject == null) {
             myElementTypeProject = new MyElementTypeProject(
-                "Project",
-                "project_has_no_visual_paradigm_model_type",
-                null,
                 null
             );
         }

@@ -7,7 +7,9 @@ import com.vp.plugin.action.VPActionController;
 import javax.swing.*;
 
 // DOING
-// - 用 MyElementType 取代 FactoryFactory; MyElementFactory should depend on MyElementTypes instead MyElementType, and the circle dependency should be bypassed
+// - 用 MyElementTypeRepository 取代 FactoryFactory;
+// - remove redundent XxxCreator s
+// - MyProjectFactory/MyDiagramFactory should extend MyElementFactory?
 // - 引入 Micronaut Inject?
 // - ViElementFactory : use Abstract Factory pattern
 
