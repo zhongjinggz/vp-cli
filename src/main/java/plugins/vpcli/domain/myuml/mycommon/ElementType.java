@@ -1,8 +1,5 @@
 package plugins.vpcli.domain.myuml.mycommon;
 
-import plugins.vpcli.domain.myuml.myassociation.MyAssociationFactory;
-import plugins.vpcli.domain.myuml.mymodelrelationshipcontainer.MyModelRelationshipContainerFactory;
-
 import java.util.Objects;
 
 import static com.vp.plugin.model.factory.IModelElementFactory.*;
@@ -13,7 +10,7 @@ public enum ElementType {
     PACKAGE(MODEL_TYPE_PACKAGE, ".package"),
     MODEL(MODEL_TYPE_MODEL, ".model"),
     CLASS(MODEL_TYPE_CLASS, ".class"),
-    USECASE(MODEL_TYPE_USE_CASE, ".usecase"),
+    USE_CASE(MODEL_TYPE_USE_CASE, ".usecase"),
     ASSOCIATION("diagram_has_no_model_type",".association"),
     RELATIONSHIPS(MODEL_TYPE_MODEL_RELATIONSHIP_CONTAINER, ".relationships");
 
