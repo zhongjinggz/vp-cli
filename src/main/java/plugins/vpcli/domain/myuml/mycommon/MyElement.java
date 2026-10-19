@@ -59,7 +59,7 @@ public class MyElement {
         this.name = name;
     }
 
-    public MyElementType getElementType() {
+    public MyElementType getMyElementType() {
         return myElementType;
     }
 

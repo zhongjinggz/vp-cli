@@ -134,7 +134,8 @@ public class BeanFactory {
 
     private MyProjectFactory getMyProjectFactory() {
         if (myProjectFactory == null) {
-            myProjectFactory = new MyProjectFactory(getVPProjectRepository()
+            myProjectFactory = new MyProjectFactory(
+                 getVPProjectRepository()
                 , getMyElementTypeProject()
                 , getMyElementTypeRepository()
             );
@@ -145,12 +146,14 @@ public class BeanFactory {
     private MyElementFactoryFactory getMyElementFactoryFactory() {
         if (myElementFactoryFactory == null) {
             myElementFactoryFactory = new MyElementFactoryFactory(
-                getMyPackageFactory(),
-                getMyClassFactory(),
-                getMyModelFactory(),
-                getMyUseCaseFactory(),
-                getMyAssociationFactory(),
-                getMyModelRelationshipFactory()
+//                getMyProjectFactory()   // this will introduce dead loop
+//                , getMyDiagramFactory() // this will introduce dead loop
+                 getMyPackageFactory()
+                , getMyClassFactory()
+                , getMyModelFactory()
+                , getMyUseCaseFactory()
+                , getMyAssociationFactory()
+                , getMyModelRelationshipFactory()
             );
         }
         return myElementFactoryFactory;
@@ -287,6 +290,7 @@ public class BeanFactory {
     private MyDiagramFactory getMyDiagramFactory() {
         if (myDiagramFactory == null) {
             myDiagramFactory = new MyDiagramFactory(
+                getMyElementPool(),
                 getMyDiagramCreator(),
                 getMyDiagramElementFactory(),
                 getMyElementTypes(),

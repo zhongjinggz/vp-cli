@@ -10,7 +10,7 @@ public abstract class MyElementFactory {
 
     private final Logger logger;
 
-    private final MyElementPool elementPool;
+    private MyElementPool elementPool;
     protected MyElementType myElementType;
     protected MyElementTypeRepository myElementTypeRepository;
 
@@ -41,9 +41,15 @@ public abstract class MyElementFactory {
         // Even though circle circle dependency is not a best practices in normal case,
         // but it is necessary here
         //this.myElementTypeRepository.register(this);
-        myElementType.setMyElementFactory(this);
+        if (myElementType != null) {
+            myElementType.setMyElementFactory(this);
+        }
 
 
+    }
+
+    public MyElementFactory() {
+        this.logger = getLogger(MyElementFactory.class);
     }
 
     public void setFactoryFactory(MyElementFactoryFactory factoryFactory) {

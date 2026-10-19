@@ -2,10 +2,9 @@ package plugins.vpcli.domain.vpvisitor.mydiagramfactory;
 
 import com.vp.plugin.diagram.IDiagramUIModel;
 import com.vp.plugin.diagram.IShapeUIModel;
+import com.vp.plugin.model.IModelElement;
 import org.slf4j.Logger;
-import plugins.vpcli.domain.myuml.mycommon.MyElement;
-import plugins.vpcli.domain.myuml.mycommon.MyElementTypeRepository;
-import plugins.vpcli.domain.myuml.mycommon.MyElementTypes;
+import plugins.vpcli.domain.myuml.mycommon.*;
 import plugins.vpcli.domain.myuml.mydiagram.MyDiagram;
 import plugins.vpcli.domain.myuml.mydiagram.MyDiagramCreator;
 
@@ -18,11 +17,14 @@ public class MyDiagramFactory {
     private final MyElementTypes myElementTypes;
 
     public MyDiagramFactory(
-        MyDiagramCreator myDiagramCreator
-        , MyDiagramElementFactory myDiagramElementFactory,
-        MyElementTypes myElementTypes,
-        MyElementTypeRepository myElementTypeRepository) {
-        this(myDiagramCreator,
+        MyElementPool myElementPool
+        , MyDiagramCreator myDiagramCreator
+        , MyDiagramElementFactory myDiagramElementFactory
+        , MyElementTypes myElementTypes
+        , MyElementTypeRepository myElementTypeRepository
+    ) {
+        this(myElementPool
+            , myDiagramCreator,
             myDiagramElementFactory,
             myElementTypes,
             getLogger(MyDiagramFactory.class));
@@ -30,10 +32,11 @@ public class MyDiagramFactory {
     }
 
     public MyDiagramFactory(
-        MyDiagramCreator myDiagramCreator
-        , MyDiagramElementFactory myDiagramElementFactory,
-        MyElementTypes myElementTypes,
-        Logger logger
+        MyElementPool myElementPool
+        , MyDiagramCreator myDiagramCreator
+        , MyDiagramElementFactory myDiagramElementFactory
+        , MyElementTypes myElementTypes
+        , Logger logger
     ) {
 
         this.buildMyDiagramElement = myDiagramElementFactory;

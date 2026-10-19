@@ -10,6 +10,7 @@ import plugins.vpcli.domain.myuml.myusecase.MyUseCaseFactory;
 import static com.vp.plugin.model.factory.IModelElementFactory.*;
 
 public class MyElementFactoryFactory {
+    // Map may be better than below fields
     private final MyPackageFactory myPackageFactory;
     private final MyClassFactory myClassFactory;
     private final MyModelFactory myModelFactory;

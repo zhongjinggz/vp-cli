@@ -26,7 +26,12 @@ public class MyProjectFactory {
     }
 
     // 用于单元测试注入 logger
-    public MyProjectFactory(VPProjectRepository vpProjectRepository, MyElementTypeProject myElementTypeProject, Logger logger) {
+    public MyProjectFactory(
+        VPProjectRepository vpProjectRepository
+        , MyElementTypeProject myElementTypeProject
+        , Logger logger
+    ) {
+        super();
         this.vpProjectRepository = vpProjectRepository;
         this.logger = logger;
         this.myElementTypeProject = myElementTypeProject;
@@ -46,5 +51,6 @@ public class MyProjectFactory {
             logger.debug("Creating MyProject: name=" + vpProject.getName() + " id=" + vpProject.getId());
         }
         return myProject;
+
     }
 }

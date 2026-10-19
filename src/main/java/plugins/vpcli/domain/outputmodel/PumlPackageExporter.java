@@ -15,7 +15,7 @@ public class PumlPackageExporter extends PumlElementExporter {
         var myElement = myDiagramElement.getModelElement();
         result.beginBlock("namespace " + myElement.getName());
         for (var aSubShape : myDiagramElement.getSubShapes()) {
-            var exporter = aSubShape.getModelElement().getElementType().getPumlElementExporter();
+            var exporter = aSubShape.getModelElement().getMyElementType().getPumlElementExporter();
             exporter.to(result, aSubShape);
         }
         result.endBlock();

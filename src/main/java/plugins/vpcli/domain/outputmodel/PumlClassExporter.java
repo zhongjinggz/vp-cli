@@ -13,7 +13,7 @@ public class PumlClassExporter extends PumlElementExporter {
         var myElement = myDiagramElement.getModelElement();
         result.beginBlock("class " + myElement.getName());
         for (var aSubShape : myDiagramElement.getSubShapes()) {
-            var exporter = aSubShape.getModelElement().getElementType().getPumlElementExporter();
+            var exporter = aSubShape.getModelElement().getMyElementType().getPumlElementExporter();
             exporter.to(result, aSubShape);
         }
         result.endBlock();
