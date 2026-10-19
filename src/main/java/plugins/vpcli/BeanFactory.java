@@ -289,8 +289,8 @@ public class BeanFactory {
             myDiagramFactory = new MyDiagramFactory(
                 getMyDiagramCreator(),
                 getMyDiagramElementFactory(),
-                getMyElementTypes()
-            );
+                getMyElementTypes(),
+                myElementTypeRepository);
         }
         return myDiagramFactory;
     }
@@ -310,7 +310,7 @@ public class BeanFactory {
     }
 
 
-    private ViProjectCreator getViProjectCreator() {
+    private ViProjectCreator getViProjectFactory() {
         if (viProjectCreator == null) {
             viProjectCreator = new ViProjectCreator(getViElementFactory());
         }
@@ -380,7 +380,7 @@ public class BeanFactory {
         if (treeService == null) {
             treeService = new TreeService(
                 getVPProjectRepository(),
-                getViProjectCreator(),
+                getViProjectFactory(),
                 getTreeVisitorFactory()
             );
         }
@@ -391,7 +391,7 @@ public class BeanFactory {
         if (exportService == null) {
             exportService = new ExportService(
                 getVPProjectRepository(),
-                getViProjectCreator(),
+                getViProjectFactory(),
                 getExportDiagramVisitorFactory(),
                 getMyProjectFactory()
             );

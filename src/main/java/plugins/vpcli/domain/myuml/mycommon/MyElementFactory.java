@@ -11,9 +11,7 @@ public abstract class MyElementFactory {
     private final Logger logger;
 
     private final MyElementPool elementPool;
-    private MyElementFactoryFactory factoryFactory;
     protected MyElementType myElementType;
-    protected MyElementTypes myElementTypes;
     protected MyElementTypeRepository myElementTypeRepository;
 
     public MyElementFactory(MyElementPool myElementPool
@@ -42,13 +40,13 @@ public abstract class MyElementFactory {
         //     ^----------------------------------------|
         // Even though circle circle dependency is not a best practices in normal case,
         // but it is necessary here
-        this.myElementTypeRepository.register(this);
+        //this.myElementTypeRepository.register(this);
+        myElementType.setMyElementFactory(this);
 
 
     }
 
     public void setFactoryFactory(MyElementFactoryFactory factoryFactory) {
-        this.factoryFactory = factoryFactory;
     }
 
     public abstract MyElement reallyCreate(MyElement parent, IModelElement vpElement);
@@ -106,15 +104,6 @@ public abstract class MyElementFactory {
             , vpId
             , parentId
         );
-    }
-
-    // TODO remove it
-    //call by MyElementTypes to create the cycle dependency:
-    // MyElementTypes --> MyElementType --> MyElementFactory
-    //     ^----------------------------------------|
-    // Do not call it other than here
-    void setMyElementTypes(MyElementTypes myElementTypes) {
-        this.myElementTypes = myElementTypes;
     }
 
     public MyElementType getMyElementType() {

@@ -11,11 +11,13 @@ import plugins.vpcli.domain.myuml.mypackage.MyPackage;
 
 public class MyModelRelationshipContainerFactory extends MyElementFactory {
     public MyModelRelationshipContainerFactory(
-        MyElementPool myElementPool
-        , MyElementTypeModelRelationshipContainer myElementType
+        MyElementPool myElementPool,
+        MyElementTypeModelRelationshipContainer myElementType
         , MyElementTypeRepository myElementTypeRepository
     ) {
-        super(myElementPool, myElementType, myElementTypeRepository);
+        super(myElementPool
+            , myElementTypeRepository.MODEL_RELATIONSHIP_CONTAINER
+            , myElementTypeRepository);
     }
 
     @Override

@@ -14,7 +14,9 @@ public class MyUseCaseFactory extends MyElementFactory {
         , MyElementTypeUseCase myElementType
         , MyElementTypeRepository myElementTypeRepository
     ) {
-        super(myElementPool, myElementType, myElementTypeRepository);
+        super(myElementPool
+            , myElementTypeRepository.USE_CASE
+            , myElementTypeRepository);
     }
 
     @Override

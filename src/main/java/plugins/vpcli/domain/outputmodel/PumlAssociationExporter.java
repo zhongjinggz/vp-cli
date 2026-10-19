@@ -1,12 +1,13 @@
 package plugins.vpcli.domain.outputmodel;
 
 import plugins.vpcli.domain.myuml.mycommon.MyElementTypeRepository;
+import plugins.vpcli.domain.myuml.mycommon.myelementtype.MyElementTypeAssociation;
 import plugins.vpcli.domain.myuml.mycommon.myelementtype.MyElementTypePackage;
 import plugins.vpcli.domain.myuml.mydiagram.ProperMyDiagramElement;
 
 public class PumlAssociationExporter extends PumlElementExporter {
     public PumlAssociationExporter(MyElementTypeRepository myElementTypeRepository) {
-        super(myElementTypeRepository, MyElementTypePackage.class);
+        super(myElementTypeRepository, MyElementTypeAssociation.class);
     }
 
     public void to(PumlDiagram result, ProperMyDiagramElement myDiagramElement) {

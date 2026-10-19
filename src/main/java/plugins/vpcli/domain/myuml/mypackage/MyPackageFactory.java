@@ -13,7 +13,9 @@ public class MyPackageFactory extends MyElementFactory {
         , MyElementTypePackage myElementType
         , MyElementTypeRepository myElementTypeRepository
     ) {
-        super(myElementPool, myElementType, myElementTypeRepository);
+        super(myElementPool
+            , myElementTypeRepository.PACKAGE
+            , myElementTypeRepository);
     }
 
     @Override

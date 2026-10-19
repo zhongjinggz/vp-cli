@@ -30,25 +30,25 @@ public class MyElementTypes {
         // MyElementTypes --> MyElementType --> MyElementFactory
         //     ^----------------------------------------|
         this.CLASS = myElementTypeClass;
-        this.CLASS.getMyElementFactory().setMyElementTypes(this);
+        //this.CLASS.getMyElementFactory().setMyElementTypes(this);
 
         this.PACKAGE = myElementTypePackage;
-        this.PACKAGE.getMyElementFactory().setMyElementTypes(this);
+        //this.PACKAGE.getMyElementFactory().setMyElementTypes(this);
 
         this.MODEL = myElementTypeModel;
-        this.MODEL.getMyElementFactory().setMyElementTypes(this);
+        //this.MODEL.getMyElementFactory().setMyElementTypes(this);
 
         this.USE_CASE = myElementTypeUseCase;
-        this.USE_CASE.getMyElementFactory().setMyElementTypes(this);
+        //this.USE_CASE.getMyElementFactory().setMyElementTypes(this);
 
         this.DIAGRAM = myElementTypeDiagram;
         //this.DIAGRAM.getMyElementFactory().setMyElementTypes(this);
 
         this.ASSOCIATION = myElementTypeAssociation;
-        this.ASSOCIATION.getMyElementFactory().setMyElementTypes(this);
+        //this.ASSOCIATION.getMyElementFactory().setMyElementTypes(this);
 
         this.MODEL_RELATIONSHIP_CONTAINER = myElementTypeModelRelationshipContainer;
-        this.MODEL_RELATIONSHIP_CONTAINER.getMyElementFactory().setMyElementTypes(this);
+        //this.MODEL_RELATIONSHIP_CONTAINER.getMyElementFactory().setMyElementTypes(this);
     }
 
     public MyElementType ofVPModelType(String vpModelType) {

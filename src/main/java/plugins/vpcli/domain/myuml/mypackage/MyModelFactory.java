@@ -13,7 +13,9 @@ public class MyModelFactory extends MyElementFactory {
         , MyElementTypeModel myElementType
         , MyElementTypeRepository myElementTypeRepository
     ) {
-        super(myElementPool, myElementType, myElementTypeRepository);
+        super(myElementPool
+            , myElementTypeRepository.MODEL
+            , myElementTypeRepository);
     }
 
     @Override

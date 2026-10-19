@@ -14,7 +14,9 @@ public class MyClassFactory extends MyElementFactory {
         , MyElementTypeRepository myElementTypeRepository
     ) {
         // TODO use MyElementTypeClass.class instead
-        super(myElementPool, myElementTypeClass, myElementTypeRepository);
+        super(myElementPool
+            , myElementTypeRepository.CLASS
+            , myElementTypeRepository);
     }
 
     @Override

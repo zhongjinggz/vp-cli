@@ -15,7 +15,9 @@ public class MyAssociationFactory extends MyElementFactory {
         , MyElementTypeAssociation myElementType
         , MyElementTypeRepository myElementTypeRepository
     ) {
-        super(myElementPool, myElementType, myElementTypeRepository);
+        super(myElementPool
+            , myElementTypeRepository.ASSOCIATION
+            , myElementTypeRepository);
     }
 
     @Override

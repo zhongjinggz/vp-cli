@@ -10,15 +10,41 @@ public class MyElementTypeRepository {
     private final Map<String, MyElementType> bufferByString = new HashMap<>();
     private final Map<Class<? extends MyElementType>, MyElementType> bufferByClass = new HashMap<>();
 
+    public final MyElementTypeProject PROJECt;
+    public final MyElementTypeClass CLASS;
+    public final MyElementTypePackage PACKAGE;
+    public final MyElementTypeModel MODEL;
+    public final MyElementTypeUseCase USE_CASE;
+    public final MyElementTypeDiagram DIAGRAM;
+    public final MyElementTypeAssociation ASSOCIATION;
+    public final MyElementTypeModelRelationshipContainer MODEL_RELATIONSHIP_CONTAINER;
+
+
     public MyElementTypeRepository() {
-        register(new MyElementTypeProject());
-        register(new MyElementTypeClass());
-        register(new MyElementTypePackage());
-        register(new MyElementTypeModel());
-        register(new MyElementTypeUseCase());
-        register(new MyElementTypeDiagram());
-        register(new MyElementTypeAssociation());
-        register(new MyElementTypeModelRelationshipContainer());
+        this.PROJECt = new MyElementTypeProject();
+        register(this.PROJECt);
+
+        this.CLASS = new MyElementTypeClass();
+        register(this.CLASS);
+
+        this.PACKAGE = new MyElementTypePackage();
+        register(this.PACKAGE);
+
+        this.MODEL = new MyElementTypeModel();
+        register(this.MODEL);
+
+        this.USE_CASE = new MyElementTypeUseCase();
+        register(this.USE_CASE);
+
+        this.DIAGRAM = new MyElementTypeDiagram();
+        register(this.DIAGRAM);
+
+        this.ASSOCIATION = new MyElementTypeAssociation();
+        register(this.ASSOCIATION);
+
+        this.MODEL_RELATIONSHIP_CONTAINER = new MyElementTypeModelRelationshipContainer();
+        register(this.MODEL_RELATIONSHIP_CONTAINER);
+
     }
 
     private void register(MyElementType myElementType) {
@@ -44,10 +70,10 @@ public class MyElementTypeRepository {
         return myElementType;
     }
 
-    public MyElementType findByClass(Class<? extends MyElementType> myElementTypeClass) {
-        MyElementType myElementType = bufferByClass.get(myElementTypeClass);
+    public MyElementType findByClass(Class<? extends MyElementType> classOfMyElementType) {
+        MyElementType myElementType = bufferByClass.get(classOfMyElementType);
         if (myElementType == null) {
-            throw new IllegalArgumentException("Unknown MyElementType class: " + myElementTypeClass);
+            throw new IllegalArgumentException("Unknown MyElementType class: " + classOfMyElementType);
         }
         return myElementType;
     }
