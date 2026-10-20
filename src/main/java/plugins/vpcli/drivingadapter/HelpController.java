@@ -7,22 +7,22 @@ import com.vp.plugin.action.VPActionController;
 import javax.swing.*;
 
 // DOING
-// - 重构依赖注入：通过内部类，将若干工具或工程组织在一起，简化依赖注入(例如 IO)
 // - 清理 IDEA 警告
+// - 重构依赖注入：通过内部类，将若干工具或工程组织在一起，简化依赖注入(例如 IO)
 // - 引入 Micronaut Inject?
 // - ViElementFactory : use Abstract Factory pattern
 
 // TODO
+// - export: 使用全路径名作为包和classifier 的别名，以避免同名
 // - export: 重写生成图表的程序 - Association
 // - export: 重写生成图表的程序 - Dependency(various kinds of dependency)
 // - export: 重写生成图表的程序 - Stereotype/Keyword
 // - export：将图表放入 markdown
-// - export: fix bug of Class Diagram 包和类同名造成混乱
 // - 翻译和修改 README
 
 
 // - 清理测试
-// - 统一处理错误
+// - 异常处理增强
 
 // - export: 重写生成图表的程序 - Class 属性和操作
 // - export: circle or class style of Interface
@@ -31,7 +31,6 @@ import javax.swing.*;
 // - export: 图表 markdown 中放入交叉引用
 // - 考虑将 python 改为 java
 // - 引入 picocli
-// - 引入第三方 IOC 框架（micronaut）
 // - 拆分成多个 Controller， 分别依赖注入?
 // - 改用 NIO
 // - 补充建立目录时的各种异常情况

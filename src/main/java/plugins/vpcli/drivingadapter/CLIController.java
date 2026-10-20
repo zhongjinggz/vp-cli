@@ -71,21 +71,21 @@ public class CLIController {
             return;
         }
 
-        logger.info("Exporting diagram(s): " + target + " to path: " + path);
+        logger.info("Exporting diagram(s): {} to path: {}", target, path);
 
         if (target.equalsIgnoreCase(CLIParams.VALUE_ALL)) {
             this.exportService.exportAll(exportLocation);
         } else {
-            try {
+//            try {
                 exportService.exportSpecificDiagram(target, exportLocation);
-            } catch (IOException e) {
-                myConsole.println("IO Error: Couldn't create file.");
-            }
+//            } catch (IOException e) {
+//                myConsole.println("IO Error: Couldn't create file.");
+//            }
         }
     }
 
     void performImport() {
-        logger.info("TO Be DEV: Importing functions");
+        CLIController.logger.info("TO Be DEV: Importing functions");
     }
 
     void listAvailableDiagrams() {

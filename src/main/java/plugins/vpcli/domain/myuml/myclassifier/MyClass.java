@@ -10,10 +10,6 @@ public class MyClass extends MyElement {
     private boolean isAbstract;
     private List<AttributeData> attributes = new ArrayList<>();
     private List<MyOperation> operations = new ArrayList<>();
-    // private List<String> stereotypes;
-    // private boolean isInPackage;
-    // private String visibility;
-    //private String Uid;
 
     public MyClass(
         MyElement parent, String id,

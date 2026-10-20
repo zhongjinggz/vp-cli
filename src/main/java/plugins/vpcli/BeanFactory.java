@@ -333,8 +333,8 @@ public class BeanFactory {
             exportService = new ExportService(
                 getVPProjectRepository(),
                 getViProjectFactory(),
-                getExportDiagramVisitorFactory(),
-                getMyProjectFactory()
+                getExportDiagramVisitorFactory()
+//                , getMyProjectFactory()
             );
         }
         return exportService;

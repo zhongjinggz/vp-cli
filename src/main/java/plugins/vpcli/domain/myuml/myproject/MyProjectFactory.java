@@ -41,7 +41,7 @@ public class MyProjectFactory {
                 vpProject.getName()
             );
 
-            logger.debug("Creating MyProject: name=" + vpProject.getName() + " id=" + vpProject.getId());
+            logger.debug("Creating MyProject: name={} id={}", vpProject.getName(), vpProject.getId());
         }
         return myProject;
 

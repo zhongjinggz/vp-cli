@@ -65,24 +65,24 @@ public class ExportDiagramVisitor extends ViElementVisitor {
     }
 
     @Override
-    public void visit(ViPackage viPackage) throws IOException {
+    public void visit(ViPackage viPackage) {
         buildElementModel(viPackage);
         makeDirOf(viPackage);
     }
 
     @Override
-    public void visit(ViModel viModel) throws IOException {
+    public void visit(ViModel viModel) {
         buildElementModel(viModel);
         makeDirOf(viModel);
     }
 
     @Override
-    public void visit(ViClass element) throws IOException {
+    public void visit(ViClass element) {
 
     }
 
     @Override
-    public void visit(ViUseCase element) throws IOException {
+    public void visit(ViUseCase element) {
 
     }
 

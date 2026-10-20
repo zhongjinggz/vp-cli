@@ -43,7 +43,7 @@ A Visual Paradigm Plugin to provide CLI for AI
   - 1）Visual Paradigm 模型
     - 简述：Visual Paradigm 的插件机制所公开的模型
     - 参考：https://www.visual-paradigm.com/support/documents/pluginjavadoc/index.html
-    - 类名：即 Visual Paradigm 中的类名。例如 IPoject, IClass, IDiagramUIModel
+    - 类名：即 Visual Paradigm 中的类名。例如 IProject, IClass, IDiagramUIModel
     - 属性/变量名：vpXxx (vp 是 Visual Paradigm 的简称），例如 vpProject, vpClass, vpDiagram
   
   - 2）Visitor 模型

@@ -9,7 +9,7 @@ public abstract class MyElementFactory {
 
     private final Logger logger;
 
-    private MyElementPool elementPool;
+    private final MyElementPool elementPool;
     private MyElementFactoryFactory factoryFactory;
 
     public MyElementFactory(

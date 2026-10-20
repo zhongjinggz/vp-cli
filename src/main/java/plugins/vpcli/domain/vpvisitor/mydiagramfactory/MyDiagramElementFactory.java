@@ -19,13 +19,12 @@ public class MyDiagramElementFactory {
         this.myElementFactoryFactory = myElementFactoryFactory;
     }
 
-    public MyDiagramElement of(IDiagramElement vpDiagramElement,
+    public void of(IDiagramElement vpDiagramElement,
                                MyDiagramElement parentDiagramElement) {
 
         var result = buildRoot(vpDiagramElement, parentDiagramElement);
         buildSubElements(vpDiagramElement, result);
 
-        return result;
     }
 
     private void buildSubElements(IDiagramElement vpDiagramElement, ProperMyDiagramElement result) {

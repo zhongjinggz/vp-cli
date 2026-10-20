@@ -28,15 +28,8 @@ public enum DiagramType {
         return null;
     }
 
-    public String getVpDiagramType() {
-        return vpDiagramType;
-    }
-
     public boolean vpDiagramTypeIs(String theType) {
         return Objects.equals(this.vpDiagramType, theType);
     }
 
-    public String getSuffix() {
-        return suffix;
-    }
 }

@@ -9,9 +9,9 @@ import java.util.Objects;
 
 public class MyElement {
     private String id = "";
-    private String name = "";
+    private String name ;
     private String description = "";
-    private List<String> stereotypes = new ArrayList<>();
+    private final List<String> stereotypes = new ArrayList<>();
     private ElementType elementType;
 
     protected MyElement parentElement;
@@ -62,10 +62,6 @@ public class MyElement {
         this.name = name;
     }
 
-//    public MyElementType getMyElementType() {
-//        return myElementType;
-//    }
-
     public String getDescription() {
         return description;
     }
@@ -83,10 +79,6 @@ public class MyElement {
         for (var element : elements) {
             addSubElement(element);
         }
-    }
-
-    public MyElement getParentElement() {
-        return parentElement;
     }
 
     public ElementType getElementType() {

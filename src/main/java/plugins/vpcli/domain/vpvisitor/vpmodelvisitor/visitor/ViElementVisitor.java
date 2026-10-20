@@ -1,6 +1,5 @@
 package plugins.vpcli.domain.vpvisitor.vpmodelvisitor.visitor;
 
-import plugins.vpcli.domain.myuml.myproject.ExportDiagramVisitor;
 import plugins.vpcli.domain.vpvisitor.vpmodelvisitor.element.*;
 
 import java.io.IOException;
@@ -23,12 +22,12 @@ public abstract class ViElementVisitor {
 
     abstract public void visit(ViDiagramAsElement element) throws IOException;
 
-    abstract public void visit(ViPackage element) throws IOException;
+    abstract public void visit(ViPackage element) ;
 
-    abstract public void visit(ViModel element) throws IOException;
+    abstract public void visit(ViModel element) ;
 
-    abstract public void visit(ViClass element) throws IOException;
+    abstract public void visit(ViClass element) ;
 
-    abstract public void visit(ViUseCase element) throws IOException;
+    abstract public void visit(ViUseCase element) ;
 
 }

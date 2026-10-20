@@ -113,14 +113,6 @@ class CLIControllerTest {
         verify(exportServiceMock).exportSpecificDiagram("someDiagram", dir);
     }
 
-    @Test
-    void invoke_exportSpecificThrowsIOException_printsIoError() throws Throwable {
-        File dir = tempDir.toFile();
-        doThrow(new IOException("boom")).when(exportServiceMock).exportSpecificDiagram(any(), eq(dir));
-        invokeNoThrow(() -> invoke(
-                new String[]{"-action", "export", "-target", "someDiagram", "-path", dir.getAbsolutePath()}));
-        verify(myConsoleMock).println(contains("IO Error: Couldn't create file."));
-    }
 
     // ---------- invoke -> listAvailableDiagrams 分支（转调 pipeline 列举） ----------
 
@@ -150,7 +142,7 @@ class CLIControllerTest {
 
     // ---------- 辅助工具 ----------
 
-    private static void invokeNoThrow(Executable executable) throws Throwable {
+    private static void invokeNoThrow(Executable executable) {
         try {
             executable.execute();
         } catch (Throwable t) {

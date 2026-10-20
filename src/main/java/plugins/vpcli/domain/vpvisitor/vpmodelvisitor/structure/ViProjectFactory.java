@@ -5,7 +5,7 @@ import plugins.vpcli.domain.vpvisitor.vpmodelvisitor.element.ViElementFactory;
 
 public class ViProjectFactory {
 
-    private ViElementFactory viElementFactory;
+    private final ViElementFactory viElementFactory;
 
     public ViProjectFactory(ViElementFactory viElementFactory) {
         this.viElementFactory = viElementFactory;

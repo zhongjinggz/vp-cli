@@ -3,10 +3,8 @@ package plugins.vpcli.domain.myuml.myproject;
 import plugins.vpcli.domain.vpvisitor.vpmodelvisitor.element.*;
 import plugins.vpcli.domain.vpvisitor.vpmodelvisitor.visitor.ViElementVisitor;
 
-import java.io.IOException;
-
 public class TreeElementVisitor extends ViElementVisitor {
-    private String prefix = "";
+    private final String prefix ;
 
     public TreeElementVisitor(TreeElementVisitor preLevelVisitor) {
         super(null);
@@ -19,37 +17,30 @@ public class TreeElementVisitor extends ViElementVisitor {
         }
     }
 
-//    @Override
-//    public void visit(ViElement element) {
-//        String suffix = element.getType().getSuffix();
-//        String branch = calcBranch();
-//        System.out.println(this.prefix + branch + element.getName() + suffix);
-//    }
-
     @Override
-    public void visit(ViDiagramAsElement element) throws IOException {
+    public void visit(ViDiagramAsElement element) {
         printBranch(element.getName(), ".diagram");
 
     }
 
     @Override
-    public void visit(ViPackage element) throws IOException {
+    public void visit(ViPackage element) {
         printBranch(element.getName(), ".package");
     }
 
     @Override
-    public void visit(ViModel element) throws IOException {
+    public void visit(ViModel element) {
         printBranch(element.getName(), ".model");
 
     }
 
     @Override
-    public void visit(ViClass element) throws IOException {
+    public void visit(ViClass element) {
         printBranch(element.getName(), ".class");
     }
 
     @Override
-    public void visit(ViUseCase element) throws IOException {
+    public void visit(ViUseCase element) {
         printBranch(element.getName(), ".usecase");
     }
 

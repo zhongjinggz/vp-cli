@@ -6,10 +6,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class PumlDiagram {
-    private String name;
-    private DiagramType diagramType;
+    private final String name;
+    private final DiagramType diagramType;
     private int indentLevel = 0;
-    private List<PumlStatement> statements = new ArrayList<>();
+    private final List<PumlStatement> statements = new ArrayList<>();
 
     public PumlDiagram(String name, DiagramType diagramType) {
         this.name = name;

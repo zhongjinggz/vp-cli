@@ -18,17 +18,15 @@ public class ExportService {
     private final VPProjectRepository getIProject;
     private final ViProjectFactory createViProject;
     private final ExportDiagramVisitorFactory exportDiagramVisitorCreator;
-    private MyProjectFactory getMyProject;
 
     public ExportService(VPProjectRepository vpProjectRepository,
                          ViProjectFactory viProjectFactory,
-                         ExportDiagramVisitorFactory exportDiagramVisitorCreator,
-                         MyProjectFactory myProjectFactory) {
+                         ExportDiagramVisitorFactory exportDiagramVisitorCreator
+    ) {
 
         this.getIProject = vpProjectRepository;
         this.createViProject = viProjectFactory;
         this.exportDiagramVisitorCreator = exportDiagramVisitorCreator;
-        this.getMyProject = myProjectFactory;
     }
 
     public void exportAll(File exportLocation) throws IOException {
@@ -49,9 +47,8 @@ public class ExportService {
         return createViProject.of(vpProject);
     }
 
-    public void exportSpecificDiagram(String target, File exportLocation) throws IOException {
-//        IDiagramUIModel targetDiagram = projectRepository.getProject().getDiagramById(target);
-//        this.exportADiagram(targetDiagram, exportLocation);
+    public void exportSpecificDiagram(String target, File exportLocation) {
+        // TO BE DEV
     }
 
 }

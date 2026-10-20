@@ -1,7 +1,6 @@
 package plugins.vpcli.util;
 
 import org.slf4j.Logger;
-import plugins.vpcli.drivenadapter.DocWriter;
 
 import java.io.File;
 import java.io.IOException;

@@ -19,9 +19,7 @@ public class MyPackage extends MyElement {
         String name,
         String description
     ) {
-        super(parent, id, name, ElementType.PACKAGE
-//            , myElementtype
-            , description);
+        super(parent, id, name, ElementType.PACKAGE , description);
 
     }
     public MyPackage(String packageName, boolean isSubpackage) {
