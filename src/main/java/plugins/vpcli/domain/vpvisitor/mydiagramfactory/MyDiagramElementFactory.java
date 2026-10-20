@@ -3,20 +3,20 @@ package plugins.vpcli.domain.vpvisitor.mydiagramfactory;
 import com.vp.plugin.diagram.IDiagramElement;
 import com.vp.plugin.model.IModelElement;
 import org.jetbrains.annotations.NotNull;
+import plugins.vpcli.domain.myuml.mycommon.MyElement;
 import plugins.vpcli.domain.myuml.mycommon.MyElementFactory;
 import plugins.vpcli.domain.myuml.mycommon.MyElementFactoryFactory;
 import plugins.vpcli.domain.myuml.mydiagram.*;
+import plugins.vpcli.domain.myuml.mydiagram.DiagramElementType;
 
 public class MyDiagramElementFactory {
     private final MyElementFactoryFactory myElementFactoryFactory;
-    private final MyDiagramElementCreator createMyDiagramElement;
 
     public MyDiagramElementFactory(
-        MyElementFactoryFactory myElementFactoryFactory,
-        MyDiagramElementCreator myDiagramElementCreator
+        MyElementFactoryFactory myElementFactoryFactory
+//        , MyDiagramElementCreator myDiagramElementCreator
     ) {
         this.myElementFactoryFactory = myElementFactoryFactory;
-        this.createMyDiagramElement = myDiagramElementCreator;
     }
 
     public MyDiagramElement of(IDiagramElement vpDiagramElement,
@@ -44,11 +44,20 @@ public class MyDiagramElementFactory {
 
         var myElement = buildMyElement.of(vpElement);
 
-        var result = createMyDiagramElement.of(
-            vpDiagramElement,
-            parentDiagramElement,
-            myElement
-        );
+        var result = createMyDiagramElement(vpDiagramElement, parentDiagramElement, myElement);
         return result;
+    }
+
+    private @NotNull ProperMyDiagramElement createMyDiagramElement(
+        IDiagramElement vpDiagramElement,
+        MyDiagramElement parentDiagramElement,
+        MyElement myElement
+    ) {
+        return new ProperMyDiagramElement(
+            vpDiagramElement.getId(),
+            DiagramElementType.of(vpDiagramElement.getShapeType()),
+            myElement,
+            parentDiagramElement
+        );
     }
 }

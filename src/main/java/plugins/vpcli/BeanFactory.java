@@ -16,7 +16,6 @@ import plugins.vpcli.domain.myuml.myproject.MyProjectFactory;
 import plugins.vpcli.domain.myuml.myproject.TreeVisitorCreator;
 import plugins.vpcli.domain.myuml.myusecase.MyUseCaseFactory;
 import plugins.vpcli.domain.outputmodel.*;
-import plugins.vpcli.domain.vpvisitor.mydiagramfactory.MyDiagramElementCreator;
 import plugins.vpcli.domain.vpvisitor.mydiagramfactory.MyDiagramElementFactory;
 import plugins.vpcli.domain.vpvisitor.mydiagramfactory.MyDiagramFactory;
 import plugins.vpcli.domain.vpvisitor.vpmodelvisitor.element.ViElementFactory;
@@ -37,8 +36,6 @@ public class BeanFactory {
     private MyConsole myConsole;
     private MyIO myIO;
 
-    // Creator
-    private MyDiagramElementCreator myDiagramElementCreator;
     private ViProjectCreator viProjectCreator;
     private MyDiagramCreator myDiagramCreator;
     private PumlDiagramCreator pumlDiagramCreator;
@@ -236,18 +233,11 @@ public class BeanFactory {
         return viElementFactory;
     }
 
-    private MyDiagramElementCreator getMyDiagramElementCreator() {
-        if (myDiagramElementCreator == null) {
-            myDiagramElementCreator = new MyDiagramElementCreator();
-        }
-        return myDiagramElementCreator;
-    }
-
     private MyDiagramElementFactory getMyDiagramElementFactory() {
         if (myDiagramElementFactory == null) {
             myDiagramElementFactory = new MyDiagramElementFactory(
-                getMyElementFactoryFactory(),
-                getMyDiagramElementCreator()
+                getMyElementFactoryFactory()
+//                , getMyDiagramElementCreator()
             );
         }
         return myDiagramElementFactory;
