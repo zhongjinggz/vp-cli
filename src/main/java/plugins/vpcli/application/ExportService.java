@@ -1,7 +1,9 @@
 package plugins.vpcli.application;
 
+import com.vp.plugin.model.IProject;
 import plugins.vpcli.domain.myuml.myproject.ExportDiagramVisitorCreator;
 import plugins.vpcli.domain.myuml.myproject.MyProjectFactory;
+import plugins.vpcli.domain.vpvisitor.vpmodelvisitor.structure.ViProject;
 import plugins.vpcli.domain.vpvisitor.vpmodelvisitor.structure.ViProjectCreator;
 import plugins.vpcli.drivenadapter.VPProjectRepository;
 
@@ -33,7 +35,7 @@ public class ExportService {
 
         var vpProject = getIProject.fromVisualParadigm();
 
-        var viProject = createViProject.of(vpProject);
+        var viProject = getViProject(vpProject);
         viProject.setElementTypes(List.of(
             PACKAGE
             , MODEL
@@ -41,6 +43,10 @@ public class ExportService {
 
         this.exportDiagramVisitorCreator.setRootDir(exportLocation);
         viProject.accept(this.exportDiagramVisitorCreator);
+    }
+
+    private ViProject getViProject(IProject vpProject) {
+        return createViProject.of(vpProject);
     }
 
     public void exportSpecificDiagram(String target, File exportLocation) throws IOException {

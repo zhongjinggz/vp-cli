@@ -7,7 +7,6 @@ import plugins.vpcli.domain.myuml.myassociation.MyAssociationFactory;
 import plugins.vpcli.domain.myuml.myclassifier.MyClassFactory;
 import plugins.vpcli.domain.myuml.mycommon.MyElementFactoryFactory;
 import plugins.vpcli.domain.myuml.mycommon.MyElementPool;
-import plugins.vpcli.domain.myuml.mydiagram.MyDiagramCreator;
 import plugins.vpcli.domain.myuml.mymodelrelationshipcontainer.MyModelRelationshipContainerFactory;
 import plugins.vpcli.domain.myuml.mypackage.MyModelFactory;
 import plugins.vpcli.domain.myuml.mypackage.MyPackageFactory;
@@ -37,7 +36,6 @@ public class BeanFactory {
     private MyIO myIO;
 
     private ViProjectCreator viProjectCreator;
-    private MyDiagramCreator myDiagramCreator;
     private PumlDiagramCreator pumlDiagramCreator;
     private TreeVisitorCreator treeVisitorCreator;
     private ExportDiagramVisitorCreator exportDiagramVisitorCreator;
@@ -100,19 +98,10 @@ public class BeanFactory {
         return vpProjectRepository;
     }
 
-    private MyDiagramCreator getMyDiagramCreator() {
-        if (myDiagramCreator == null) {
-            myDiagramCreator = new MyDiagramCreator();
-        }
-        return myDiagramCreator;
-    }
-
     private MyProjectFactory getMyProjectFactory() {
         if (myProjectFactory == null) {
             myProjectFactory = new MyProjectFactory(
                 getVPProjectRepository()
-//                , getMyElementTypeProject()
-//                , getMyElementTypeRepository()
             );
         }
         return myProjectFactory;
@@ -246,8 +235,8 @@ public class BeanFactory {
     private MyDiagramFactory getMyDiagramFactory() {
         if (myDiagramFactory == null) {
             myDiagramFactory = new MyDiagramFactory(
-                getMyElementPool(),
-                getMyDiagramCreator(),
+//                getMyElementPool(),
+//                getMyDiagramCreator(),
                 getMyDiagramElementFactory()
 //                , getMyElementTypes(),
 //                myElementTypeRepository

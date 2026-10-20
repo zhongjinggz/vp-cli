@@ -4,50 +4,36 @@ import com.vp.plugin.diagram.IDiagramUIModel;
 import com.vp.plugin.diagram.IShapeUIModel;
 import org.slf4j.Logger;
 import plugins.vpcli.domain.myuml.mycommon.*;
+import plugins.vpcli.domain.myuml.mydiagram.DiagramType;
 import plugins.vpcli.domain.myuml.mydiagram.MyDiagram;
-import plugins.vpcli.domain.myuml.mydiagram.MyDiagramCreator;
 
 import static org.slf4j.LoggerFactory.getLogger;
 
 public class MyDiagramFactory {
     private final Logger logger;
     private final MyDiagramElementFactory buildMyDiagramElement;
-    private final MyDiagramCreator createMyDiagram;
-//    private final MyElementTypes myElementTypes;
 
     public MyDiagramFactory(
-        MyElementPool myElementPool
-        , MyDiagramCreator myDiagramCreator
-        , MyDiagramElementFactory myDiagramElementFactory
-//        , MyElementTypes myElementTypes
-//        , MyElementTypeRepository myElementTypeRepository
+//        MyDiagramCreator myDiagramCreator,
+        MyDiagramElementFactory myDiagramElementFactory
     ) {
-        this(myElementPool
-            , myDiagramCreator,
+        this(
             myDiagramElementFactory,
-//            myElementTypes,
             getLogger(MyDiagramFactory.class));
 
     }
 
     public MyDiagramFactory(
-        MyElementPool myElementPool
-        , MyDiagramCreator myDiagramCreator
-        , MyDiagramElementFactory myDiagramElementFactory
-//        , MyElementTypes myElementTypes
+        MyDiagramElementFactory myDiagramElementFactory
         , Logger logger
     ) {
 
         this.buildMyDiagramElement = myDiagramElementFactory;
-        this.createMyDiagram = myDiagramCreator;
-//        this.myElementTypes = myElementTypes;
         this.logger = logger;
     }
 
     public MyDiagram of(IDiagramUIModel vpDiagram, MyElement parentElement) {
-        MyDiagram result = createMyDiagram.from(parentElement, vpDiagram
-//            , myElementTypes.DIAGRAM
-        );
+        MyDiagram result = creatMyDiagram(vpDiagram, parentElement);
 
         var vpShape = vpDiagram.toShapeUIModelArray();
         if (vpShape != null) {
@@ -62,15 +48,21 @@ public class MyDiagramFactory {
             }
         }
 
-//        var vpConnectors = vpDiagram.toConnectorUIModelArray();
-//        if (vpConnectors != null) {
-//            for (IConnectorUIModel aConnector : vpConnectors) {
-//                buildMyDiagramElement.of(aConnector, result);
-//            }
-//        }
-
-
         return result;
+    }
+
+    MyDiagram creatMyDiagram(
+        IDiagramUIModel vpDiagram,
+        MyElement parentElement
+    ) {
+        var description = vpDiagram.getDocumentation() == null ? "" : vpDiagram.getDocumentation();
+        return new MyDiagram(
+            parentElement,
+            vpDiagram.getId(),
+            vpDiagram.getName(),
+            description,
+            DiagramType.of(vpDiagram.getType())
+        );
     }
 
     private void debug(IShapeUIModel aShape) {
