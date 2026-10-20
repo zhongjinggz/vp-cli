@@ -20,10 +20,22 @@ public class MyIO {
     public MyIO(Logger logger) {
         this.logger = logger;
     }
-    public void writeFile(File parentDir, String fileName, String pumlText) throws IOException {
+    public void writeFile(File parentDir, String fileName, String text) throws IOException {
         File outputFile = new File(parentDir, fileName);
         Path path = outputFile.toPath();
-        logger.debug("Writing file {} to {}, text={}", fileName, path, pumlText);
-        Files.writeString(path, pumlText, StandardCharsets.UTF_8);
+        logger.debug("Writing file {} to {}, text={}", fileName, path, text);
+        Files.writeString(path, text, StandardCharsets.UTF_8);
+    }
+
+    public void println(String message) {
+        System.out.println(message);
+    }
+
+    public File makeDir(File parentDir, String dirName) {
+        var path = new File(parentDir, dirName);
+        if (!path.exists()) {
+            path.mkdirs();
+        }
+        return path;
     }
 }

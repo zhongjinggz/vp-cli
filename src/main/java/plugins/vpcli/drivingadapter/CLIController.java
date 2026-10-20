@@ -3,7 +3,7 @@ package plugins.vpcli.drivingadapter;
 import plugins.vpcli.application.ExportService;
 import plugins.vpcli.application.ListDiagramsService;
 import plugins.vpcli.application.TreeService;
-import plugins.vpcli.drivenadapter.MyConsole;
+import plugins.vpcli.util.MyIO;
 
 import java.io.File;
 import java.io.IOException;
@@ -17,25 +17,26 @@ public class CLIController {
     private final ExportService exportService;
     private final TreeService treeService;
     private final ListDiagramsService listDiagramsService;
-    private final MyConsole myConsole;
+    private final MyIO myIO;
 
     public CLIController(
         ExportService exportService,
         TreeService treeService,
         ListDiagramsService listDiagramsService,
-        MyConsole myConsole) {
+        MyIO myIO
+    ) {
 
         this.exportService = exportService;
         this.treeService = treeService;
         this.listDiagramsService = listDiagramsService;
-        this.myConsole = myConsole;
+        this.myIO = myIO;
     }
 
     public void invoke(String[] args) throws IOException {
         CLIParams params = CLIParams.valueOf(args);
 
         if (params.isInvalid()) {
-            myConsole.println(params.errorMessage());
+            myIO.println(params.errorMessage());
             return;
         }
 
@@ -61,13 +62,13 @@ public class CLIController {
         // Check if the given path exists and is a directory
         if (!exportLocation.exists()) {
             if (!exportLocation.mkdirs()) {
-                myConsole.println("Error: Could not create the specified directory.");
+                myIO.println("Error: Could not create the specified directory.");
                 return;
             }
         }
 
         if (!exportLocation.isDirectory()) {
-            myConsole.println("Error: The specified path is not a directory.");
+            myIO.println("Error: The specified path is not a directory.");
             return;
         }
 
@@ -76,11 +77,7 @@ public class CLIController {
         if (target.equalsIgnoreCase(CLIParams.VALUE_ALL)) {
             this.exportService.exportAll(exportLocation);
         } else {
-//            try {
-                exportService.exportSpecificDiagram(target, exportLocation);
-//            } catch (IOException e) {
-//                myConsole.println("IO Error: Couldn't create file.");
-//            }
+            exportService.exportSpecificDiagram(target, exportLocation);
         }
     }
 

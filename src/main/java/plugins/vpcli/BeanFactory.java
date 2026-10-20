@@ -31,7 +31,6 @@ public class BeanFactory {
 
     // Util
     private DirMaker dirMaker;
-    private MyConsole myConsole;
     private MyIO myIO;
 
 
@@ -298,16 +297,10 @@ public class BeanFactory {
                 getExportService(),
                 getTreeService(),
                 getListDiagramService(),
-                getMyConsole());
+                getMyIO()
+            );
         }
         return cliController;
-    }
-
-    private MyConsole getMyConsole() {
-        if (myConsole == null) {
-            myConsole = new MyConsole();
-        }
-        return myConsole;
     }
 
     private ListDiagramsService getListDiagramService() {
