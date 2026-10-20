@@ -9,9 +9,9 @@ public class PumlPackageExporter extends PumlElementExporter {
     public PumlPackageExporter(MyElementTypeRepository myElementTypeRepository
 //        , PumlElementExporterFactory pumlElementExporterFactory
     ) {
-        super(myElementTypeRepository, MyElementTypePackage.class
-//            , pumlElementExporterFactory
-        );
+//        super(myElementTypeRepository, MyElementTypePackage.class
+////            , pumlElementExporterFactory
+//        );
     }
 
     @Override

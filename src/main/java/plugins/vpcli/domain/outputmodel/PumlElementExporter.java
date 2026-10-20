@@ -10,11 +10,11 @@ public abstract class PumlElementExporter {
     private MyElementType myElementType;
 
     public PumlElementExporter(
-        MyElementTypeRepository myElementTypeRepository,
-        Class<? extends MyElementType> myElementTypePackageClass
+//        MyElementTypeRepository myElementTypeRepository,
+//        Class<? extends MyElementType> myElementTypePackageClass
 //        , PumlElementExporterFactory pumlElementExporterFactory
     ) {
-        myElementTypeRepository.register(this, myElementTypePackageClass);
+//        myElementTypeRepository.register(this, myElementTypePackageClass);
 //        this.pumlElementExporterFactory = pumlElementExporterFactory;
 
     }

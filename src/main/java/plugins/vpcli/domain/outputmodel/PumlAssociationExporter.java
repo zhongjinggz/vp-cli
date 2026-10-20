@@ -8,9 +8,9 @@ public class PumlAssociationExporter extends PumlElementExporter {
     public PumlAssociationExporter(MyElementTypeRepository myElementTypeRepository
 //        , PumlElementExporterFactory pumlElementExporterFactory
     ) {
-        super(myElementTypeRepository, MyElementTypeAssociation.class
-//            , pumlElementExporterFactory
-        );
+//        super(myElementTypeRepository, MyElementTypeAssociation.class
+////            , pumlElementExporterFactory
+//        );
     }
 
     public void to(PumlDiagram result, ProperMyDiagramElement myDiagramElement) {
