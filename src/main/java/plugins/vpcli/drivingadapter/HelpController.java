@@ -7,9 +7,7 @@ import com.vp.plugin.action.VPActionController;
 import javax.swing.*;
 
 // DOING
-// - 用 MyElementTypeRepository 取代 FactoryFactory;
-// - remove redundent XxxCreator s
-// - MyProjectFactory/MyDiagramFactory should extend MyElementFactory?
+// - remove redundant XxxCreator s
 // - 引入 Micronaut Inject?
 // - ViElementFactory : use Abstract Factory pattern
 
@@ -20,7 +18,6 @@ import javax.swing.*;
 // - export：将图表放入 markdown
 // - export: fix bug of Class Diagram 包和类同名造成混乱
 // - 翻译和修改 README
-// - 使用DSL
 // - 重构依赖注入：通过内部类，将若干工具或工程组织在一起，简化依赖注入(例如 IO)
 
 
@@ -41,6 +38,7 @@ import javax.swing.*;
 // - 补充建立目录时的各种异常情况
 
 // DONE
+// - 删除 MyElementTypeRepository、MyElementTypes、MyElementType, 用户FactoryFactory + ElementType;
 // - export: 重写生成图表的程序 - Package / Model
 // - export: 重写生成图表的程序 - 为 Model 增加衍型
 // - export: 递归构建父 MyElement

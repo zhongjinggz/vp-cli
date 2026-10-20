@@ -2,7 +2,6 @@ package plugins.vpcli.domain.myuml.mydiagram;
 
 import com.vp.plugin.diagram.IDiagramUIModel;
 import plugins.vpcli.domain.myuml.mycommon.MyElement;
-import plugins.vpcli.domain.myuml.mycommon.myelementtype.MyElementType;
 
 public class MyDiagramCreator {
     public MyDiagram from(MyElement parentElement, IDiagramUIModel vpDiagram

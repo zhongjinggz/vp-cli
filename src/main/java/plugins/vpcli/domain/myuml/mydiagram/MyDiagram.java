@@ -3,7 +3,6 @@ package plugins.vpcli.domain.myuml.mydiagram;
 import org.jetbrains.annotations.NotNull;
 import plugins.vpcli.domain.myuml.mycommon.ElementType;
 import plugins.vpcli.domain.myuml.mycommon.MyElement;
-import plugins.vpcli.domain.myuml.mycommon.myelementtype.MyElementType;
 
 import java.util.ArrayList;
 import java.util.Collections;

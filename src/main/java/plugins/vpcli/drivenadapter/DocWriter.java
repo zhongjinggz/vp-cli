@@ -1,9 +1,6 @@
 package plugins.vpcli.drivenadapter;
 
 import org.slf4j.Logger;
-import plugins.vpcli.domain.myuml.mycommon.MyElementFactory;
-import plugins.vpcli.domain.myuml.mycommon.MyElementPool;
-import plugins.vpcli.domain.myuml.mycommon.myelementtype.MyElementType;
 import plugins.vpcli.domain.outputmodel.PumlDiagram;
 import plugins.vpcli.util.MyIO;
 

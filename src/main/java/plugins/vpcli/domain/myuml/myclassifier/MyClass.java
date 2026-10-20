@@ -2,7 +2,6 @@ package plugins.vpcli.domain.myuml.myclassifier;
 
 import plugins.vpcli.domain.myuml.mycommon.ElementType;
 import plugins.vpcli.domain.myuml.mycommon.MyElement;
-import plugins.vpcli.domain.myuml.mycommon.myelementtype.MyElementType;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -19,11 +18,9 @@ public class MyClass extends MyElement {
     public MyClass(
         MyElement parent, String id,
         String name,
-        MyElementType myElementType,
         String description
     ) {
         super(parent, id, name, ElementType.CLASS
-//            , myElementType
             , description);
         isAbstract = false;
 

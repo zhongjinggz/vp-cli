@@ -2,7 +2,6 @@ package plugins.vpcli.domain.myuml.myusecase;
 
 import plugins.vpcli.domain.myuml.mycommon.ElementType;
 import plugins.vpcli.domain.myuml.mycommon.MyElement;
-import plugins.vpcli.domain.myuml.mycommon.myelementtype.MyElementType;
 
 import java.util.List;
 

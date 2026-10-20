@@ -3,7 +3,6 @@ package plugins.vpcli.domain.myuml.mypackage;
 import plugins.vpcli.domain.myuml.myclassifier.*;
 import plugins.vpcli.domain.myuml.mycommon.ElementType;
 import plugins.vpcli.domain.myuml.mycommon.MyElement;
-import plugins.vpcli.domain.myuml.mycommon.myelementtype.MyElementType;
 import plugins.vpcli.domain.myuml.myusecase.MyActor;
 import plugins.vpcli.domain.myuml.myusecase.MyUseCase;
 
@@ -18,7 +17,6 @@ public class MyPackage extends MyElement {
         MyElement parent,
         String id,
         String name,
-        MyElementType myElementtype,
         String description
     ) {
         super(parent, id, name, ElementType.PACKAGE

@@ -22,7 +22,6 @@ public class MyClassFactory extends MyElementFactory {
             parent,
             vpElement.getId(),
             vpElement.getName(),
-            myElementType,
             vpElement.getDescription()
         );
     }

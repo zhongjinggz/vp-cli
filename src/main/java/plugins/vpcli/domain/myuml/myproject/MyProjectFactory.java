@@ -2,7 +2,6 @@ package plugins.vpcli.domain.myuml.myproject;
 
 import com.vp.plugin.model.IProject;
 import org.slf4j.Logger;
-import plugins.vpcli.domain.myuml.mycommon.myelementtype.MyElementTypeProject;
 import plugins.vpcli.drivenadapter.VPProjectRepository;
 
 import static org.slf4j.LoggerFactory.getLogger;
@@ -14,26 +13,22 @@ public class MyProjectFactory {
     private final Logger logger;
 
     private final VPProjectRepository vpProjectRepository;
-    private final MyElementTypeProject myElementTypeProject;
 
     public MyProjectFactory(
         VPProjectRepository vpProjectRepository
-        , MyElementTypeProject myElementTypeProject
-//        , MyElementTypeRepository myElementTypeRepository
+//        , MyElementTypeProject myElementTypeProject
     ) {
-        this(vpProjectRepository, myElementTypeProject, getLogger(MyProjectFactory.class));
+        this(vpProjectRepository, getLogger(MyProjectFactory.class));
     }
 
     // 用于单元测试注入 logger
     public MyProjectFactory(
         VPProjectRepository vpProjectRepository
-        , MyElementTypeProject myElementTypeProject
         , Logger logger
     ) {
         super();
         this.vpProjectRepository = vpProjectRepository;
         this.logger = logger;
-        this.myElementTypeProject = myElementTypeProject;
     }
 
     private MyProject myProject;
@@ -43,8 +38,7 @@ public class MyProjectFactory {
             IProject vpProject = vpProjectRepository.fromVisualParadigm();
             myProject = new MyProject(
                 vpProject.getId(),
-                vpProject.getName(),
-                myElementTypeProject
+                vpProject.getName()
             );
 
             logger.debug("Creating MyProject: name=" + vpProject.getName() + " id=" + vpProject.getId());

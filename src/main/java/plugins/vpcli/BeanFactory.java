@@ -7,7 +7,6 @@ import plugins.vpcli.domain.myuml.myassociation.MyAssociationFactory;
 import plugins.vpcli.domain.myuml.myclassifier.MyClassFactory;
 import plugins.vpcli.domain.myuml.mycommon.MyElementFactoryFactory;
 import plugins.vpcli.domain.myuml.mycommon.MyElementPool;
-import plugins.vpcli.domain.myuml.mycommon.myelementtype.*;
 import plugins.vpcli.domain.myuml.mydiagram.MyDiagramCreator;
 import plugins.vpcli.domain.myuml.mymodelrelationshipcontainer.MyModelRelationshipContainerFactory;
 import plugins.vpcli.domain.myuml.mypackage.MyModelFactory;
@@ -85,8 +84,6 @@ public class BeanFactory {
     private PumlAssociationExporter pumlAssociationExporter;
     private PumlModelRelationshipContainerExporter pumlModelRelationshipContainerExporter;
 
-    private MyElementTypeProject myElementTypeProject;
-
 
     // TODO 优化依赖注入，按功能分开不同的控制器，只注入本次功能需要的依赖
     public BeanFactory() {
@@ -117,7 +114,7 @@ public class BeanFactory {
         if (myProjectFactory == null) {
             myProjectFactory = new MyProjectFactory(
                 getVPProjectRepository()
-                , getMyElementTypeProject()
+//                , getMyElementTypeProject()
 //                , getMyElementTypeRepository()
             );
         }
@@ -414,16 +411,6 @@ public class BeanFactory {
             );
         }
         return pumlUseCaseExporter;
-    }
-
-
-    private MyElementTypeProject getMyElementTypeProject() {
-        if (myElementTypeProject == null) {
-            myElementTypeProject = new MyElementTypeProject(
-                null
-            );
-        }
-        return myElementTypeProject;
     }
 
 

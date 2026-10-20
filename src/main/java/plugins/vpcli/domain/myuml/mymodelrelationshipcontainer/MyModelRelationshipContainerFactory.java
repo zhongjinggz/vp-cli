@@ -21,7 +21,6 @@ public class MyModelRelationshipContainerFactory extends MyElementFactory {
             parent,
             vpElement.getId(),
             vpElement.getName(),
-            myElementType,
             vpElement.getDescription()
         );
     }

@@ -2,7 +2,6 @@ package plugins.vpcli.domain.myuml.mycommon;
 
 import com.vp.plugin.model.IModelElement;
 import org.slf4j.Logger;
-import plugins.vpcli.domain.myuml.mycommon.myelementtype.MyElementType;
 
 import static org.slf4j.LoggerFactory.getLogger;
 
@@ -11,8 +10,7 @@ public abstract class MyElementFactory {
     private final Logger logger;
 
     private MyElementPool elementPool;
-    protected MyElementType myElementType;
-//    protected MyElementTypeRepository myElementTypeRepository;
+//    protected MyElementType myElementType;
     private MyElementFactoryFactory factoryFactory;
 
     public MyElementFactory(
@@ -27,21 +25,7 @@ public abstract class MyElementFactory {
                      Logger logger
     ) {
         this.elementPool = myElementPool;
-//        this.myElementType = myElementType;
-//        this.myElementTypeRepository = myElementTypeRepository;
         this.logger = logger;
-
-
-        // below statement will build the circle dependency:
-        // MyElementTypeRepository --> MyElementType --> MyElementFactory
-        //     ^----------------------------------------|
-        // Even though circle circle dependency is not a best practices in normal case,
-        // but it is necessary here
-        //this.myElementTypeRepository.register(this);
-//        if (myElementType != null) {
-//            myElementType.setMyElementFactory(this);
-//        }
-
 
     }
 
@@ -65,11 +49,6 @@ public abstract class MyElementFactory {
                 myParentElement = elementPool.get(parentId);
             } else {
                 var factory = factoryFactory.of(vpParentElement.getModelType());
-
-                // var factory = myElementType.getMyElementFactory();
-//                var factory = myElementTypeRepository
-//                    .findByVPModelType(vpParentElement.getModelType())
-//                    .getMyElementFactory();
 
                 myParentElement = factory.of(vpParentElement);
             }
@@ -106,8 +85,4 @@ public abstract class MyElementFactory {
             , parentId
         );
     }
-
-//    public MyElementType getMyElementType() {
-//        return myElementType;
-//    }
 }
