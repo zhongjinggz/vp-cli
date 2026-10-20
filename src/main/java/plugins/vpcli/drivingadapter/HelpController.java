@@ -7,7 +7,6 @@ import com.vp.plugin.action.VPActionController;
 import javax.swing.*;
 
 // DOING
-// - 异常处理增强
 // - 引入 Micronaut Inject?
 
 // TODO

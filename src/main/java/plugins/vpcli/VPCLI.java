@@ -5,6 +5,8 @@ import plugins.vpcli.drivingadapter.CLIController;
 
 import java.io.File;
 import java.io.IOException;
+import java.rmi.server.ExportException;
+
 import ch.qos.logback.classic.LoggerContext;
 import ch.qos.logback.classic.util.ContextInitializer;
 import ch.qos.logback.core.joran.spi.JoranException;
@@ -80,7 +82,7 @@ public class VPCLI implements VPPlugin, VPPluginCommandLineSupport {
         CLIController cliController = beanFactory.getCLIController();
         try {
             cliController.invoke(args);
-        } catch (IOException e) {
+        } catch (Exception e) {
             throw new RuntimeException(e);
         }
     }
