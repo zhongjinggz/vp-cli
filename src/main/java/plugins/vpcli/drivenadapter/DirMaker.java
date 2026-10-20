@@ -1,13 +1,13 @@
 package plugins.vpcli.drivenadapter;
 
-import org.checkerframework.checker.nullness.qual.NonNull;
+import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
 
 public class DirMaker {
     private String dirName;
 
-    public DirMaker named(@NonNull String dirName) {
+    public DirMaker named(@NotNull String dirName) {
         this.dirName = dirName;
         return this;
     }

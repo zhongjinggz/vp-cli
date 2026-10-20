@@ -1,7 +1,6 @@
 package plugins.vpcli.domain.vpvisitor.vpmodelvisitor.structure;
 
 import com.vp.plugin.model.IProject;
-import org.checkerframework.checker.nullness.qual.NonNull;
 import org.jetbrains.annotations.NotNull;
 import plugins.vpcli.domain.myuml.mycommon.ElementType;
 import plugins.vpcli.domain.vpvisitor.vpmodelvisitor.element.ViElement;
@@ -37,7 +36,7 @@ public class ViProject {
         elementsAccept(elements, rootVisitor);
     }
 
-    private @NonNull List<ViElement> createTopLevelElements() {
+    private @NotNull List<ViElement> createTopLevelElements() {
         String[] vpModelTypes = getVpModelTypeArray();
         var vpElements = project.toModelElementArray(vpModelTypes);
 

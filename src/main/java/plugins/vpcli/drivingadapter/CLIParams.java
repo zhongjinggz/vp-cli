@@ -1,6 +1,6 @@
 package plugins.vpcli.drivingadapter;
 
-import org.checkerframework.checker.nullness.qual.NonNull;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.Arrays;
 import java.util.HashMap;
@@ -44,7 +44,7 @@ class CLIParams {
     }
 
     // 封装命令行参数
-    @NonNull
+    @NotNull
     static CLIParams valueOf(String[] args) {
         CLIParams params = new CLIParams(args);
         params.parse();
