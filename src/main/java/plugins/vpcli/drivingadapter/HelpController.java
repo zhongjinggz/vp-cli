@@ -7,9 +7,8 @@ import com.vp.plugin.action.VPActionController;
 import javax.swing.*;
 
 // DOING
-// - 重构依赖注入：通过内部类，将若干工具或工程组织在一起，简化依赖注入(例如 IO)
+// - 异常处理增强
 // - 引入 Micronaut Inject?
-// - ViElementFactory : use Abstract Factory pattern
 
 // TODO
 // - export: 使用全路径名作为包和classifier 的别名，以避免同名
@@ -21,7 +20,7 @@ import javax.swing.*;
 
 
 // - 清理测试
-// - 异常处理增强
+// - ViElementFactory : use Abstract Factory pattern
 
 // - export: 重写生成图表的程序 - Class 属性和操作
 // - export: circle or class style of Interface
@@ -35,6 +34,7 @@ import javax.swing.*;
 // - 补充建立目录时的各种异常情况
 
 // DONE
+// - 重构依赖注入：通过内部类，将若干工具或工程组织在一起，简化依赖注入(例如 IO)
 // - 清理 IDEA 警告
 // - remove redundant XxxCreator s
 // - 删除 MyElementTypeRepository、MyElementTypes、MyElementType, 用户FactoryFactory + ElementType;
