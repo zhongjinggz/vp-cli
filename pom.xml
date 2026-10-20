@@ -139,6 +139,17 @@
             <artifactId>micronaut-core</artifactId>
             <version>${micronaut.version}</version>
         </dependency>
+        <!--
+          micronaut-inject 的运行时库：ApplicationContext 在运行期需要它以及随它传递的
+          jakarta.inject-api（@Singleton/@Inject 注解类）、jakarta.annotation-api、
+          javax.annotation-api、snakeyaml、micronaut-aop。故把它声明为 compile，
+          使其落地到插件 zip 的 lib/（scope=runtime dependencySet 会收集 compile 依赖）。
+        -->
+        <dependency>
+            <groupId>io.micronaut</groupId>
+            <artifactId>micronaut-inject</artifactId>
+            <version>${micronaut.version}</version>
+        </dependency>
         <dependency>
             <groupId>io.micronaut</groupId>
             <artifactId>micronaut-inject-java</artifactId>

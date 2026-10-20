@@ -1,6 +1,7 @@
 package plugins.vpcli;
 
 import com.vp.plugin.*;
+import io.micronaut.context.ApplicationContext;
 import plugins.vpcli.drivingadapter.CLIController;
 
 import java.io.File;
@@ -27,7 +28,8 @@ public class VPCLI implements VPPlugin, VPPluginCommandLineSupport {
     private static final org.slf4j.Logger LOG =
         org.slf4j.LoggerFactory.getLogger(VPCLI.class);
 
-    private static final BeanFactory beanFactory = new BeanFactory();
+    private static final ApplicationContext context =
+        ApplicationContext.builder("plugins.vpcli").start();
 
 
     // TODO 优化依赖注入，按功能分开不同的控制器，只注入本次功能需要的依赖
@@ -74,12 +76,13 @@ public class VPCLI implements VPPlugin, VPPluginCommandLineSupport {
 
     @Override
     public void unloaded() {
+        context.close();
     }
 
     // CLI 入口：解析参数并分发到导入/导出逻辑
     @Override
     public void invoke(String[] args) {
-        CLIController cliController = beanFactory.getCLIController();
+        CLIController cliController = context.getBean(CLIController.class);
         try {
             cliController.invoke(args);
         } catch (Exception e) {
