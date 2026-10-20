@@ -36,6 +36,7 @@ public class MyIO {
         if (!path.exists()) {
             path.mkdirs();
         }
+        logger.debug("Making directory {} ", path.getAbsolutePath());
         return path;
     }
 }

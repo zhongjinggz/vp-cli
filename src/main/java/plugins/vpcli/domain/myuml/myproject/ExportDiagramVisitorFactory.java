@@ -5,7 +5,6 @@ import plugins.vpcli.domain.outputmodel.PumlDiagramFactory;
 import plugins.vpcli.domain.vpvisitor.mydiagramfactory.MyDiagramFactory;
 import plugins.vpcli.domain.vpvisitor.vpmodelvisitor.visitor.ViElementVisitor;
 import plugins.vpcli.domain.vpvisitor.vpmodelvisitor.visitor.ViElementVisitorFactory;
-import plugins.vpcli.drivenadapter.DirMaker;
 import plugins.vpcli.drivenadapter.DocWriter;
 import plugins.vpcli.util.MyIO;
 
@@ -14,7 +13,6 @@ import java.io.File;
 public class ExportDiagramVisitorFactory implements ViElementVisitorFactory {
 
     private final MyProjectFactory myProjectFactory;
-    private final DirMaker dirMaker;
     private final MyDiagramFactory myDiagramFactory;
     private final PumlDiagramFactory pumlDiagramFactory;
     private final DocWriter docWriter;
@@ -22,14 +20,12 @@ public class ExportDiagramVisitorFactory implements ViElementVisitorFactory {
     private File rootDir;
 
     public ExportDiagramVisitorFactory(
-        DirMaker dirMaker,
         MyProjectFactory myProjectFactory,
         MyDiagramFactory myDiagramFactory,
         PumlDiagramFactory pumlDiagramFactory,
         DocWriter docWriter,
         MyIO myIO
     ) {
-        this.dirMaker = dirMaker;
         this.myProjectFactory = myProjectFactory;
         this.myDiagramFactory = myDiagramFactory;
         this.pumlDiagramFactory = pumlDiagramFactory;
@@ -41,7 +37,6 @@ public class ExportDiagramVisitorFactory implements ViElementVisitorFactory {
     public ViElementVisitor under(@NotNull ViElementVisitor higherVisitor) {
         return new ExportDiagramVisitor(
             (ExportDiagramVisitor) higherVisitor,
-            this.dirMaker,
             myDiagramFactory,
             pumlDiagramFactory,
             docWriter,

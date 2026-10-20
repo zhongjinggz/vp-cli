@@ -29,8 +29,6 @@ public class BeanFactory {
     // - Factory: 从无到有创建，一般有 new，或调用其他 Factory
     // - Repository: 已有的内容的存取（不含 new）
 
-    // Util
-    private DirMaker dirMaker;
     private MyIO myIO;
 
 
@@ -82,13 +80,6 @@ public class BeanFactory {
 
     // TODO 优化依赖注入，按功能分开不同的控制器，只注入本次功能需要的依赖
     public BeanFactory() {
-    }
-
-    private DirMaker getDirMaker() {
-        if (dirMaker == null) {
-            dirMaker = new DirMaker();
-        }
-        return dirMaker;
     }
 
     private VPProjectRepository getVPProjectRepository() {
@@ -281,7 +272,6 @@ public class BeanFactory {
     private ExportDiagramVisitorFactory getExportDiagramVisitorFactory() {
         if (exportDiagramVisitorCreator == null) {
             exportDiagramVisitorCreator = new ExportDiagramVisitorFactory(
-                getDirMaker(),
                 getMyProjectFactory(),
                 getMyDiagramFactory(),
                 getPumlFactory(),

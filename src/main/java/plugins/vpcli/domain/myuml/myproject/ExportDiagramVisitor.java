@@ -7,7 +7,6 @@ import plugins.vpcli.domain.outputmodel.PumlDiagramFactory;
 import plugins.vpcli.domain.vpvisitor.mydiagramfactory.MyDiagramFactory;
 import plugins.vpcli.domain.vpvisitor.vpmodelvisitor.element.*;
 import plugins.vpcli.domain.vpvisitor.vpmodelvisitor.visitor.ViElementVisitor;
-import plugins.vpcli.drivenadapter.DirMaker;
 import plugins.vpcli.drivenadapter.DocWriter;
 import plugins.vpcli.util.MyIO;
 
@@ -15,7 +14,6 @@ import java.io.File;
 import java.io.IOException;
 
 public class ExportDiagramVisitor extends ViElementVisitor {
-    private final DirMaker makeDir;
     private final MyDiagramFactory buildMyDiagram;
     private final PumlDiagramFactory buildPlantUML;
     protected File path;
@@ -25,7 +23,6 @@ public class ExportDiagramVisitor extends ViElementVisitor {
 
     ExportDiagramVisitor(
         ExportDiagramVisitor higherVisitor,
-        DirMaker dirMaker,
         MyDiagramFactory myDiagramFactory,
         PumlDiagramFactory pumlDiagramFactory,
         DocWriter docWriter,
@@ -33,7 +30,6 @@ public class ExportDiagramVisitor extends ViElementVisitor {
     ) {
         super(higherVisitor);
 
-        this.makeDir = dirMaker;
         this.buildMyDiagram = myDiagramFactory;
         this.buildPlantUML = pumlDiagramFactory;
         this.write = docWriter;
@@ -45,7 +41,6 @@ public class ExportDiagramVisitor extends ViElementVisitor {
         super(null);
         this.write = null;
 
-        this.makeDir = null;
         this.buildMyDiagram = null;
         this.buildPlantUML = null;
 
@@ -101,9 +96,6 @@ public class ExportDiagramVisitor extends ViElementVisitor {
     private void makeDirOf(ViPackage viPackage) {
 
         File parentDir = ((ExportDiagramVisitor) higherVisitor).getPath();
-//        this.path = makeDir
-//            .named(viPackage.getName() + viPackage.getType().getSuffix())
-//            .under(parentDir);
         this.path = myIO.makeDir(
             parentDir,
             viPackage.getName() + viPackage.getType().getSuffix()
