@@ -8,7 +8,7 @@ import plugins.vpcli.domain.myuml.myclassifier.MyClassFactory;
 import plugins.vpcli.domain.myuml.mycommon.MyElementFactoryFactory;
 import plugins.vpcli.domain.myuml.mycommon.MyElementPool;
 import plugins.vpcli.domain.myuml.mycommon.MyElementTypeRepository;
-import plugins.vpcli.domain.myuml.mycommon.MyElementTypes;
+//import plugins.vpcli.domain.myuml.mycommon.MyElementTypes;
 import plugins.vpcli.domain.myuml.mycommon.myelementtype.*;
 import plugins.vpcli.domain.myuml.mydiagram.MyDiagramCreator;
 import plugins.vpcli.domain.myuml.mymodelrelationshipcontainer.MyModelRelationshipContainerFactory;
@@ -89,7 +89,7 @@ public class BeanFactory {
 
     // MyElementType
     private MyElementTypeRepository myElementTypeRepository;
-    private MyElementTypes myElementTypes;
+//    private MyElementTypes myElementTypes;
     private MyElementTypeProject myElementTypeProject;
     private MyElementTypeClass myElementTypeClass;
     private MyElementTypePackage myElementTypePackage;
@@ -298,7 +298,7 @@ public class BeanFactory {
                 getMyElementPool(),
                 getMyDiagramCreator(),
                 getMyDiagramElementFactory(),
-                getMyElementTypes(),
+//                getMyElementTypes(),
                 myElementTypeRepository);
         }
         return myDiagramFactory;
@@ -448,22 +448,22 @@ public class BeanFactory {
     }
 
     // MyElementType
-    private MyElementTypes getMyElementTypes() {
-        if (myElementTypes == null) {
-            myElementTypes = new MyElementTypes(
-                getMyElementTypeProject(),
-                getMyElementTypeClass(),
-                getMyElementTypePackage(),
-                getMyElementTypeModel(),
-                getMyElementTypeUseCase(),
-                getMyElementTypeDiagram(),
-                getMyElementTypeAssociation(),
-                getMyElementTypeModeRelationshipContainer()
-
-            );
-        }
-        return myElementTypes;
-    }
+//    private MyElementTypes getMyElementTypes() {
+//        if (myElementTypes == null) {
+//            myElementTypes = new MyElementTypes(
+//                getMyElementTypeProject(),
+//                getMyElementTypeClass(),
+//                getMyElementTypePackage(),
+//                getMyElementTypeModel(),
+//                getMyElementTypeUseCase(),
+//                getMyElementTypeDiagram(),
+//                getMyElementTypeAssociation(),
+//                getMyElementTypeModeRelationshipContainer()
+//
+//            );
+//        }
+//        return myElementTypes;
+//    }
 
     private MyElementTypeProject getMyElementTypeProject() {
         if (myElementTypeProject == null) {

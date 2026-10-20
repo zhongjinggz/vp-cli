@@ -19,13 +19,13 @@ public class MyDiagramFactory {
         MyElementPool myElementPool
         , MyDiagramCreator myDiagramCreator
         , MyDiagramElementFactory myDiagramElementFactory
-        , MyElementTypes myElementTypes
+//        , MyElementTypes myElementTypes
         , MyElementTypeRepository myElementTypeRepository
     ) {
         this(myElementPool
             , myDiagramCreator,
             myDiagramElementFactory,
-            myElementTypes,
+//            myElementTypes,
             getLogger(MyDiagramFactory.class));
 
     }
@@ -34,7 +34,7 @@ public class MyDiagramFactory {
         MyElementPool myElementPool
         , MyDiagramCreator myDiagramCreator
         , MyDiagramElementFactory myDiagramElementFactory
-        , MyElementTypes myElementTypes
+//        , MyElementTypes myElementTypes
         , Logger logger
     ) {
 
