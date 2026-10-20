@@ -7,7 +7,6 @@ import plugins.vpcli.domain.myuml.myassociation.MyAssociationFactory;
 import plugins.vpcli.domain.myuml.myclassifier.MyClassFactory;
 import plugins.vpcli.domain.myuml.mycommon.MyElementFactoryFactory;
 import plugins.vpcli.domain.myuml.mycommon.MyElementPool;
-import plugins.vpcli.domain.myuml.mycommon.MyElementTypeRepository;
 import plugins.vpcli.domain.myuml.mycommon.myelementtype.*;
 import plugins.vpcli.domain.myuml.mydiagram.MyDiagramCreator;
 import plugins.vpcli.domain.myuml.mymodelrelationshipcontainer.MyModelRelationshipContainerFactory;
@@ -86,28 +85,11 @@ public class BeanFactory {
     private PumlAssociationExporter pumlAssociationExporter;
     private PumlModelRelationshipContainerExporter pumlModelRelationshipContainerExporter;
 
-    // MyElementType
-    private MyElementTypeRepository myElementTypeRepository;
-    //    private MyElementTypes myElementTypes;
     private MyElementTypeProject myElementTypeProject;
-    private MyElementTypeClass myElementTypeClass;
-    private MyElementTypePackage myElementTypePackage;
-    private MyElementTypeModel myElementTypeModel;
-    private MyElementTypeUseCase myElementTypeUseCase;
-    private MyElementTypeAssociation myElementTypeAssociation;
-    private MyElementTypeModelRelationshipContainer myElementTypeModelRelationshipContainer;
 
 
     // TODO 优化依赖注入，按功能分开不同的控制器，只注入本次功能需要的依赖
     public BeanFactory() {
-    }
-
-    private MyElementTypeRepository getMyElementTypeRepository() {
-        if (myElementTypeRepository == null) {
-            myElementTypeRepository = new MyElementTypeRepository();
-        }
-        return myElementTypeRepository;
-
     }
 
     private DirMaker getDirMaker() {
@@ -169,17 +151,6 @@ public class BeanFactory {
         return myModelRelationshipContainerFactory;
     }
 
-    private MyElementTypeModelRelationshipContainer getMyElementTypeModeRelationshipContainer() {
-        if (myElementTypeModelRelationshipContainer == null) {
-            myElementTypeModelRelationshipContainer = new MyElementTypeModelRelationshipContainer(
-                getPumlModelRelationshipContainerExporter()
-            );
-            // TODO 在对象内部进行双向关联
-            myElementTypeModelRelationshipContainer.setMyElementFactory(getMyModelRelationshipFactory());
-        }
-        return myElementTypeModelRelationshipContainer;
-    }
-
     private PumlModelRelationshipContainerExporter getPumlModelRelationshipContainerExporter() {
         if (pumlModelRelationshipContainerExporter == null) {
             pumlModelRelationshipContainerExporter = new PumlModelRelationshipContainerExporter(
@@ -199,16 +170,6 @@ public class BeanFactory {
             );
         }
         return myAssociationFactory;
-    }
-
-    private MyElementTypeAssociation getMyElementTypeAssociation() {
-        if (myElementTypeAssociation == null) {
-            myElementTypeAssociation = new MyElementTypeAssociation(
-                getPumlAssociationExporter()
-            );
-            myElementTypeAssociation.setMyElementFactory(getMyAssociationFactory());
-        }
-        return myElementTypeAssociation;
     }
 
     private PumlAssociationExporter getPumlAssociationExporter() {
@@ -465,44 +426,6 @@ public class BeanFactory {
         return myElementTypeProject;
     }
 
-    private MyElementTypeClass getMyElementTypeClass() {
-        if (myElementTypeClass == null) {
-            myElementTypeClass = new MyElementTypeClass(
-                getPumlClassExporter()
-            );
-            myElementTypeClass.setMyElementFactory(getMyClassFactory());
-        }
-        return myElementTypeClass;
-    }
-
-    private MyElementTypePackage getMyElementTypePackage() {
-        if (myElementTypePackage == null) {
-            myElementTypePackage = new MyElementTypePackage(
-                getPumlPackageExporter()
-            );
-            myElementTypePackage.setMyElementFactory(getMyPackageFactory());
-        }
-        return myElementTypePackage;
-    }
-
-
-    private MyElementTypeModel getMyElementTypeModel() {
-        if (myElementTypeModel == null) {
-            myElementTypeModel = new MyElementTypeModel(
-                getPumlModelExporter()
-            );
-            myElementTypeModel.setMyElementFactory(getMyModelFactory());
-        }
-        return myElementTypeModel;
-    }
-
-    private MyElementTypeUseCase getMyElementTypeUseCase() {
-        if (myElementTypeUseCase == null) {
-            myElementTypeUseCase = new MyElementTypeUseCase(getPumlUseCaseExporter());
-            myElementTypeUseCase.setMyElementFactory(getMyUseCaseFactory());
-        }
-        return myElementTypeUseCase;
-    }
 
     private PumlElementExporterFactory getPumlElementExporterFactory() {
         if (pumlElementExporterFactory == null) {
