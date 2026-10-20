@@ -19,7 +19,7 @@ public class ExportDiagramVisitor extends ViElementVisitor {
     private final PumlDiagramFactory buildPlantUML;
     protected File path;
     private MyElement myElement;
-    private DocWriter write;
+    private final DocWriter write;
 
     ExportDiagramVisitor(
         ExportDiagramVisitor higherVisitor,

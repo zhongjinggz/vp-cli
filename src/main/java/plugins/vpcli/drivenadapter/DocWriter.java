@@ -11,7 +11,7 @@ import static org.slf4j.LoggerFactory.getLogger;
 
 public class DocWriter {
     private final Logger logger ;
-    private MyIO io;
+    private final MyIO io;
 
     public DocWriter(MyIO myIO) {
         this(myIO, getLogger(DocWriter.class));

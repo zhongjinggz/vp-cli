@@ -24,8 +24,8 @@ public class ClassDiagramWriter extends PlantUMLWriter {
     private final List<MyClass_old> classes;
     private final List<MyRelationship> relationships;
     private List<MyNary_old> naries;
-    private FileCreator fileCreator;
-    private OldClassDiagram myDiagram;
+    private final FileCreator fileCreator;
+    private final OldClassDiagram myDiagram;
 
     public ClassDiagramWriter(
         OldClassDiagram myDiagram,

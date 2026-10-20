@@ -191,10 +191,6 @@ class CLIParams {
             return text.equals(VALUE_NON);
         }
 
-        boolean isSet() {
-            return text.equals(VALUE_SET);
-        }
-
         String text() {
             return this.text;
         }
