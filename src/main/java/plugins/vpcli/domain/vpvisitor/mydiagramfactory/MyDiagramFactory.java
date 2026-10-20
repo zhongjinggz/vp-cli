@@ -20,7 +20,7 @@ public class MyDiagramFactory {
         , MyDiagramCreator myDiagramCreator
         , MyDiagramElementFactory myDiagramElementFactory
 //        , MyElementTypes myElementTypes
-        , MyElementTypeRepository myElementTypeRepository
+//        , MyElementTypeRepository myElementTypeRepository
     ) {
         this(myElementPool
             , myDiagramCreator,

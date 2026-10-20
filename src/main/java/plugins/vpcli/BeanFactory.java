@@ -136,7 +136,7 @@ public class BeanFactory {
             myProjectFactory = new MyProjectFactory(
                 getVPProjectRepository()
                 , getMyElementTypeProject()
-                , getMyElementTypeRepository()
+//                , getMyElementTypeRepository()
             );
         }
         return myProjectFactory;
@@ -295,9 +295,10 @@ public class BeanFactory {
             myDiagramFactory = new MyDiagramFactory(
                 getMyElementPool(),
                 getMyDiagramCreator(),
-                getMyDiagramElementFactory(),
-//                getMyElementTypes(),
-                myElementTypeRepository);
+                getMyDiagramElementFactory()
+//                , getMyElementTypes(),
+//                myElementTypeRepository
+            );
         }
         return myDiagramFactory;
     }

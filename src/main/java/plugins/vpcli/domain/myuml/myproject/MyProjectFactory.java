@@ -20,7 +20,7 @@ public class MyProjectFactory {
     public MyProjectFactory(
         VPProjectRepository vpProjectRepository
         , MyElementTypeProject myElementTypeProject
-        , MyElementTypeRepository myElementTypeRepository
+//        , MyElementTypeRepository myElementTypeRepository
     ) {
         this(vpProjectRepository, myElementTypeProject, getLogger(MyProjectFactory.class));
     }
