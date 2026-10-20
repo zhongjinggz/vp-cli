@@ -10,12 +10,11 @@ import plugins.vpcli.domain.myuml.mycommon.myelementtype.MyElementTypePackage;
 public class MyPackageFactory extends MyElementFactory {
 
     public MyPackageFactory(MyElementPool myElementPool
-        , MyElementTypePackage myElementType
-        , MyElementTypeRepository myElementTypeRepository
+//        , MyElementTypePackage myElementType
+//        , MyElementTypeRepository myElementTypeRepository
     ) {
         super(myElementPool
-            , myElementTypeRepository.PACKAGE
-            , myElementTypeRepository);
+        );
     }
 
     @Override

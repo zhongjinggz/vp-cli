@@ -10,12 +10,11 @@ import plugins.vpcli.domain.myuml.mycommon.myelementtype.MyElementTypeModel;
 public class MyModelFactory extends MyElementFactory {
 
     public MyModelFactory(MyElementPool myElementPool
-        , MyElementTypeModel myElementType
-        , MyElementTypeRepository myElementTypeRepository
+//        , MyElementTypeModel myElementType
+//        , MyElementTypeRepository myElementTypeRepository
     ) {
         super(myElementPool
-            , myElementTypeRepository.MODEL
-            , myElementTypeRepository);
+        );
     }
 
     @Override

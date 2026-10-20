@@ -10,13 +10,12 @@ import plugins.vpcli.domain.myuml.mycommon.myelementtype.MyElementTypeClass;
 public class MyClassFactory extends MyElementFactory {
 
     public MyClassFactory(MyElementPool myElementPool
-        , MyElementTypeClass myElementTypeClass
-        , MyElementTypeRepository myElementTypeRepository
+//        , MyElementTypeClass myElementTypeClass
+//        , MyElementTypeRepository myElementTypeRepository
     ) {
         // TODO use MyElementTypeClass.class instead
         super(myElementPool
-            , myElementTypeRepository.CLASS
-            , myElementTypeRepository);
+        );
     }
 
     @Override

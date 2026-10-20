@@ -16,25 +16,19 @@ public abstract class MyElementFactory {
     private MyElementFactoryFactory factoryFactory;
 
     public MyElementFactory(
-        MyElementPool myElementPool,
-        MyElementType myElementType,
-        MyElementTypeRepository myElementTypeRepository
+        MyElementPool myElementPool
     ) {
-        this(myElementPool
-            , myElementType
-            , myElementTypeRepository
-            , getLogger(MyElementFactory.class));
+        this(myElementPool ,
+            getLogger(MyElementFactory.class));
     }
 
     // 仅用于单元测试，可注入 Logger
     MyElementFactory(MyElementPool myElementPool,
-                     MyElementType myElementType,
-                     MyElementTypeRepository myElementTypeRepository,
                      Logger logger
     ) {
         this.elementPool = myElementPool;
-        this.myElementType = myElementType;
-        this.myElementTypeRepository = myElementTypeRepository;
+//        this.myElementType = myElementType;
+//        this.myElementTypeRepository = myElementTypeRepository;
         this.logger = logger;
 
 

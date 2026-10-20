@@ -11,12 +11,11 @@ public class MyUseCaseFactory extends MyElementFactory {
 
     public MyUseCaseFactory(
         MyElementPool myElementPool
-        , MyElementTypeUseCase myElementType
-        , MyElementTypeRepository myElementTypeRepository
+//        , MyElementTypeUseCase myElementType
+//        , MyElementTypeRepository myElementTypeRepository
     ) {
         super(myElementPool
-            , myElementTypeRepository.USE_CASE
-            , myElementTypeRepository);
+        );
     }
 
     @Override
@@ -25,7 +24,6 @@ public class MyUseCaseFactory extends MyElementFactory {
             parent,
             vpElement.getId(),
             vpElement.getName(),
-//            myElementType,
             vpElement.getDescription()
         );
     }

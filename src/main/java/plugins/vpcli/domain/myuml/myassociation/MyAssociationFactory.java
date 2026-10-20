@@ -6,18 +6,15 @@ import plugins.vpcli.domain.myuml.mycommon.MyElementFactory;
 import plugins.vpcli.domain.myuml.mycommon.MyElementPool;
 import plugins.vpcli.domain.myuml.mycommon.MyElementTypeRepository;
 import plugins.vpcli.domain.myuml.mycommon.myelementtype.MyElementTypeAssociation;
-import plugins.vpcli.domain.myuml.mycommon.myelementtype.MyElementTypeUseCase;
-import plugins.vpcli.domain.myuml.myusecase.MyUseCase;
 
 public class MyAssociationFactory extends MyElementFactory {
     public MyAssociationFactory(
         MyElementPool myElementPool
-        , MyElementTypeAssociation myElementType
-        , MyElementTypeRepository myElementTypeRepository
+//        , MyElementTypeAssociation myElementType
+//        , MyElementTypeRepository myElementTypeRepository
     ) {
         super(myElementPool
-            , myElementTypeRepository.ASSOCIATION
-            , myElementTypeRepository);
+        );
     }
 
     @Override

@@ -88,7 +88,7 @@ public class BeanFactory {
 
     // MyElementType
     private MyElementTypeRepository myElementTypeRepository;
-//    private MyElementTypes myElementTypes;
+    //    private MyElementTypes myElementTypes;
     private MyElementTypeProject myElementTypeProject;
     private MyElementTypeClass myElementTypeClass;
     private MyElementTypePackage myElementTypePackage;
@@ -162,8 +162,8 @@ public class BeanFactory {
         if (myModelRelationshipContainerFactory == null) {
             myModelRelationshipContainerFactory = new MyModelRelationshipContainerFactory(
                 getMyElementPool()
-                , getMyElementTypeModeRelationshipContainer()
-                , getMyElementTypeRepository()
+//                , getMyElementTypeModeRelationshipContainer()
+//                , getMyElementTypeRepository()
             );
         }
         return myModelRelationshipContainerFactory;
@@ -194,8 +194,9 @@ public class BeanFactory {
         if (myAssociationFactory == null) {
             myAssociationFactory = new MyAssociationFactory(
                 getMyElementPool()
-                , getMyElementTypeAssociation()
-                , getMyElementTypeRepository());
+//                , getMyElementTypeAssociation()
+//                , getMyElementTypeRepository()
+            );
         }
         return myAssociationFactory;
     }
@@ -223,8 +224,8 @@ public class BeanFactory {
     private MyUseCaseFactory getMyUseCaseFactory() {
         if (myUseCaseFactory == null) {
             myUseCaseFactory = new MyUseCaseFactory(getMyElementPool()
-                , getMyElementTypeUseCase()
-                , getMyElementTypeRepository()
+//                , getMyElementTypeUseCase()
+//                , getMyElementTypeRepository()
             );
         }
         return myUseCaseFactory;
@@ -234,8 +235,8 @@ public class BeanFactory {
         if (myModelFactory == null) {
             myModelFactory = new MyModelFactory(
                 getMyElementPool()
-                , getMyElementTypeModel()
-                , getMyElementTypeRepository()
+//                , getMyElementTypeModel()
+//                , getMyElementTypeRepository()
             );
         }
         return myModelFactory;
@@ -246,8 +247,9 @@ public class BeanFactory {
         if (myClassFactory == null) {
             myClassFactory = new MyClassFactory(
                 getMyElementPool()
-                , getMyElementTypeClass()
-                , getMyElementTypeRepository());
+//                , getMyElementTypeClass()
+//                , getMyElementTypeRepository()
+            );
         }
         return myClassFactory;
     }
@@ -255,8 +257,9 @@ public class BeanFactory {
     private MyPackageFactory getMyPackageFactory() {
         if (myPackageFactory == null) {
             myPackageFactory = new MyPackageFactory(getMyElementPool()
-                , getMyElementTypePackage()
-                , getMyElementTypeRepository());
+//                , getMyElementTypePackage()
+//                , getMyElementTypeRepository()
+                );
         }
         return myPackageFactory;
     }
