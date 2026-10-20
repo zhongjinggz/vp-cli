@@ -3,6 +3,9 @@ package plugins.vpcli.domain.myuml.myproject;
 import plugins.vpcli.domain.vpvisitor.vpmodelvisitor.visitor.ViElementVisitor;
 import plugins.vpcli.domain.vpvisitor.vpmodelvisitor.visitor.ViElementVisitorFactory;
 
+import jakarta.inject.Singleton;
+
+@Singleton
 public class TreeVisitorFactory implements ViElementVisitorFactory {
 
     @Override

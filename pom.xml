@@ -27,6 +27,8 @@
 
         <jetbrains.annotations.version>26.1.0</jetbrains.annotations.version>
 
+        <micronaut.version>3.10.4</micronaut.version>
+
         <vp.sdk.dir>/Applications/Visual Paradigm.app/Contents/Resources/app/lib</vp.sdk.dir>
         <vp.sdk.version>1.0</vp.sdk.version>
     </properties>
@@ -125,6 +127,24 @@
             <version>${jetbrains.annotations.version}</version>
             <scope>compile</scope>
         </dependency>
+
+        <!--
+          Micronaut DI (3.x, JDK 11 compatible).
+          micronaut-core 提供运行期的 ApplicationContext / InjectionContext(pulls in
+          micronaut-inject runtime + javax.inject) ；micronaut-inject-java 仅供编译期
+          注解处理使用（provided，不会打进插件 zip 的 lib/）。
+        -->
+        <dependency>
+            <groupId>io.micronaut</groupId>
+            <artifactId>micronaut-core</artifactId>
+            <version>${micronaut.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>io.micronaut</groupId>
+            <artifactId>micronaut-inject-java</artifactId>
+            <version>${micronaut.version}</version>
+            <scope>provided</scope>
+        </dependency>
         <!--        <dependency>-->
         <!--            <groupId>org.junit.jupiter</groupId>-->
         <!--            <artifactId>junit-jupiter</artifactId>-->
@@ -160,6 +180,28 @@
                             <version>21</version>
                         </jdk>
                     </toolchains>
+                </configuration>
+            </plugin>
+
+            <plugin>
+                <!--
+                  Micronaut 依赖注入依赖编译期的注解处理器：每添加一个 @Singleton
+                  都会在编译期由 micronaut-inject-java 生成对应的 $Definition 元数据。
+                  必须显式把该处理器放入 annotationProcessorPaths，否则运行期
+                  context.getBean(...) 会抛 NoSuchBeanDefinitionException。
+                -->
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>3.13.0</version>
+                <configuration>
+                    <release>11</release>
+                    <annotationProcessorPaths>
+                        <path>
+                            <groupId>io.micronaut</groupId>
+                            <artifactId>micronaut-inject-java</artifactId>
+                            <version>${micronaut.version}</version>
+                        </path>
+                    </annotationProcessorPaths>
                 </configuration>
             </plugin>
 

@@ -10,6 +10,9 @@ import java.nio.file.Path;
 
 import static org.slf4j.LoggerFactory.getLogger;
 
+import jakarta.inject.Singleton;
+
+@Singleton
 public class MyIO {
     private final Logger logger;
 
