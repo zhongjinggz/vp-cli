@@ -2,6 +2,9 @@ package plugins.vpcli.domain.outputmodel;
 
 import plugins.vpcli.domain.myuml.mydiagram.ProperMyDiagramElement;
 
+import jakarta.inject.Singleton;
+
+@Singleton
 public class PumlModelRelationshipContainerExporter extends PumlElementExporter {
 
 

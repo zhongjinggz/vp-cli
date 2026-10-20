@@ -10,6 +10,9 @@ import java.io.IOException;
 
 import static plugins.vpcli.drivingadapter.CLIParams.*;
 
+import jakarta.inject.Singleton;
+
+@Singleton
 public class CLIController {
     private static final org.slf4j.Logger logger =
         org.slf4j.LoggerFactory.getLogger(CLIController.class);

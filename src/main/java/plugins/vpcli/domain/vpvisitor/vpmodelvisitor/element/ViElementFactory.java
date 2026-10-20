@@ -7,6 +7,9 @@ import plugins.vpcli.domain.myuml.mycommon.MyElementFactoryFactory;
 
 import static com.vp.plugin.model.factory.IModelElementFactory.*;
 
+import jakarta.inject.Singleton;
+
+@Singleton
 public class ViElementFactory {
     protected final MyElementFactoryFactory myElementFactoryFactory;
 

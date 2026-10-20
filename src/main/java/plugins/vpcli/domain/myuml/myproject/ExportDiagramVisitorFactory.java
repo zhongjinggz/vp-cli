@@ -10,6 +10,9 @@ import plugins.vpcli.util.MyIO;
 
 import java.io.File;
 
+import jakarta.inject.Singleton;
+
+@Singleton
 public class ExportDiagramVisitorFactory implements ViElementVisitorFactory {
 
     private final MyProjectFactory myProjectFactory;

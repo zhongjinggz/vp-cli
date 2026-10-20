@@ -2,6 +2,9 @@ package plugins.vpcli.domain.outputmodel;
 
 import plugins.vpcli.domain.myuml.mydiagram.MyDiagram;
 
+import jakarta.inject.Singleton;
+
+@Singleton
 public class PumlDiagramFactory {
     private final PumlElementExporterFactory exporterFactory;
 

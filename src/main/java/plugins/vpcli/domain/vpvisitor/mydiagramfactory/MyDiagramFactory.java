@@ -9,10 +9,15 @@ import plugins.vpcli.domain.myuml.mydiagram.MyDiagram;
 
 import static org.slf4j.LoggerFactory.getLogger;
 
+import jakarta.inject.Inject;
+import jakarta.inject.Singleton;
+
+@Singleton
 public class MyDiagramFactory {
     private final Logger logger;
     private final MyDiagramElementFactory buildMyDiagramElement;
 
+    @Inject
     public MyDiagramFactory(
 //        MyDiagramCreator myDiagramCreator,
         MyDiagramElementFactory myDiagramElementFactory

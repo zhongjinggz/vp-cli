@@ -6,14 +6,19 @@ import plugins.vpcli.drivenadapter.VPProjectRepository;
 
 import static org.slf4j.LoggerFactory.getLogger;
 
+import jakarta.inject.Inject;
+import jakarta.inject.Singleton;
+
 // TODO extend MyElementFactory?
 // Singleton
 // 由于MyProjectFactory 被依赖注入机制保证了全局唯一，因此不用传统的基于静态属性的单例机制
+@Singleton
 public class MyProjectFactory {
     private final Logger logger;
 
     private final VPProjectRepository vpProjectRepository;
 
+    @Inject
     public MyProjectFactory(
         VPProjectRepository vpProjectRepository
 //        , MyElementTypeProject myElementTypeProject

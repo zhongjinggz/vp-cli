@@ -9,6 +9,9 @@ import plugins.vpcli.domain.myuml.myusecase.MyUseCaseFactory;
 
 import static com.vp.plugin.model.factory.IModelElementFactory.*;
 
+import jakarta.inject.Singleton;
+
+@Singleton
 public class MyElementFactoryFactory {
     // Map may be better than below fields
     private final MyPackageFactory myPackageFactory;

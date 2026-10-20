@@ -13,6 +13,9 @@ import java.util.List;
 
 import static plugins.vpcli.domain.myuml.mycommon.ElementType.*;
 
+import jakarta.inject.Singleton;
+
+@Singleton
 public class ExportService {
 
     private final VPProjectRepository getIProject;

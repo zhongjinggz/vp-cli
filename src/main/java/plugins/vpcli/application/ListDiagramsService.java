@@ -3,6 +3,9 @@ package plugins.vpcli.application;
 import com.vp.plugin.diagram.IDiagramUIModel;
 import plugins.vpcli.drivenadapter.VPProjectRepository;
 
+import jakarta.inject.Singleton;
+
+@Singleton
 public class ListDiagramsService {
     private final VPProjectRepository vpProjectRepository;
     public ListDiagramsService(VPProjectRepository vpProjectRepository) {

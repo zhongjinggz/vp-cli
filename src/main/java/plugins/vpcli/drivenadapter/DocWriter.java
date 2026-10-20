@@ -9,10 +9,15 @@ import java.io.IOException;
 
 import static org.slf4j.LoggerFactory.getLogger;
 
+import jakarta.inject.Inject;
+import jakarta.inject.Singleton;
+
+@Singleton
 public class DocWriter {
     private final Logger logger ;
     private final MyIO io;
 
+    @Inject
     public DocWriter(MyIO myIO) {
         this(myIO, getLogger(DocWriter.class));
     }

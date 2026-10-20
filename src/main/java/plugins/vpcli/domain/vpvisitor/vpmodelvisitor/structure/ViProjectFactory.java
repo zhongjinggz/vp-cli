@@ -3,6 +3,9 @@ package plugins.vpcli.domain.vpvisitor.vpmodelvisitor.structure;
 import com.vp.plugin.model.IProject;
 import plugins.vpcli.domain.vpvisitor.vpmodelvisitor.element.ViElementFactory;
 
+import jakarta.inject.Singleton;
+
+@Singleton
 public class ViProjectFactory {
 
     private final ViElementFactory viElementFactory;
