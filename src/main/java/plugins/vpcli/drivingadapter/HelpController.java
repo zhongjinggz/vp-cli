@@ -7,10 +7,9 @@ import com.vp.plugin.action.VPActionController;
 import javax.swing.*;
 
 // DOING
-// - 引入 Micronaut Inject?
+// - export: 使用全路径名作为包和classifier 的别名，以避免同名
 
 // TODO
-// - export: 使用全路径名作为包和classifier 的别名，以避免同名
 // - export: 重写生成图表的程序 - Association
 // - export: 重写生成图表的程序 - Dependency(various kinds of dependency)
 // - export: 重写生成图表的程序 - Stereotype/Keyword
@@ -33,6 +32,7 @@ import javax.swing.*;
 // - 补充建立目录时的各种异常情况
 
 // DONE
+// - 引入 Dagger 2 for DI
 // - 重构依赖注入：通过内部类，将若干工具或工程组织在一起，简化依赖注入(例如 IO)
 // - 清理 IDEA 警告
 // - remove redundant XxxCreator s
