@@ -12,7 +12,7 @@ public abstract class MyElementFactory {
 
     private MyElementPool elementPool;
     protected MyElementType myElementType;
-    protected MyElementTypeRepository myElementTypeRepository;
+//    protected MyElementTypeRepository myElementTypeRepository;
     private MyElementFactoryFactory factoryFactory;
 
     public MyElementFactory(

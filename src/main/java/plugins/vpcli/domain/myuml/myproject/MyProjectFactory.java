@@ -2,7 +2,6 @@ package plugins.vpcli.domain.myuml.myproject;
 
 import com.vp.plugin.model.IProject;
 import org.slf4j.Logger;
-import plugins.vpcli.domain.myuml.mycommon.MyElementTypeRepository;
 import plugins.vpcli.domain.myuml.mycommon.myelementtype.MyElementTypeProject;
 import plugins.vpcli.drivenadapter.VPProjectRepository;
 
