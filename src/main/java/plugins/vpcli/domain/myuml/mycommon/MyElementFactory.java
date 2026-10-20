@@ -107,7 +107,7 @@ public abstract class MyElementFactory {
         );
     }
 
-    public MyElementType getMyElementType() {
-        return myElementType;
-    }
+//    public MyElementType getMyElementType() {
+//        return myElementType;
+//    }
 }
