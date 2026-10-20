@@ -8,7 +8,6 @@ import plugins.vpcli.domain.myuml.myclassifier.MyClassFactory;
 import plugins.vpcli.domain.myuml.mycommon.MyElementFactoryFactory;
 import plugins.vpcli.domain.myuml.mycommon.MyElementPool;
 import plugins.vpcli.domain.myuml.mycommon.MyElementTypeRepository;
-//import plugins.vpcli.domain.myuml.mycommon.MyElementTypes;
 import plugins.vpcli.domain.myuml.mycommon.myelementtype.*;
 import plugins.vpcli.domain.myuml.mydiagram.MyDiagramCreator;
 import plugins.vpcli.domain.myuml.mymodelrelationshipcontainer.MyModelRelationshipContainerFactory;
@@ -95,7 +94,6 @@ public class BeanFactory {
     private MyElementTypePackage myElementTypePackage;
     private MyElementTypeModel myElementTypeModel;
     private MyElementTypeUseCase myElementTypeUseCase;
-    private MyElementTypeDiagram myElementTypeDiagram;
     private MyElementTypeAssociation myElementTypeAssociation;
     private MyElementTypeModelRelationshipContainer myElementTypeModelRelationshipContainer;
 
@@ -447,23 +445,6 @@ public class BeanFactory {
         return pumlUseCaseExporter;
     }
 
-    // MyElementType
-//    private MyElementTypes getMyElementTypes() {
-//        if (myElementTypes == null) {
-//            myElementTypes = new MyElementTypes(
-//                getMyElementTypeProject(),
-//                getMyElementTypeClass(),
-//                getMyElementTypePackage(),
-//                getMyElementTypeModel(),
-//                getMyElementTypeUseCase(),
-//                getMyElementTypeDiagram(),
-//                getMyElementTypeAssociation(),
-//                getMyElementTypeModeRelationshipContainer()
-//
-//            );
-//        }
-//        return myElementTypes;
-//    }
 
     private MyElementTypeProject getMyElementTypeProject() {
         if (myElementTypeProject == null) {
@@ -511,13 +492,6 @@ public class BeanFactory {
             myElementTypeUseCase.setMyElementFactory(getMyUseCaseFactory());
         }
         return myElementTypeUseCase;
-    }
-
-    private MyElementTypeDiagram getMyElementTypeDiagram() {
-        if (myElementTypeDiagram == null) {
-            myElementTypeDiagram = new MyElementTypeDiagram();
-        }
-        return myElementTypeDiagram;
     }
 
     private PumlElementExporterFactory getPumlElementExporterFactory() {
