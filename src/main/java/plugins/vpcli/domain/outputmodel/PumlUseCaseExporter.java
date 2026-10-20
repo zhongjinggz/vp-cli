@@ -5,7 +5,8 @@ import plugins.vpcli.domain.myuml.mycommon.myelementtype.MyElementTypeUseCase;
 import plugins.vpcli.domain.myuml.mydiagram.ProperMyDiagramElement;
 
 public class PumlUseCaseExporter extends PumlElementExporter {
-    public PumlUseCaseExporter(MyElementTypeRepository myElementTypeRepository
+    public PumlUseCaseExporter(
+        //MyElementTypeRepository myElementTypeRepository
 //        , PumlElementExporterFactory pumlElementExporterFactory
     ) {
 //        super(myElementTypeRepository, MyElementTypeUseCase.class

@@ -182,7 +182,8 @@ public class BeanFactory {
 
     private PumlModelRelationshipContainerExporter getPumlModelRelationshipContainerExporter() {
         if (pumlModelRelationshipContainerExporter == null) {
-            pumlModelRelationshipContainerExporter = new PumlModelRelationshipContainerExporter(getMyElementTypeRepository()
+            pumlModelRelationshipContainerExporter = new PumlModelRelationshipContainerExporter(
+                // getMyElementTypeRepository()
 //                , getPumlElementExporterFactory()
             );
         }
@@ -211,7 +212,8 @@ public class BeanFactory {
 
     private PumlAssociationExporter getPumlAssociationExporter() {
         if (pumlAssociationExporter == null) {
-            pumlAssociationExporter = new PumlAssociationExporter(getMyElementTypeRepository()
+            pumlAssociationExporter = new PumlAssociationExporter(
+//                getMyElementTypeRepository()
 //                , getPumlElementExporterFactory()
             );
         }
@@ -412,7 +414,8 @@ public class BeanFactory {
     // PumlElementExporter
     private PumlPackageExporter getPumlPackageExporter() {
         if (pumlPackageExporter == null) {
-            pumlPackageExporter = new PumlPackageExporter(getMyElementTypeRepository()
+            pumlPackageExporter = new PumlPackageExporter(
+                // getMyElementTypeRepository()
 //                , getPumlElementExporterFactory()
             );
         }
@@ -421,7 +424,8 @@ public class BeanFactory {
 
     private PumlClassExporter getPumlClassExporter() {
         if (pumlClassExporter == null) {
-            pumlClassExporter = new PumlClassExporter(getMyElementTypeRepository()
+            pumlClassExporter = new PumlClassExporter(
+//                getMyElementTypeRepository()
 //                , getPumlElementExporterFactory()
             );
         }
@@ -430,7 +434,8 @@ public class BeanFactory {
 
     private PumlModelExporter getPumlModelExporter() {
         if (pumlModelExporter == null) {
-            pumlModelExporter = new PumlModelExporter(getMyElementTypeRepository()
+            pumlModelExporter = new PumlModelExporter(
+                //getMyElementTypeRepository()
 //                , getPumlElementExporterFactory()
             );
         }
@@ -439,7 +444,8 @@ public class BeanFactory {
 
     private PumlUseCaseExporter getPumlUseCaseExporter() {
         if (pumlUseCaseExporter == null) {
-            pumlUseCaseExporter = new PumlUseCaseExporter(getMyElementTypeRepository()
+            pumlUseCaseExporter = new PumlUseCaseExporter(
+                // getMyElementTypeRepository()
 //                , getPumlElementExporterFactory()
             );
         }

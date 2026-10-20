@@ -5,7 +5,8 @@ import plugins.vpcli.domain.myuml.mycommon.myelementtype.MyElementTypeAssociatio
 import plugins.vpcli.domain.myuml.mydiagram.ProperMyDiagramElement;
 
 public class PumlAssociationExporter extends PumlElementExporter {
-    public PumlAssociationExporter(MyElementTypeRepository myElementTypeRepository
+    public PumlAssociationExporter(
+//        MyElementTypeRepository myElementTypeRepository
 //        , PumlElementExporterFactory pumlElementExporterFactory
     ) {
 //        super(myElementTypeRepository, MyElementTypeAssociation.class
