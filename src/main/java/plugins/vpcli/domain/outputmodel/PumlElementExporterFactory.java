@@ -27,6 +27,7 @@ public class PumlElementExporterFactory {
 
     private void register(ElementType elementType, PumlElementExporter exporter) {
         exporters.put(elementType, exporter);
+        exporter.setExporterFactory(this); // to build the bi-direction dependency
     }
 
     public PumlElementExporter of(ElementType elementType) {

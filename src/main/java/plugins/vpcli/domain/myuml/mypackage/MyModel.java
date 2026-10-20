@@ -11,6 +11,8 @@ public class MyModel extends MyPackage {
         MyElementType myElementtype,
         String description
     ) {
-        super(parent, id, name, myElementtype, description);
+        super(parent, id, name
+            , myElementtype
+            , description);
     }
 }

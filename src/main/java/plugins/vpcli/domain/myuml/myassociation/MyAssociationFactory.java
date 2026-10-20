@@ -26,7 +26,7 @@ public class MyAssociationFactory extends MyElementFactory {
             parent,
             vpElement.getId(),
             vpElement.getName(),
-            myElementType,
+//            myElementType,
             vpElement.getDescription()
         );
     }

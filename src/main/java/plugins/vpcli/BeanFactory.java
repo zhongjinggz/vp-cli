@@ -79,6 +79,7 @@ public class BeanFactory {
     private DocWriter docWriter;
 
     // PumlElementExporter
+    private PumlElementExporterFactory pumlElementExporterFactory;
     private PumlPackageExporter pumlPackageExporter;
     private PumlClassExporter pumlClassExporter;
     private PumlModelExporter pumlModelExporter;
@@ -135,7 +136,7 @@ public class BeanFactory {
     private MyProjectFactory getMyProjectFactory() {
         if (myProjectFactory == null) {
             myProjectFactory = new MyProjectFactory(
-                 getVPProjectRepository()
+                getVPProjectRepository()
                 , getMyElementTypeProject()
                 , getMyElementTypeRepository()
             );
@@ -148,7 +149,7 @@ public class BeanFactory {
             myElementFactoryFactory = new MyElementFactoryFactory(
 //                getMyProjectFactory()   // this will introduce dead loop
 //                , getMyDiagramFactory() // this will introduce dead loop
-                 getMyPackageFactory()
+                getMyPackageFactory()
                 , getMyClassFactory()
                 , getMyModelFactory()
                 , getMyUseCaseFactory()
@@ -183,7 +184,9 @@ public class BeanFactory {
 
     private PumlModelRelationshipContainerExporter getPumlModelRelationshipContainerExporter() {
         if (pumlModelRelationshipContainerExporter == null) {
-            pumlModelRelationshipContainerExporter = new PumlModelRelationshipContainerExporter(getMyElementTypeRepository());
+            pumlModelRelationshipContainerExporter = new PumlModelRelationshipContainerExporter(getMyElementTypeRepository()
+//                , getPumlElementExporterFactory()
+            );
         }
         return pumlModelRelationshipContainerExporter;
     }
@@ -210,7 +213,9 @@ public class BeanFactory {
 
     private PumlAssociationExporter getPumlAssociationExporter() {
         if (pumlAssociationExporter == null) {
-            pumlAssociationExporter = new PumlAssociationExporter(getMyElementTypeRepository());
+            pumlAssociationExporter = new PumlAssociationExporter(getMyElementTypeRepository()
+//                , getPumlElementExporterFactory()
+            );
         }
         return pumlAssociationExporter;
     }
@@ -301,7 +306,9 @@ public class BeanFactory {
 
     private PumlDiagramFactory getPumlFactory() {
         if (pumlDiagramFactory == null) {
-            pumlDiagramFactory = new PumlDiagramFactory(getPumlDiagramCreator());
+            pumlDiagramFactory = new PumlDiagramFactory(
+                getPumlDiagramCreator(),
+                getPumlElementExporterFactory());
         }
         return pumlDiagramFactory;
     }
@@ -406,28 +413,36 @@ public class BeanFactory {
     // PumlElementExporter
     private PumlPackageExporter getPumlPackageExporter() {
         if (pumlPackageExporter == null) {
-            pumlPackageExporter = new PumlPackageExporter(getMyElementTypeRepository());
+            pumlPackageExporter = new PumlPackageExporter(getMyElementTypeRepository()
+//                , getPumlElementExporterFactory()
+            );
         }
         return pumlPackageExporter;
     }
 
     private PumlClassExporter getPumlClassExporter() {
         if (pumlClassExporter == null) {
-            pumlClassExporter = new PumlClassExporter(getMyElementTypeRepository());
+            pumlClassExporter = new PumlClassExporter(getMyElementTypeRepository()
+//                , getPumlElementExporterFactory()
+            );
         }
         return pumlClassExporter;
     }
 
     private PumlModelExporter getPumlModelExporter() {
         if (pumlModelExporter == null) {
-            pumlModelExporter = new PumlModelExporter(getMyElementTypeRepository());
+            pumlModelExporter = new PumlModelExporter(getMyElementTypeRepository()
+//                , getPumlElementExporterFactory()
+            );
         }
         return pumlModelExporter;
     }
 
     private PumlUseCaseExporter getPumlUseCaseExporter() {
         if (pumlUseCaseExporter == null) {
-            pumlUseCaseExporter = new PumlUseCaseExporter(getMyElementTypeRepository());
+            pumlUseCaseExporter = new PumlUseCaseExporter(getMyElementTypeRepository()
+//                , getPumlElementExporterFactory()
+            );
         }
         return pumlUseCaseExporter;
     }
@@ -503,6 +518,20 @@ public class BeanFactory {
             myElementTypeDiagram = new MyElementTypeDiagram();
         }
         return myElementTypeDiagram;
+    }
+
+    private PumlElementExporterFactory getPumlElementExporterFactory() {
+        if (pumlElementExporterFactory == null) {
+            pumlElementExporterFactory = new PumlElementExporterFactory(
+                getPumlAssociationExporter(),
+                getPumlClassExporter(),
+                getPumlPackageExporter(),
+                getPumlModelExporter(),
+                getPumlModelRelationshipContainerExporter(),
+                getPumlUseCaseExporter()
+            );
+        }
+        return pumlElementExporterFactory;
     }
 
 

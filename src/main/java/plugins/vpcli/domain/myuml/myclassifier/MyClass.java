@@ -1,5 +1,6 @@
 package plugins.vpcli.domain.myuml.myclassifier;
 
+import plugins.vpcli.domain.myuml.mycommon.ElementType;
 import plugins.vpcli.domain.myuml.mycommon.MyElement;
 import plugins.vpcli.domain.myuml.mycommon.myelementtype.MyElementType;
 
@@ -21,7 +22,9 @@ public class MyClass extends MyElement {
         MyElementType myElementType,
         String description
     ) {
-        super(parent, id, name, myElementType, description);
+        super(parent, id, name, ElementType.CLASS
+//            , myElementType
+            , description);
         isAbstract = false;
 
     }

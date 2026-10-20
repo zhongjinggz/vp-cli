@@ -2,7 +2,6 @@ package plugins.vpcli.domain.vpvisitor.mydiagramfactory;
 
 import com.vp.plugin.diagram.IDiagramUIModel;
 import com.vp.plugin.diagram.IShapeUIModel;
-import com.vp.plugin.model.IModelElement;
 import org.slf4j.Logger;
 import plugins.vpcli.domain.myuml.mycommon.*;
 import plugins.vpcli.domain.myuml.mydiagram.MyDiagram;
@@ -14,7 +13,7 @@ public class MyDiagramFactory {
     private final Logger logger;
     private final MyDiagramElementFactory buildMyDiagramElement;
     private final MyDiagramCreator createMyDiagram;
-    private final MyElementTypes myElementTypes;
+//    private final MyElementTypes myElementTypes;
 
     public MyDiagramFactory(
         MyElementPool myElementPool
@@ -41,12 +40,14 @@ public class MyDiagramFactory {
 
         this.buildMyDiagramElement = myDiagramElementFactory;
         this.createMyDiagram = myDiagramCreator;
-        this.myElementTypes = myElementTypes;
+//        this.myElementTypes = myElementTypes;
         this.logger = logger;
     }
 
     public MyDiagram of(IDiagramUIModel vpDiagram, MyElement parentElement) {
-        MyDiagram result = createMyDiagram.from(parentElement, vpDiagram, myElementTypes.DIAGRAM);
+        MyDiagram result = createMyDiagram.from(parentElement, vpDiagram
+//            , myElementTypes.DIAGRAM
+        );
 
         var vpShape = vpDiagram.toShapeUIModelArray();
         if (vpShape != null) {

@@ -7,8 +7,12 @@ import plugins.vpcli.domain.myuml.mydiagram.ProperMyDiagramElement;
 public class PumlModelRelationshipContainerExporter extends PumlElementExporter {
 
 
-    public PumlModelRelationshipContainerExporter(MyElementTypeRepository myElementTypeRepository) {
-        super(myElementTypeRepository, MyElementTypeModelRelationshipContainer.class);
+    public PumlModelRelationshipContainerExporter(MyElementTypeRepository myElementTypeRepository
+//        , PumlElementExporterFactory pumlElementExporterFactory
+    ) {
+        super(myElementTypeRepository, MyElementTypeModelRelationshipContainer.class
+//            , pumlElementExporterFactory
+        );
     }
 
     public void to(PumlDiagram result, ProperMyDiagramElement myDiagramElement) {

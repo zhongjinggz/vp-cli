@@ -13,10 +13,13 @@ public abstract class MyElementFactory {
     private MyElementPool elementPool;
     protected MyElementType myElementType;
     protected MyElementTypeRepository myElementTypeRepository;
+    private MyElementFactoryFactory factoryFactory;
 
-    public MyElementFactory(MyElementPool myElementPool
-        , MyElementType myElementType
-        , MyElementTypeRepository myElementTypeRepository) {
+    public MyElementFactory(
+        MyElementPool myElementPool,
+        MyElementType myElementType,
+        MyElementTypeRepository myElementTypeRepository
+    ) {
         this(myElementPool
             , myElementType
             , myElementTypeRepository
@@ -24,10 +27,10 @@ public abstract class MyElementFactory {
     }
 
     // 仅用于单元测试，可注入 Logger
-    MyElementFactory(MyElementPool myElementPool
-        , MyElementType myElementType
-        , MyElementTypeRepository myElementTypeRepository
-        , Logger logger
+    MyElementFactory(MyElementPool myElementPool,
+                     MyElementType myElementType,
+                     MyElementTypeRepository myElementTypeRepository,
+                     Logger logger
     ) {
         this.elementPool = myElementPool;
         this.myElementType = myElementType;
@@ -41,18 +44,16 @@ public abstract class MyElementFactory {
         // Even though circle circle dependency is not a best practices in normal case,
         // but it is necessary here
         //this.myElementTypeRepository.register(this);
-        if (myElementType != null) {
-            myElementType.setMyElementFactory(this);
-        }
+//        if (myElementType != null) {
+//            myElementType.setMyElementFactory(this);
+//        }
 
 
     }
 
-    public MyElementFactory() {
-        this.logger = getLogger(MyElementFactory.class);
-    }
-
+    // set by MyElementFactoryFactory, by-direction navigation
     public void setFactoryFactory(MyElementFactoryFactory factoryFactory) {
+        this.factoryFactory = factoryFactory;
     }
 
     public abstract MyElement reallyCreate(MyElement parent, IModelElement vpElement);
@@ -69,12 +70,12 @@ public abstract class MyElementFactory {
             if (elementPool.contains(parentId)) {
                 myParentElement = elementPool.get(parentId);
             } else {
-                //var factory = factoryFactory.of(vpParentElement.getModelType());
+                var factory = factoryFactory.of(vpParentElement.getModelType());
 
                 // var factory = myElementType.getMyElementFactory();
-                var factory = myElementTypeRepository
-                    .findByVPModelType(vpParentElement.getModelType())
-                    .getMyElementFactory();
+//                var factory = myElementTypeRepository
+//                    .findByVPModelType(vpParentElement.getModelType())
+//                    .getMyElementFactory();
 
                 myParentElement = factory.of(vpParentElement);
             }

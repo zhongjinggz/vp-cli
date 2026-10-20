@@ -1,6 +1,7 @@
 package plugins.vpcli.domain.myuml.mypackage;
 
 import plugins.vpcli.domain.myuml.myclassifier.*;
+import plugins.vpcli.domain.myuml.mycommon.ElementType;
 import plugins.vpcli.domain.myuml.mycommon.MyElement;
 import plugins.vpcli.domain.myuml.mycommon.myelementtype.MyElementType;
 import plugins.vpcli.domain.myuml.myusecase.MyActor;
@@ -13,8 +14,16 @@ public class MyPackage extends MyElement {
     private boolean isSubpackage;
     private boolean isRectangle = false; // is System in reality, but systems are not a different type in puml , just a rectangle shape
 
-    public MyPackage(MyElement parent, String id, String name, MyElementType myElementtype, String description) {
-        super(parent, id, name, myElementtype, description);
+    public MyPackage(
+        MyElement parent,
+        String id,
+        String name,
+        MyElementType myElementtype,
+        String description
+    ) {
+        super(parent, id, name, ElementType.PACKAGE
+//            , myElementtype
+            , description);
 
     }
     public MyPackage(String packageName, boolean isSubpackage) {
@@ -22,6 +31,7 @@ public class MyPackage extends MyElement {
         this.isSubpackage = isSubpackage;
     }
 
+    // old
     public MyPackage(String packageName
         , List<MyClass> classes
         , List<MyPackage> subPackages

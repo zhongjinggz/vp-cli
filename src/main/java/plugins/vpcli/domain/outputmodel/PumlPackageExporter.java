@@ -6,8 +6,12 @@ import plugins.vpcli.domain.myuml.mydiagram.ProperMyDiagramElement;
 
 public class PumlPackageExporter extends PumlElementExporter {
 
-    public PumlPackageExporter(MyElementTypeRepository myElementTypeRepository) {
-       super(myElementTypeRepository, MyElementTypePackage.class);
+    public PumlPackageExporter(MyElementTypeRepository myElementTypeRepository
+//        , PumlElementExporterFactory pumlElementExporterFactory
+    ) {
+        super(myElementTypeRepository, MyElementTypePackage.class
+//            , pumlElementExporterFactory
+        );
     }
 
     @Override
@@ -15,7 +19,8 @@ public class PumlPackageExporter extends PumlElementExporter {
         var myElement = myDiagramElement.getModelElement();
         result.beginBlock("namespace " + myElement.getName());
         for (var aSubShape : myDiagramElement.getSubShapes()) {
-            var exporter = aSubShape.getModelElement().getMyElementType().getPumlElementExporter();
+//            var exporter = aSubShape.getModelElement().getMyElementType().getPumlElementExporter();
+            var exporter = pumlElementExporterFactory.of( aSubShape.getModelElement().getElementType());
             exporter.to(result, aSubShape);
         }
         result.endBlock();

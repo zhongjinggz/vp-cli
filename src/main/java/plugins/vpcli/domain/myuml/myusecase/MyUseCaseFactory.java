@@ -25,7 +25,7 @@ public class MyUseCaseFactory extends MyElementFactory {
             parent,
             vpElement.getId(),
             vpElement.getName(),
-            myElementType,
+//            myElementType,
             vpElement.getDescription()
         );
     }

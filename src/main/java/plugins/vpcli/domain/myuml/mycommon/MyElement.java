@@ -14,33 +14,40 @@ public class MyElement {
     private String description = "";
     private MyElementType myElementType;
     private List<String> stereotypes = new ArrayList<>();
+    private ElementType elementType;
 
     protected MyElement parentElement;
     protected final List<MyElement> subElements = new ArrayList<>();
 
+    // for new elements
     public MyElement(
         MyElement parentElement,
         String id,
         String name,
-        MyElementType myElementType,
+        ElementType elementType,
+//        MyElementType myElementType,
         String description
     ) {
         this.parentElement = parentElement;
         this.id = id;
         this.name = name;
         this.description = description;
-        this.myElementType = myElementType;
+        this.elementType = elementType;
+//        this.myElementType = myElementType;
         this.parentElement.addSubElement(this);
     }
 
+    // old
     public MyElement(String name) {
         this.name = name;
     }
 
-    public MyElement(String id, String name, MyElementType myElementType) {
+    //for MyProject
+    public MyElement(String id, String name, MyElementType myElementType, ElementType elementType) {
         this.id = id;
         this.name = name;
         this.myElementType = myElementType;
+        this.elementType = elementType;
     }
 
     public String getId() {
@@ -84,5 +91,9 @@ public class MyElement {
 
     public MyElement getParentElement() {
         return parentElement;
+    }
+
+    public ElementType getElementType() {
+        return elementType;
     }
 }
