@@ -7,6 +7,7 @@ import plugins.vpcli.domain.vpvisitor.vpmodelvisitor.visitor.ViElementVisitor;
 import plugins.vpcli.domain.vpvisitor.vpmodelvisitor.visitor.ViElementVisitorFactory;
 import plugins.vpcli.drivenadapter.DirMaker;
 import plugins.vpcli.drivenadapter.DocWriter;
+import plugins.vpcli.util.MyIO;
 
 import java.io.File;
 
@@ -17,6 +18,7 @@ public class ExportDiagramVisitorFactory implements ViElementVisitorFactory {
     private final MyDiagramFactory myDiagramFactory;
     private final PumlDiagramFactory pumlDiagramFactory;
     private final DocWriter docWriter;
+    private final MyIO myIO;
     private File rootDir;
 
     public ExportDiagramVisitorFactory(
@@ -24,13 +26,15 @@ public class ExportDiagramVisitorFactory implements ViElementVisitorFactory {
         MyProjectFactory myProjectFactory,
         MyDiagramFactory myDiagramFactory,
         PumlDiagramFactory pumlDiagramFactory,
-        DocWriter docWriter
+        DocWriter docWriter,
+        MyIO myIO
     ) {
         this.dirMaker = dirMaker;
         this.myProjectFactory = myProjectFactory;
         this.myDiagramFactory = myDiagramFactory;
         this.pumlDiagramFactory = pumlDiagramFactory;
         this.docWriter = docWriter;
+        this.myIO = myIO;
     }
 
     @Override
@@ -40,7 +44,9 @@ public class ExportDiagramVisitorFactory implements ViElementVisitorFactory {
             this.dirMaker,
             myDiagramFactory,
             pumlDiagramFactory,
-            docWriter);
+            docWriter,
+            myIO
+        );
 
     }
 

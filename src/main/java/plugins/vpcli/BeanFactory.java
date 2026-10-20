@@ -285,7 +285,8 @@ public class BeanFactory {
                 getMyProjectFactory(),
                 getMyDiagramFactory(),
                 getPumlFactory(),
-                getDocWriter()
+                getDocWriter(),
+                getMyIO()
             );
         }
         return exportDiagramVisitorCreator;
