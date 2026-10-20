@@ -27,7 +27,7 @@
 
         <jetbrains.annotations.version>26.1.0</jetbrains.annotations.version>
 
-        <micronaut.version>3.10.4</micronaut.version>
+        <dagger.version>2.60.1</dagger.version>
 
         <vp.sdk.dir>/Applications/Visual Paradigm.app/Contents/Resources/app/lib</vp.sdk.dir>
         <vp.sdk.version>1.0</vp.sdk.version>
@@ -129,39 +129,19 @@
         </dependency>
 
         <!--
-          Micronaut DI (3.x, JDK 11 compatible).
-          micronaut-core 提供运行期的 ApplicationContext / InjectionContext(pulls in
-          micronaut-inject runtime + javax.inject) ；micronaut-inject-java 仅供编译期
-          注解处理使用（provided，不会打进插件 zip 的 lib/）。
+          Dagger 2 依赖注入（编译期注解处理，JDK 11 兼容）。
+          dagger-annotations (jakarta.inject + javax.inject) 会随 dagger 传递进来；
+          dagger 运行时 jar 为 Java 8 字节码，可被 VP 进程的 JVM 加载。
+
+          迁移自 micronaut：Removed micronaut-core / micronaut-inject / micronaut-inject-java
+          及随其传递的 snakeyaml、jakarta.annotation-api、javax.annotation-api 依赖。
+          现有 bean 使用 jakarta.inject.* 注解，Dagger 2.60.x 原生支持，无需改动。
         -->
         <dependency>
-            <groupId>io.micronaut</groupId>
-            <artifactId>micronaut-core</artifactId>
-            <version>${micronaut.version}</version>
+            <groupId>com.google.dagger</groupId>
+            <artifactId>dagger</artifactId>
+            <version>${dagger.version}</version>
         </dependency>
-        <!--
-          micronaut-inject 的运行时库：ApplicationContext 在运行期需要它以及随它传递的
-          jakarta.inject-api（@Singleton/@Inject 注解类）、jakarta.annotation-api、
-          javax.annotation-api、snakeyaml、micronaut-aop。故把它声明为 compile，
-          使其落地到插件 zip 的 lib/（scope=runtime dependencySet 会收集 compile 依赖）。
-        -->
-        <dependency>
-            <groupId>io.micronaut</groupId>
-            <artifactId>micronaut-inject</artifactId>
-            <version>${micronaut.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>io.micronaut</groupId>
-            <artifactId>micronaut-inject-java</artifactId>
-            <version>${micronaut.version}</version>
-            <scope>provided</scope>
-        </dependency>
-        <!--        <dependency>-->
-        <!--            <groupId>org.junit.jupiter</groupId>-->
-        <!--            <artifactId>junit-jupiter</artifactId>-->
-        <!--            <version>5.12.0</version>-->
-        <!--            <scope>test</scope>-->
-        <!--        </dependency>-->
     </dependencies>
 
     <build>
@@ -196,10 +176,9 @@
 
             <plugin>
                 <!--
-                  Micronaut 依赖注入依赖编译期的注解处理器：每添加一个 @Singleton
-                  都会在编译期由 micronaut-inject-java 生成对应的 $Definition 元数据。
-                  必须显式把该处理器放入 annotationProcessorPaths，否则运行期
-                  context.getBean(...) 会抛 NoSuchBeanDefinitionException。
+                  Dagger 依赖注入依赖编译期的注解处理器：为 @Singleton/@Inject 装配树
+                  生成 DaggerXxxComponent，运行期零反射、零 classpath 扫描。
+                  通过 annotationProcessorPaths 引入 dagger-compiler（不参与运行）。
                 -->
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
@@ -208,9 +187,9 @@
                     <release>11</release>
                     <annotationProcessorPaths>
                         <path>
-                            <groupId>io.micronaut</groupId>
-                            <artifactId>micronaut-inject-java</artifactId>
-                            <version>${micronaut.version}</version>
+                            <groupId>com.google.dagger</groupId>
+                            <artifactId>dagger-compiler</artifactId>
+                            <version>${dagger.version}</version>
                         </path>
                     </annotationProcessorPaths>
                 </configuration>

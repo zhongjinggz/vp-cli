@@ -5,12 +5,14 @@ import plugins.vpcli.domain.myuml.mycommon.ElementType;
 import java.util.HashMap;
 import java.util.Map;
 
+import jakarta.inject.Inject;
 import jakarta.inject.Singleton;
 
 @Singleton
 public class PumlElementExporterFactory {
     private final Map<ElementType, PumlElementExporter> exporters = new HashMap<>();
 
+    @Inject
     public PumlElementExporterFactory(
         PumlAssociationExporter associationExporter,
         PumlClassExporter classExporter,

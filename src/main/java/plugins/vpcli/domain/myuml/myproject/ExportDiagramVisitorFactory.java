@@ -10,6 +10,7 @@ import plugins.vpcli.util.MyIO;
 
 import java.io.File;
 
+import jakarta.inject.Inject;
 import jakarta.inject.Singleton;
 
 @Singleton
@@ -22,6 +23,7 @@ public class ExportDiagramVisitorFactory implements ViElementVisitorFactory {
     private final MyIO myIO;
     private File rootDir;
 
+    @Inject
     public ExportDiagramVisitorFactory(
         MyProjectFactory myProjectFactory,
         MyDiagramFactory myDiagramFactory,

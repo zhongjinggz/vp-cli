@@ -6,6 +6,7 @@ import plugins.vpcli.domain.myuml.myproject.MyProjectFactory;
 import java.util.HashMap;
 import java.util.Map;
 
+import jakarta.inject.Inject;
 import jakarta.inject.Singleton;
 
 @Singleton
@@ -13,6 +14,7 @@ public class MyElementPool {
     private final MyProject myProject;
     private final Map<String, MyElement> pool = new HashMap<>();
 
+    @Inject
     public MyElementPool(MyProjectFactory getMyProject) {
         this.myProject = getMyProject.fromGlobal();
         pool.put(this.myProject.getId(), this.myProject);

@@ -10,17 +10,19 @@ import java.nio.file.Path;
 
 import static org.slf4j.LoggerFactory.getLogger;
 
+import jakarta.inject.Inject;
 import jakarta.inject.Singleton;
 
 @Singleton
 public class MyIO {
     private final Logger logger;
 
+    @Inject
     public MyIO() {
         this(getLogger(MyIO.class));
     }
 
-    public MyIO(Logger logger) {
+    private MyIO(Logger logger) {
         this.logger = logger;
     }
     public void writeFile(File parentDir, String fileName, String text) throws IOException {

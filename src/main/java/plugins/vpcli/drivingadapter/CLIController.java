@@ -10,6 +10,8 @@ import java.io.IOException;
 
 import static plugins.vpcli.drivingadapter.CLIParams.*;
 
+import jakarta.inject.Inject;
+import jakarta.inject.Inject;
 import jakarta.inject.Singleton;
 
 @Singleton
@@ -22,6 +24,7 @@ public class CLIController {
     private final ListDiagramsService listDiagramsService;
     private final MyIO myIO;
 
+    @Inject
     public CLIController(
         ExportService exportService,
         TreeService treeService,

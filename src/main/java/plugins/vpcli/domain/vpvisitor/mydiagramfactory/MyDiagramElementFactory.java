@@ -9,12 +9,14 @@ import plugins.vpcli.domain.myuml.mycommon.MyElementFactoryFactory;
 import plugins.vpcli.domain.myuml.mydiagram.*;
 import plugins.vpcli.domain.myuml.mydiagram.DiagramElementType;
 
+import jakarta.inject.Inject;
 import jakarta.inject.Singleton;
 
 @Singleton
 public class MyDiagramElementFactory {
     private final MyElementFactoryFactory myElementFactoryFactory;
 
+    @Inject
     public MyDiagramElementFactory(
         MyElementFactoryFactory myElementFactoryFactory
 //        , MyDiagramElementCreator myDiagramElementCreator

@@ -2,10 +2,12 @@ package plugins.vpcli.domain.outputmodel;
 
 import plugins.vpcli.domain.myuml.mydiagram.ProperMyDiagramElement;
 
+import jakarta.inject.Inject;
 import jakarta.inject.Singleton;
 
 @Singleton
 public class PumlClassExporter extends PumlElementExporter {
+    @Inject
     public PumlClassExporter(
 //        MyElementTypeRepository myElementTypeRepository
 //        , PumlElementExporterFactory pumlElementExporterFactory

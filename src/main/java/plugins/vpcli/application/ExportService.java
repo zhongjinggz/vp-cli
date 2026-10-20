@@ -13,6 +13,8 @@ import java.util.List;
 
 import static plugins.vpcli.domain.myuml.mycommon.ElementType.*;
 
+import jakarta.inject.Inject;
+import jakarta.inject.Inject;
 import jakarta.inject.Singleton;
 
 @Singleton
@@ -22,6 +24,7 @@ public class ExportService {
     private final ViProjectFactory createViProject;
     private final ExportDiagramVisitorFactory exportDiagramVisitorCreator;
 
+    @Inject
     public ExportService(VPProjectRepository vpProjectRepository,
                          ViProjectFactory viProjectFactory,
                          ExportDiagramVisitorFactory exportDiagramVisitorCreator

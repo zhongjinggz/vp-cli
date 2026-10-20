@@ -9,6 +9,7 @@ import plugins.vpcli.domain.myuml.myusecase.MyUseCaseFactory;
 
 import static com.vp.plugin.model.factory.IModelElementFactory.*;
 
+import jakarta.inject.Inject;
 import jakarta.inject.Singleton;
 
 @Singleton
@@ -21,6 +22,7 @@ public class MyElementFactoryFactory {
     private final MyAssociationFactory myAssociationFactory;
     private final MyModelRelationshipContainerFactory myModelRelationshipContainerFactory;
 
+    @Inject
     public MyElementFactoryFactory(
         MyPackageFactory myPackageFactory,
         MyClassFactory myClassFactory,

@@ -5,11 +5,13 @@ import plugins.vpcli.domain.myuml.mycommon.MyElement;
 import plugins.vpcli.domain.myuml.mycommon.MyElementFactory;
 import plugins.vpcli.domain.myuml.mycommon.MyElementPool;
 
+import jakarta.inject.Inject;
 import jakarta.inject.Singleton;
 
 @Singleton
 public class MyUseCaseFactory extends MyElementFactory {
 
+    @Inject
     public MyUseCaseFactory(
         MyElementPool myElementPool
 //        , MyElementTypeUseCase myElementType
