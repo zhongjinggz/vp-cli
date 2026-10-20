@@ -66,9 +66,9 @@ public class MyElement {
         this.name = name;
     }
 
-    public MyElementType getMyElementType() {
-        return myElementType;
-    }
+//    public MyElementType getMyElementType() {
+//        return myElementType;
+//    }
 
     public String getDescription() {
         return description;
