@@ -1,7 +1,7 @@
 package plugins.vpcli.application;
 
-import plugins.vpcli.domain.myuml.myproject.TreeVisitorCreator;
-import plugins.vpcli.domain.vpvisitor.vpmodelvisitor.structure.ViProjectCreator;
+import plugins.vpcli.domain.myuml.myproject.TreeVisitorFactory;
+import plugins.vpcli.domain.vpvisitor.vpmodelvisitor.structure.ViProjectFactory;
 import plugins.vpcli.drivenadapter.VPProjectRepository;
 
 import java.io.IOException;
@@ -12,22 +12,22 @@ import static plugins.vpcli.domain.myuml.mycommon.ElementType.*;
 public class TreeService {
 
     private final VPProjectRepository vpProjectRepository;
-    private final ViProjectCreator viProjectCreator;
-    private final TreeVisitorCreator treeVisitorCreator;
+    private final ViProjectFactory viProjectFactory;
+    private final TreeVisitorFactory treeVisitorCreator;
 
     public TreeService(VPProjectRepository vpProjectRepository
-        , ViProjectCreator viProjectCreator
-        , TreeVisitorCreator treeVisitorCreator) {
+        , ViProjectFactory viProjectFactory
+        , TreeVisitorFactory treeVisitorCreator) {
 
         this.vpProjectRepository = vpProjectRepository;
-        this.viProjectCreator = viProjectCreator;
+        this.viProjectFactory = viProjectFactory;
         this.treeVisitorCreator = treeVisitorCreator;
     }
 
     public void tree() throws IOException {
         var project = vpProjectRepository.fromVisualParadigm();
 
-        var viProject = viProjectCreator.of(project);
+        var viProject = viProjectFactory.of(project);
         viProject.setElementTypes(
             List.of(PACKAGE
                 , MODEL

@@ -27,112 +27,8 @@ public class VPCLI implements VPPlugin, VPPluginCommandLineSupport {
 
     private static final BeanFactory beanFactory = new BeanFactory();
 
-//    // Util
-//    private DirMaker dirMaker;
-//    private MyConsole myConsole;
-//
-//    // Factories
-//    private MyDiagramFactory myDiagramFactory;
-//    private WriterFactory writerFactory;
-//    private FileFactory fileFactory;
-//
-//
-//
-//    //private TreePrinter treePrinter;
-//    private TreeDirMaker treeDirMaker;
-//
-//    private ViProjectFactory viProjectFactory;
-//    private TreeElementVisitorFactory treeVisitorFactory;
-//    private MyDiagramElementFactory myDiagramElementFactory;
-//
-//    // Repositories
-//    private VPProjectRepository vpProjectRepository;
-//
-//
-//    // Domain Services
-//
-//    // Application Services
-//    private ExportService exportService;
-//    private TreeService treeService;
-//    private ListDiagramsService listDiagramsService;
-//
-//    // Driving Adapter
-//    private CLIController cliController;
-//    private ExportDiagramVisitorFactory exportVisitorFactory;
-//    private MyProjectFactory myProjectFactory;
-//    private MyElementFactory myElementFactory;
-//    private ViElementFactory viElementFactory;
-//    private VPToMyDiagramConverter vpToMyDiagramConverter;
-//    private MyDiagramToPumlConverter myDiagramToPumlConverter;
-//    private MyElementFactoryFactory myElementFactoryFactory;
-//
-//
-//    public VPCLI() {
-//        injectDependencies();
-//    }
 
     // TODO 优化依赖注入，按功能分开不同的控制器，只注入本次功能需要的依赖
-//    void injectDependencies() {
-//
-//        // Repository vs Factory
-//        // Repository: 已有的内容的存取（不含 new）
-//        // Factory: 从无到有创建（用 new）
-//
-//        // Util
-//        this.dirMaker = new DirMaker();
-//        this.myConsole = new MyConsole();
-//
-//        // Repository
-//        this.vpProjectRepository = new VPProjectRepository();
-//
-//        // Factory
-//        this.fileFactory = new FileFactory();
-//        this.myDiagramFactory = new MyDiagramFactory();
-//        this.writerFactory = new WriterFactory(this.fileFactory);
-//        this.treeDirMaker = new TreeDirMaker();
-//        this.myProjectFactory = new MyProjectFactory(vpProjectRepository);
-//        this.myElementFactoryFactory = new MyElementFactoryFactory();
-//        this.viElementFactory = new ViElementFactory(myElementFactoryFactory);
-//        this.myDiagramElementFactory = new MyDiagramElementFactory();
-//
-//        this.vpToMyDiagramConverter = new VPToMyDiagramConverter(myDiagramFactory, myDiagramElementFactory);
-//        this.myDiagramToPumlConverter = new MyDiagramToPumlConverter();
-//
-//
-//        this.viProjectFactory = new ViProjectFactory(viElementFactory);
-//        this.treeVisitorFactory = new TreeElementVisitorFactory();
-//        this.exportVisitorFactory = new ExportDiagramVisitorFactory(
-//            this.dirMaker,
-//            this.myDiagramFactory,
-//            this.writerFactory,
-//            this.myProjectFactory,
-//            this.vpToMyDiagramConverter,
-//            this.myDiagramToPumlConverter
-//        );
-//
-//        // Domain Services
-//
-//        // Application Services
-//        this.exportService = new ExportService(
-//            this.vpProjectRepository,
-//            this.viProjectFactory,
-//            this.exportVisitorFactory,
-//            this.myProjectFactory
-//        );
-//
-//        this.treeService = new TreeService(
-//            this.vpProjectRepository
-//            , this.viProjectFactory
-//            , this.treeVisitorFactory);
-//
-//        this.listDiagramsService = new ListDiagramsService(this.vpProjectRepository);
-//
-//        // Controller
-//        this.cliController = new CLIController(
-//            this.exportService
-//            , this.treeService
-//            , this.listDiagramsService, myConsole);
-//    }
 
     @Override
     public void loaded(VPPluginInfo pluginInfo) {
@@ -161,8 +57,6 @@ public class VPCLI implements VPPlugin, VPPluginCommandLineSupport {
         if (prod) {
             reloadLogbackConfiguration();
         }
-//        LOG.info("vpcli.log.profile={}, vpcli.log.dir={}",
-//            profile, System.getProperty("vpcli.log.dir"));
     }
 
     // 重读 classpath 上的 logback.xml 并重建 appender，使 FILE 采用最新的 vpcli.log.dir。

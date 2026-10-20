@@ -1,10 +1,10 @@
 package plugins.vpcli.application;
 
 import com.vp.plugin.model.IProject;
-import plugins.vpcli.domain.myuml.myproject.ExportDiagramVisitorCreator;
+import plugins.vpcli.domain.myuml.myproject.ExportDiagramVisitorFactory;
 import plugins.vpcli.domain.myuml.myproject.MyProjectFactory;
 import plugins.vpcli.domain.vpvisitor.vpmodelvisitor.structure.ViProject;
-import plugins.vpcli.domain.vpvisitor.vpmodelvisitor.structure.ViProjectCreator;
+import plugins.vpcli.domain.vpvisitor.vpmodelvisitor.structure.ViProjectFactory;
 import plugins.vpcli.drivenadapter.VPProjectRepository;
 
 import java.io.File;
@@ -16,17 +16,17 @@ import static plugins.vpcli.domain.myuml.mycommon.ElementType.*;
 public class ExportService {
 
     private final VPProjectRepository getIProject;
-    private final ViProjectCreator createViProject;
-    private final ExportDiagramVisitorCreator exportDiagramVisitorCreator;
+    private final ViProjectFactory createViProject;
+    private final ExportDiagramVisitorFactory exportDiagramVisitorCreator;
     private MyProjectFactory getMyProject;
 
     public ExportService(VPProjectRepository vpProjectRepository,
-                         ViProjectCreator viProjectCreator,
-                         ExportDiagramVisitorCreator exportDiagramVisitorCreator,
+                         ViProjectFactory viProjectFactory,
+                         ExportDiagramVisitorFactory exportDiagramVisitorCreator,
                          MyProjectFactory myProjectFactory) {
 
         this.getIProject = vpProjectRepository;
-        this.createViProject = viProjectCreator;
+        this.createViProject = viProjectFactory;
         this.exportDiagramVisitorCreator = exportDiagramVisitorCreator;
         this.getMyProject = myProjectFactory;
     }

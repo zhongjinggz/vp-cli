@@ -10,24 +10,23 @@ import plugins.vpcli.domain.myuml.mycommon.MyElementPool;
 import plugins.vpcli.domain.myuml.mymodelrelationshipcontainer.MyModelRelationshipContainerFactory;
 import plugins.vpcli.domain.myuml.mypackage.MyModelFactory;
 import plugins.vpcli.domain.myuml.mypackage.MyPackageFactory;
-import plugins.vpcli.domain.myuml.myproject.ExportDiagramVisitorCreator;
+import plugins.vpcli.domain.myuml.myproject.ExportDiagramVisitorFactory;
 import plugins.vpcli.domain.myuml.myproject.MyProjectFactory;
-import plugins.vpcli.domain.myuml.myproject.TreeVisitorCreator;
+import plugins.vpcli.domain.myuml.myproject.TreeVisitorFactory;
 import plugins.vpcli.domain.myuml.myusecase.MyUseCaseFactory;
 import plugins.vpcli.domain.outputmodel.*;
 import plugins.vpcli.domain.vpvisitor.mydiagramfactory.MyDiagramElementFactory;
 import plugins.vpcli.domain.vpvisitor.mydiagramfactory.MyDiagramFactory;
 import plugins.vpcli.domain.vpvisitor.vpmodelvisitor.element.ViElementFactory;
-import plugins.vpcli.domain.vpvisitor.vpmodelvisitor.structure.ViProjectCreator;
+import plugins.vpcli.domain.vpvisitor.vpmodelvisitor.structure.ViProjectFactory;
 import plugins.vpcli.drivenadapter.*;
 import plugins.vpcli.drivingadapter.CLIController;
 import plugins.vpcli.util.MyIO;
 
 
 public class BeanFactory {
-    // Repository vs Factory vs Creator:
-    // - Creator: 从无到有创建, 无逻辑，单纯 new
-    // - Factory: 从无到有创建, 有逻辑，无 new （调用 Creator 或其他 Factory）
+    // Repository vs Factory
+    // - Factory: 从无到有创建，一般有 new，或调用其他 Factory
     // - Repository: 已有的内容的存取（不含 new）
 
     // Util
@@ -35,16 +34,19 @@ public class BeanFactory {
     private MyConsole myConsole;
     private MyIO myIO;
 
-    private ViProjectCreator viProjectCreator;
-    private TreeVisitorCreator treeVisitorCreator;
-    private ExportDiagramVisitorCreator exportDiagramVisitorCreator;
 
     // Factories
+    private ViProjectFactory viProjectFactory;
     private ViElementFactory viElementFactory;
+
+    private TreeVisitorFactory treeVisitorCreator;
+    private ExportDiagramVisitorFactory exportDiagramVisitorCreator;
+
     private MyProjectFactory myProjectFactory;
-    private MyDiagramElementFactory myDiagramElementFactory;
-    private PumlDiagramFactory pumlDiagramFactory;
     private MyDiagramFactory myDiagramFactory;
+    private MyDiagramElementFactory myDiagramElementFactory;
+
+    private PumlDiagramFactory pumlDiagramFactory;
 
     // Abstract Factory Pattern: MyElementFactory
     private MyElementFactoryFactory myElementFactoryFactory;
@@ -234,11 +236,7 @@ public class BeanFactory {
     private MyDiagramFactory getMyDiagramFactory() {
         if (myDiagramFactory == null) {
             myDiagramFactory = new MyDiagramFactory(
-//                getMyElementPool(),
-//                getMyDiagramCreator(),
                 getMyDiagramElementFactory()
-//                , getMyElementTypes(),
-//                myElementTypeRepository
             );
         }
         return myDiagramFactory;
@@ -253,16 +251,16 @@ public class BeanFactory {
     }
 
 
-    private ViProjectCreator getViProjectFactory() {
-        if (viProjectCreator == null) {
-            viProjectCreator = new ViProjectCreator(getViElementFactory());
+    private ViProjectFactory getViProjectFactory() {
+        if (viProjectFactory == null) {
+            viProjectFactory = new ViProjectFactory(getViElementFactory());
         }
-        return viProjectCreator;
+        return viProjectFactory;
     }
 
-    private TreeVisitorCreator getTreeVisitorFactory() {
+    private TreeVisitorFactory getTreeVisitorFactory() {
         if (treeVisitorCreator == null) {
-            treeVisitorCreator = new TreeVisitorCreator();
+            treeVisitorCreator = new TreeVisitorFactory();
         }
         return treeVisitorCreator;
     }
@@ -281,9 +279,9 @@ public class BeanFactory {
         return myIO;
     }
 
-    private ExportDiagramVisitorCreator getExportDiagramVisitorFactory() {
+    private ExportDiagramVisitorFactory getExportDiagramVisitorFactory() {
         if (exportDiagramVisitorCreator == null) {
-            exportDiagramVisitorCreator = new ExportDiagramVisitorCreator(
+            exportDiagramVisitorCreator = new ExportDiagramVisitorFactory(
                 getDirMaker(),
                 getMyProjectFactory(),
                 getMyDiagramFactory(),

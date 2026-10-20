@@ -3,7 +3,7 @@ package plugins.vpcli.application;
 import com.vp.plugin.diagram.IDiagramUIModel;
 import plugins.vpcli.application.writers_old.*;
 import plugins.vpcli.domain.myuml.mydiagram_old.*;
-import plugins.vpcli.domain.vpvisitor.vpmodelvisitor.structure.ViProjectCreator;
+import plugins.vpcli.domain.vpvisitor.vpmodelvisitor.structure.ViProjectFactory;
 import plugins.vpcli.drivenadapter.FileCreator;
 import plugins.vpcli.drivenadapter.VPProjectRepository;
 import plugins.vpcli.util.UnfitForExportException;
@@ -19,21 +19,21 @@ public class ExportService_old {
     private final OldDiagramFactory myDiagramFactory;
     private final WriterCreator writerCreator;
     private final FileCreator fileCreator;
-    private final ViProjectCreator viProjectCreator;
+    private final ViProjectFactory viProjectFactory;
     //private final TreeDirMaker makeDir;
 
     public ExportService_old(VPProjectRepository vpProjectRepository
         , OldDiagramFactory myDiagramFactory
         , WriterCreator writerCreator
         , FileCreator fileCreator
-        , ViProjectCreator viProjectCreator
+        , ViProjectFactory viProjectFactory
         ) {
 
         this.vpProjectRepository = vpProjectRepository;
         this.myDiagramFactory = myDiagramFactory;
         this.writerCreator = writerCreator;
         this.fileCreator = fileCreator;
-        this.viProjectCreator = viProjectCreator;
+        this.viProjectFactory = viProjectFactory;
     }
 
     public void exportADiagram(IDiagramUIModel vpDiagram

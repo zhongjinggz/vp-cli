@@ -7,7 +7,7 @@ import plugins.vpcli.domain.myuml.mycommon.ElementType;
 import plugins.vpcli.domain.vpvisitor.vpmodelvisitor.element.ViElement;
 import plugins.vpcli.domain.vpvisitor.vpmodelvisitor.element.ViElementFactory;
 import plugins.vpcli.domain.vpvisitor.vpmodelvisitor.visitor.ViElementVisitor;
-import plugins.vpcli.domain.vpvisitor.vpmodelvisitor.visitor.ViElementVisitorCreator;
+import plugins.vpcli.domain.vpvisitor.vpmodelvisitor.visitor.ViElementVisitorFactory;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -17,7 +17,7 @@ public class ViProject {
     private final IProject project;
     private final ViElementFactory createElement;
     private final List<ElementType> elementTypes = new ArrayList<>();
-    private ViElementVisitorCreator createVisitor;
+    private ViElementVisitorFactory createVisitor;
 
     public ViProject(IProject vpProject
         , ViElementFactory elementFactory) {
@@ -30,7 +30,7 @@ public class ViProject {
         this.elementTypes.addAll(elementTypes);
     }
 
-    public void accept(ViElementVisitorCreator visitorCreator) throws IOException {
+    public void accept(ViElementVisitorFactory visitorCreator) throws IOException {
         this.createVisitor = visitorCreator;
         List<ViElement> elements = createTopLevelElements();
         ViElementVisitor rootVisitor = this.createVisitor.createRoot();
