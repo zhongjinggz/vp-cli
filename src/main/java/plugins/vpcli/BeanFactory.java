@@ -36,7 +36,6 @@ public class BeanFactory {
     private MyIO myIO;
 
     private ViProjectCreator viProjectCreator;
-    private PumlDiagramCreator pumlDiagramCreator;
     private TreeVisitorCreator treeVisitorCreator;
     private ExportDiagramVisitorCreator exportDiagramVisitorCreator;
 
@@ -248,17 +247,9 @@ public class BeanFactory {
     private PumlDiagramFactory getPumlFactory() {
         if (pumlDiagramFactory == null) {
             pumlDiagramFactory = new PumlDiagramFactory(
-                getPumlDiagramCreator(),
                 getPumlElementExporterFactory());
         }
         return pumlDiagramFactory;
-    }
-
-    private PumlDiagramCreator getPumlDiagramCreator() {
-        if (pumlDiagramCreator == null) {
-            pumlDiagramCreator = new PumlDiagramCreator();
-        }
-        return pumlDiagramCreator;
     }
 
 
