@@ -1,5 +1,5 @@
 package plugins.vpcli.domain.myuml.mycommon;
-import com.fasterxml.jackson.annotation.JsonInclude;
+//import com.fasterxml.jackson.annotation.JsonInclude;
 
 public class MyReference {
 	
@@ -7,14 +7,14 @@ public class MyReference {
  
 	private String type; // diagram, url, file, folder, shape, model
 	
-	@JsonInclude(JsonInclude.Include.NON_EMPTY)
+//	@JsonInclude(JsonInclude.Include.NON_EMPTY)
 	private String description; // description of reference
 	private String name; // file/folder name, diagram title, url link, model name
 	
-	@JsonInclude(JsonInclude.Include.NON_EMPTY)
+//	@JsonInclude(JsonInclude.Include.NON_EMPTY)
 	private String diagramType; // type of diagram, relevant when type is "diagram"
 	
-	@JsonInclude(JsonInclude.Include.NON_EMPTY)
+//	@JsonInclude(JsonInclude.Include.NON_EMPTY)
 	private String modelType; // type of model element, relevant when type is "model_element"
 
 	public MyReference(String type, String description, String name, String diagramType, String modelType) {

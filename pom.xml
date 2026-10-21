@@ -53,46 +53,46 @@
           rendering-related transitive deps (jlatexmath, elk, batik) are excluded
           to keep the plugin's lib/ folder matching that structure.
         -->
-<!--        <dependency>-->
-<!--            <groupId>net.sourceforge.plantuml</groupId>-->
-<!--            <artifactId>plantuml</artifactId>-->
-<!--            <version>${plantuml.version}</version>-->
-<!--            <exclusions>-->
-<!--                <exclusion>-->
-<!--                    <groupId>org.scilab.forge</groupId>-->
-<!--                    <artifactId>jlatexmath</artifactId>-->
-<!--                </exclusion>-->
-<!--                <exclusion>-->
-<!--                    <groupId>org.eclipse.elk</groupId>-->
-<!--                    <artifactId>org.eclipse.elk.core</artifactId>-->
-<!--                </exclusion>-->
-<!--                <exclusion>-->
-<!--                    <groupId>org.eclipse.elk</groupId>-->
-<!--                    <artifactId>org.eclipse.elk.alg.layered</artifactId>-->
-<!--                </exclusion>-->
-<!--                <exclusion>-->
-<!--                    <groupId>org.eclipse.elk</groupId>-->
-<!--                    <artifactId>org.eclipse.elk.alg.mrtree</artifactId>-->
-<!--                </exclusion>-->
-<!--            </exclusions>-->
-<!--        </dependency>-->
+        <!--        <dependency>-->
+        <!--            <groupId>net.sourceforge.plantuml</groupId>-->
+        <!--            <artifactId>plantuml</artifactId>-->
+        <!--            <version>${plantuml.version}</version>-->
+        <!--            <exclusions>-->
+        <!--                <exclusion>-->
+        <!--                    <groupId>org.scilab.forge</groupId>-->
+        <!--                    <artifactId>jlatexmath</artifactId>-->
+        <!--                </exclusion>-->
+        <!--                <exclusion>-->
+        <!--                    <groupId>org.eclipse.elk</groupId>-->
+        <!--                    <artifactId>org.eclipse.elk.core</artifactId>-->
+        <!--                </exclusion>-->
+        <!--                <exclusion>-->
+        <!--                    <groupId>org.eclipse.elk</groupId>-->
+        <!--                    <artifactId>org.eclipse.elk.alg.layered</artifactId>-->
+        <!--                </exclusion>-->
+        <!--                <exclusion>-->
+        <!--                    <groupId>org.eclipse.elk</groupId>-->
+        <!--                    <artifactId>org.eclipse.elk.alg.mrtree</artifactId>-->
+        <!--                </exclusion>-->
+        <!--            </exclusions>-->
+        <!--        </dependency>-->
 
         <!-- Jackson: JSON serialization for the semantics round-trip format -->
-        <dependency>
-            <groupId>com.fasterxml.jackson.core</groupId>
-            <artifactId>jackson-annotations</artifactId>
-            <version>${jackson.version}</version>
-        </dependency>
-<!--        <dependency>-->
-<!--            <groupId>com.fasterxml.jackson.core</groupId>-->
-<!--            <artifactId>jackson-core</artifactId>-->
-<!--            <version>${jackson.version}</version>-->
-<!--        </dependency>-->
-<!--        <dependency>-->
-<!--            <groupId>com.fasterxml.jackson.core</groupId>-->
-<!--            <artifactId>jackson-databind</artifactId>-->
-<!--            <version>${jackson.version}</version>-->
-<!--        </dependency>-->
+        <!--        <dependency>-->
+        <!--            <groupId>com.fasterxml.jackson.core</groupId>-->
+        <!--            <artifactId>jackson-annotations</artifactId>-->
+        <!--            <version>${jackson.version}</version>-->
+        <!--        </dependency>-->
+        <!--        <dependency>-->
+        <!--            <groupId>com.fasterxml.jackson.core</groupId>-->
+        <!--            <artifactId>jackson-core</artifactId>-->
+        <!--            <version>${jackson.version}</version>-->
+        <!--        </dependency>-->
+        <!--        <dependency>-->
+        <!--            <groupId>com.fasterxml.jackson.core</groupId>-->
+        <!--            <artifactId>jackson-databind</artifactId>-->
+        <!--            <version>${jackson.version}</version>-->
+        <!--        </dependency>-->
 
         <!-- Logging: SLF4J API + Logback backend.
              Dev 输出到 console，正式环境输出到插件安装目录下 log/，由系统属性
@@ -231,20 +231,20 @@
                 </executions>
             </plugin>
 
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-surefire-plugin</artifactId>
-                <version>3.2.5</version>
-                <configuration>
-                    <!--                    <systemPropertyVariables>-->
-                    <!--                        &lt;!&ndash; Allow ByteBuddy (used by Mockito inline mocking) to support-->
-                    <!--                             the newest JDKs (e.g. 24+), where it would otherwise refuse-->
-                    <!--                             to mock classes. This must be a forked-JVM system property,-->
-                    <!--                             not an argLine override, so JaCoCo's agent still attaches. &ndash;&gt;-->
-                    <!--                        <net.bytebuddy.experimental>true</net.bytebuddy.experimental>-->
-                    <!--                    </systemPropertyVariables>-->
-                </configuration>
-            </plugin>
+<!--            <plugin>-->
+<!--                <groupId>org.apache.maven.plugins</groupId>-->
+<!--                <artifactId>maven-surefire-plugin</artifactId>-->
+<!--                <version>3.2.5</version>-->
+<!--                <configuration>-->
+<!--                    <systemPropertyVariables>-->
+<!--                        &lt;!&ndash; Allow ByteBuddy (used by Mockito inline mocking) to support-->
+<!--                             the newest JDKs (e.g. 24+), where it would otherwise refuse-->
+<!--                             to mock classes. This must be a forked-JVM system property,-->
+<!--                             not an argLine override, so JaCoCo's agent still attaches. &ndash;&gt;-->
+<!--                        <net.bytebuddy.experimental>true</net.bytebuddy.experimental>-->
+<!--                    </systemPropertyVariables>-->
+<!--                </configuration>-->
+<!--            </plugin>-->
 
             <plugin>
                 <groupId>org.jacoco</groupId>
