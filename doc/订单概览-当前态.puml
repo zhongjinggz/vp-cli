@@ -17,11 +17,12 @@ namespace 领域模型 {
 
     }
 
-    class 用户 {
-    }
-
-    usecase 增加用户
 }
+
+class 用户 {
+}
+
+usecase 增加用户
 
 订单 "1..1" *-- "1..*" 订单项
 

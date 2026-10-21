@@ -84,4 +84,45 @@ public class MyElement {
     public ElementType getElementType() {
         return elementType;
     }
+
+    /**
+     * 全限定名：沿 parentElement 链收集各层名字，自上而下以 "." 连接。
+     * 跳过 PROJECT 根节点，因此顶层元素（如直接挂在 Project/Model 下的类、用例）
+     * 只包含自身名称。
+     */
+    public String getQualifiedName() {
+        StringBuilder sb = new StringBuilder();
+        collectQualifiedName(sb, this);
+        return sb.toString();
+    }
+
+    private static void collectQualifiedName(StringBuilder sb, MyElement element) {
+        if (element == null) {
+            return;
+        }
+        collectQualifiedName(sb, element.parentElement);
+        if (element.elementType != ElementType.PROJECT) {
+            if (element.name != null && !element.name.isEmpty()) {
+                if (sb.length() > 0) {
+                    sb.append('.');
+                }
+                sb.append(element.name);
+            }
+        }
+    }
+
+    /**
+     * PlantUML 别名：将全限定名各段清洗（仅保留各语言字母和数字，其余转 "_"）后，
+     * 以 "__" 连接（对应全限定名中的 "."），保证别名唯一、可与元素一一对应。
+     */
+    public String getPumlAlias() {
+        StringBuilder sb = new StringBuilder();
+        for (String segment : getQualifiedName().split("\\.")) {
+            if (sb.length() > 0) {
+                sb.append("__");
+            }
+            sb.append(segment.replaceAll("[^\\p{L}\\p{N}]", "_"));
+        }
+        return sb.toString();
+    }
 }
