@@ -1,9 +1,9 @@
 package plugins.vpcli.application.writers_old;
 
-import plugins.vpcli.domain.myuml.myactivity.MyAction;
-import plugins.vpcli.domain.myuml.myactivity.MyFlowNode;
-import plugins.vpcli.domain.myuml.myactivity.MyJoinFlowNode;
-import plugins.vpcli.domain.myuml.myactivity.MySplitFlowNode;
+import plugins.vpcli.domain.myuml_old.myactivity_old.MyAction;
+import plugins.vpcli.domain.myuml_old.myactivity_old.MyFlowNode;
+import plugins.vpcli.domain.myuml_old.myactivity_old.MyJoinFlowNode;
+import plugins.vpcli.domain.myuml_old.myactivity_old.MySplitFlowNode;
 import plugins.vpcli.domain.myuml.mycommon.MyNote;
 
 import java.io.File;

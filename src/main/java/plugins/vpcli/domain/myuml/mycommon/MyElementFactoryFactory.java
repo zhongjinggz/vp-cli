@@ -3,7 +3,7 @@ package plugins.vpcli.domain.myuml.mycommon;
 import plugins.vpcli.domain.myuml.myassociation.MyAssociationFactory;
 import plugins.vpcli.domain.myuml.myclassifier.MyClassFactory;
 import plugins.vpcli.domain.myuml.mymodelrelationshipcontainer.MyModelRelationshipContainerFactory;
-import plugins.vpcli.domain.myuml.mypackage.MyModelFactory;
+import plugins.vpcli.domain.myuml.mymodel.MyModelFactory;
 import plugins.vpcli.domain.myuml.mypackage.MyPackageFactory;
 import plugins.vpcli.domain.myuml.myusecase.MyUseCaseFactory;
 

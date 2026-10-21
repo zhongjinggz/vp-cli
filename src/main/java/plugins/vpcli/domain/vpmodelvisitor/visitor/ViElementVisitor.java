@@ -1,0 +1,33 @@
+package plugins.vpcli.domain.vpmodelvisitor.visitor;
+
+import plugins.vpcli.domain.vpmodelvisitor.element.*;
+
+import java.io.IOException;
+
+public abstract class ViElementVisitor {
+    protected final ViElementVisitor higherVisitor;
+    private boolean lastOrNot = false;
+
+    protected ViElementVisitor(ViElementVisitor higherVisitor) {
+        this.higherVisitor = higherVisitor;
+    }
+
+    public void setLast(boolean lastOrNot) {
+        this.lastOrNot = lastOrNot;
+    }
+
+    public boolean isLast() {
+        return lastOrNot;
+    }
+
+    abstract public void visit(ViDiagramAsElement element) throws IOException;
+
+    abstract public void visit(ViPackage element) ;
+
+    abstract public void visit(ViModel element) ;
+
+    abstract public void visit(ViClass element) ;
+
+    abstract public void visit(ViUseCase element) ;
+
+}

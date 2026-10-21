@@ -11,9 +11,9 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 
-import plugins.vpcli.domain.myuml.mydiagram_old.OldClassDiagram;
-import plugins.vpcli.domain.myuml.myclassifier.MyClass_old;
-import plugins.vpcli.domain.myuml.myclassifier.MyNary_old;
+import plugins.vpcli.domain.myuml_old.mydiagram_old.OldClassDiagram;
+import plugins.vpcli.domain.myuml_old.myclass_old.MyClass_old;
+import plugins.vpcli.domain.myuml_old.mynary_old.MyNary_old;
 import plugins.vpcli.domain.myuml.mypackage.MyPackage;
 import plugins.vpcli.domain.myuml.mycommon.MyRelationship;
 import plugins.vpcli.drivenadapter.FileCreator;

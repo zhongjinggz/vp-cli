@@ -11,6 +11,7 @@ import java.util.List;
 
 import org.junit.jupiter.api.Test;
 import plugins.vpcli.domain.myuml.mycommon.ElementType;
+import plugins.vpcli.domain.vpmodelvisitor.element.ViDiagramAsElement;
 
 class MyDiagramFactoryConverterAsElementTest {
 

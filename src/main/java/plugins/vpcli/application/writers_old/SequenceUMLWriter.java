@@ -14,11 +14,11 @@ import com.vp.plugin.ApplicationManager;
 
 import plugins.vpcli.domain.myuml.mycommon.MyNote;
 import plugins.vpcli.domain.myuml.mycommon.MyRelationship;
-import plugins.vpcli.domain.myuml.myinteraction.MyCombinedFragment;
-import plugins.vpcli.domain.myuml.myinteraction.MyInteractionRef;
-import plugins.vpcli.domain.myuml.myinteraction.MyLifeline;
-import plugins.vpcli.domain.myuml.myinteraction.MessageData;
-import plugins.vpcli.domain.myuml.myusecase.MyActor_old;
+import plugins.vpcli.domain.myuml_old.myinteraction_old.MyCombinedFragment;
+import plugins.vpcli.domain.myuml_old.myinteraction_old.MyInteractionRef;
+import plugins.vpcli.domain.myuml_old.myinteraction_old.MyLifeline;
+import plugins.vpcli.domain.myuml_old.myinteraction_old.MessageData;
+import plugins.vpcli.domain.myuml_old.myusecase_old.MyActor_old;
 
 public class SequenceUMLWriter extends PlantUMLWriter {
 

@@ -1,7 +1,7 @@
 package plugins.vpcli.application;
 
-import plugins.vpcli.domain.myuml.myproject.TreeVisitorFactory;
-import plugins.vpcli.domain.vpvisitor.vpmodelvisitor.structure.ViProjectFactory;
+import plugins.vpcli.domain.vpmodelvisitor.visitor.treevisitor.TreeVisitorFactory;
+import plugins.vpcli.domain.vpmodelvisitor.structure.ViProjectFactory;
 import plugins.vpcli.drivenadapter.VPProjectRepository;
 
 import java.io.IOException;

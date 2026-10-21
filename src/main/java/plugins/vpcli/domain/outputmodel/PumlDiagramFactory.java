@@ -4,6 +4,7 @@ import plugins.vpcli.domain.myuml.mydiagram.MyDiagram;
 
 import jakarta.inject.Inject;
 import jakarta.inject.Singleton;
+import plugins.vpcli.domain.outputmodel.pumelementexporter.PumlElementExporterFactory;
 
 @Singleton
 public class PumlDiagramFactory {

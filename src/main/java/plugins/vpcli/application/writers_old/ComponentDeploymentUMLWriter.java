@@ -8,15 +8,15 @@ import java.nio.file.Files;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import plugins.vpcli.domain.myuml.myclassifier.MyComponent_old;
-import plugins.vpcli.domain.myuml.myclassifier.MyComponent_old.PortData;
-import plugins.vpcli.domain.myuml.myclassifier.AttributeData;
-import plugins.vpcli.domain.myuml.myclassifier.MyClass_old;
-import plugins.vpcli.domain.myuml.myclassifier.MyOperation;
+import plugins.vpcli.domain.myuml_old.mycomponent_old.MyComponent_old;
+import plugins.vpcli.domain.myuml_old.mycomponent_old.MyComponent_old.PortData;
+import plugins.vpcli.domain.myuml_old.myclass_old.MyAttribute_old;
+import plugins.vpcli.domain.myuml_old.myclass_old.MyClass_old;
+import plugins.vpcli.domain.myuml_old.myclass_old.MyOperation_old;
 import plugins.vpcli.domain.myuml.mycommon.MyNote;
 import plugins.vpcli.domain.myuml.mypackage.MyPackage;
 import plugins.vpcli.domain.myuml.mycommon.MyRelationship;
-import plugins.vpcli.domain.myuml.mydeployment.MyArtifact_old;
+import plugins.vpcli.domain.myuml_old.mydeployment_old.MyArtifact_old;
 
 public class ComponentDeploymentUMLWriter extends PlantUMLWriter {
 
@@ -163,8 +163,8 @@ public class ComponentDeploymentUMLWriter extends PlantUMLWriter {
 		String name = formatName(myComponent.getName()) ;
 		String aliasDeclaration = formatAlias(myComponent.getName()).equals(myComponent.getName()) ? "" : (" as " + formatAlias(myComponent.getName()));
 
-		List<AttributeData> attributeData = myComponent.getAttributes();
-		List<MyOperation> operationData = myComponent.getOperations();
+		List<MyAttribute_old> attributeData = myComponent.getAttributes();
+		List<MyOperation_old> operationData = myComponent.getOperations();
 		boolean hasOpsAndAttrs = !attributeData.isEmpty() || !operationData.isEmpty();
 		if (hasOpsAndAttrs) {
 			// we will need to create a package to contain the component and the interface it will implement

@@ -3,6 +3,8 @@ package plugins.vpcli.domain.myuml.mypackage;
 import plugins.vpcli.domain.myuml.myclassifier.*;
 import plugins.vpcli.domain.myuml.mycommon.ElementType;
 import plugins.vpcli.domain.myuml.mycommon.MyElement;
+import plugins.vpcli.domain.myuml.mycomponent.MyComponent;
+import plugins.vpcli.domain.myuml.mynary.MyNary;
 import plugins.vpcli.domain.myuml.myusecase.MyActor;
 import plugins.vpcli.domain.myuml.myusecase.MyUseCase;
 

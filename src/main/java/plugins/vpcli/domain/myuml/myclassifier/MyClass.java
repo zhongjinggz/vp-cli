@@ -2,14 +2,16 @@ package plugins.vpcli.domain.myuml.myclassifier;
 
 import plugins.vpcli.domain.myuml.mycommon.ElementType;
 import plugins.vpcli.domain.myuml.mycommon.MyElement;
+import plugins.vpcli.domain.myuml_old.myclass_old.MyAttribute_old;
+import plugins.vpcli.domain.myuml_old.myclass_old.MyOperation_old;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class MyClass extends MyElement {
     private boolean isAbstract;
-    private List<AttributeData> attributes = new ArrayList<>();
-    private List<MyOperation> operations = new ArrayList<>();
+    private List<MyAttribute_old> attributes = new ArrayList<>();
+    private List<MyOperation_old> operations = new ArrayList<>();
 
     public MyClass(
         MyElement parent, String id,
@@ -22,27 +24,27 @@ public class MyClass extends MyElement {
 
     }
 
-    public void addAttribute(AttributeData attribute) {
+    public void addAttribute(MyAttribute_old attribute) {
         getAttributes().add(attribute);
     }
 
-    public void addOperation(MyOperation operation) {
+    public void addOperation(MyOperation_old operation) {
         getOperations().add(operation);
     }
 
-    public List<AttributeData> getAttributes() {
+    public List<MyAttribute_old> getAttributes() {
         return attributes;
     }
 
-    public void setAttributes(List<AttributeData> attributes) {
+    public void setAttributes(List<MyAttribute_old> attributes) {
         this.attributes = attributes;
     }
 
-    public List<MyOperation> getOperations() {
+    public List<MyOperation_old> getOperations() {
         return operations;
     }
 
-    public void setOperations(List<MyOperation> operations) {
+    public void setOperations(List<MyOperation_old> operations) {
         this.operations = operations;
     }
 

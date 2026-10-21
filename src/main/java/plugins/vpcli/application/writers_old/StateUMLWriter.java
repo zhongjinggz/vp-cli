@@ -1,11 +1,11 @@
 package plugins.vpcli.application.writers_old;
 
-import plugins.vpcli.domain.myuml.myactivity.MyForkJoin;
+import plugins.vpcli.domain.myuml_old.myactivity_old.MyForkJoin;
 import plugins.vpcli.domain.myuml.mycommon.MyNote;
 import plugins.vpcli.domain.myuml.mycommon.MyRelationship;
-import plugins.vpcli.domain.myuml.mystatemachine.MyHistory;
-import plugins.vpcli.domain.myuml.mystatemachine.MyStateChoice;
-import plugins.vpcli.domain.myuml.mystatemachine.MyState;
+import plugins.vpcli.domain.myuml_old.mystatemachine_old.MyHistory;
+import plugins.vpcli.domain.myuml_old.mystatemachine_old.MyStateChoice;
+import plugins.vpcli.domain.myuml_old.mystatemachine_old.MyState;
 
 import java.io.File;
 import java.io.IOException;

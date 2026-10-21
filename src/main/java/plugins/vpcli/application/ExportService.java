@@ -1,10 +1,9 @@
 package plugins.vpcli.application;
 
 import com.vp.plugin.model.IProject;
-import plugins.vpcli.domain.myuml.myproject.ExportDiagramVisitorFactory;
-import plugins.vpcli.domain.myuml.myproject.MyProjectFactory;
-import plugins.vpcli.domain.vpvisitor.vpmodelvisitor.structure.ViProject;
-import plugins.vpcli.domain.vpvisitor.vpmodelvisitor.structure.ViProjectFactory;
+import plugins.vpcli.domain.vpmodelvisitor.visitor.exportdiagramvisitor.ExportDiagramVisitorFactory;
+import plugins.vpcli.domain.vpmodelvisitor.structure.ViProject;
+import plugins.vpcli.domain.vpmodelvisitor.structure.ViProjectFactory;
 import plugins.vpcli.drivenadapter.VPProjectRepository;
 
 import java.io.File;
@@ -13,7 +12,6 @@ import java.util.List;
 
 import static plugins.vpcli.domain.myuml.mycommon.ElementType.*;
 
-import jakarta.inject.Inject;
 import jakarta.inject.Inject;
 import jakarta.inject.Singleton;
 

@@ -7,7 +7,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 
-import plugins.vpcli.domain.myuml.myusecase.MyActor_old;
+import plugins.vpcli.domain.myuml_old.myusecase_old.MyActor_old;
 import plugins.vpcli.domain.myuml.mycommon.MyNote;
 import plugins.vpcli.domain.myuml.mypackage.MyPackage;
 import plugins.vpcli.domain.myuml.mycommon.MyRelationship;

@@ -3,12 +3,15 @@ package plugins.vpcli.domain.myuml.mydiagram;
 import org.jetbrains.annotations.NotNull;
 import plugins.vpcli.domain.myuml.mycommon.ElementType;
 import plugins.vpcli.domain.myuml.mycommon.MyElement;
+import plugins.vpcli.domain.myuml.mydiagram.mydiagramelement.DiagramElementType;
+import plugins.vpcli.domain.myuml.mydiagram.mydiagramelement.MyDiagramElement;
+import plugins.vpcli.domain.myuml.mydiagram.mydiagramelement.ProperMyDiagramElement;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import static plugins.vpcli.domain.myuml.mydiagram.DiagramElementType.DIAGRAM;
+import static plugins.vpcli.domain.myuml.mydiagram.mydiagramelement.DiagramElementType.DIAGRAM;
 
 // 由于 Java 单继承的约束，MyDiagram 和 ProperMyDiagramElement 的代码略有重复，未来考虑是否要抽取
 public class MyDiagram extends MyElement implements MyDiagramElement {

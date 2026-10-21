@@ -5,9 +5,9 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import plugins.vpcli.domain.myuml.myclassifier.AttributeData;
+import plugins.vpcli.domain.myuml_old.myclass_old.MyAttribute_old;
 import plugins.vpcli.domain.myuml.mycommon.MyNote;
-import plugins.vpcli.domain.myuml.myclassifier.MyOperation;
+import plugins.vpcli.domain.myuml_old.myclass_old.MyOperation_old;
 
 public abstract class PlantUMLWriter {
     
@@ -77,8 +77,8 @@ public abstract class PlantUMLWriter {
         }
         return visibilityCharacter;
     }
-    protected void writeAttributesAndOperations(List<AttributeData> attributes, List<MyOperation> operations, String indent, StringBuilder classString) {
-        for (AttributeData attribute : attributes) {
+    protected void writeAttributesAndOperations(List<MyAttribute_old> attributes, List<MyOperation_old> operations, String indent, StringBuilder classString) {
+        for (MyAttribute_old attribute : attributes) {
             String visibilityChar = writeVisibility(attribute.getVisibility());
 
             classString.append(indent).append("\t").append(visibilityChar).append(" ");
@@ -95,7 +95,7 @@ public abstract class PlantUMLWriter {
         }
 
         // Add operations
-        for (MyOperation operation : operations) {
+        for (MyOperation_old operation : operations) {
             String visibilityChar = writeVisibility(operation.getVisibility());
 
             classString.append(indent).append("\t").append(visibilityChar);
@@ -107,9 +107,9 @@ public abstract class PlantUMLWriter {
             classString.append(operation.getName()).append("(");
 
             // Add parameters
-            List<MyOperation.Parameter> parameters = operation.getParameters();
+            List<MyOperation_old.Parameter> parameters = operation.getParameters();
             for (int i = 0; i < parameters.size(); i++) {
-                MyOperation.Parameter param = parameters.get(i);
+                MyOperation_old.Parameter param = parameters.get(i);
 
                 classString.append(param.getName());
 
