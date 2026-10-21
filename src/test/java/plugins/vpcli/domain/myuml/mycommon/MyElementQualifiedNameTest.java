@@ -11,7 +11,7 @@ import plugins.vpcli.domain.myuml.myusecase.MyUseCase;
 
 class MyElementQualifiedNameTest {
 
-    // 构建与 doc/订单概览-目标态.puml 对应的模型树，返回被引用节点
+    // 构建与 doc/订单概览-目标态.puml 对应的模型树
     private static class Tree {
         MyProject root;
         MyModel model;
@@ -62,21 +62,8 @@ class MyElementQualifiedNameTest {
     }
 
     @Test
-    void shouldBuildPumlAliasFromQualifiedName() {
-        Tree t = buildModelTree(false);
-        assertEquals("领域模型", t.model.getPumlAlias());
-        assertEquals("领域模型__订单", t.orderPkg.getPumlAlias());
-        assertEquals("领域模型__订单__订单", t.orderClass.getPumlAlias());
-        assertEquals("领域模型__订单__产品__产品", t.productClass.getPumlAlias());
-        // 顶层
-        assertEquals("用户", t.userClass.getPumlAlias());
-        assertEquals("增加用户", t.addUserUseCase.getPumlAlias());
-    }
-
-    @Test
-    void shouldSanitizeNonLetterDigitCharactersPerSegment() {
+    void shouldKeepNonLetterDigitsInQualifiedName() {
         Tree t = buildModelTree(true);
         assertEquals("领域模型.A-B C", t.specialNameClass.getQualifiedName());
-        assertEquals("领域模型__A_B_C", t.specialNameClass.getPumlAlias());
     }
 }

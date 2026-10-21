@@ -110,19 +110,4 @@ public class MyElement {
             }
         }
     }
-
-    /**
-     * PlantUML 别名：将全限定名各段清洗（仅保留各语言字母和数字，其余转 "_"）后，
-     * 以 "__" 连接（对应全限定名中的 "."），保证别名唯一、可与元素一一对应。
-     */
-    public String getPumlAlias() {
-        StringBuilder sb = new StringBuilder();
-        for (String segment : getQualifiedName().split("\\.")) {
-            if (sb.length() > 0) {
-                sb.append("__");
-            }
-            sb.append(segment.replaceAll("[^\\p{L}\\p{N}]", "_"));
-        }
-        return sb.toString();
-    }
 }

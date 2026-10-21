@@ -9,17 +9,11 @@ import plugins.vpcli.domain.outputmodel.PumlDiagram;
 @Singleton
 public class PumlUseCaseExporter extends PumlElementExporter {
     @Inject
-    public PumlUseCaseExporter(
-        //MyElementTypeRepository myElementTypeRepository
-//        , PumlElementExporterFactory pumlElementExporterFactory
-    ) {
-//        super(myElementTypeRepository, MyElementTypeUseCase.class
-////            , pumlElementExporterFactory
-//        );
+    public PumlUseCaseExporter() {
     }
 
     public void to(PumlDiagram result, ProperMyDiagramElement myDiagramElement) {
         var myElement = myDiagramElement.getModelElement();
-        result.writeTerminalElement("usecase \"" + myElement.getName() + "\" as " + myElement.getPumlAlias());
+        result.writeTerminalElement("usecase \"" + myElement.getName() + "\" as " + getPumlAlias(myElement));
     }
 }
