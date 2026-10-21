@@ -1,6 +1,6 @@
 package plugins.vpcli.domain.myuml_old.mynary_old;
 
-import plugins.vpcli.domain.myuml.mycommon.MyElement_old;
+import plugins.vpcli.domain.myuml_old.mycommon_old.MyElement_old;
 
 public class MyNary_old extends MyElement_old {
     private final String name;

@@ -7,44 +7,44 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.junit.jupiter.api.Test;
 
-class ElementTypeTest {
+class MyElementTypeTest {
 
     @Test
     void shouldResolveModelElementByType() {
-        ElementType t = ElementType.of(ElementType.CLASS.getVPModelType());
-        assertEquals(ElementType.CLASS, t);
+        MyElementType t = MyElementType.of(MyElementType.CLASS.getVPModelType());
+        assertEquals(MyElementType.CLASS, t);
     }
 
     @Test
     void shouldResolveDiagramByType() {
-        ElementType t = ElementType.of(ElementType.DIAGRAM.getVPModelType());
-        assertEquals(ElementType.DIAGRAM, t);
+        MyElementType t = MyElementType.of(MyElementType.DIAGRAM.getVPModelType());
+        assertEquals(MyElementType.DIAGRAM, t);
     }
 
     @Test
     void shouldReturnNullWhenNoTypeMatches() {
-        assertNull(ElementType.of("no-such-type"));
+        assertNull(MyElementType.of("no-such-type"));
     }
 
     @Test
     void shouldReturnNullWhenKindMismatchOnMatchingType() {
-        assertNull(ElementType.of("unknown-type"));
+        assertNull(MyElementType.of("unknown-type"));
     }
 
     @Test
     void shouldExposeSuffix() {
-        assertEquals(".class", ElementType.CLASS.getSuffix());
+        assertEquals(".class", MyElementType.CLASS.getSuffix());
     }
 
     @Test
     void shouldExposeVpModelType() {
-        assertEquals(ElementType.CLASS.getVPModelType(), ElementType.CLASS.getVPModelType());
+        assertEquals(MyElementType.CLASS.getVPModelType(), MyElementType.CLASS.getVPModelType());
     }
 
     @Test
     void shouldMatchVpModelType() {
-        assertTrue(ElementType.CLASS.vpModelTypeIs(ElementType.CLASS.getVPModelType()));
-        assertFalse(ElementType.CLASS.vpModelTypeIs("nothing"));
+        assertTrue(MyElementType.CLASS.vpModelTypeIs(MyElementType.CLASS.getVPModelType()));
+        assertFalse(MyElementType.CLASS.vpModelTypeIs("nothing"));
     }
 
 }

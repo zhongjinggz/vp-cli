@@ -1,17 +1,19 @@
 package plugins.vpcli.domain.myuml.mymodel;
 
 import plugins.vpcli.domain.myuml.mycommon.MyElement;
+import plugins.vpcli.domain.myuml.mycommon.MyStereotype;
 import plugins.vpcli.domain.myuml.mypackage.MyPackage;
+
+import java.util.List;
 
 public class MyModel extends MyPackage {
     public MyModel(
         MyElement parent,
         String id,
         String name,
-        String description
+        String description,
+        List<MyStereotype> stereotypes
     ) {
-        super(parent, id, name
-            ,
-            description);
+        super(parent, id, name, description, stereotypes);
     }
 }

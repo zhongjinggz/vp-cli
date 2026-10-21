@@ -1,8 +1,9 @@
 package plugins.vpcli.domain.myuml.mypackage;
 
 import plugins.vpcli.domain.myuml.myclassifier.*;
-import plugins.vpcli.domain.myuml.mycommon.ElementType;
+import plugins.vpcli.domain.myuml.mycommon.MyElementType;
 import plugins.vpcli.domain.myuml.mycommon.MyElement;
+import plugins.vpcli.domain.myuml.mycommon.MyStereotype;
 import plugins.vpcli.domain.myuml.mycomponent.MyComponent;
 import plugins.vpcli.domain.myuml.mynary.MyNary;
 import plugins.vpcli.domain.myuml.myusecase.MyActor;
@@ -19,11 +20,12 @@ public class MyPackage extends MyElement {
         MyElement parent,
         String id,
         String name,
-        String description
+        String description,
+        List<MyStereotype> stereotypes
     ) {
-        super(parent, id, name, ElementType.PACKAGE , description);
-
+        super(parent, id, name, MyElementType.PACKAGE, description, stereotypes);
     }
+
     public MyPackage(String packageName, boolean isSubpackage) {
         super(packageName);
         this.isSubpackage = isSubpackage;

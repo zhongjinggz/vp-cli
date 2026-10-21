@@ -7,26 +7,26 @@ import plugins.vpcli.domain.myuml.mycommon.MyElementPool;
 
 import jakarta.inject.Inject;
 import jakarta.inject.Singleton;
+import plugins.vpcli.domain.myuml.mycommon.MyStereotype;
+
+import java.util.List;
 
 @Singleton
 public class MyModelFactory extends MyElementFactory {
 
     @Inject
-    public MyModelFactory(MyElementPool myElementPool
-//        , MyElementTypeModel myElementType
-//        , MyElementTypeRepository myElementTypeRepository
-    ) {
-        super(myElementPool
-        );
+    public MyModelFactory(MyElementPool myElementPool ) {
+        super(myElementPool);
     }
 
     @Override
-    public MyElement reallyCreate(MyElement parent, IModelElement vpElement) {
+    public MyElement reallyCreate(MyElement parent, IModelElement vpElement, List<MyStereotype> myStereotypes) {
         return new MyModel(
             parent,
             vpElement.getId(),
             vpElement.getName(),
-            vpElement.getDescription()
+            vpElement.getDescription(),
+            myStereotypes
         );
     }
 }

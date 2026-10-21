@@ -9,10 +9,10 @@ import java.util.Objects;
 
 public class MyElement {
     private String id = "";
-    private String name ;
+    private String name;
     private String description = "";
-    private final List<String> stereotypes = new ArrayList<>();
-    private ElementType elementType;
+    private final List<MyStereotype> stereotypes = new ArrayList<>();
+    private MyElementType myElementType;
 
     protected MyElement parentElement;
     protected final List<MyElement> subElements = new ArrayList<>();
@@ -22,15 +22,17 @@ public class MyElement {
         MyElement parentElement,
         String id,
         String name,
-        ElementType elementType,
-        String description
+        MyElementType myElementType,
+        String description,
+        List<MyStereotype> stereotypes
     ) {
         this.parentElement = parentElement;
         this.id = id;
         this.name = name;
         this.description = description;
-        this.elementType = elementType;
+        this.myElementType = myElementType;
         this.parentElement.addSubElement(this);
+        this.stereotypes.addAll(stereotypes);
     }
 
     // old
@@ -39,11 +41,10 @@ public class MyElement {
     }
 
     //for MyProject
-    public MyElement(String id, String name, ElementType elementType) {
+    public MyElement(String id, String name, MyElementType myElementType) {
         this.id = id;
         this.name = name;
-//        this.myElementType = myElementType;
-        this.elementType = elementType;
+        this.myElementType = myElementType;
     }
 
     public String getId() {
@@ -81,8 +82,12 @@ public class MyElement {
         }
     }
 
-    public ElementType getElementType() {
-        return elementType;
+    public MyElementType getElementType() {
+        return myElementType;
+    }
+
+    public List<MyStereotype> getStereotypes() {
+        return Collections.unmodifiableList(stereotypes);
     }
 
     /**
@@ -96,12 +101,16 @@ public class MyElement {
         return sb.toString();
     }
 
+    public void addStereotype(MyStereotype stereotype) {
+        this.stereotypes.add(stereotype);
+    }
+
     private static void collectQualifiedName(StringBuilder sb, MyElement element) {
         if (element == null) {
             return;
         }
         collectQualifiedName(sb, element.parentElement);
-        if (element.elementType != ElementType.PROJECT) {
+        if (element.myElementType != MyElementType.PROJECT) {
             if (element.name != null && !element.name.isEmpty()) {
                 if (sb.length() > 0) {
                     sb.append('.');

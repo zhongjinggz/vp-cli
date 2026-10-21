@@ -1,49 +1,51 @@
 package plugins.vpcli.domain.myuml.myusecase;
 
-import plugins.vpcli.domain.myuml.mycommon.ElementType;
+import plugins.vpcli.domain.myuml.mycommon.MyElementType;
 import plugins.vpcli.domain.myuml.mycommon.MyElement;
+import plugins.vpcli.domain.myuml.mycommon.MyStereotype;
 
 import java.util.List;
 
 public class MyUseCase extends MyElement {
-	private List<String> stereotypes;
-	private boolean isInPackage;
-	private boolean isBusiness;
-	private String Uid;
+    private List<String> stereotypes;
+    private boolean isInPackage;
+    private boolean isBusiness;
+    private String Uid;
 
 
-	public MyUseCase(MyElement parent, String id, String name
-//		, MyElementType myElementType
-		, String Description) {
-        super(parent, id, name, ElementType.USE_CASE
-//			, myElementType
-			, Description);
-	}
-	public List<String> getStereotypes() {
-		return stereotypes;
-	}
+    public MyUseCase(
+        MyElement parent,
+        String id,
+        String name,
+        String Description,
+        List<MyStereotype> stereotypes) {
+        super(parent, id, name, MyElementType.USE_CASE
+            , Description, stereotypes);
+    }
 
-	public void setStereotypes(List<String> stereotypes) {
-		this.stereotypes = stereotypes;
-	}
+    public void setStereotypes(List<String> stereotypes) {
+        this.stereotypes = stereotypes;
+    }
 
 
-	public boolean isInPackage() {
-		return isInPackage;
-	}
+    public boolean isInPackage() {
+        return isInPackage;
+    }
 
-	public void setInPackage(boolean isInPackage) {
-		this.isInPackage = isInPackage;
-	}
-	public boolean isBusiness() {
-		return isBusiness;
-	}
-	public void setBusiness(boolean isBusiness) {
-		this.isBusiness = isBusiness;
-	}
+    public void setInPackage(boolean isInPackage) {
+        this.isInPackage = isInPackage;
+    }
+
+    public boolean isBusiness() {
+        return isBusiness;
+    }
+
+    public void setBusiness(boolean isBusiness) {
+        this.isBusiness = isBusiness;
+    }
 
     public String getUid() {
-		return  Uid;
+        return Uid;
     }
 
     public void setUid(String uid) {

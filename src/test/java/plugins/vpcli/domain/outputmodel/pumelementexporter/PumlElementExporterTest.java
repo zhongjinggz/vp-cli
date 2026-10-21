@@ -2,12 +2,16 @@ package plugins.vpcli.domain.outputmodel.pumelementexporter;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.junit.jupiter.api.Test;
 import plugins.vpcli.domain.myuml.myclassifier.MyClass;
 import plugins.vpcli.domain.myuml.mydiagram.DiagramType;
 import plugins.vpcli.domain.myuml.mydiagram.MyDiagram;
 import plugins.vpcli.domain.myuml.mydiagram.mydiagramelement.ProperMyDiagramElement;
 import plugins.vpcli.domain.myuml.mycommon.MyElement;
+import plugins.vpcli.domain.myuml.mycommon.MyStereotype;
 import plugins.vpcli.domain.myuml.mymodel.MyModel;
 import plugins.vpcli.domain.myuml.mypackage.MyPackage;
 import plugins.vpcli.domain.myuml.myproject.MyProject;
@@ -16,14 +20,15 @@ import plugins.vpcli.domain.outputmodel.PumlDiagram;
 
 class PumlElementExporterTest {
 
+    private static final List<MyStereotype> stereotypes = new ArrayList<>();
     private static final DiagramType CLASS = DiagramType.CLASS;
 
     // 构造根：Project 下挂 Model，Model 下挂订单包，验证全限定别名
     private MyProject buildRoot() {
         MyProject root = new MyProject("p", "我的项目");
-        MyModel model = new MyModel(root, "m", "领域模型", "");
-        MyPackage orderPkg = new MyPackage(model, "pk1", "订单", "");
-        new MyClass(orderPkg, "c1", "订单", "");
+        MyModel model = new MyModel(root, "m", "领域模型", "", stereotypes);
+        MyPackage orderPkg = new MyPackage(model, "pk1", "订单", "", stereotypes);
+        new MyClass(orderPkg, "c1", "订单", "", stereotypes);
         return root;
     }
 
@@ -86,7 +91,7 @@ class PumlElementExporterTest {
     @Test
     void shouldEmitUseCaseWithAlias() {
         MyProject root = new MyProject("p", "我的项目");
-        MyUseCase useCase = new MyUseCase(root, "u1", "增加用户", "");
+        MyUseCase useCase = new MyUseCase(root, "u1", "增加用户", "", stereotypes);
 
         PumlDiagram diagram = newDiagram();
         new PumlUseCaseExporter().to(diagram, wrap(useCase));
@@ -97,7 +102,7 @@ class PumlElementExporterTest {
     @Test
     void shouldKeepSimpleNameAsAliasWhenTopLevel() {
         MyProject root = new MyProject("p", "我的项目");
-        MyClass userClass = new MyClass(root, "c4", "用户", "");
+        MyClass userClass = new MyClass(root, "c4", "用户", "", stereotypes);
 
         PumlDiagram diagram = newDiagram();
         new PumlClassExporter().to(diagram, wrap(userClass));

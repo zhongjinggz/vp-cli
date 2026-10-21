@@ -78,7 +78,7 @@ public class HelpController implements VPActionController {
             "    vp-tree -project <project name.vpp>\n";
 
         String changeLog = "Change Log:\n" +
-            " qualifier name - 17:43";
+            " add stereotypes - 22:25";
 
         ApplicationManager.instance().getViewManager().showMessageDialog(
             ApplicationManager.instance()

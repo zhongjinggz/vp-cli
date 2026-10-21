@@ -1,26 +1,21 @@
 package plugins.vpcli.domain.outputmodel.pumelementexporter;
 
-import plugins.vpcli.domain.myuml.mydiagram.mydiagramelement.ProperMyDiagramElement;
-
 import jakarta.inject.Inject;
 import jakarta.inject.Singleton;
-import plugins.vpcli.domain.outputmodel.PumlDiagram;
 
 @Singleton
-public class PumlModelExporter extends PumlElementExporter {
+public class PumlModelExporter extends PumlBlockExporter {
     @Inject
     public PumlModelExporter() {
     }
 
     @Override
-    public void to(PumlDiagram result, ProperMyDiagramElement myDiagramElement) {
-        var myElement = myDiagramElement.getModelElement();
-        result.beginBlock("namespace \"" + myElement.getName() + "\" as " + getPumlAlias(myElement) + " <<model>>");
-        for (var aSubShape : myDiagramElement.getSubShapes()) {
-            var exporter = pumlElementExporterFactory.of(aSubShape.getModelElement().getElementType());
-            exporter.to(result, aSubShape);
-        }
-        result.endBlock();
+    String getBlockType() {
+        return "namespace";
+    }
 
+    @Override
+    String getBlockSuffix() {
+        return " <<model>>";
     }
 }

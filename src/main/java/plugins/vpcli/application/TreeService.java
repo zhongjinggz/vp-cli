@@ -7,7 +7,7 @@ import plugins.vpcli.drivenadapter.VPProjectRepository;
 import java.io.IOException;
 import java.util.List;
 
-import static plugins.vpcli.domain.myuml.mycommon.ElementType.*;
+import static plugins.vpcli.domain.myuml.mycommon.MyElementType.*;
 
 import jakarta.inject.Inject;
 import jakarta.inject.Singleton;

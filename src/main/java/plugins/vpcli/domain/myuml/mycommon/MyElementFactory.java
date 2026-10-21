@@ -1,7 +1,12 @@
 package plugins.vpcli.domain.myuml.mycommon;
 
 import com.vp.plugin.model.IModelElement;
+import com.vp.plugin.model.factory.IModelElementFactory;
+import org.jspecify.annotations.NonNull;
 import org.slf4j.Logger;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import static org.slf4j.LoggerFactory.getLogger;
 
@@ -15,7 +20,7 @@ public abstract class MyElementFactory {
     public MyElementFactory(
         MyElementPool myElementPool
     ) {
-        this(myElementPool ,
+        this(myElementPool,
             getLogger(MyElementFactory.class));
     }
 
@@ -33,7 +38,7 @@ public abstract class MyElementFactory {
         this.factoryFactory = factoryFactory;
     }
 
-    public abstract MyElement reallyCreate(MyElement parent, IModelElement vpElement);
+    public abstract MyElement reallyCreate(MyElement parent, IModelElement vpElement, List<MyStereotype> myStereotypes);
 
     public MyElement of(IModelElement vpElement) {
         MyElement myParentElement;
@@ -62,10 +67,27 @@ public abstract class MyElementFactory {
             return elementPool.get(id);
         } else {
             debug(vpElement); // to log, can be removed later
-            var result = reallyCreate(parent, vpElement);
+
+            List<MyStereotype> myStereotypes = createMyStereotypes(vpElement);
+
+            var result = reallyCreate(parent, vpElement, myStereotypes);
             elementPool.put(id, result);
             return result;
         }
+    }
+
+    private @NonNull List<MyStereotype> createMyStereotypes(IModelElement vpElement) {
+        List<MyStereotype> myStereotypes = new ArrayList<>();
+        var stereotypeFactory = factoryFactory.of(IModelElementFactory.MODEL_TYPE_STEREOTYPE);
+
+        var vpStereotypes = vpElement.toStereotypeModelArray();
+        if (stereotypeFactory != null && vpStereotypes != null) {
+            for (var aStereotype : vpStereotypes) {
+                myStereotypes.add((MyStereotype) stereotypeFactory.of(aStereotype));
+            }
+        }
+
+        return myStereotypes;
     }
 
     private void debug(IModelElement vpElement) {

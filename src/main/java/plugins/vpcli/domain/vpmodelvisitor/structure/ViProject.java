@@ -2,7 +2,7 @@ package plugins.vpcli.domain.vpmodelvisitor.structure;
 
 import com.vp.plugin.model.IProject;
 import org.jetbrains.annotations.NotNull;
-import plugins.vpcli.domain.myuml.mycommon.ElementType;
+import plugins.vpcli.domain.myuml.mycommon.MyElementType;
 import plugins.vpcli.domain.vpmodelvisitor.element.ViElement;
 import plugins.vpcli.domain.vpmodelvisitor.element.ViElementFactory;
 import plugins.vpcli.domain.vpmodelvisitor.visitor.ViElementVisitor;
@@ -15,7 +15,7 @@ import java.util.List;
 public class ViProject {
     private final IProject project;
     private final ViElementFactory createElement;
-    private final List<ElementType> elementTypes = new ArrayList<>();
+    private final List<MyElementType> myElementTypes = new ArrayList<>();
     private ViElementVisitorFactory createVisitor;
 
     public ViProject(IProject vpProject
@@ -25,8 +25,8 @@ public class ViProject {
         this.createElement = elementFactory;
     }
 
-    public void setElementTypes(List<ElementType> elementTypes) {
-        this.elementTypes.addAll(elementTypes);
+    public void setElementTypes(List<MyElementType> myElementTypes) {
+        this.myElementTypes.addAll(myElementTypes);
     }
 
     public void accept(ViElementVisitorFactory visitorCreator) throws IOException {
@@ -48,9 +48,9 @@ public class ViProject {
     }
 
     private String @NotNull [] getVpModelTypeArray() {
-        String[] vpModelTypes = elementTypes.stream()
-            .filter(ElementType::isModelElement)
-            .map( ElementType::getVPModelType)
+        String[] vpModelTypes = myElementTypes.stream()
+            .filter(MyElementType::isModelElement)
+            .map( MyElementType::getVPModelType)
             .toArray(String[]::new);
         return vpModelTypes;
     }
@@ -68,7 +68,7 @@ public class ViProject {
             anElement.accept(visitor);
 
             elementsAccept(
-                anElement.getChildren(elementTypes)
+                anElement.getChildren(myElementTypes)
                 , visitor
             );
 

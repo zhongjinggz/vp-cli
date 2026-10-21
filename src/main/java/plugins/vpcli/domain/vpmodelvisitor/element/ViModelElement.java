@@ -2,7 +2,7 @@ package plugins.vpcli.domain.vpmodelvisitor.element;
 
 import com.vp.plugin.diagram.IDiagramUIModel;
 import com.vp.plugin.model.IModelElement;
-import plugins.vpcli.domain.myuml.mycommon.ElementType;
+import plugins.vpcli.domain.myuml.mycommon.MyElementType;
 import plugins.vpcli.domain.myuml.mycommon.MyElement;
 import plugins.vpcli.domain.myuml.mycommon.MyElementFactory;
 import plugins.vpcli.domain.myuml.mypackage.MyPackage;
@@ -28,13 +28,13 @@ public abstract class ViModelElement extends ViElement {
         return vpElement.getName();
     }
 
-    public ElementType getType() {
-        return ElementType.of(
+    public MyElementType getType() {
+        return MyElementType.of(
             vpElement.getModelType());
     }
 
     @Override
-    public List<ViElement> getChildren(List<ElementType> elementTypes) {
+    public List<ViElement> getChildren(List<MyElementType> myElementTypes) {
         List<ViElement> result = new ArrayList<>();
 
         var vpDiagrams = this.vpElement.toSubDiagramArray();
@@ -44,9 +44,9 @@ public abstract class ViModelElement extends ViElement {
             }
         }
 
-        String[] vpModelTypes = elementTypes.stream()
-            .filter(ElementType::isModelElement)
-            .map(ElementType::getVPModelType)
+        String[] vpModelTypes = myElementTypes.stream()
+            .filter(MyElementType::isModelElement)
+            .map(MyElementType::getVPModelType)
             .toArray(String[]::new);
 
         var vpModelElements = this.vpElement.toChildArray(vpModelTypes);

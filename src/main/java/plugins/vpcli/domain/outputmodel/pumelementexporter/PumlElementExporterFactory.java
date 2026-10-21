@@ -1,6 +1,6 @@
 package plugins.vpcli.domain.outputmodel.pumelementexporter;
 
-import plugins.vpcli.domain.myuml.mycommon.ElementType;
+import plugins.vpcli.domain.myuml.mycommon.MyElementType;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -10,7 +10,7 @@ import jakarta.inject.Singleton;
 
 @Singleton
 public class PumlElementExporterFactory {
-    private final Map<ElementType, PumlElementExporter> exporters = new HashMap<>();
+    private final Map<MyElementType, PumlElementExporter> exporters = new HashMap<>();
 
     @Inject
     public PumlElementExporterFactory(
@@ -21,25 +21,25 @@ public class PumlElementExporterFactory {
         PumlModelRelationshipContainerExporter modelRelationshipContainerExporter,
         PumlUseCaseExporter useCaseExporter
     ) {
-        register(ElementType.ASSOCIATION, associationExporter);
-        register(ElementType.CLASS, classExporter);
-        register(ElementType.PACKAGE, packageExporter);
-        register(ElementType.MODEL, modelExporter);
-        register(ElementType.RELATIONSHIPS, modelRelationshipContainerExporter);
-        register(ElementType.USE_CASE, useCaseExporter);
+        register(MyElementType.ASSOCIATION, associationExporter);
+        register(MyElementType.CLASS, classExporter);
+        register(MyElementType.PACKAGE, packageExporter);
+        register(MyElementType.MODEL, modelExporter);
+        register(MyElementType.RELATIONSHIPS, modelRelationshipContainerExporter);
+        register(MyElementType.USE_CASE, useCaseExporter);
     }
 
 
-    private void register(ElementType elementType, PumlElementExporter exporter) {
-        exporters.put(elementType, exporter);
+    private void register(MyElementType myElementType, PumlElementExporter exporter) {
+        exporters.put(myElementType, exporter);
         exporter.setExporterFactory(this); // to build the bi-direction dependency
     }
 
-    public PumlElementExporter of(ElementType elementType) {
-        if (this.exporters.containsKey(elementType)) {
-            return this.exporters.get(elementType);
+    public PumlElementExporter of(MyElementType myElementType) {
+        if (this.exporters.containsKey(myElementType)) {
+            return this.exporters.get(myElementType);
         } else {
-            throw new IllegalArgumentException(String.format("Element type %s not found", elementType));
+            throw new IllegalArgumentException(String.format("Element type %s not found", myElementType));
         }
     }
 }

@@ -7,6 +7,9 @@ import plugins.vpcli.domain.myuml.mycommon.MyElementPool;
 
 import jakarta.inject.Inject;
 import jakarta.inject.Singleton;
+import plugins.vpcli.domain.myuml.mycommon.MyStereotype;
+
+import java.util.List;
 
 @Singleton
 public class MyPackageFactory extends MyElementFactory {
@@ -21,12 +24,12 @@ public class MyPackageFactory extends MyElementFactory {
     }
 
     @Override
-    public MyPackage reallyCreate(MyElement parent, IModelElement vpElement) {
+    public MyPackage reallyCreate(MyElement parent, IModelElement vpElement, List<MyStereotype> myStereotypes) {
         return new MyPackage(
             parent,
             vpElement.getId(),
             vpElement.getName(),
-            vpElement.getDescription()
-        );
+            vpElement.getDescription(),
+            myStereotypes);
     }
 }

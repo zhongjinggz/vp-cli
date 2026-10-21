@@ -1,7 +1,7 @@
 package plugins.vpcli.domain.myuml.mydiagram;
 
 import org.jetbrains.annotations.NotNull;
-import plugins.vpcli.domain.myuml.mycommon.ElementType;
+import plugins.vpcli.domain.myuml.mycommon.MyElementType;
 import plugins.vpcli.domain.myuml.mycommon.MyElement;
 import plugins.vpcli.domain.myuml.mydiagram.mydiagramelement.DiagramElementType;
 import plugins.vpcli.domain.myuml.mydiagram.mydiagramelement.MyDiagramElement;
@@ -26,13 +26,17 @@ public class MyDiagram extends MyElement implements MyDiagramElement {
         @NotNull MyElement parentElement,
         @NotNull String id,
         @NotNull String name,
-//        @NotNull MyElementType myElementType,
         @NotNull String description,
         @NotNull DiagramType diagramType
     ) {
-        super(parentElement, id, name, ElementType.DIAGRAM
-//            , myElementType
-            , description);
+        super(
+            parentElement,
+            id,
+            name,
+            MyElementType.DIAGRAM,
+            description,
+            Collections.emptyList()
+        );
         this.diagramType = diagramType;
     }
 

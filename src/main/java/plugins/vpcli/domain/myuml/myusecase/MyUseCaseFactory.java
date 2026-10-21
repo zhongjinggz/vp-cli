@@ -7,27 +7,29 @@ import plugins.vpcli.domain.myuml.mycommon.MyElementPool;
 
 import jakarta.inject.Inject;
 import jakarta.inject.Singleton;
+import plugins.vpcli.domain.myuml.mycommon.MyStereotype;
+
+import java.util.List;
 
 @Singleton
 public class MyUseCaseFactory extends MyElementFactory {
 
     @Inject
-    public MyUseCaseFactory(
-        MyElementPool myElementPool
-//        , MyElementTypeUseCase myElementType
-//        , MyElementTypeRepository myElementTypeRepository
-    ) {
-        super(myElementPool
-        );
+    public MyUseCaseFactory(MyElementPool myElementPool) {
+        super(myElementPool);
     }
 
     @Override
-    public MyUseCase reallyCreate(MyElement parent, IModelElement vpElement) {
+    public MyUseCase reallyCreate(
+        MyElement parent,
+        IModelElement vpElement,
+        List<MyStereotype> stereotypes
+    ) {
         return new MyUseCase(
             parent,
             vpElement.getId(),
             vpElement.getName(),
-            vpElement.getDescription()
-        );
+            vpElement.getDescription(),
+            stereotypes);
     }
 }

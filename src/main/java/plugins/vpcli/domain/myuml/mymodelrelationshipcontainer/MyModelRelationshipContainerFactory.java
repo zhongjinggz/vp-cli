@@ -7,6 +7,9 @@ import plugins.vpcli.domain.myuml.mycommon.MyElementPool;
 
 import jakarta.inject.Inject;
 import jakarta.inject.Singleton;
+import plugins.vpcli.domain.myuml.mycommon.MyStereotype;
+
+import java.util.List;
 
 @Singleton
 public class MyModelRelationshipContainerFactory extends MyElementFactory {
@@ -21,7 +24,7 @@ public class MyModelRelationshipContainerFactory extends MyElementFactory {
     }
 
     @Override
-    public MyModelRelationshipContainer reallyCreate(MyElement parent, IModelElement vpElement) {
+    public MyModelRelationshipContainer reallyCreate(MyElement parent, IModelElement vpElement, List<MyStereotype> myStereotypes) {
         return new MyModelRelationshipContainer(
             parent,
             vpElement.getId(),

@@ -9,13 +9,7 @@ import plugins.vpcli.domain.outputmodel.PumlDiagram;
 @Singleton
 public class PumlAssociationExporter extends PumlElementExporter {
     @Inject
-    public PumlAssociationExporter(
-//        MyElementTypeRepository myElementTypeRepository
-//        , PumlElementExporterFactory pumlElementExporterFactory
-    ) {
-//        super(myElementTypeRepository, MyElementTypeAssociation.class
-////            , pumlElementExporterFactory
-//        );
+    public PumlAssociationExporter() {
     }
 
     public void to(PumlDiagram result, ProperMyDiagramElement myDiagramElement) {

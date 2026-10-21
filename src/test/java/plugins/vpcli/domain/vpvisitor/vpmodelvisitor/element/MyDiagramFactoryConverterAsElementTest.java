@@ -10,7 +10,7 @@ import com.vp.plugin.diagram.IDiagramUIModel;
 import java.util.List;
 
 import org.junit.jupiter.api.Test;
-import plugins.vpcli.domain.myuml.mycommon.ElementType;
+import plugins.vpcli.domain.myuml.mycommon.MyElementType;
 import plugins.vpcli.domain.vpmodelvisitor.element.ViDiagramAsElement;
 
 class MyDiagramFactoryConverterAsElementTest {
@@ -26,15 +26,15 @@ class MyDiagramFactoryConverterAsElementTest {
     @Test
     void shouldResolveTypeFromDiagramType() {
         IDiagramUIModel diagram = mock(IDiagramUIModel.class);
-        when(diagram.getType()).thenReturn(ElementType.DIAGRAM.getVPModelType());
+        when(diagram.getType()).thenReturn(MyElementType.DIAGRAM.getVPModelType());
         ViDiagramAsElement vp = new ViDiagramAsElement(diagram);
-        assertEquals(ElementType.DIAGRAM, vp.getType());
+        assertEquals(MyElementType.DIAGRAM, vp.getType());
     }
 
     @Test
     void shouldReturnEmptyChildren() {
         IDiagramUIModel diagram = mock(IDiagramUIModel.class);
         ViDiagramAsElement vp = new ViDiagramAsElement(diagram);
-        assertTrue(vp.getChildren(List.of(ElementType.DIAGRAM)).isEmpty());
+        assertTrue(vp.getChildren(List.of(MyElementType.DIAGRAM)).isEmpty());
     }
 }

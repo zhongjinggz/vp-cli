@@ -11,12 +11,9 @@ import java.util.List;
 public class MyComponent extends MyElement {
 
 	private final boolean isInPackage;
-	private List<String> stereotypes;
 	private String Uid;
 	private final List<MyComponent> residents;
-    private boolean isResident;
 	private final List<PortData> ports;
-	private boolean isNodeComponent; // components and nodes are basically the same.
 	private final List<MyArtifact_old> artifacts;
 	private List<MyAttribute_old> attributes;
 	private List<MyOperation_old> operations;
@@ -25,7 +22,6 @@ public class MyComponent extends MyElement {
 	public MyComponent(String name, boolean isInPackage) {
 		super(name);
 		this.isInPackage = isInPackage;
-		this.stereotypes = new ArrayList<>();
 		this.residents = new ArrayList<>();
         this.ports = new ArrayList<>();
 		this.artifacts = new ArrayList<>();
@@ -33,20 +29,9 @@ public class MyComponent extends MyElement {
 		this.setAttributes(new ArrayList<>());
 	}
 
-	public List<String> getStereotypes() {
-		return stereotypes;
-	}
-
-	public void setStereotypes(List<String> stereotypes) {
-		this.stereotypes = stereotypes;
-	}
 
 	public boolean isInPackage() {
 		return isInPackage;
-	}
-
-	public List<MyArtifact_old> getArtifacts() {
-		return artifacts;
 	}
 
 	public String getUid() {
@@ -57,43 +42,11 @@ public class MyComponent extends MyElement {
 		this.Uid = Uid;
 	}
 
-	public boolean isResident() {
-		return isResident;
-	}
-
-	public void setResident(boolean isResident) {
-		this.isResident = isResident;
-	}
-
-	public List<MyComponent> getResidents() {
-		return residents;
-	}
-
-	public List<PortData> getPorts() {
-		return ports;
-	}
-
-    public boolean isNodeComponent() {
-        return isNodeComponent;
-    }
-
-    public void setNodeComponent(boolean nodeComponent) {
-        isNodeComponent = nodeComponent;
-    }
-
-    public List<MyAttribute_old> getAttributes() {
-        return attributes;
-    }
-
-    public void setAttributes(List<MyAttribute_old> attributes) {
+	public void setAttributes(List<MyAttribute_old> attributes) {
         this.attributes = attributes;
     }
 
-    public List<MyOperation_old> getOperations() {
-        return operations;
-    }
-
-    public void setOperations(List<MyOperation_old> operations) {
+	public void setOperations(List<MyOperation_old> operations) {
         this.operations = operations;
     }
 

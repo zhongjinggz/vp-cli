@@ -1,7 +1,7 @@
 package plugins.vpcli.domain.myuml_old.mystatemachine_old;
 
 import plugins.vpcli.domain.myuml.mycommon.MyRelationship;
-import plugins.vpcli.domain.myuml.mycommon.MyElement_old;
+import plugins.vpcli.domain.myuml_old.mycommon_old.MyElement_old;
 
 import java.util.ArrayList;
 import java.util.List;

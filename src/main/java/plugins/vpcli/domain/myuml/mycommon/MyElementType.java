@@ -4,25 +4,26 @@ import java.util.Objects;
 
 import static com.vp.plugin.model.factory.IModelElementFactory.*;
 
-public enum ElementType {
+public enum MyElementType {
     PROJECT("project_has_no_model_type", ".project"),
-    DIAGRAM("diagram_has_no_model_type",".diagram"),
+    DIAGRAM("diagram_has_no_model_type", ".diagram"),
     PACKAGE(MODEL_TYPE_PACKAGE, ".package"),
     MODEL(MODEL_TYPE_MODEL, ".model"),
     CLASS(MODEL_TYPE_CLASS, ".class"),
     USE_CASE(MODEL_TYPE_USE_CASE, ".usecase"),
-    ASSOCIATION("diagram_has_no_model_type",".association"),
-    RELATIONSHIPS(MODEL_TYPE_MODEL_RELATIONSHIP_CONTAINER, ".relationships");
+    ASSOCIATION("diagram_has_no_model_type", ".association"),
+    RELATIONSHIPS(MODEL_TYPE_MODEL_RELATIONSHIP_CONTAINER, ".relationships"),
+    STEREOTYPE(MODEL_TYPE_STEREOTYPE, ".stereotype");
 
     private final String vpModelType;
     private final String suffix;
 
-    ElementType(String vpModelType, String suffix) {
+    MyElementType(String vpModelType, String suffix) {
         this.vpModelType = vpModelType;
         this.suffix = suffix;
     }
 
-    public static ElementType of(String vpElementType) {
+    public static MyElementType of(String vpElementType) {
         for (var aValue : values()) {
             if (aValue.vpModelTypeIs(vpElementType)) {
                 return aValue;

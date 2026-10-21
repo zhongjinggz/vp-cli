@@ -1,7 +1,8 @@
 package plugins.vpcli.domain.myuml.myclassifier;
 
-import plugins.vpcli.domain.myuml.mycommon.ElementType;
+import plugins.vpcli.domain.myuml.mycommon.MyElementType;
 import plugins.vpcli.domain.myuml.mycommon.MyElement;
+import plugins.vpcli.domain.myuml.mycommon.MyStereotype;
 import plugins.vpcli.domain.myuml_old.myclass_old.MyAttribute_old;
 import plugins.vpcli.domain.myuml_old.myclass_old.MyOperation_old;
 
@@ -16,10 +17,15 @@ public class MyClass extends MyElement {
     public MyClass(
         MyElement parent, String id,
         String name,
-        String description
-    ) {
-        super(parent, id, name, ElementType.CLASS
-            , description);
+        String description,
+        List<MyStereotype> stereotypes) {
+        super(parent,
+            id,
+            name,
+            MyElementType.CLASS,
+            description,
+            stereotypes
+        );
         isAbstract = false;
 
     }

@@ -1,7 +1,7 @@
 package plugins.vpcli.domain.vpmodelvisitor.element;
 
 import com.vp.plugin.diagram.IDiagramUIModel;
-import plugins.vpcli.domain.myuml.mycommon.ElementType;
+import plugins.vpcli.domain.myuml.mycommon.MyElementType;
 import plugins.vpcli.domain.vpmodelvisitor.visitor.ViElementVisitor;
 
 import java.io.IOException;
@@ -23,12 +23,12 @@ public class ViDiagramAsElement extends ViElement {
         return diagram.getName();
     }
     
-    public ElementType getType() {
-        return ElementType.DIAGRAM;
+    public MyElementType getType() {
+        return MyElementType.DIAGRAM;
     }
 
     @Override
-    public List<ViElement> getChildren(List<ElementType> elementTypes) {
+    public List<ViElement> getChildren(List<MyElementType> myElementTypes) {
         return List.of();
     }
 

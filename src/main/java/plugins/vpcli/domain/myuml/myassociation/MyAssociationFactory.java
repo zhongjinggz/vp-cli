@@ -7,6 +7,9 @@ import plugins.vpcli.domain.myuml.mycommon.MyElementPool;
 
 import jakarta.inject.Inject;
 import jakarta.inject.Singleton;
+import plugins.vpcli.domain.myuml.mycommon.MyStereotype;
+
+import java.util.List;
 
 @Singleton
 public class MyAssociationFactory extends MyElementFactory {
@@ -21,13 +24,16 @@ public class MyAssociationFactory extends MyElementFactory {
     }
 
     @Override
-    public MyAssociation reallyCreate(MyElement parent, IModelElement vpElement) {
+    public MyAssociation reallyCreate(
+        MyElement parent,
+        IModelElement vpElement,
+        List<MyStereotype> stereotypes
+    ) {
         return new MyAssociation(
             parent,
             vpElement.getId(),
             vpElement.getName(),
-//            myElementType,
-            vpElement.getDescription()
-        );
+            vpElement.getDescription(),
+            stereotypes);
     }
 }
