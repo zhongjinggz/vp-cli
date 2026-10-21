@@ -1,0 +1,30 @@
+@startuml
+allowmixing
+
+namespace 领域模型 {
+    namespace 订单 {
+        class 订单 {
+        }
+
+        class 订单项 {
+        }
+
+        namespace 产品  {
+            class 产品 {
+            }
+
+        }
+
+    }
+
+    class 用户 {
+    }
+
+    usecase 增加用户
+}
+
+订单 "1..1" *-- "1..*" 订单项
+
+订单项 "0..*" -- "1..1" 产品
+
+@enduml
