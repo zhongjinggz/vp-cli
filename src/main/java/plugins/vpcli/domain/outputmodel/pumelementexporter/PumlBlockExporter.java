@@ -28,7 +28,14 @@ public abstract class PumlBlockExporter extends PumlElementExporter {
             getBlockSuffix()
         );
 
-        result.beginBlock(getBlockType() + " \"" + myElement.getName() + "\" as " + getPumlAlias(myElement) + getBlockSuffix());
+//        result.beginBlock(getBlockType() + " \"" + myElement.getName() + "\" as " + getPumlAlias(myElement) + getBlockSuffix());
+        result.beginBlock(
+            getBlockType(),
+            myElement.getName(),
+            getPumlAlias(myElement),
+            getBlockSuffix()
+        );
+
         for (var aSubShape : myDiagramElement.getSubShapes()) {
             var exporter = pumlElementExporterFactory.of(aSubShape.getModelElement().getElementType());
             exporter.to(result, aSubShape);

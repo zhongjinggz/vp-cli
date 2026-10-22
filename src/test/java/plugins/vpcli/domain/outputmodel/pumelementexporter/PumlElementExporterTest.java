@@ -110,6 +110,7 @@ class PumlElementExporterTest {
         assertTrue(diagram.toString().contains("class \"用户\" as 用户 {"));
     }
 
+
     private MyModel findModel(MyProject root) {
         for (MyElement e : root.getSubElements()) {
             if (e instanceof MyModel) {

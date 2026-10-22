@@ -1,5 +1,6 @@
 package plugins.vpcli.domain.outputmodel;
 
+import org.jetbrains.annotations.NotNull;
 import plugins.vpcli.domain.myuml.mydiagram.DiagramType;
 
 import java.util.ArrayList;
@@ -28,6 +29,23 @@ public class PumlDiagram {
 
         addStatement(name + " {");
         indent();
+    }
+
+    public void beginBlock(
+        @NotNull String blockType,
+        @NotNull String name,
+        @NotNull String pumlAlias,
+        @NotNull String blockSuffix
+    ) {
+        String text = blockType + " \"" + name + "\" as " + pumlAlias ;
+        if (blockSuffix.length()>0) {
+            text += " " + blockSuffix;
+        }
+        text += " {";
+
+        addStatement(text);
+        indent();
+
     }
 
     public void endBlock() {
