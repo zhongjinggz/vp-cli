@@ -24,6 +24,7 @@ import plugins.vpcli.domain.myuml.myusecase.MyUseCase;
 import plugins.vpcli.domain.myuml.myusecase.MyUseCaseFactory;
 
 import com.vp.plugin.model.IAssociation;
+import com.vp.plugin.model.IAssociationEnd;
 import com.vp.plugin.model.IModelElement;
 import com.vp.plugin.model.factory.IModelElementFactory;
 
@@ -38,20 +39,46 @@ class MyAssociationTest {
         MyClass from = new MyClass(root, "c1", "订单", "", stereotypes);
         MyUseCase to = new MyUseCase(root, "u1", "下订单", "", stereotypes);
 
+        MyAssociationEnd fromEnd = new MyAssociationEnd(root, "fe", "", "", stereotypes, from, "1",
+            MyAssociationEnd.NAVIGABLE_NAVIGABLE);
+        MyAssociationEnd toEnd = new MyAssociationEnd(root, "te", "", "", stereotypes, to, "0..*",
+            MyAssociationEnd.NAVIGABLE_NON_NAVIGABLE);
+
         MyAssociation association = new MyAssociation(
             root, "a1", "", "",
-            stereotypes, from, to);
+            stereotypes, fromEnd, toEnd);
 
+        assertSame(fromEnd, association.getFromEnd());
+        assertSame(toEnd, association.getToEnd());
         assertSame(from, association.getFromElement());
         assertSame(to, association.getToElement());
+        assertEquals("1", association.getFromEnd().getMultiplicity());
+        assertEquals("0..*", association.getToEnd().getMultiplicity());
         assertEquals(MyElementType.ASSOCIATION, association.getElementType());
     }
 
     @Test
     void shouldDefaultEndpointsToNull() {
-        MyAssociation association = new MyAssociation(root, "a1", "", "", stereotypes);
+        MyAssociation association = new MyAssociation(root, "a1", "", "", stereotypes, null, null);
         assertNull(association.getFromElement());
         assertNull(association.getToElement());
+        assertNull(association.getFromEnd());
+        assertNull(association.getToEnd());
+    }
+
+    @Test
+    void shouldPopulateEndpointsThroughCompatibilitySetters() {
+        MyClass from = new MyClass(root, "c1", "订单", "", stereotypes);
+        MyUseCase to = new MyUseCase(root, "u1", "下订单", "", stereotypes);
+
+        MyAssociation association = new MyAssociation(root, "a1", "", "", stereotypes, null, null);
+        association.setFromElement(from);
+        association.setToElement(to);
+
+        assertSame(from, association.getFromElement());
+        assertSame(to, association.getToElement());
+        assertEquals(MyElementType.ASSOCIATION_END, association.getFromEnd().getElementType());
+        assertEquals(MyElementType.ASSOCIATION_END, association.getToEnd().getElementType());
     }
 
     @Test
@@ -69,12 +96,30 @@ class MyAssociationTest {
         when(vpTo.getName()).thenReturn("下订单");
         when(vpTo.getDescription()).thenReturn("");
 
+        IAssociationEnd vpFromEnd = mock(IAssociationEnd.class);
+        when(vpFromEnd.getModelType()).thenReturn(IModelElementFactory.MODEL_TYPE_ASSOCIATION_END);
+        when(vpFromEnd.getId()).thenReturn("fe1");
+        when(vpFromEnd.getName()).thenReturn("订单端");
+        when(vpFromEnd.getDescription()).thenReturn("");
+        when(vpFromEnd.getModelElement()).thenReturn(vpFrom);
+        when(vpFromEnd.getMultiplicity()).thenReturn("1");
+        when(vpFromEnd.getNavigable()).thenReturn(MyAssociationEnd.NAVIGABLE_NAVIGABLE);
+
+        IAssociationEnd vpToEnd = mock(IAssociationEnd.class);
+        when(vpToEnd.getModelType()).thenReturn(IModelElementFactory.MODEL_TYPE_ASSOCIATION_END);
+        when(vpToEnd.getId()).thenReturn("te1");
+        when(vpToEnd.getName()).thenReturn("客户端");
+        when(vpToEnd.getDescription()).thenReturn("");
+        when(vpToEnd.getModelElement()).thenReturn(vpTo);
+        when(vpToEnd.getMultiplicity()).thenReturn("0..*");
+        when(vpToEnd.getNavigable()).thenReturn(MyAssociationEnd.NAVIGABLE_NON_NAVIGABLE);
+
         IAssociation associationVp = mock(IAssociation.class);
         when(associationVp.getId()).thenReturn("a1");
         when(associationVp.getName()).thenReturn("");
         when(associationVp.getDescription()).thenReturn("");
-        when(associationVp.getFrom()).thenReturn(vpFrom);
-        when(associationVp.getTo()).thenReturn(vpTo);
+        when(associationVp.getFromEnd()).thenReturn(vpFromEnd);
+        when(associationVp.getToEnd()).thenReturn(vpToEnd);
 
         MyElementPool pool = mock(MyElementPool.class);
         when(pool.getMyProject()).thenReturn(root);
@@ -85,6 +130,7 @@ class MyAssociationTest {
             new MyModelFactory(pool),
             new MyUseCaseFactory(pool),
             new MyAssociationFactory(pool),
+            new MyAssociationEndFactory(pool),
             new MyModelRelationshipContainerFactory(pool),
             new plugins.vpcli.domain.myuml.mycommon.MyStereotypeFactory(pool)
         );
@@ -97,8 +143,13 @@ class MyAssociationTest {
         assertEquals(MyElementType.ASSOCIATION, association.getElementType());
         assertEquals("订单", association.getFromElement().getName());
         assertEquals(MyElementType.CLASS, association.getFromElement().getElementType());
+        assertEquals("1", association.getFromEnd().getMultiplicity());
+        assertEquals(MyElementType.ASSOCIATION_END, association.getFromEnd().getElementType());
+        assertEquals(MyAssociationEnd.NAVIGABLE_NAVIGABLE, association.getFromEnd().getNavigable());
         assertEquals("下订单", association.getToElement().getName());
         assertEquals(MyElementType.USE_CASE, association.getToElement().getElementType());
+        assertEquals("0..*", association.getToEnd().getMultiplicity());
+        assertEquals(MyAssociationEnd.NAVIGABLE_NON_NAVIGABLE, association.getToEnd().getNavigable());
     }
 
 }

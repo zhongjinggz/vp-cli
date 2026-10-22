@@ -10,6 +10,8 @@ import static org.mockito.Mockito.when;
 
 import org.junit.jupiter.api.Test;
 import plugins.vpcli.domain.myuml.myassociation.MyAssociation;
+import plugins.vpcli.domain.myuml.myassociation.MyAssociationEnd;
+import plugins.vpcli.domain.myuml.myassociation.MyAssociationEndFactory;
 import plugins.vpcli.domain.myuml.myassociation.MyAssociationFactory;
 import plugins.vpcli.domain.myuml.myclassifier.MyClassFactory;
 import plugins.vpcli.domain.myuml.mycommon.MyElement;
@@ -29,6 +31,7 @@ import com.vp.plugin.diagram.IConnectorUIModel;
 import com.vp.plugin.diagram.IDiagramUIModel;
 import com.vp.plugin.diagram.IShapeUIModel;
 import com.vp.plugin.model.IAssociation;
+import com.vp.plugin.model.IAssociationEnd;
 import com.vp.plugin.model.IModelElement;
 import com.vp.plugin.model.factory.IModelElementFactory;
 
@@ -46,6 +49,7 @@ class MyDiagramFactoryTest {
             new MyModelFactory(pool),
             new MyUseCaseFactory(pool),
             new MyAssociationFactory(pool),
+            new MyAssociationEndFactory(pool),
             new MyModelRelationshipContainerFactory(pool),
             new plugins.vpcli.domain.myuml.mycommon.MyStereotypeFactory(pool)
         );
@@ -74,13 +78,31 @@ class MyDiagramFactoryTest {
     private IConnectorUIModel mockAssociationConnector(
         IModelElement vpFrom, IModelElement vpTo, String connectorId
     ) {
+        IAssociationEnd vpFromEnd = mock(IAssociationEnd.class);
+        when(vpFromEnd.getModelType()).thenReturn(IModelElementFactory.MODEL_TYPE_ASSOCIATION_END);
+        when(vpFromEnd.getId()).thenReturn(connectorId + "-fe");
+        when(vpFromEnd.getName()).thenReturn("");
+        when(vpFromEnd.getDescription()).thenReturn("");
+        when(vpFromEnd.getModelElement()).thenReturn(vpFrom);
+        when(vpFromEnd.getMultiplicity()).thenReturn("");
+        when(vpFromEnd.getNavigable()).thenReturn(MyAssociationEnd.NAVIGABLE_NAVIGABLE);
+
+        IAssociationEnd vpToEnd = mock(IAssociationEnd.class);
+        when(vpToEnd.getModelType()).thenReturn(IModelElementFactory.MODEL_TYPE_ASSOCIATION_END);
+        when(vpToEnd.getId()).thenReturn(connectorId + "-te");
+        when(vpToEnd.getName()).thenReturn("");
+        when(vpToEnd.getDescription()).thenReturn("");
+        when(vpToEnd.getModelElement()).thenReturn(vpTo);
+        when(vpToEnd.getMultiplicity()).thenReturn("");
+        when(vpToEnd.getNavigable()).thenReturn(MyAssociationEnd.NAVIGABLE_NON_NAVIGABLE);
+
         IAssociation association = mock(IAssociation.class);
         when(association.getModelType()).thenReturn(IModelElementFactory.MODEL_TYPE_ASSOCIATION);
         when(association.getId()).thenReturn(connectorId);
         when(association.getName()).thenReturn("");
         when(association.getDescription()).thenReturn("");
-        when(association.getFrom()).thenReturn(vpFrom);
-        when(association.getTo()).thenReturn(vpTo);
+        when(association.getFromEnd()).thenReturn(vpFromEnd);
+        when(association.getToEnd()).thenReturn(vpToEnd);
 
         IConnectorUIModel connector = mock(IConnectorUIModel.class);
         when(connector.getShapeType()).thenReturn(SHAPE_TYPE_ASSOCIATION);

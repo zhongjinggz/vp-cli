@@ -25,20 +25,14 @@ public class PumlDiagram {
         indentLevel--;
     }
 
-    public void beginBlock(String name) {
-
-        addStatement(name + " {");
-        indent();
-    }
-
     public void beginBlock(
         @NotNull String blockType,
         @NotNull String name,
         @NotNull String pumlAlias,
         @NotNull String blockSuffix
     ) {
-        String text = blockType + " \"" + name + "\" as " + pumlAlias ;
-        if (blockSuffix.length()>0) {
+        String text = blockType + " \"" + name + "\" as " + pumlAlias;
+        if (blockSuffix.length() > 0) {
             text += " " + blockSuffix;
         }
         text += " {";
@@ -54,8 +48,8 @@ public class PumlDiagram {
 
     }
 
-    public void writeTerminalElement(String elementText) {
-        addStatement (elementText);
+    public void writeTerminalShape(String elementText) {
+        addStatement(elementText);
     }
 
     private void addStatement(String text) {
@@ -77,5 +71,42 @@ public class PumlDiagram {
         sb.append("@enduml\n");
 
         return sb.toString();
+    }
+
+    public void writeEdge(String fromName, String toName) {
+        var text = fromName + " -- " + toName;
+        addStatement(text);
+
+    }
+
+    public void writeEdge(PumlEdgeEnd from, PumlEdgeEnd to, LineStyle lineStyle) {
+        // 语法为：fromName "fromMult" fromShape--toShape "toMult" toName，shape 紧贴 --。
+        String fromName = from.getName();
+        if (from.getMultiplicity() != null && !from.getMultiplicity().isEmpty()) {
+            fromName += " \"" + from.getMultiplicity() + "\"";
+        }
+
+        String toName = to.getName();
+        if (to.getMultiplicity() != null && !to.getMultiplicity().isEmpty()) {
+            toName = "\"" + to.getMultiplicity() + "\" " + toName;
+        }
+
+        String line = from.getShapeKind().getText() + lineStyle.getText() + to.getShapeKind().getText();
+        addStatement(fromName + " " + line + " " + toName);
+    }
+
+    public enum LineStyle {
+        SOLID("--"),
+        DASHED("..");
+
+        private final String text;
+
+        LineStyle(String text) {
+            this.text = text;
+        }
+
+        public String getText() {
+            return text;
+        }
     }
 }

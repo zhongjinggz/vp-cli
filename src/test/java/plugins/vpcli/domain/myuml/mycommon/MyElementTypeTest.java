@@ -22,6 +22,12 @@ class MyElementTypeTest {
     }
 
     @Test
+    void shouldResolveAssociationEndByType() {
+        MyElementType t = MyElementType.of(MyElementType.ASSOCIATION_END.getVPModelType());
+        assertEquals(MyElementType.ASSOCIATION_END, t);
+    }
+
+    @Test
     void shouldReturnNullWhenNoTypeMatches() {
         assertNull(MyElementType.of("no-such-type"));
     }

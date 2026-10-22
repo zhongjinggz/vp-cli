@@ -24,6 +24,11 @@ public class PumlDiagramFactory {
             var exportMyElement = exporterFactory.of(myElement.getElementType());
             exportMyElement.to(result, aShape);
         }
+        for (var aEdge : myDiagram.getSubEdges()) {
+            var myElement = aEdge.getModelElement();
+            var exportMyElement = exporterFactory.of(myElement.getElementType());
+            exportMyElement.to(result, aEdge);
+        }
         return result;
     }
 

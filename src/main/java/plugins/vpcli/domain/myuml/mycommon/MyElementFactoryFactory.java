@@ -1,5 +1,6 @@
 package plugins.vpcli.domain.myuml.mycommon;
 
+import plugins.vpcli.domain.myuml.myassociation.MyAssociationEndFactory;
 import plugins.vpcli.domain.myuml.myassociation.MyAssociationFactory;
 import plugins.vpcli.domain.myuml.myclassifier.MyClassFactory;
 import plugins.vpcli.domain.myuml.mymodelrelationshipcontainer.MyModelRelationshipContainerFactory;
@@ -27,6 +28,7 @@ public class MyElementFactoryFactory {
         MyModelFactory myModelFactory,
         MyUseCaseFactory myUseCaseFactory,
         MyAssociationFactory myAssociationFactory,
+        MyAssociationEndFactory myAssociationEndFactory,
         MyModelRelationshipContainerFactory myModelRelationshipContainerFactory,
         MyStereotypeFactory myStereotypeFactory
     ) {
@@ -35,6 +37,7 @@ public class MyElementFactoryFactory {
         register(MODEL_TYPE_MODEL, myModelFactory);
         register(MODEL_TYPE_USE_CASE, myUseCaseFactory);
         register(MODEL_TYPE_ASSOCIATION, myAssociationFactory);
+        register(MODEL_TYPE_ASSOCIATION_END, myAssociationEndFactory);
         register(MODEL_TYPE_MODEL_RELATIONSHIP_CONTAINER, myModelRelationshipContainerFactory);
         register(MODEL_TYPE_STEREOTYPE, myStereotypeFactory);
     }

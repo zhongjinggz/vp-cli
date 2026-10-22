@@ -22,20 +22,22 @@ public class MyAssociationFactory extends MyElementFactory {
     @Override
     public MyAssociation reallyCreate(
         MyElement parent,
-        IModelElement vpAssociation,
+        IModelElement vpElement,
         List<MyStereotype> stereotypes
     ) {
-        var fromElement = buildRelatedElement(((IAssociation)vpAssociation).getFrom());
-        var toElement = buildRelatedElement(((IAssociation)vpAssociation).getTo());
+        IAssociation vpAssociation = (IAssociation) vpElement;
+
+        var fromEnd = buildRelatedElement(vpAssociation.getFromEnd());
+        var toEnd = buildRelatedElement(vpAssociation.getToEnd());
 
         MyAssociation result = new MyAssociation(
             parent,
-            vpAssociation.getId(),
-            vpAssociation.getName(),
-            vpAssociation.getDescription(),
+            vpElement.getId(),
+            vpElement.getName(),
+            vpElement.getDescription(),
             stereotypes,
-            fromElement,
-            toElement
+            (MyAssociationEnd) fromEnd,
+            (MyAssociationEnd) toEnd
         );
 
         return result;

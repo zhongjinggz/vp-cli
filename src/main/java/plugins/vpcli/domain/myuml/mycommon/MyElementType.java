@@ -12,6 +12,7 @@ public enum MyElementType {
     CLASS(MODEL_TYPE_CLASS, ".class"),
     USE_CASE(MODEL_TYPE_USE_CASE, ".usecase"),
     ASSOCIATION("diagram_has_no_model_type", ".association"),
+    ASSOCIATION_END(MODEL_TYPE_ASSOCIATION_END, ".associationend"),
     RELATIONSHIPS(MODEL_TYPE_MODEL_RELATIONSHIP_CONTAINER, ".relationships"),
     STEREOTYPE(MODEL_TYPE_STEREOTYPE, ".stereotype");
 

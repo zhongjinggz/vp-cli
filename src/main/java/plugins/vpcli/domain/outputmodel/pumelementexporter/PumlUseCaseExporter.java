@@ -14,6 +14,6 @@ public class PumlUseCaseExporter extends PumlElementExporter {
 
     public void to(PumlDiagram result, ProperMyDiagramElement myDiagramElement) {
         var myElement = myDiagramElement.getModelElement();
-        result.writeTerminalElement("usecase \"" + myElement.getName() + "\" as " + getPumlAlias(myElement));
+        result.writeTerminalShape("usecase \"" + myElement.getName() + "\" as " + getPumlAlias(myElement));
     }
 }
