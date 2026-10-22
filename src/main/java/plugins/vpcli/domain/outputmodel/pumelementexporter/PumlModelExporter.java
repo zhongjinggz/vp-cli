@@ -4,7 +4,7 @@ import jakarta.inject.Inject;
 import jakarta.inject.Singleton;
 
 @Singleton
-public class PumlModelExporter extends PumlBlockExporter {
+public class PumlModelExporter extends PumlPackageExporter {
     @Inject
     public PumlModelExporter() {
     }

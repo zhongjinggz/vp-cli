@@ -12,7 +12,6 @@ public class PumlDiagramFactory {
 
     @Inject
     public PumlDiagramFactory(
-//        PumlDiagramCreator pumlDiagramCreator,
         PumlElementExporterFactory exporterFactory
     ) {
         this.exporterFactory = exporterFactory;

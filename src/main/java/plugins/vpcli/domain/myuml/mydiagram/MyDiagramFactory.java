@@ -43,10 +43,11 @@ public class MyDiagramFactory {
         if (vpShape != null) {
             for (var aShape : vpShape) {
 
-                debug(aShape);
 
                 // parent is null means it is top level
+                // TODO how to imporve the efficiency against filtering all shapes?
                 if (aShape.getParent() == null) {
+                    debug(aShape);
                     buildMyDiagramElement.of(aShape, result);
                 }
             }

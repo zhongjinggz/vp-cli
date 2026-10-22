@@ -23,15 +23,39 @@ public class MyPackage extends MyElement {
         String description,
         List<MyStereotype> stereotypes
     ) {
-        super(parent, id, name, MyElementType.PACKAGE, description, stereotypes);
+        super(parent,
+            id,
+            name,
+            MyElementType.PACKAGE,
+            description,
+            stereotypes
+        );
+    }
+
+    // used by MyModel to indicate the element type
+    public MyPackage(
+        MyElement parent,
+        String id,
+        String name,
+        MyElementType myElementType,
+        String description,
+        List<MyStereotype> stereotypes
+    ) {
+        super(parent,
+            id,
+            name,
+            myElementType,
+            description,
+            stereotypes
+        );
     }
 
     public MyPackage(String packageName, boolean isSubpackage) {
         super(packageName);
         this.isSubpackage = isSubpackage;
     }
-
     // old
+
     public MyPackage(String packageName
         , List<MyClass> classes
         , List<MyPackage> subPackages
