@@ -3,6 +3,7 @@ package plugins.vpcli.domain.myuml.myassociation;
 import plugins.vpcli.domain.myuml.mycommon.MyElementType;
 import plugins.vpcli.domain.myuml.mycommon.MyElement;
 import plugins.vpcli.domain.myuml.mycommon.MyStereotype;
+import com.vp.plugin.model.IAssociationEnd;
 
 import java.util.List;
 
@@ -17,10 +18,35 @@ public class MyAssociationEnd extends MyElement {
     public static final int NAVIGABLE_UNSPECIFIED = 1;
     public static final int NAVIGABLE_NON_NAVIGABLE = 2;
 
+    /** 领域层聚合/组合常量，值与 VP SDK 的 IAssociationEnd 常量一致（直接透传）。 */
+    public static final String AGGREGATION_NONE = IAssociationEnd.AGGREGATION_KIND_none;
+    public static final String AGGREGATION_SHARED = IAssociationEnd.AGGREGATION_KIND_shared;
+    public static final String AGGREGATION_COMPOSITE = IAssociationEnd.AGGREGATION_KIND_composite;
+
     private MyElement element;
     private String multiplicity = "";
     private int navigable = NAVIGABLE_UNSPECIFIED;
+    private String aggregationKind = AGGREGATION_NONE;
 
+    public MyAssociationEnd(
+        MyElement parent,
+        String id,
+        String name,
+        String description,
+        List<MyStereotype> stereotypes,
+        MyElement element,
+        String multiplicity,
+        int navigable,
+        String aggregationKind
+    ) {
+        super(parent, id, name, MyElementType.ASSOCIATION_END, description, stereotypes);
+        this.element = element;
+        setMultiplicity(multiplicity);
+        this.navigable = navigable;
+        setAggregationKind(aggregationKind);
+    }
+
+    /** 便捷构造器：未提供聚合信息时，聚合/组合默认为 none。 */
     public MyAssociationEnd(
         MyElement parent,
         String id,
@@ -31,10 +57,7 @@ public class MyAssociationEnd extends MyElement {
         String multiplicity,
         int navigable
     ) {
-        super(parent, id, name, MyElementType.ASSOCIATION_END, description, stereotypes);
-        this.element = element;
-        setMultiplicity(multiplicity);
-        this.navigable = navigable;
+        this(parent, id, name, description, stereotypes, element, multiplicity, navigable, AGGREGATION_NONE);
     }
 
     public MyElement getElement() {
@@ -64,5 +87,14 @@ public class MyAssociationEnd extends MyElement {
 
     public void setNavigable(int navigable) {
         this.navigable = navigable;
+    }
+
+    public String getAggregationKind() {
+        return aggregationKind;
+    }
+
+    public void setAggregationKind(String aggregationKind) {
+        // null 归一化为 none
+        this.aggregationKind = aggregationKind == null ? AGGREGATION_NONE : aggregationKind;
     }
 }

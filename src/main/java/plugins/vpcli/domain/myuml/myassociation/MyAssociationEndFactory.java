@@ -37,7 +37,8 @@ public class MyAssociationEndFactory extends MyElementFactory {
             stereotypes,
             endpointElement,
             vpEnd.getMultiplicity(),
-            vpEnd.getNavigable()
+            vpEnd.getNavigable(),
+            vpEnd.getAggregationKind()
         );
     }
 }

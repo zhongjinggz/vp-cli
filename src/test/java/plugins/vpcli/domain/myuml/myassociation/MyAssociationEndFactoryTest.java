@@ -57,6 +57,7 @@ class MyAssociationEndFactoryTest {
         when(vpEnd.getModelElement()).thenReturn(vpEndpoint);
         when(vpEnd.getMultiplicity()).thenReturn("0..*");
         when(vpEnd.getNavigable()).thenReturn(MyAssociationEnd.NAVIGABLE_NAVIGABLE);
+        when(vpEnd.getAggregationKind()).thenReturn(MyAssociationEnd.AGGREGATION_SHARED);
 
         MyAssociationEndFactory factory = new MyAssociationEndFactory(pool);
         factory.setFactoryFactory(buildFactoryFactory(pool));
@@ -66,6 +67,7 @@ class MyAssociationEndFactoryTest {
         assertEquals(MyElementType.ASSOCIATION_END, end.getElementType());
         assertEquals("0..*", end.getMultiplicity());
         assertEquals(MyAssociationEnd.NAVIGABLE_NAVIGABLE, end.getNavigable());
+        assertEquals(MyAssociationEnd.AGGREGATION_SHARED, end.getAggregationKind());
         assertEquals("订单", end.getElement().getName());
         assertEquals(MyElementType.CLASS, end.getElement().getElementType());
     }
@@ -85,6 +87,7 @@ class MyAssociationEndFactoryTest {
         when(vpEnd.getModelElement()).thenReturn(vpEndpoint);
         when(vpEnd.getMultiplicity()).thenReturn("Unspecified");
         when(vpEnd.getNavigable()).thenReturn(MyAssociationEnd.NAVIGABLE_UNSPECIFIED);
+        when(vpEnd.getAggregationKind()).thenReturn(MyAssociationEnd.AGGREGATION_NONE);
 
         MyAssociationEndFactory factory = new MyAssociationEndFactory(pool);
         factory.setFactoryFactory(buildFactoryFactory(pool));

@@ -49,7 +49,7 @@ public class MyAssociation extends MyElement {
     public void setFromElement(MyElement fromElement) {
         if (fromEnd == null) {
             fromEnd = new MyAssociationEnd(this, "", "", "", List.of(), fromElement, "",
-                MyAssociationEnd.NAVIGABLE_UNSPECIFIED);
+                MyAssociationEnd.NAVIGABLE_UNSPECIFIED, MyAssociationEnd.AGGREGATION_NONE);
         }
         fromEnd.setElement(fromElement);
     }
@@ -62,7 +62,7 @@ public class MyAssociation extends MyElement {
     public void setToElement(MyElement toElement) {
         if (toEnd == null) {
             toEnd = new MyAssociationEnd(this, "", "", "", List.of(), toElement, "",
-                MyAssociationEnd.NAVIGABLE_UNSPECIFIED);
+                MyAssociationEnd.NAVIGABLE_UNSPECIFIED, MyAssociationEnd.AGGREGATION_NONE);
         }
         toEnd.setElement(toElement);
     }

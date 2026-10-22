@@ -23,7 +23,7 @@ class MyAssociationEndTest {
 
         MyAssociationEnd end = new MyAssociationEnd(
             root, "e1", "订单端", "", stereotypes, order, "0..*",
-            MyAssociationEnd.NAVIGABLE_NAVIGABLE);
+            MyAssociationEnd.NAVIGABLE_NAVIGABLE, MyAssociationEnd.AGGREGATION_NONE);
 
         assertEquals(MyElementType.ASSOCIATION_END, end.getElementType());
         assertSame(order, end.getElement());
@@ -38,7 +38,7 @@ class MyAssociationEndTest {
 
         MyAssociationEnd end = new MyAssociationEnd(
             root, "e1", "订单端", "", stereotypes, order, "Unspecified",
-            MyAssociationEnd.NAVIGABLE_NAVIGABLE);
+            MyAssociationEnd.NAVIGABLE_NAVIGABLE, MyAssociationEnd.AGGREGATION_NONE);
 
         assertEquals("", end.getMultiplicity());
     }
@@ -50,7 +50,7 @@ class MyAssociationEndTest {
 
         MyAssociationEnd end = new MyAssociationEnd(
             root, "e1", "订单端", "", stereotypes, order, null,
-            MyAssociationEnd.NAVIGABLE_NAVIGABLE);
+            MyAssociationEnd.NAVIGABLE_NAVIGABLE, MyAssociationEnd.AGGREGATION_NONE);
 
         assertEquals("", end.getMultiplicity());
     }
@@ -62,7 +62,7 @@ class MyAssociationEndTest {
 
         MyAssociationEnd end = new MyAssociationEnd(
             root, "e1", "订单端", "", stereotypes, order, "",
-            MyAssociationEnd.NAVIGABLE_NON_NAVIGABLE);
+            MyAssociationEnd.NAVIGABLE_NON_NAVIGABLE, MyAssociationEnd.AGGREGATION_NONE);
 
         assertEquals("订单端", end.getQualifiedName());
     }
@@ -74,7 +74,7 @@ class MyAssociationEndTest {
 
         MyAssociationEnd end = new MyAssociationEnd(
             root, "e1", "订单端", "", stereotypes, order, "",
-            MyAssociationEnd.NAVIGABLE_UNSPECIFIED);
+            MyAssociationEnd.NAVIGABLE_UNSPECIFIED, MyAssociationEnd.AGGREGATION_NONE);
 
         assertEquals(MyAssociationEnd.NAVIGABLE_UNSPECIFIED, end.getNavigable());
     }

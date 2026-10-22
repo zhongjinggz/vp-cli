@@ -40,9 +40,9 @@ class MyAssociationTest {
         MyUseCase to = new MyUseCase(root, "u1", "下订单", "", stereotypes);
 
         MyAssociationEnd fromEnd = new MyAssociationEnd(root, "fe", "", "", stereotypes, from, "1",
-            MyAssociationEnd.NAVIGABLE_NAVIGABLE);
+            MyAssociationEnd.NAVIGABLE_NAVIGABLE, MyAssociationEnd.AGGREGATION_NONE);
         MyAssociationEnd toEnd = new MyAssociationEnd(root, "te", "", "", stereotypes, to, "0..*",
-            MyAssociationEnd.NAVIGABLE_NON_NAVIGABLE);
+            MyAssociationEnd.NAVIGABLE_NON_NAVIGABLE, MyAssociationEnd.AGGREGATION_NONE);
 
         MyAssociation association = new MyAssociation(
             root, "a1", "", "",

@@ -146,6 +146,50 @@ class PumlAssociationExporterTest {
     }
 
     @Test
+    void shouldRenderRoleNames() {
+        MyProject root = buildRootWithAssociation();
+        MyClass order = findClass(root, "订单");
+        MyClass customer = findClass(root, "客户");
+
+        // 两端都带角色名，无多重性 → 每端一个引号标签
+        MyAssociation association =
+            new MyAssociation(root, "a9", "", "", stereotypes,
+                new MyAssociationEnd(root, "fe", "订单端", "", stereotypes, order, "",
+                    MyAssociationEnd.NAVIGABLE_UNSPECIFIED),
+                new MyAssociationEnd(root, "te", "客户端", "", stereotypes, customer, "",
+                    MyAssociationEnd.NAVIGABLE_UNSPECIFIED));
+
+        PumlDiagram diagram = newDiagram();
+        new PumlAssociationExporter().to(diagram, wrap(association));
+
+        String content = diagram.toString();
+        assertTrue(content.contains("领域模型__订单__订单 \"订单端\" -- \"客户端\" 领域模型__订单__客户"),
+            "只带角色名时应各渲染一个引号标签，实际:\n" + content);
+    }
+
+    @Test
+    void shouldMergeRoleAndMultiplicityIntoOneLabel() {
+        MyProject root = buildRootWithAssociation();
+        MyClass order = findClass(root, "订单");
+        MyClass customer = findClass(root, "客户");
+
+        // 角色名 + 多重性并存 → 合并进同一引号：role 在前、multiplicity 在后
+        MyAssociation association =
+            new MyAssociation(root, "a10", "", "", stereotypes,
+                new MyAssociationEnd(root, "fe", "订单端", "", stereotypes, order, "1",
+                    MyAssociationEnd.NAVIGABLE_UNSPECIFIED),
+                new MyAssociationEnd(root, "te", "客户端", "", stereotypes, customer, "0..*",
+                    MyAssociationEnd.NAVIGABLE_UNSPECIFIED));
+
+        PumlDiagram diagram = newDiagram();
+        new PumlAssociationExporter().to(diagram, wrap(association));
+
+        String content = diagram.toString();
+        assertTrue(content.contains("领域模型__订单__订单 \"订单端 1\" -- \"客户端 0..*\" 领域模型__订单__客户"),
+            "角色与多重性应合并为单一引号标签，实际:\n" + content);
+    }
+
+    @Test
     void shouldEmitArrowOnToEndOnlyWhenFromNonNavigableUnspecifiedAndToNavigable() {
         // from 端 Unspecified、to 端可导航 → 仅 to 端（右侧）画箭头，渲染成 `-->`
         MyProject root = buildRootWithAssociation();
@@ -231,5 +275,71 @@ class PumlAssociationExporterTest {
         String content = diagram.toString();
         assertTrue(content.contains("领域模型__订单__订单 x--x 领域模型__订单__客户"),
             "期望两端叉号，实际:\n" + content);
+    }
+
+    @Test
+    void shouldRenderSharedDiamondOnToEndAndSuppressArrow() {
+        // to 端 shared 聚合 → 空心菱形 `o`，即使 to 端可导航也不画箭头
+        MyProject root = buildRootWithAssociation();
+        MyClass order = findClass(root, "订单");
+        MyClass customer = findClass(root, "客户");
+
+        MyAssociation association =
+            new MyAssociation(root, "a11", "", "", stereotypes,
+                new MyAssociationEnd(root, "fe", "", "", stereotypes, order, "",
+                    MyAssociationEnd.NAVIGABLE_NAVIGABLE, MyAssociationEnd.AGGREGATION_NONE),
+                new MyAssociationEnd(root, "te", "", "", stereotypes, customer, "",
+                    MyAssociationEnd.NAVIGABLE_NAVIGABLE, MyAssociationEnd.AGGREGATION_SHARED));
+
+        PumlDiagram diagram = newDiagram();
+        new PumlAssociationExporter().to(diagram, wrap(association));
+
+        String content = diagram.toString();
+        assertTrue(content.contains("领域模型__订单__订单 <--o 领域模型__订单__客户"),
+            "shared 聚合应画空心菱形并抑制 to 端箭头，实际:\n" + content);
+    }
+
+    @Test
+    void shouldRenderCompositeDiamondOnFromEndAndSuppressArrow() {
+        // from 端 composite 组合 → 实心菱形 `*`，即使可导航也不画箭头
+        MyProject root = buildRootWithAssociation();
+        MyClass order = findClass(root, "订单");
+        MyClass customer = findClass(root, "客户");
+
+        MyAssociation association =
+            new MyAssociation(root, "a12", "", "", stereotypes,
+                new MyAssociationEnd(root, "fe", "", "", stereotypes, order, "",
+                    MyAssociationEnd.NAVIGABLE_NAVIGABLE, MyAssociationEnd.AGGREGATION_COMPOSITE),
+                new MyAssociationEnd(root, "te", "", "", stereotypes, customer, "",
+                    MyAssociationEnd.NAVIGABLE_NAVIGABLE, MyAssociationEnd.AGGREGATION_NONE));
+
+        PumlDiagram diagram = newDiagram();
+        new PumlAssociationExporter().to(diagram, wrap(association));
+
+        String content = diagram.toString();
+        assertTrue(content.contains("领域模型__订单__订单 *--> 领域模型__订单__客户"),
+            "composite 聚合应画实心菱形并抑制 from 端箭头，实际:\n" + content);
+    }
+
+    @Test
+    void shouldRenderSharedDiamondOnLeftEnd() {
+        // from 端 shared → 左端空心菱形 `o--`
+        MyProject root = buildRootWithAssociation();
+        MyClass order = findClass(root, "订单");
+        MyClass customer = findClass(root, "客户");
+
+        MyAssociation association =
+            new MyAssociation(root, "a13", "", "", stereotypes,
+                new MyAssociationEnd(root, "fe", "", "", stereotypes, order, "",
+                    MyAssociationEnd.NAVIGABLE_NON_NAVIGABLE, MyAssociationEnd.AGGREGATION_SHARED),
+                new MyAssociationEnd(root, "te", "", "", stereotypes, customer, "",
+                    MyAssociationEnd.NAVIGABLE_NAVIGABLE, MyAssociationEnd.AGGREGATION_NONE));
+
+        PumlDiagram diagram = newDiagram();
+        new PumlAssociationExporter().to(diagram, wrap(association));
+
+        String content = diagram.toString();
+        assertTrue(content.contains("领域模型__订单__订单 o--> 领域模型__订单__客户"),
+            "from 端 shared 应画左端空心菱形，实际:\n" + content);
     }
 }

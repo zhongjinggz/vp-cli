@@ -80,19 +80,36 @@ public class PumlDiagram {
     }
 
     public void writeEdge(PumlEdgeEnd from, PumlEdgeEnd to, LineStyle lineStyle) {
-        // 语法为：fromName "fromMult" fromShape--toShape "toMult" toName，shape 紧贴 --。
+        // 每一端只能有一个引号标签（role+multiplicity 合并），shape 紧贴 --。
         String fromName = from.getName();
-        if (from.getMultiplicity() != null && !from.getMultiplicity().isEmpty()) {
-            fromName += " \"" + from.getMultiplicity() + "\"";
+        String fromLabel = edgeLabel(from.getRole(), from.getMultiplicity());
+        if (!fromLabel.isEmpty()) {
+            fromName += " \"" + fromLabel + "\"";
         }
 
         String toName = to.getName();
-        if (to.getMultiplicity() != null && !to.getMultiplicity().isEmpty()) {
-            toName = "\"" + to.getMultiplicity() + "\" " + toName;
+        String toLabel = edgeLabel(to.getRole(), to.getMultiplicity());
+        if (!toLabel.isEmpty()) {
+            toName = "\"" + toLabel + "\" " + toName;
         }
 
         String line = from.getShapeKind().getText() + lineStyle.getText() + to.getShapeKind().getText();
         addStatement(fromName + " " + line + " " + toName);
+    }
+
+    /** 合并 role 与 multiplicity 为单个引号标签，空的部分省略。 */
+    private String edgeLabel(String role, String multiplicity) {
+        StringBuilder sb = new StringBuilder();
+        if (role != null && !role.isEmpty()) {
+            sb.append(role);
+        }
+        if (multiplicity != null && !multiplicity.isEmpty()) {
+            if (sb.length() > 0) {
+                sb.append(' ');
+            }
+            sb.append(multiplicity);
+        }
+        return sb.toString();
     }
 
     public enum LineStyle {
