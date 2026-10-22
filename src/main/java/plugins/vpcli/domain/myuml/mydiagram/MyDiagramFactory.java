@@ -17,13 +17,10 @@ public class MyDiagramFactory {
     private final MyDiagramElementFactory buildMyDiagramElement;
 
     @Inject
-    public MyDiagramFactory(
-//        MyDiagramCreator myDiagramCreator,
-        MyDiagramElementFactory myDiagramElementFactory
-    ) {
-        this(
-            myDiagramElementFactory,
-            getLogger(MyDiagramFactory.class));
+    public MyDiagramFactory(MyDiagramElementFactory myDiagramElementFactory) {
+        this(myDiagramElementFactory,
+            getLogger(MyDiagramFactory.class)
+        );
 
     }
 
@@ -42,8 +39,6 @@ public class MyDiagramFactory {
         var vpShape = vpDiagram.toShapeUIModelArray();
         if (vpShape != null) {
             for (var aShape : vpShape) {
-
-
                 // parent is null means it is top level
                 // TODO how to imporve the efficiency against filtering all shapes?
                 if (aShape.getParent() == null) {

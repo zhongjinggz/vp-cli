@@ -4,7 +4,6 @@ import com.vp.plugin.diagram.IDiagramElement;
 import com.vp.plugin.model.IModelElement;
 import org.jetbrains.annotations.NotNull;
 import plugins.vpcli.domain.myuml.mycommon.MyElement;
-import plugins.vpcli.domain.myuml.mycommon.MyElementFactory;
 import plugins.vpcli.domain.myuml.mycommon.MyElementFactoryFactory;
 
 import jakarta.inject.Inject;
@@ -12,22 +11,21 @@ import jakarta.inject.Singleton;
 
 @Singleton
 public class MyDiagramElementFactory {
-    private final MyElementFactoryFactory myElementFactoryFactory;
+    private final MyElementFactoryFactory buildMyElementFactory;
 
     @Inject
     public MyDiagramElementFactory(
         MyElementFactoryFactory myElementFactoryFactory
 //        , MyDiagramElementCreator myDiagramElementCreator
     ) {
-        this.myElementFactoryFactory = myElementFactoryFactory;
+        this.buildMyElementFactory = myElementFactoryFactory;
     }
 
     public void of(IDiagramElement vpDiagramElement,
-                               MyDiagramElement parentDiagramElement) {
-
+                   MyDiagramElement parentDiagramElement
+    ) {
         var result = buildRoot(vpDiagramElement, parentDiagramElement);
         buildSubElements(vpDiagramElement, result);
-
     }
 
     private void buildSubElements(IDiagramElement vpDiagramElement, ProperMyDiagramElement result) {
@@ -40,9 +38,7 @@ public class MyDiagramElementFactory {
     private @NotNull ProperMyDiagramElement buildRoot(IDiagramElement vpDiagramElement, MyDiagramElement parentDiagramElement) {
         IModelElement vpElement = vpDiagramElement.getModelElement();
 
-        MyElementFactory buildMyElement = myElementFactoryFactory.of(
-            vpElement.getModelType()
-        );
+        var buildMyElement = buildMyElementFactory.of(vpElement.getModelType());
 
         var myElement = buildMyElement.of(vpElement);
 

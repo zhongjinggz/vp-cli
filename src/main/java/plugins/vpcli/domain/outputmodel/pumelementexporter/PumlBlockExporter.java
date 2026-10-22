@@ -21,12 +21,12 @@ public abstract class PumlBlockExporter extends PumlElementExporter {
     public void to(PumlDiagram result, ProperMyDiagramElement myDiagramElement) {
         var myElement = myDiagramElement.getModelElement();
 
-        logger.debug("exporting block: elementType={} name={} alias={} suffix={}",
-            myElement.getElementType(),
-            myElement.getName(),
-            getPumlAlias(myElement),
-            getBlockSuffix()
-        );
+//        logger.debug("exporting block: elementType={} name={} alias={} suffix={}",
+//            myElement.getElementType(),
+//            myElement.getName(),
+//            getPumlAlias(myElement),
+//            getBlockSuffix()
+//        );
 
 //        result.beginBlock(getBlockType() + " \"" + myElement.getName() + "\" as " + getPumlAlias(myElement) + getBlockSuffix());
         result.beginBlock(

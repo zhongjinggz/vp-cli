@@ -1,5 +1,6 @@
 package plugins.vpcli.domain.myuml.myassociation;
 
+import com.vp.plugin.model.IAssociation;
 import com.vp.plugin.model.IModelElement;
 import plugins.vpcli.domain.myuml.mycommon.MyElement;
 import plugins.vpcli.domain.myuml.mycommon.MyElementFactory;
@@ -14,26 +15,29 @@ import java.util.List;
 @Singleton
 public class MyAssociationFactory extends MyElementFactory {
     @Inject
-    public MyAssociationFactory(
-        MyElementPool myElementPool
-//        , MyElementTypeAssociation myElementType
-//        , MyElementTypeRepository myElementTypeRepository
-    ) {
-        super(myElementPool
-        );
+    public MyAssociationFactory(MyElementPool myElementPool) {
+        super(myElementPool);
     }
 
     @Override
     public MyAssociation reallyCreate(
         MyElement parent,
-        IModelElement vpElement,
+        IModelElement vpAssociation,
         List<MyStereotype> stereotypes
     ) {
-        return new MyAssociation(
+        var fromElement = buildRelatedElement(((IAssociation)vpAssociation).getFrom());
+        var toElement = buildRelatedElement(((IAssociation)vpAssociation).getTo());
+
+        MyAssociation result = new MyAssociation(
             parent,
-            vpElement.getId(),
-            vpElement.getName(),
-            vpElement.getDescription(),
-            stereotypes);
+            vpAssociation.getId(),
+            vpAssociation.getName(),
+            vpAssociation.getDescription(),
+            stereotypes,
+            fromElement,
+            toElement
+        );
+
+        return result;
     }
 }

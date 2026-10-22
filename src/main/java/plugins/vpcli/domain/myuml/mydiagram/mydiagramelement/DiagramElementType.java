@@ -10,7 +10,7 @@ public enum DiagramElementType {
     MODEL(SHAPE_TYPE_MODEL, Kind.SHAPE),
     CLASS(SHAPE_TYPE_CLASS, Kind.SHAPE),
     USECASE(SHAPE_TYPE_USE_CASE, Kind.SHAPE),
-    ASSOCIATION(SHAPE_TYPE_ASSOCIATION, Kind.SHAPE);
+    ASSOCIATION(SHAPE_TYPE_ASSOCIATION, Kind.EDGE);
 
     private final String vpShapeType;
     private final Kind kind;

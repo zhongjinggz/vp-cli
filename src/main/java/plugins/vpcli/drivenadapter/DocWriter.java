@@ -35,7 +35,7 @@ public class DocWriter {
         String fileName = puml.getName() + ".puml";
         String pumlText = puml.toString();
 
-        logger.info("Writing file {}, under {} text={}", fileName, parentDir, pumlText);
+//        logger.info("Writing file {}, under {} text={}", fileName, parentDir, pumlText);
         io.writeFile(parentDir, fileName, pumlText);
     }
 }

@@ -28,7 +28,7 @@ public class MyIO {
     public void writeFile(File parentDir, String fileName, String text) throws IOException {
         File outputFile = new File(parentDir, fileName);
         Path path = outputFile.toPath();
-        logger.debug("Writing file {} to {}, text={}", fileName, path, text);
+        logger.debug("Writing file {} to {} ", fileName, path);
         Files.writeString(path, text, StandardCharsets.UTF_8);
     }
 

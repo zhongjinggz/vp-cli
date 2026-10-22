@@ -78,7 +78,7 @@ public class HelpController implements VPActionController {
             "    vp-tree -project <project name.vpp>\n";
 
         String changeLog = "Change Log:\n" +
-            " add stereotypes - 22:25";
+            " debug: creating top level diagram elements - 10:50";
 
         ApplicationManager.instance().getViewManager().showMessageDialog(
             ApplicationManager.instance()

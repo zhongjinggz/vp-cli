@@ -1,7 +1,6 @@
 package plugins.vpcli.domain.myuml.mycommon;
 
 import com.vp.plugin.model.IModelElement;
-import com.vp.plugin.model.factory.IModelElementFactory;
 import org.jspecify.annotations.NonNull;
 import org.slf4j.Logger;
 
@@ -52,12 +51,16 @@ public abstract class MyElementFactory {
             if (elementPool.contains(parentId)) {
                 myParentElement = elementPool.get(parentId);
             } else {
-                var factory = factoryFactory.of(vpParentElement.getModelType());
-
-                myParentElement = factory.of(vpParentElement);
+                myParentElement = buildRelatedElement(vpParentElement);
             }
         }
         return createWithParent(myParentElement, vpElement);
+    }
+
+    // use proper factory to build
+    protected MyElement buildRelatedElement(IModelElement vpElement) {
+        var factory = factoryFactory.of(vpElement.getModelType());
+        return factory.of(vpElement);
     }
 
     private MyElement createWithParent(MyElement parent, IModelElement vpElement) {
@@ -68,7 +71,7 @@ public abstract class MyElementFactory {
         } else {
             debug(vpElement); // to log, can be removed later
 
-            List<MyStereotype> myStereotypes = createMyStereotypes(vpElement);
+            List<MyStereotype> myStereotypes = buildMyStereotypes(vpElement);
 
             var result = reallyCreate(parent, vpElement, myStereotypes);
             elementPool.put(id, result);
@@ -76,18 +79,18 @@ public abstract class MyElementFactory {
         }
     }
 
-    private @NonNull List<MyStereotype> createMyStereotypes(IModelElement vpElement) {
-        List<MyStereotype> myStereotypes = new ArrayList<>();
-        var stereotypeFactory = factoryFactory.of(IModelElementFactory.MODEL_TYPE_STEREOTYPE);
+    private @NonNull List<MyStereotype> buildMyStereotypes(IModelElement vpElement) {
+        List<MyStereotype> result = new ArrayList<>();
 
         var vpStereotypes = vpElement.toStereotypeModelArray();
-        if (stereotypeFactory != null && vpStereotypes != null) {
+        if (vpStereotypes != null) {
             for (var aStereotype : vpStereotypes) {
-                myStereotypes.add((MyStereotype) stereotypeFactory.of(aStereotype));
+                MyElement myElement = buildRelatedElement(aStereotype);
+                result.add((MyStereotype) myElement);
             }
         }
 
-        return myStereotypes;
+        return result;
     }
 
     private void debug(IModelElement vpElement) {
