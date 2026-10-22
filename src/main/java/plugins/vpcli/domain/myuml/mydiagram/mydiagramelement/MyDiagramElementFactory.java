@@ -21,17 +21,28 @@ public class MyDiagramElementFactory {
         this.buildMyElementFactory = myElementFactoryFactory;
     }
 
-    public void of(IDiagramElement vpDiagramElement,
-                   MyDiagramElement parentDiagramElement
+    public void ofShape(IDiagramElement vpDiagramElement,
+                        MyDiagramElement parentDiagramElement
     ) {
         var result = buildRoot(vpDiagramElement, parentDiagramElement);
         buildSubElements(vpDiagramElement, result);
     }
 
+    /**
+     * 连接线（connector）没有子 shape，因此只构建根元素、不递归子节点。
+     * 其 modelElement 类型为关联时，会自动经 MyAssociationFactory 生成带端点的 MyAssociation。
+     */
+    public void ofConnector(
+        IDiagramElement vpConnector,
+        MyDiagramElement parentDiagramElement
+    ) {
+        buildRoot(vpConnector, parentDiagramElement);
+    }
+
     private void buildSubElements(IDiagramElement vpDiagramElement, ProperMyDiagramElement result) {
         var subShapes = vpDiagramElement.toChildArray();
         for (var aShape : subShapes) {
-            this.of(aShape, result);
+            this.ofShape(aShape, result);
         }
     }
 

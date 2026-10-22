@@ -70,4 +70,9 @@ public class ProperMyDiagramElement implements MyDiagramElement {
     public List<ProperMyDiagramElement> getSubShapes() {
         return Collections.unmodifiableList(this.subShapes);
     }
+
+    @Override
+    public List<ProperMyDiagramElement> getSubEdges() {
+        return Collections.unmodifiableList(this.subEdges);
+    }
 }

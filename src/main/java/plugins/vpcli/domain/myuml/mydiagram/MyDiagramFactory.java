@@ -5,6 +5,7 @@ import com.vp.plugin.diagram.IShapeUIModel;
 import org.slf4j.Logger;
 import plugins.vpcli.domain.myuml.mycommon.*;
 
+import static com.vp.plugin.diagram.IShapeTypeConstants.SHAPE_TYPE_ASSOCIATION;
 import static org.slf4j.LoggerFactory.getLogger;
 
 import jakarta.inject.Inject;
@@ -43,7 +44,17 @@ public class MyDiagramFactory {
                 // TODO how to imporve the efficiency against filtering all shapes?
                 if (aShape.getParent() == null) {
                     debug(aShape);
-                    buildMyDiagramElement.of(aShape, result);
+                    buildMyDiagramElement.ofShape(aShape, result);
+                }
+            }
+        }
+
+        var vpConnectors = vpDiagram.toConnectorUIModelArray();
+        if (vpConnectors != null) {
+            for (var aConnector : vpConnectors) {
+                // 只处理关联连接线，其余类型（依赖/泛化等）留给后续步骤
+                if (SHAPE_TYPE_ASSOCIATION.equals(aConnector.getShapeType())) {
+                    buildMyDiagramElement.ofConnector(aConnector, result);
                 }
             }
         }
