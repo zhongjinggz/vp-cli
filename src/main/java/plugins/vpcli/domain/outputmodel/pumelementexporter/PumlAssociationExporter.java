@@ -29,7 +29,9 @@ public class PumlAssociationExporter extends PumlElementExporter {
         result.writeEdge(
             PumlEdgeEnd.of(fromAlias, fromEnd.getMultiplicity(), fromEnd.getName(), fromShapeFor(fromEnd)),
             PumlEdgeEnd.of(toAlias, toEnd.getMultiplicity(), toEnd.getName(), toShapeFor(toEnd)),
-            LineStyle.SOLID);
+            LineStyle.SOLID,
+            association.getName(),
+            association.getNameDirection());
     }
 
     /**

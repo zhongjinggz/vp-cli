@@ -342,4 +342,97 @@ class PumlAssociationExporterTest {
         assertTrue(content.contains("领域模型__订单__订单 o--> 领域模型__订单__客户"),
             "from 端 shared 应画左端空心菱形，实际:\n" + content);
     }
+
+    // ---- 关联名称及阅读方向（#9） ----
+
+    @Test
+    void shouldRenderNameWithoutDirection() {
+        MyProject root = buildRootWithAssociation();
+        MyClass order = findClass(root, "订单");
+        MyClass customer = findClass(root, "客户");
+
+        MyAssociation association =
+            new MyAssociation(root, "a14", "doSomething", "", stereotypes,
+                new MyAssociationEnd(root, "fe", "", "", stereotypes, order, "",
+                    MyAssociationEnd.NAVIGABLE_UNSPECIFIED),
+                new MyAssociationEnd(root, "te", "", "", stereotypes, customer, "",
+                    MyAssociationEnd.NAVIGABLE_UNSPECIFIED));
+        association.setNameDirection(MyAssociation.NameDirection.NONE);
+
+        PumlDiagram diagram = newDiagram();
+        new PumlAssociationExporter().to(diagram, wrap(association));
+
+        String content = diagram.toString();
+        assertTrue(content.contains("领域模型__订单__订单 -- 领域模型__订单__客户: doSomething"),
+            "带名称且 NONE 方向应只追加 : name 不画三角，实际:\n" + content);
+    }
+
+    @Test
+    void shouldRenderNameWithFromToArrow() {
+        MyProject root = buildRootWithAssociation();
+        MyClass order = findClass(root, "订单");
+        MyClass customer = findClass(root, "客户");
+
+        MyAssociation association =
+            new MyAssociation(root, "a15", "doSomething", "", stereotypes,
+                new MyAssociationEnd(root, "fe", "", "", stereotypes, order, "",
+                    MyAssociationEnd.NAVIGABLE_UNSPECIFIED),
+                new MyAssociationEnd(root, "te", "", "", stereotypes, customer, "",
+                    MyAssociationEnd.NAVIGABLE_UNSPECIFIED));
+        association.setNameDirection(MyAssociation.NameDirection.FROM_TO);
+
+        PumlDiagram diagram = newDiagram();
+        new PumlAssociationExporter().to(diagram, wrap(association));
+
+        String content = diagram.toString();
+        // 阅读从左到右 → 三角在名称右侧：`doSomething>`
+        assertTrue(content.contains(": doSomething >"),
+            "FROM_TO 应在名称右侧画三角，实际:\n" + content);
+    }
+
+    @Test
+    void shouldRenderNameWithToFromArrow() {
+        MyProject root = buildRootWithAssociation();
+        MyClass order = findClass(root, "订单");
+        MyClass customer = findClass(root, "客户");
+
+        MyAssociation association =
+            new MyAssociation(root, "a16", "doSomething", "", stereotypes,
+                new MyAssociationEnd(root, "fe", "", "", stereotypes, order, "",
+                    MyAssociationEnd.NAVIGABLE_UNSPECIFIED),
+                new MyAssociationEnd(root, "te", "", "", stereotypes, customer, "",
+                    MyAssociationEnd.NAVIGABLE_UNSPECIFIED));
+        association.setNameDirection(MyAssociation.NameDirection.TO_FROM);
+
+        PumlDiagram diagram = newDiagram();
+        new PumlAssociationExporter().to(diagram, wrap(association));
+
+        String content = diagram.toString();
+        // 阅读从右到左 → 三角在名称左侧：`<doSomething`
+        assertTrue(content.contains(": < doSomething"),
+            "TO_FROM 应在名称左侧画三角，实际:\n" + content);
+    }
+
+    @Test
+    void shouldOmitNameWhenBlankEvenWithDirection() {
+        MyProject root = buildRootWithAssociation();
+        MyClass order = findClass(root, "订单");
+        MyClass customer = findClass(root, "客户");
+
+        // 名称为纯空白 + 方向 FROM_TO → 不应输出 : name 也不画三角
+        MyAssociation association =
+            new MyAssociation(root, "a17", "   ", "", stereotypes,
+                new MyAssociationEnd(root, "fe", "", "", stereotypes, order, "",
+                    MyAssociationEnd.NAVIGABLE_UNSPECIFIED),
+                new MyAssociationEnd(root, "te", "", "", stereotypes, customer, "",
+                    MyAssociationEnd.NAVIGABLE_UNSPECIFIED));
+        association.setNameDirection(MyAssociation.NameDirection.FROM_TO);
+
+        PumlDiagram diagram = newDiagram();
+        new PumlAssociationExporter().to(diagram, wrap(association));
+
+        String content = diagram.toString();
+        assertTrue(content.contains("领域模型__订单__订单 -- 领域模型__订单__客户\n"),
+            "空白名称应退化回纯别名行，实际:\n" + content);
+    }
 }

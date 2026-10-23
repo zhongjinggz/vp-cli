@@ -8,8 +8,17 @@ import java.util.List;
 
 public class MyAssociation extends MyElement {
 
+    /** 关联名称的阅读方向（对应 UML 关联名称旁的小实心三角）。 */
+    public enum NameDirection {
+        FROM_TO,
+        TO_FROM,
+        /** 仅用作“无名称”时的占位，不输出方向三角。 */
+        NONE
+    }
+
     private MyAssociationEnd fromEnd;
     private MyAssociationEnd toEnd;
+    private NameDirection nameDirection = NameDirection.NONE;
 
     public MyAssociation(
         MyElement parent,
@@ -23,6 +32,14 @@ public class MyAssociation extends MyElement {
         super(parent, id, name, MyElementType.ASSOCIATION, description, stereotypes);
         this.fromEnd = fromEnd;
         this.toEnd = toEnd;
+    }
+
+    public NameDirection getNameDirection() {
+        return nameDirection;
+    }
+
+    public void setNameDirection(NameDirection nameDirection) {
+        this.nameDirection = nameDirection == null ? NameDirection.NONE : nameDirection;
     }
 
     public MyAssociationEnd getFromEnd() {

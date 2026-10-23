@@ -288,7 +288,10 @@ class3 <.. class4
 - **接口**：VP 有独立依赖接口 `com.vp.plugin.model.IDependency`（继承 `IHasRelationshipBaseSimpleRelationship` → `ISimpleRelationship` → `IRelationship` → `IModelElement`）。
 - **模型类型常量**：`IModelElementFactory.MODEL_TYPE_DEPENDENCY = "Dependency"`。
 - **端点读取**：`IDependency.toFromRelationshipEndArray()` → `IRelationshipEnd[]`（源端）、`toToRelationshipEndArray()` → `IRelationshipEnd[]`（目标端）；每端 `IRelationshipEnd.getModelElement()` 返回该端绑定的分类器 `IModelElement`。因此 from = `toFromRelationshipEndArray()[0].getModelElement()`，to = `toToRelationshipEndArray()[0].getModelElement()`。
-- **遍历发现机制**：`MyDiagramFactory.of()`（.../mydiagram/MyDiagramFactory.java:37）遍历图表的 shape 和 connector，对每个元素用 `MyDiagramElementFactory.buildRoot()` 取 `vpElement.getModelType()` 查 `MyElementFactoryFactory.of()` 创建对应 `MyElement` 并入池。**因此：只要在 `MyElementFactoryFactory` 注册 `MODEL_TYPE_DEPENDENCY → MyDependencyFactory`，依赖就会在遍历到对应 connector 时自动被创建，无需依赖 `ExportDiagramVisitor.visit(ViClass)` 的实现。**
+- **遍历发现机制（需两层接线，见步骤 3）**：
+  - 层一（shape/connector 遍历入口）——`MyDiagramFactory.of()`（.../mydiagram/MyDiagramFactory.java:37）遍历 shape 与 connector：shape 经 `getModelElement().getModelType()`、connector 走 `ofConnector` → 最终都由 `MyDiagramElementFactory.buildRoot()` 用 `vpElement.getModelType()` 查 `MyElementFactoryFactory.of()` 建元素。但**当前 connector 分支被 `SHAPE_TYPE_ASSOCIATION` 过滤（MyDiagramFactory.java:56），依赖 connector 被显式跳过**，故须放宽该过滤（见步骤 3-①）。
+  - 层二（工厂注册）——`buildRoot` 须能用 modelType=`"Dependency"` 查得依赖工厂（见步骤 3-②），否则触发 `BugException`。
+  - 因此：**“仅”注册工厂不足以自动创建依赖，还需同步放宽 MyDiagramFactory 的 connector 过滤；这里不依赖 `ExportDiagramVisitor.visit(ViClass)` 的实现。**
 
 **设计图（依赖导出相关模块）：**
 
@@ -323,16 +326,24 @@ PumlDependencyExporter ..> PumlDiagram : writeEdge(虚线+箭头)
      - `to = ((IDependency) vpElement).toToRelationshipEndArray()[0].getModelElement()`
    - 验证：用桩 `IDependency` 断言 from/to 正确提取。
 
-3. **遍历发现接线（`MyElementFactoryFactory`）。**
-   - 方案：在 `MyElementFactoryFactory`（.../mycommon/MyElementFactoryFactory.java:24 附近）的构造器注册 `MODEL_TYPE_DEPENDENCY` → `MyDependencyFactory`，使 `MyDiagramFactory.of()` 遍历 connector 时能创建依赖元素。
-   - 理由：这是新流水线识别依赖的入口；未注册会触发 `BugException`。
-   - 验证：单测验证遍历到 `"Dependency"` 类型 connector 时能经 `of()` 取到 `MyDependencyFactory` 并创建元素。
+3. **遍历发现接线（两层）。**
+   - ① **放宽 connector 过滤（`MyDiagramFactory`）。**
+     - 方案：把 `MyDiagramFactory.of()`（.../mydiagram/MyDiagramFactory.java:56）的 connector 分支 `SHAPE_TYPE_ASSOCIATION.equals(...)` 改为同时接受 `IShapeTypeConstants.SHAPE_TYPE_DEPENDENCY`（用集合/多条件判断），使依赖 connector 能被传入 `ofConnector` → `buildRoot`。
+     - 理由：该处当前显式过滤掉非关联连接线（注释「其余类型（依赖/泛化等）留给后续步骤」），不放开则依赖永远不被遍历。
+     - 验证：单测用 `SHAPE_TYPE_DEPENDENCY` 的桩 connector 断言 `of()` 返回的 `MyDiagram` 含依赖元素。
+   - ② **注册依赖工厂（`MyElementFactoryFactory`）。**
+     - 方案：在 `MyElementFactoryFactory`（.../mycommon/MyElementFactoryFactory.java:24 附近）构造器注入 `MyDependencyFactory` 并 `register(MODEL_TYPE_DEPENDENCY, myDependencyFactory)`。
+     - 理由：`buildRoot` 用 `getModelType()` 查工厂；不注册会触发 `BugException`。
+     - 验证：单测验证 `of("Dependency")` 能取到 `MyDependencyFactory` 并创建元素，合并 ① 覆盖“依赖 connector → 建出依赖元素”的完整链路。
 
 4. **导出渲染（输出模型层）。**
-   - 方案：新建 `PumlDependencyExporter`，`to(...)` 中把 from 放左、to 放右，调用 `PumlDiagram.writeEdge` 以 `LineStyle.DASHED` + to 端 `ShapeKind.ARROW` 生成 `别名1 ..> 别名2`。
-   - 说明：与 #9 相同，`writeEdge(from, to)` 约定 from 恒在左、to 恒在右，箭头由 from 指向 to。依赖在 to 端渲染箭头，因此恒输出 `from ..> to`；需求图里的 `class3 <.. class4` 只是该依赖的 from=class4、to=class3（方向相反）时的正常渲染，并非靠交换端点产生。
-   - 理由：复用 `writeEdge` 的端点标签（role/multiplicity）逻辑与关联一致，风格统一。
-   - 验证：为导出器写单元测试，断言 `别名1 ..> 别名2`；并对 from=class4、to=class3 的依赖断言输出 `class4 ..> class3`。
+   - 方案：新建 `PumlDependencyExporter`，`to(...)` 中把 from 放左、to 放右，调用 5 参数 `PumlDiagram.writeEdge(from, to, LineStyle.DASHED, name, NameDirection)`（签名同 #9 方案步骤 3，见 spec 条目 #9）：
+     - `name`：传依赖名称，其空/空白归一化逻辑与关联一致（`association.getName()` 归一化为 `""`，空则不输出 `: name`）；
+     - `DIRECTION`：恒传 `NameDirection.NONE`（依赖不画阅读方向小三角，箭头仅表示依赖指向）。
+   - 说明：与 #9 相同，`writeEdge(from, to)` 约定 from 恒在左、to 恒在右，箭头由 from 指向 to。依赖在 to 端渲染箭头（ShapeKind.ARROW），因此恒输出 `别名1 ..> 别名2`；需求图里的 `class3 <.. class4` 只是该依赖的 from=class4、to=class3（方向相反）时的正常渲染，并非靠交换端点产生。
+   - 理由：复用 5 参数 `writeEdge` 的端点标签（role/multiplicity）与名称逻辑，与关联一致、风格统一；`NameDirection.NONE` 使依赖不输出阅读方向三角。
+   - 前置依赖：5 参数 `writeEdge` 由 #9 提供；若按依赖条目本身单独落地顺序，需先合入 #9 的签名改动。
+   - 验证：为导出器写单元测试，断言 `别名1 ..> 别名2`（name 为空）；带名称时断言输出 `别名1 ..> "别名2": 名称` 之类含 `: name` 的行；并对 from=class4、to=class3 的依赖断言输出 `class4 ..> class3`。
 
 5. **注册与接线（输出模型工厂）。**
    - 方案：在 `PumlElementExporterFactory`（.../PumlElementExporterFactory.java）构造器注入并 `register(MyElementType.DEPENDENCY, dependencyExporter)`。
