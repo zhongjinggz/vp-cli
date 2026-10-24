@@ -11,6 +11,7 @@ import org.junit.jupiter.api.Test;
 import plugins.vpcli.domain.myuml.myelement.MyElementFactoryFactory;
 import plugins.vpcli.domain.myuml.myelement.MyElementPool;
 import plugins.vpcli.domain.myuml.myelement.MyElementType;
+import plugins.vpcli.domain.myuml.mydependency.MyDependencyFactory;
 import plugins.vpcli.domain.myuml.mystereotype.MyStereotype;
 import plugins.vpcli.domain.myuml.myclassifier.MyClassFactory;
 import plugins.vpcli.domain.myuml.mymodel.MyModelFactory;
@@ -39,6 +40,7 @@ class MyAssociationEndFactoryTest {
             new MyUseCaseFactory(pool),
             new MyAssociationFactory(pool),
             new MyAssociationEndFactory(pool),
+            new MyDependencyFactory(pool),
             new MyModelRelationshipContainerFactory(pool),
             new MyStereotypeFactory(pool),
             new UnimplementedElementFactory(pool)

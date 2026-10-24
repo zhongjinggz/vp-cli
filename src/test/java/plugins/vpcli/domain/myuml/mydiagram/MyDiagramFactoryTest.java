@@ -2,6 +2,7 @@ package plugins.vpcli.domain.myuml.mydiagram;
 
 import static com.vp.plugin.diagram.IShapeTypeConstants.SHAPE_TYPE_ASSOCIATION;
 import static com.vp.plugin.diagram.IShapeTypeConstants.SHAPE_TYPE_CLASS;
+import static com.vp.plugin.diagram.IShapeTypeConstants.SHAPE_TYPE_DEPENDENCY;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -14,6 +15,8 @@ import plugins.vpcli.domain.myuml.myassociation.MyAssociationEnd;
 import plugins.vpcli.domain.myuml.myassociation.MyAssociationEndFactory;
 import plugins.vpcli.domain.myuml.myassociation.MyAssociationFactory;
 import plugins.vpcli.domain.myuml.myclassifier.MyClassFactory;
+import plugins.vpcli.domain.myuml.mydependency.MyDependency;
+import plugins.vpcli.domain.myuml.mydependency.MyDependencyFactory;
 import plugins.vpcli.domain.myuml.myelement.MyElement;
 import plugins.vpcli.domain.myuml.myelement.MyElementFactoryFactory;
 import plugins.vpcli.domain.myuml.myelement.MyElementPool;
@@ -34,6 +37,7 @@ import com.vp.plugin.diagram.IDiagramUIModel;
 import com.vp.plugin.diagram.IShapeUIModel;
 import com.vp.plugin.model.IAssociation;
 import com.vp.plugin.model.IAssociationEnd;
+import com.vp.plugin.model.IDependency;
 import com.vp.plugin.model.IModelElement;
 import com.vp.plugin.model.factory.IModelElementFactory;
 
@@ -52,6 +56,7 @@ class MyDiagramFactoryTest {
             new MyUseCaseFactory(pool),
             new MyAssociationFactory(pool),
             new MyAssociationEndFactory(pool),
+            new MyDependencyFactory(pool),
             new MyModelRelationshipContainerFactory(pool),
             new MyStereotypeFactory(pool),
             new UnimplementedElementFactory(pool)
@@ -151,27 +156,58 @@ class MyDiagramFactoryTest {
         assertEquals(MyElementType.CLASS, association.getToElement().getElementType());
     }
 
-//    @Test
-//    void shouldIgnoreNonAssociationConnectors() {
-//        IShapeUIModel classAShape = mockClassShape("c1", "订单");
-//
-//        // 一个非关联连接线（例如依赖），shapeType 未映射到 ASSOCIATION
-//        IConnectorUIModel otherConnector = mock(IConnectorUIModel.class);
-//        when(otherConnector.getShapeType()).thenReturn("Dependency");
-//
-//        IDiagramUIModel vpDiagram = mock(IDiagramUIModel.class);
-//        when(vpDiagram.getId()).thenReturn("d1");
-//        when(vpDiagram.getName()).thenReturn("类图");
-//        when(vpDiagram.getDocumentation()).thenReturn("");
-//        when(vpDiagram.getType()).thenReturn("ClassDiagram");
-//        when(vpDiagram.toShapeUIModelArray()).thenReturn(new IShapeUIModel[]{classAShape});
-//        when(vpDiagram.toConnectorUIModelArray()).thenReturn(new IConnectorUIModel[]{otherConnector});
-//
-//        MyDiagram result = buildFactory().of(vpDiagram, root);
-//
-//        assertEquals(1, result.getSubShapes().size());
-//        assertEquals(0, result.getSubEdges().size());
-//    }
+    private IConnectorUIModel mockDependencyConnector(
+        IModelElement vpFrom, IModelElement vpTo, String connectorId
+    ) {
+        IDependency dependency = mock(IDependency.class);
+        when(dependency.getModelType()).thenReturn(IModelElementFactory.MODEL_TYPE_DEPENDENCY);
+        when(dependency.getId()).thenReturn(connectorId);
+        when(dependency.getName()).thenReturn("");
+        when(dependency.getDescription()).thenReturn("");
+        when(dependency.getFrom()).thenReturn(vpFrom);
+        when(dependency.getTo()).thenReturn(vpTo);
+
+        IConnectorUIModel connector = mock(IConnectorUIModel.class);
+        when(connector.getShapeType()).thenReturn(SHAPE_TYPE_DEPENDENCY);
+        when(connector.getId()).thenReturn(connectorId + "-connector");
+        when(connector.getModelElement()).thenReturn(dependency);
+        return connector;
+    }
+
+    @Test
+    void shouldCollectDependencyConnectorIntoSubEdges() {
+        IShapeUIModel classAShape = mockClassShape("c1", "订单");
+        IShapeUIModel classBShape = mockClassShape("c2", "客户");
+
+        IConnectorUIModel dependencyConnector =
+            mockDependencyConnector(classAShape.getModelElement(), classBShape.getModelElement(), "d1");
+
+        IDiagramUIModel vpDiagram = mock(IDiagramUIModel.class);
+        when(vpDiagram.getId()).thenReturn("dia1");
+        when(vpDiagram.getName()).thenReturn("类图");
+        when(vpDiagram.getDocumentation()).thenReturn("");
+        when(vpDiagram.getType()).thenReturn("ClassDiagram");
+        when(vpDiagram.toShapeUIModelArray()).thenReturn(new IShapeUIModel[]{classAShape, classBShape});
+        when(vpDiagram.toConnectorUIModelArray()).thenReturn(new IConnectorUIModel[]{dependencyConnector});
+
+        MyDiagram result = buildFactory().of(vpDiagram, root);
+
+        assertEquals(2, result.getSubShapes().size());
+        assertEquals(1, result.getSubEdges().size());
+
+        ProperMyDiagramElement edge = result.getSubEdges().get(0);
+        assertEquals(DiagramElementType.DEPENDENCY, edge.getDiagramElementType());
+        assertTrue(edge.isEdge());
+        assertFalse(edge.isShape());
+
+        MyElement modelElement = edge.getModelElement();
+        assertEquals(MyElementType.DEPENDENCY, modelElement.getElementType());
+        assertTrue(modelElement instanceof MyDependency);
+
+        MyDependency dependency = (MyDependency) modelElement;
+        assertEquals("订单", dependency.getFrom().getName());
+        assertEquals("客户", dependency.getTo().getName());
+    }
 
     @Test
     void shouldHandleNullConnectorArray() {

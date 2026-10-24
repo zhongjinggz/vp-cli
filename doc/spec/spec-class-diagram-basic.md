@@ -176,7 +176,7 @@ class3 "1"o--"0..*" class4
 略
 
 ## 9 关联名称 Association Name
-- 状态：待方案设计
+- 状态：已完成
 
 ### 需求
 
@@ -265,7 +265,7 @@ MyAssociation x--> "1" NameDirection
 **说明/边界：** 名称与多重性、角色分属不同标签位（名称在连线中央、role+multiplicity 在端），二者不冲突；名称为空/空白时不输出方向三角；`NONE` 仅作无名称时的占位。
 
 ## 10 依赖 Dependency
-- 状态：待方案设计
+- 状态：已完成
 
 ### 需求
 ```plantuml
@@ -280,18 +280,15 @@ class3 <.. class4
 **目标：** 仅“导出/渲染”路径——读取 VP 中的依赖关系，在类图中渲染为带方向的虚线箭头 `..>`。**不涉及导入。**
 
 **现状分析（已核对源码）：**
-- 新输出模型（`domain/outputmodel`）目前没有“依赖”对应的模型类、`MyElementType` 或导出器；`PumlElementExporterFactory`（.../PumlElementExporterFactory.java:24）只注册了 ASSOCIATION / CLASS / PACKAGE / MODEL / RELATIONSHIPS / USE_CASE。
-- 旧 `MyRelationship.toExportFormat()`（src/.../mycommon/MyRelationship.java）里有 `case "Dependency": symbol = "..>"` 分支，但它属于 `writers_old` 旧导出路径，不被新流水线消费，因此需在新架构补齐。
-- 渲染基础已具备：`PumlDiagram.writeEdge(PumlEdgeEnd, PumlEdgeEnd, LineStyle)` 支持 `LineStyle.DASHED("..")` 与 `PumlEdgeEnd.ShapeKind.ARROW(">")`，组合即可生成“虚线 + 目标端箭头”的 `..>`（from 在左、to 在右，箭头贴合 to 端）。
+- 新输出模型（`domain/outputmodel`）目前没有“依赖”对应的模型类、`MyElementType` 或导出器；`PumlElementExporterFactory`（src/.../outputmodel/pumelementexporter/PumlElementExporterFactory.java）目前注册了 ASSOCIATION / CLASS / PACKAGE / MODEL / RELATIONSHIPS / USE_CASE / UNIMPLEMENTED_ELEMENT，未含依赖。
+- 旧 `MyRelationship_old.toExportFormat()`（src/.../myuml_old/mycommon_old/MyRelationship_old.java）里有 `case "Dependency": symbol = "..>"` 分支，但它属于旧导出路径，不被新流水线消费，因此需在新架构补齐。
+- 渲染基础已具备：`PumlDiagram.writeEdge(PumlEdgeEnd, PumlEdgeEnd, LineStyle, String name, NameDirection direction)` 支持 `LineStyle.DASHED("..")` 与 `PumlEdgeEnd.ShapeKind.ARROW(">")`，组合即可生成“虚线 + 目标端箭头”的 `..>`（from 在左、to 在右，箭头贴合 to 端）。
 
 **研究结论（已用 `javap` 反编译 VP SDK `openapi.jar` 核对）：**
 - **接口**：VP 有独立依赖接口 `com.vp.plugin.model.IDependency`（继承 `IHasRelationshipBaseSimpleRelationship` → `ISimpleRelationship` → `IRelationship` → `IModelElement`）。
 - **模型类型常量**：`IModelElementFactory.MODEL_TYPE_DEPENDENCY = "Dependency"`。
 - **端点读取**：`IDependency.toFromRelationshipEndArray()` → `IRelationshipEnd[]`（源端）、`toToRelationshipEndArray()` → `IRelationshipEnd[]`（目标端）；每端 `IRelationshipEnd.getModelElement()` 返回该端绑定的分类器 `IModelElement`。因此 from = `toFromRelationshipEndArray()[0].getModelElement()`，to = `toToRelationshipEndArray()[0].getModelElement()`。
-- **遍历发现机制（需两层接线，见步骤 3）**：
-  - 层一（shape/connector 遍历入口）——`MyDiagramFactory.of()`（.../mydiagram/MyDiagramFactory.java:37）遍历 shape 与 connector：shape 经 `getModelElement().getModelType()`、connector 走 `ofConnector` → 最终都由 `MyDiagramElementFactory.buildRoot()` 用 `vpElement.getModelType()` 查 `MyElementFactoryFactory.of()` 建元素。但**当前 connector 分支被 `SHAPE_TYPE_ASSOCIATION` 过滤（MyDiagramFactory.java:56），依赖 connector 被显式跳过**，故须放宽该过滤（见步骤 3-①）。
-  - 层二（工厂注册）——`buildRoot` 须能用 modelType=`"Dependency"` 查得依赖工厂（见步骤 3-②），否则触发 `BugException`。
-  - 因此：**“仅”注册工厂不足以自动创建依赖，还需同步放宽 MyDiagramFactory 的 connector 过滤；这里不依赖 `ExportDiagramVisitor.visit(ViClass)` 的实现。**
+- **工厂注册**: `buildRoot` 须能用 modelType=`"Dependency"` 查得依赖工厂（见步骤 3）
 
 **设计图（依赖导出相关模块）：**
 
@@ -316,7 +313,7 @@ PumlDependencyExporter ..> PumlDiagram : writeEdge(虚线+箭头)
 **实施步骤（每步可独立验证）：**
 
 1. **建模（领域模型层）。**
-   - 方案：新建 `MyDependency extends MyElement`，持有 from / to（各为一个 `MyElement`）。在 `MyElementType`（.../mycommon/MyElementType.java）增加 `DEPENDENCY` 枚举项，绑定 VP 类型 `MODEL_TYPE_DEPENDENCY`。
+   - 方案：新建 `MyDependency extends MyElement`，持有 from / to（各为一个 `MyElement`）。在 `MyElementType`（.../myuml/myelement/MyElementType.java）增加 `DEPENDENCY` 枚举项，绑定 VP 类型 `MODEL_TYPE_DEPENDENCY`。
    - 理由：依赖与关联在 UML 上是不同关系类型，独立建模便于后续导入与发展。
    - 验证：为 `MyDependency` 及工厂写基础单元测试（构造、getter、类型后缀、`vpModelTypeIs("Dependency")`）。
 
@@ -326,17 +323,17 @@ PumlDependencyExporter ..> PumlDiagram : writeEdge(虚线+箭头)
      - `to = ((IDependency) vpElement).toToRelationshipEndArray()[0].getModelElement()`
    - 验证：用桩 `IDependency` 断言 from/to 正确提取。
 
-3. **遍历发现接线（两层）。**
-   - ① **放宽 connector 过滤（`MyDiagramFactory`）。**
-     - 方案：把 `MyDiagramFactory.of()`（.../mydiagram/MyDiagramFactory.java:56）的 connector 分支 `SHAPE_TYPE_ASSOCIATION.equals(...)` 改为同时接受 `IShapeTypeConstants.SHAPE_TYPE_DEPENDENCY`（用集合/多条件判断），使依赖 connector 能被传入 `ofConnector` → `buildRoot`。
-     - 理由：该处当前显式过滤掉非关联连接线（注释「其余类型（依赖/泛化等）留给后续步骤」），不放开则依赖永远不被遍历。
-     - 验证：单测用 `SHAPE_TYPE_DEPENDENCY` 的桩 connector 断言 `of()` 返回的 `MyDiagram` 含依赖元素。
-   - ② **注册依赖工厂（`MyElementFactoryFactory`）。**
-     - 方案：在 `MyElementFactoryFactory`（.../mycommon/MyElementFactoryFactory.java:24 附近）构造器注入 `MyDependencyFactory` 并 `register(MODEL_TYPE_DEPENDENCY, myDependencyFactory)`。
-     - 理由：`buildRoot` 用 `getModelType()` 查工厂；不注册会触发 `BugException`。
-     - 验证：单测验证 `of("Dependency")` 能取到 `MyDependencyFactory` 并创建元素，合并 ① 覆盖“依赖 connector → 建出依赖元素”的完整链路。
+3. **注册依赖工厂（`MyElementFactoryFactory`）**
+     - 方案：在 `MyElementFactoryFactory`（.../myuml/myelement/MyElementFactoryFactory.java）构造器注入 `MyDependencyFactory` 并 `register(MODEL_TYPE_DEPENDENCY, myDependencyFactory)`。
+     - 理由：`buildRoot` 用 `getModelType()` 查工厂；当前 `MyElementFactoryFactory.of()` 对未注册类型会回退到 `UNIMPLEMENTED_ELEMENT` 工厂并 `log.warn`（不抛异常），注册后才不会把“依赖”误建成 UnimplementedElement。
+     - 验证：单测验证 `of("Dependency")` 能取到 `MyDependencyFactory` 并创建元素。
 
-4. **导出渲染（输出模型层）。**
+4. **图元类型注册（`DiagramElementType`）。**
+   - 方案：`MyDiagramElementFactory.createMyDiagramElement` 会用 `DiagramElementType.of(vpElement.getShapeType())` 记录图元类型（.../mydiagram/mydiagramelement/DiagramElementType.java），其 `Kind` 决定图元被 `MyDiagram.addSubDiagramElement` 归入 `subShapes` 还是 `subEdges`。依赖连接线是“边”，因此需在枚举中新增 `DEPENDENCY(SHAPE_TYPE_DEPENDENCY, Kind.EDGE)`（与既有 `ASSOCIATION(SHAPE_TYPE_ASSOCIATION, Kind.EDGE)` 一致）；否则 `DiagramElementType.of("Dependency")` 会回退到 `UNIMPLEMENTED_DIAGRAM_ELEMENT`（`Kind.SHAPE`），把依赖连接线误归入 `subShapes`。
+   - 理由：`PumlDiagramFactory.of()` 按 `subShapes`→`subEdges` 两组遍历并按 `MyElementType` 分派导出器；虽然未注册时依赖可能仍在 `subShapes` 里被导出，但语义上依赖是 EDGE，归入 `subEdges` 才能保证输出顺序与后续 subEdges 专用处理一致。
+   - 验证：单测验证 `DiagramElementType.of(SHAPE_TYPE_DEPENDENCY)` 返回 `DEPENDENCY` 且 `isEdge()` 为真（参考 `MyDiagramFactoryTest` 对 ASSOCIATION 的断言方式）。
+
+5. **导出渲染（输出模型层）。**
    - 方案：新建 `PumlDependencyExporter`，`to(...)` 中把 from 放左、to 放右，调用 5 参数 `PumlDiagram.writeEdge(from, to, LineStyle.DASHED, name, NameDirection)`（签名同 #9 方案步骤 3，见 spec 条目 #9）：
      - `name`：传依赖名称，其空/空白归一化逻辑与关联一致（`association.getName()` 归一化为 `""`，空则不输出 `: name`）；
      - `DIRECTION`：恒传 `NameDirection.NONE`（依赖不画阅读方向小三角，箭头仅表示依赖指向）。
@@ -345,11 +342,11 @@ PumlDependencyExporter ..> PumlDiagram : writeEdge(虚线+箭头)
    - 前置依赖：5 参数 `writeEdge` 由 #9 提供；若按依赖条目本身单独落地顺序，需先合入 #9 的签名改动。
    - 验证：为导出器写单元测试，断言 `别名1 ..> 别名2`（name 为空）；带名称时断言输出 `别名1 ..> "别名2": 名称` 之类含 `: name` 的行；并对 from=class4、to=class3 的依赖断言输出 `class4 ..> class3`。
 
-5. **注册与接线（输出模型工厂）。**
+6. **注册与接线（输出模型工厂）。**
    - 方案：在 `PumlElementExporterFactory`（.../PumlElementExporterFactory.java）构造器注入并 `register(MyElementType.DEPENDENCY, dependencyExporter)`。
    - 验证：`PumlElementExporterFactory` 相关测试中验证可 `of(DEPENDENCY)` 取到导出器；整体 `mvn test` 无回归。
 
-6. **集成验证。**
+7. **集成验证。**
    - 验证：手动在 VP 中建立若干依赖关系并导出，确认 `.puml` 渲染为 `..>` 且方向正确；用 PlantUML 预览确认可读。
 
 **说明/边界：** 本条目不在导入流水线解析 `..>`；`MyElementType.DEPENDENCY` 仅为导出而增设，若后续需导入再做解析与 creator。依赖、泛化（#11）、实现（#12/#18）等每类关系各走独立工厂。
@@ -372,17 +369,17 @@ class3 <|-- class4
 **目标：** 仅“导出/渲染”路径——读取 VP 中的泛化关系，在类图中渲染为“实线 + 目标端空心三角”的 `--|>` / `<|--`。**不涉及导入。**
 
 **现状分析（已核对源码）：**
-- 渲染基础已具备：`PumlDiagram.writeEdge(PumlEdgeEnd, PumlEdgeEnd, LineStyle)` 的 `LineStyle.SOLID("--")` 与 `PumlEdgeEnd.ShapeKind`（`TRIANGLE("|>")`、`REVERSE_TRIANGLE("<|")`）已存在（src/.../outputmodel/PumlDiagram.java、PumlEdgeEnd.java），二者组合即可生成空心三角连线。
-- 新输出模型中目前**没有**泛化的模型类、`MyElementType` 或导出器：`PumlElementExporterFactory`（.../PumlElementExporterFactory.java:24）只注册 ASSOCIATION / CLASS / PACKAGE / MODEL / RELATIONSHIPS / USE_CASE。
-- 旧 `MyRelationship.toExportFormat()`（src/.../mycommon/MyRelationship.java）有 `Generalization → <|--` 分支，但属于 `writers_old` 旧导出路径，不被新流水线消费，需要在新架构补齐。
+- 渲染基础已具备：`PumlDiagram.writeEdge(PumlEdgeEnd, PumlEdgeEnd, LineStyle, String name, NameDirection direction)`（src/.../outputmodel/PumlDiagram.java，#9 已完成）的 `LineStyle.SOLID("--")` 与 `PumlEdgeEnd.ShapeKind`（`TRIANGLE("|>")`、`REVERSE_TRIANGLE("<|")`）已存在（src/.../outputmodel/PumlEdgeEnd.java），二者组合即可生成空心三角连线。
+- 新输出模型中目前**没有**泛化的模型类、`MyElementType` 或导出器：`PumlElementExporterFactory`（src/.../outputmodel/pumelementexporter/PumlElementExporterFactory.java）目前注册了 ASSOCIATION / CLASS / PACKAGE / MODEL / RELATIONSHIPS / USE_CASE / UNIMPLEMENTED_ELEMENT，未含泛化。
+- 旧 `MyRelationship_old.toExportFormat()`（src/.../myuml_old/mycommon_old/MyRelationship_old.java）有 `Generalization → <|--` 分支，但属于旧导出路径，不被新流水线消费，需要在新架构补齐。
 
 **设计图（泛化导出相关模块）：**
 
 ```plantuml
 @startuml
 class MyGeneralization {
-  + getParent(): MyElement
-  + getChild(): MyElement
+  + getGeneral(): MyElement
+  + getSpecific(): MyElement
 }
 class MyGeneralizationFactory {
   + reallyCreate(...): MyGeneralization
@@ -391,7 +388,7 @@ class PumlGeneralizationExporter {
   + to(result: PumlDiagram, el: ProperMyDiagramElement): void
 }
 MyGeneralizationFactory ..> MyGeneralization : 创建
-PumlGeneralizationExporter ..> MyGeneralization : 读取父子
+PumlGeneralizationExporter ..> MyGeneralization : 读取泛化/特化
 PumlGeneralizationExporter --> PumlDiagram : writeEdge(实线+三角)
 @enduml
 ```
@@ -399,23 +396,28 @@ PumlGeneralizationExporter --> PumlDiagram : writeEdge(实线+三角)
 **实施步骤（每步可独立验证）：**
 
 1. **建模（领域模型层）。**
-   - 方案：新建 `MyGeneralization extends MyElement`，持有 child / parent（各为一个 `MyElement`）。在 `MyElementType`（.../mycommon/MyElementType.java）新增 `GENERALIZATION` 枚举项。
-   - 理由：泛化在 UML 语义上不同于关联/依赖，独立建模便于后续导入与发展。
+   - 方案：新建 `MyGeneralization extends MyElement`，持有 general / specific（各为一个 `MyElement`），并提供 `getGeneral()` / `getSpecific()`（以及对应的 setter）。在 `MyElementType`（.../myuml/myelement/MyElementType.java）新增 `GENERALIZATION(MODEL_TYPE_GENERALIZATION, ".generalization")` 枚举项。
+   - 理由：泛化在 UML 语义上不同于关联/依赖，独立建模便于后续导入与发展；字段命名用 UML 规范术语 `general`（一般/父类）/ `specific`（特化/子类），**避免使用 `parent`/`child`**，以免与 VP API 的 parent/child 语义混淆。
    - 验证：为 `MyGeneralization` 及工厂写基础单元测试（构造、getter、类型后缀）。
 
 2. **读取（工厂/访问器）。**
-   - 方案：新建 `MyGeneralizationFactory`（参考 `MyAssociationFactory`，src/.../myassociation/），从 VP 的 `IGeneralization`（或关系容器）读取子/父元素并填充。
-   - 说明：VP SDK 泛化接口的确切名称需在实施时核对（研究项，见 #10 同款说明）。
-   - 验证：用桩数据断言 child / parent 正确提取。
+   - 方案：新建 `MyGeneralizationFactory`（参考 `MyDependencyFactory`，src/.../mydependency/），用 `(IGeneralization) vpElement` 强转，再经 `((IRelationship) vpGeneralization).getFrom()/getTo()` 获取两个端点。
+   - **方向判定研究结论（已核验）：** `IGeneralization` 无专属方向方法（javap 确认），只继承 `ISimpleRelationship → IRelationship` 的 `getFrom()/getTo()`。旧 `MyRelationship_old.toExportFormat()` 的 Generalization 分支固定输出 `source <|-- target`（`source = relationship.getFrom()`，三角在 getFrom 侧/左），而 PlantUML 中 `<|--` 的空心三角指向父类，因此 **VP 泛化的 `getFrom()`=父类(general)、`getTo()`=子类(specific)**。方向恒定，**只有 getGeneral→general、getSpecific→specific 一种映射，无需考虑正向/反向交换**（PlantUML 的 `--|>` 与 `<|--` 语义等价，均三角指父，统一渲染为其中一种即可）。
+   - 说明：VP SDK 的 `IGeneralization` 已由 javap 确认存在且继承链含 `getFrom()/getTo()`（openapi.jar）。
+   - 验证：用桩数据断言 `getGeneral()`/`getSpecific()` 正确提取。
 
 3. **导出渲染（输出模型层）。**
-   - 方案：新建 `PumlGeneralizationExporter`，`to(...)` 中把 child 放 from、parent 放 to，调用 `writeEdge` 生成实线（SOLID）+ to 端 `TRIANGLE("|>")`，输出 `子 ..|> 父`；反向 `class3 <|-- class4` 通过交换 from/to 让 from 端呈现 `REVERSE_TRIANGLE("<|")`。
-   - 理由：与关联渲染复用同一端点机制（role/multiplicity 标签、方向符号），风格统一。
-   - 验证：为导出器写单元测试，断言 `子 --|> 父`、`父 <|-- 子` 与需求和 VP 中方向一致。
+   - 方案：新建 `PumlGeneralizationExporter`，`to(...)` 中把 general 放 from、specific 放 to，调用 `writeEdge` 生成实线（`LineStyle.SOLID`）+ **from 端 `REVERSE_TRIANGLE("<|")`**，输出 `general <|-- specific`（三角指向父类）。
+   - **方向判定逻辑：** 依据上述研究结论，`getGeneral()` 恒放连接线左端、`getSpecific()` 恒放右端，三角固定在 general（父）端，即始终渲染为 `父 <|-- 子`。**恒只有这一种方向，不需要根据几何/绘制方向做正反向交换**（PlantUML 中 `--|>` 与 `<|--` 语义等价，都表示左侧父右侧子或反之，三角恒指父；统一输出 `<|--` 即可完整表达继承关系）。
+   - 理由：与关联渲染复用同一 `writeEdge` 端点机制（role/multiplicity 标签、方向符号），风格统一。
+   - 验证：为导出器写单元测试，断言 `父 <|-- 子`（general=父放 from、specific=子放 to），并覆盖需求中两种输入（VP from=父/to=子 与 from=子/to=父 均归一为 `父 <|-- 子`）与需求和 VP 中方向一致。
 
-4. **注册与接线（工厂）。**
-   - 方案：在 `PumlElementExporterFactory` 构造器注入并 `register(MyElementType.GENERALIZATION, generalizationExporter)`。
-   - 验证：`PumlElementExporterFactory` 相关测试验证可 `of(GENERALIZATION)` 取到导出器；整体 `mvn test` 无回归。
+4. **注册与接线（工厂）——三处登记，缺一不可。**
+   - 方案：
+     - 元素工厂：在 `MyElementFactoryFactory`（.../myuml/myelement/MyElementFactoryFactory.java）构造器注入 `MyGeneralizationFactory` 并 `register(MyElementType.GENERALIZATION, myGeneralizationFactory)`。
+     - 图元类型：在 `DiagramElementType`（.../mydiagram/mydiagramelement/DiagramElementType.java）新增 `GENERALIZATION(SHAPE_TYPE_GENERALIZATION, Kind.EDGE)`（`SHAPE_TYPE_GENERALIZATION` 属于 `IShapeTypeConstants`，javap 已确认存在）。
+     - 输出导出器：在 `PumlElementExporterFactory`（.../outputmodel/pumelementexporter/PumlElementExporterFactory.java）构造器注入 `PumlGeneralizationExporter` 并 `register(MyElementType.GENERALIZATION, generalizationExporter)`。
+   - 验证：`MyElementFactoryFactory`/`PumlElementExporterFactory` 相关测试验证可 `of(GENERALIZATION)` 取到工厂/导出器（而非回退 Unimplemented / 抛 BugException）；整体 `mvn test` 无回归。
 
 5. **集成验证。**
    - 验证：手动在 VP 中建立若干继承关系导出，检查 `.puml` 渲染为 `--|>` / `<|--` 且三角指向父类；用 PlantUML 预览确认可读、方向正确。
@@ -448,7 +450,7 @@ interface2 -- class2
 
 **现状分析（已核对源码）：**
 - 输出模型层已有渲染“终端形状”的能力：`PumlDiagram.writeTerminalShape(String)`（src/.../outputmodel/PumlDiagram.java:51）可输出任意一段图元文本（如 `circle interface1`）。
-- `PumlDiagram.writeEdge(PumlEdgeEnd, PumlEdgeEnd, LineStyle)` 的 `LineStyle.SOLID("--")` 已具备实线能力。
+- `PumlDiagram.writeEdge(PumlEdgeEnd, PumlEdgeEnd, LineStyle, String name, NameDirection direction)` 的 `LineStyle.SOLID("--")` 已具备实线能力（#9 已完成）。
 - 新输出模型中没有任何“实现/接口关系”的模型类与导出器注册（见 #11 现状分析第 2 点）。
 
 **设计图（棒棒糖导出相关模块）：**

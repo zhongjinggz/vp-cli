@@ -32,3 +32,9 @@
 6）只修改指定的文件和章节，不要修改其他部分
 7）只给出方案，不要改代码
 8）完成方案后，将状态由“待方案设计”改为“待编码”
+
+
+## 代码实现
+请实现 `/Users/zhongjing/Projects/mine/vp-cli/doc/spec/spec-class-diagram-basic.md` 中 “## 10 依赖 Dependency” 中的方案。要求：
+1）只实现指定的需求，不要实现其他需求；
+2）如果发现方案中有问题，请先和我确认。
