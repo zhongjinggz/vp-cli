@@ -352,7 +352,7 @@ PumlDependencyExporter ..> PumlDiagram : writeEdge(虚线+箭头)
 **说明/边界：** 本条目不在导入流水线解析 `..>`；`MyElementType.DEPENDENCY` 仅为导出而增设，若后续需导入再做解析与 creator。依赖、泛化（#11）、实现（#12/#18）等每类关系各走独立工厂。
 
 ## 11 泛化 Generalization
-- 状态：待编码
+- 状态：已完成
 
 ### 需求
 ```plantuml
@@ -424,86 +424,8 @@ PumlGeneralizationExporter --> PumlDiagram : writeEdge(实线+三角)
 
 **说明/边界：** 本条目不在导入流水线解析 `--|>`；`MyElementType.GENERALIZATION` 仅为导出而增设。若同一泛化在线两端带泛型/立体类型，与 #18/#19 的关系需在后续条目统一处理（此处先不做）。
 
-## 12 接口实现 Implementation (棒棒糖方式)
-- 状态：待编码
-### 需求
 
-```plantuml
-@startuml
-class class1 {}
-class class2 {}
-
-circle interface1
-circle interface2
-
-class1 -- interface1
-interface2 -- class2
-
-@enduml
-```
-
-接口通过“棒棒糖（lollipop）”表示：接口渲染为一个小圆（`circle`），再用**实线**把它接到实现类上。
-
-### 方案
-
-**目标：** 仅“导出/渲染”路径——读取 VP 中“类实现接口”的关系，将接口渲染为 `circle`，并用实线连接到实现类。**不涉及导入。**
-
-**现状分析（已核对源码）：**
-- 输出模型层已有渲染“终端形状”的能力：`PumlDiagram.writeTerminalShape(String)`（src/.../outputmodel/PumlDiagram.java:51）可输出任意一段图元文本（如 `circle interface1`）。
-- `PumlDiagram.writeEdge(PumlEdgeEnd, PumlEdgeEnd, LineStyle, String name, NameDirection direction)` 的 `LineStyle.SOLID("--")` 已具备实线能力（#9 已完成）。
-- 新输出模型中没有任何“实现/接口关系”的模型类与导出器注册（见 #11 现状分析第 2 点）。
-
-**设计图（棒棒糖导出相关模块）：**
-
-```plantuml
-@startuml
-class MyLollipopImplementation {
-  + getImplementor(): MyElement
-  + getInterface(): MyElement
-}
-class MyLollipopImplementationFactory {
-  + reallyCreate(...): MyLollipopImplementation
-}
-class PumlLollipopImplementationExporter {
-  + to(result: PumlDiagram, el: ProperMyDiagramElement): void
-  + circleAliasFor(iface: MyElement): String
-}
-MyLollipopImplementationFactory ..> MyLollipopImplementation : 创建
-PumlLollipopImplementationExporter ..> MyLollipopImplementation : 读取两端
-PumlLollipopImplementationExporter --> PumlDiagram : writeTerminalShape(circle) + writeEdge(实线)
-@enduml
-```
-
-**实施步骤（每步可独立验证）：**
-
-1. **建模（领域模型层）。**
-   - 方案：新建 `MyLollipopImplementation extends MyElement`，持有 implementor / interfaceElement（各为一个 `MyElement`）。在 `MyElementType` 新增 `IMPLEMENTATION`（或复用已计划的关系容器类型）枚举项。
-   - 理由：棒棒糖实现与常规实现（#20 `..|>`）在渲染上是两种不同形态，需能区分；但其底层关系又同为“实现”，建模时视 VP 关系类型决定是否与 #20 共用一个模型类（研究项）。
-   - 验证：为模型及工厂写基础单元测试。
-
-2. **读取（工厂/访问器）。**
-   - 方案：新建 `MyLollipopImplementationFactory`（参考 `MyAssociationFactory`），从 VP 读取实现类与接口元素。
-   - 验证：用桩数据断言 implementor / interface 正确提取。
-
-3. **渲染（输出模型层）。**
-   - 方案：新建 `PumlLollipopImplementationExporter`，`to(...)`：
-     - 用 `writeTerminalShape("circle \"<接口名>\" as <别名>")` 输出棒棒糖小圆；
-     - 用 `writeEdge(<实现类别名>, <接口圆别名>)` 以实线连接实现类与小圆。
-   - 理由：`circle` 独立为一个形状，之后用实线把它挂到实现类上，正好还原 VP 的棒棒糖语义；复用 `writeTerminalShape` 不必为 circle 单独建导出器。
-   - 验证：为导出器写单元测试，断言输出包含 `circle ...` 行与 `实现类 -- 接口圆` 实线行；`interface2 -- class2` 形式通过交换 from/to 得到。
-
-4. **接线与去重（渲染编排）。**
-   - 方案：多个类实现同一接口时，只为该接口输出**一个** `circle`，被多个实现类实线共用；需在渲染编排层保证 circle 声明不重复（可在导出器/容器中做去重，参考现有 package/class 渲染的去重策略）。
-   - 理由：PlantUML 中以别名复用圆即可实现一对一棒棒糖语义；重复声明会导致歧义。
-   - 验证：构造“两个类实现同一接口”的桩数据，断言只输出一行 `circle` 且两条实线分别指向同一别名。
-
-5. **注册、回归与集成验证。**
-   - 方案：在 `PumlElementExporterFactory` 注册 `IMPLEMENTATION` 导出器。
-   - 验证：工厂单测验证 `of(IMPLEMENTATION)`；整体 `mvn test` 无回归；手动在 VP 中导出棒棒糖实现，确认 `.puml` 可被 PlantUML 正确渲染。
-
-**说明/边界：** 本条目仅处理“棒棒糖”呈现形态；常规的 `..|>` 实现（如 Java `implements` 拉出来一条虚线三角）属 #20，两者在 VP 中可能表现同一种“实现”关系，最终统一成一个建模并向不同导出器分发（研究项）。本条目不涉及导入。
-
-## 13 类的属性 Attribute
+## 12 类的属性 Attribute
 - 状态：待方案设计
 
 ### 需求
@@ -523,9 +445,77 @@ class class1 {
 - 属性的名称、类型、可见性都可省略
 
 ### 方案
-TODO
 
-## 14 类的操作 Operation
+**目标：** 仅“导出/渲染”路径——读取 VP 类模型中的属性，渲染为 PlantUML 类体成员行（如 `id`、`name: string`、`age: int = 18`、`: status`）。**不涉及导入。** 名称/类型/初始值/可见性均可按字段有无省略。此处的成员渲染框架同时被 #13（操作）与 #14（可见性）复用。
+
+**现状分析（已核对源码）：**
+- 新领域模型中已存在独立的 `MyAttribute`（src/.../myclassifier/MyAttribute.java）与 `MyOperation`（src/.../myclassifier/MyOperation.java），但目前**没有任何流水线消费它们**；`MyClass`（src/.../myclassifier/MyClass.java）仍持有旧模型的 `List<MyAttribute_old> attributes` / `List<MyOperation_old> operations`。新的 `MyAttribute`/`MyOperation` 与旧版除包名、类名外完全一致（字段：name / visibility / type(initialValue) / isStatic；operation 另有 returnType / isAbstract / parameters）。
+- 新导出渲染 `PumlBlockExporter.to(...)`（src/.../outputmodel/pumelementexporter/PumlBlockExporter.java）对类/命名空间/模型等仅执行 `beginBlock()` → 遍历 `subShapes`（子形状）→ `endBlock()`。**类的属性/操作并非子形状，因此当前类体完全为空**；这正是本条要补齐的缺口。
+- VP API 提取来源已确认（旧 `OldClassDiagram.extractAttributes/extractOperations`，src/.../mydiagram_old/OldClassDiagram.java:249,268）：`IClass.attributeIterator()` / `IClass.operationIterator()`、`IAttribute.getVisibility()/getName()/getTypeAsString()/getInitialValueAsString()/getScope()`、`IOperation.getVisibility()/getName()/getReturnTypeAsString()/isAbstract()/getScope()/parameterIterator()`、`IParameter.getName()/getTypeAsString()/getDefaultValueAsString()`。
+- 可见性取值：VP 的 `getVisibility()` 返回字符串（`public/private/protected/package`），旧 `PlantUMLWriter.writeVisibility`（src/.../writers_old/PlantUMLWriter.java:62）已给出映射：public→`+`、private→`-`、protected→`#`、package→`~`、其余→空。（可见性映射的详细设计见 #14。）
+
+**设计图（类体成员渲染相关模块）：**
+
+```plantuml
+@startuml
+class MyClass {
+  + addAttribute(MyAttribute): void
+  + addOperation(MyOperation): void
+  - List<MyAttribute> attributes
+  - List<MyOperation> operations
+}
+class MyAttribute {
+  + getVisibility(): String
+  + getName(): String
+  + getType(): String
+  + getInitialValue(): String
+}
+class MyClassFactory {
+  + reallyCreate(...): MyClass
+}
+class PumlClassExporter {
+  + to(result: PumlDiagram, el: ProperMyDiagramElement): void
+}
+MyClassFactory ..> MyClass : 创建并填充属性
+PumlClassExporter ..> MyClass : 读取属性并渲染行
+@enduml
+```
+
+**实施步骤（每步可独立验证）：**
+
+1. **建模（领域模型层）。**
+   - 方案：将 `MyClass`（src/.../myclassifier/MyClass.java）中承载成员的两个集合由 `List<MyAttribute_old>` / `List<MyOperation_old>` **替换为 `List<MyAttribute>` / `List<MyOperation>`**（均来自 `...myclassifier` 包），并相应更新 `addAttribute/addOperation/getAttributes/setAttributes/getOperations/setOperations` 签名。删除对 `...myuml_old.myclass_old.MyAttribute_old/MyOperation_old` 的 import。
+   - 理由：新 `MyAttribute`/`MyOperation` 已具备所需全部字段（name/visibility/type/initialValue/isStatic；returnType/isAbstract/parameters），替换旧类型即可让类体在新导出链路上被携带，同时保持两个模型类无需改动。
+   - 验证：为 `MyClass` 写单元测试，断言 `getAttributes()/getOperations()` 能存入并取回 `MyAttribute`/`MyOperation` 实例（含参数列表）。
+
+2. **读取（工厂/访问器）。**
+   - 方案：在 `MyClassFactory.reallyCreate(...)`（src/.../myclassifier/MyClassFactory.java）中，因当前参数 `vpElement` 为 `IModelElement`，先强转为 `IClass`，再遍历 `attributeIterator()` 构造 `MyAttribute`、遍历 `operationIterator()` 及其 `parameterIterator()` 构造 `MyOperation`，调用 `myClass.addAttribute/addOperation` 填入后再返回。
+   - 构造映射（与旧实现保持一致，保证往返字段完整）：
+     - 属性：`new MyAttribute(attr.getVisibility(), attr.getName(), attr.getTypeAsString(), attr.getInitialValueAsString(), attr.getScope())`。
+     - 操作：`new MyOperation(op.getVisibility(), op.getName(), op.getReturnTypeAsString(), op.isAbstract(), 参数列表, op.getScope())`；参数经 `parameterIterator()` 构造 `new Parameter(p.getName(), p.getTypeAsString(), p.getDefaultValueAsString())`。
+   - 说明：可见性、初始值、类型缺省时对应 getter 可能返回空字符串，构造函数内部已处理（type 为空则置 null，initialValue 为空则置 null），渲染时按空值自动省略该段，无需额外分支。
+   - 验证：用桩 `IClass` 断言提取到的 `MyAttribute`/`MyOperation` 字段正确（名称/类型/初值/可见性/静态/返回类型/参数默认值）。
+
+3. **导出渲染（输出模型层）。**
+   - 方案：让类体成员随块渲染输出。在 `PumlBlockExporter` 增加一个**可覆写**的成员渲染钩子（默认空实现，供 class 以外类型如 namespace/model 继承而不受影响），在 `beginBlock()` 之后、遍历 subShapes 迭代体内部之前（或紧接 beginBlock 之后）调用；`PumlClassExporter`（src/.../pumelementexporter/PumlClassExporter.java）覆写该钩子，把 `MyClass` 的属性和操作渲染为一个缩进层的 PlantUML 成员行。
+   - 属性行格式（各段按字段有无省略）：`<可见性符号> <{static}>? <名称> [: <类型>] [= <初始值>]`。
+     - 对应需求：`id`（仅名称）、`name: string`（名+类型）、`age: int = 18`（名+类型+初值）、`: status`（仅类型，名称为空时只输出 `: type`）、`discount: double`。
+   - 操作行格式：`<可见性符号> <{abstract}>? <{static}>? <名称>(<参数列表>) [: <返回类型>]`，参数列表内每项 `名称[: 类型][= 默认值]`，逗号分隔。
+     - 对应需求：`open(): void`、`close(): void`、`log(message: string): void`（含参）、`save(file: string): boolean`、`version(): string`。
+   - 行文本写入复用 `result.writeTerminalShape(String)`（src/.../outputmodel/PumlDiagram.java:52）——它在当前缩进层追加一条语句，天然落在 `{ }` 内（因为 beginBlock 后已 indent 一层）。
+   - 理由：与泛化/依赖导出一致，通过 exporter 渲染到 `PumlDiagram` 语句列表；钩子方式避免污染 namespace/model 的渲染。
+   - 验证：为 `PumlClassExporter` 写单元测试，构造含属性/操作的 `ProperMyDiagramElement`，断言生成的类体行与需求中的 PlantUML 一致（含空白成员组合、`{static}`/`{abstract}`、参数默认值）。
+
+4. **注册与接线（工厂）。**
+   - 方案：本条不新增 `MyElementType`/`DiagramElementType`/新导出器类（类的类型 CLASS 早已登记），仅需确认 `MyClassFactory`（读取阶段填充成员）与 `PumlClassExporter`（渲染钩子）被正确注入。若 `MyClassFactory` 的 `reallyCreate` 签名需扩展（例如需额外注入 `IClass` 相关依赖），在 `MyElementFactoryFactory`（.../myuml/myelement/MyElementFactoryFactory.java）保持既有注册即可，无新增登记。
+   - 验证：既有 `MyDiagramFactoryTest` 及整体 `mvn test` 无回归。
+
+5. **集成验证。**
+   - 验证：手动在 VP 中为类添加若干属性（不同名/类型/初值组合）导出，检查 `.puml` 类体渲染与需求一致；用 PlantUML 预览确认可读、缩进正确。
+
+**说明/边界：** 本条目仅导出渲染属性，不涉及导入解析（PlantUML 侧 `{field}`）；可见性符号映射、操作专属细节与极简字段（仅类型 `: status`）分别在 #13/#14 承接。枚举字面量（`enumerationLiteralIterator`）不在本条范围（若 VP 类为枚举，其字面量按旧实现同样渲染为属性行，此处先不做，留待枚举条目）。类体成员的“值”“引号包裹特殊字符”等格式化沿用 `formatName` 类清理规则（已在导出器族中体现），本条仅保证基础名称直出。
+
+## 13 类的操作 Operation
 - 状态：待方案设计
 
 ### 需求
@@ -543,9 +533,63 @@ class class1 {
 ```
 
 ### 方案
-TODO
 
-## 15 可见性 Visibility
+**目标：** 仅“导出/渲染”路径——读取 VP 类模型中的操作（含参数），渲染为 PlantUML 类体操作行（如 `open(): void`、`log(message: string): void`、`save(file: string): boolean`）。**不涉及导入。** 本条在上条目 #12 建立的“类体成员渲染框架”基础上承接操作的专属渲染；可见性符号见 #14。
+
+**现状分析（已核对源码）：**
+- 领域模型 `MyOperation`（src/.../myclassifier/MyOperation.java）已具备全部所需字段：`visibility / name / returnType / isAbstract / isStatic / parameters`（参数为内部静态类 `MyOperation.Parameter`，含 `name / type / defaultValue`），并提供 `addParameter(...)` / `getParameters()`。
+- `MyOperation` 目前无流水线消费（与 `MyAttribute` 一样），需随 #12 把 `MyClass` 成员集合切到新类型后，于 `MyClassFactory.reallyCreate` 中从 `IClass.operationIterator()` + `IOperation.parameterIterator()` 填充（提取代码见 #12 步骤 2，此处不再重复）。
+- 旧 `PlantUMLWriter.writeAttributesAndOperations`（src/.../writers_old/PlantUMLWriter.java:97-136）已给出操作行渲染规则：
+  - 前缀：`<可见性符号>`，其后 `{abstract} `、`{static} ` 按需追加；
+  - 名称：`<名称>(`；
+  - 参数：逐项 `<参数名>[: <类型>][= <默认值>]`，`类型`/`默认值` 为空时省略，多项以 `, ` 分隔；
+  - 收尾：`)`，返回类型非空时追加 `: <返回类型>`。
+- 渲染写入沿用 #12 在 `PumlClassExporter` 提供的成员钩子，复用 `PumlDiagram.writeTerminalShape(String)` 在当前缩进层输出操作行。
+
+**设计图（操作渲染）：**
+
+```plantuml
+@startuml
+class MyOperation {
+  + getVisibility(): String
+  + getName(): String
+  + getReturnType(): String
+  + isAbstract(): boolean
+  + isStatic(): boolean
+  + getParameters(): List<Parameter>
+}
+class Parameter {
+  + getName(): String
+  + getType(): String
+  + getDefaultValue(): String
+}
+class PumlClassExporter {
+  + to(...): void
+  - writeMembers(...): void
+}
+PumlClassExporter ..> MyOperation : 读取操作与参数
+@enduml
+```
+
+**实施步骤：**
+
+1. **读写链路（已并入 #12）。** `MyClassFactory.reallyCreate` 遍历 `IClass.operationIterator()`，每项构造 `new MyOperation(op.getVisibility(), op.getName(), op.getReturnTypeAsString(), op.isAbstract(), 参数List, op.getScope())`，再逐参数 `addParameter(new Parameter(p.getName(), p.getTypeAsString(), p.getDefaultValueAsString()))`，最后 `myClass.addOperation(op)`。此步骤随 #12 一并落地，本条不重复编码。
+
+2. **操作行渲染（输出模型层）。**
+   - 方案：在 `PumlClassExporter` 的成员钩子中，先渲染属性（#12），再渲染操作：对 `MyClass.getOperations()` 中的每个 `MyOperation` 生成一行：
+     ```
+     <可见性符号><{abstract} ><{static} >名称(参数1, 参数2, ...)[: 返回类型]
+     ```
+   - 参数项：`参数名`，若 `getType()` 非空则 `: 类型`，若 `getDefaultValue()` 非空则 ` = 默认值`。
+   - 对应需求输出：`open(): void`、`close(): void`、`log(message: string): void`、`save(file: string): boolean`、`version(): string`。
+   - 理由：与旧 writer 规则一致，保证与旧导出同款可读语法。
+   - 验证：为 `PumlClassExporter` 补操作相关单测，构造一个含二元参数+返回类型、一个含缺省参数、一个无返回类型的操作，断言生成的操作行与需求逐字一致，且多个参数以 `, ` 连接、`{abstract}`/`{static}` 前缀正确。
+
+3. **接线与回归。** 操作渲染随 #12 的 `MyClassFactory`（读取）与 `PumlClassExporter`（渲染）自动生效，无新增登记；整体 `mvn test` 无回归。
+
+**说明/边界：** 本条目仅导出渲染操作，不涉及导入解析（PlantUML 侧 `{method}`）。参数默认值 `= ...`、`{abstract}`/`{static}` 均按 VP 模型是否提供字段决定是否输出；`{abstract}` 由 `IOperation.isAbstract()`、`{static}` 由 `scope=="classifier"` 判定。可见性符号映射见下条目 #14。
+
+## 14 可见性 Visibility
 - 状态：待方案设计
 - 注：通过前缀符号表示：`+` 公有、`-` 私有、`#` 保护、`~` 包级
 
@@ -568,9 +612,67 @@ class class1 {
 ```
 
 ### 方案
-TODO
 
-## 16 类、包、接口的泛型 Stereotype
+**目标：** 为类体成员（属性 #12、操作 #13）的可见性提供“VP 可见性字符串 → PlantUML 前缀符号”的映射，并在导出渲染时嵌入成员行首。可见性可省略（VP 未提供或值不在映射表时输出空前缀）。**不涉及导入。**
+
+**现状分析（已核对源码）：**
+- VP 侧 `IAttribute.getVisibility()` / `IOperation.getVisibility()` 返回可见性字符串（如 `public/private/protected/package`，可能为空）。旧 `PlantUMLWriter.writeVisibility(...)`（src/.../writers_old/PlantUMLWriter.java:62-79）已实现映射：
+  - `private`→`-`、`protected`→`#`、`package`→`~`、`public`→`+`，其余（含空/未知值）→空字符串。
+- 需求所需符号：`+` 公有、`-` 私有、`#` 保护、`~` 包级，与上述映射一一对应（需求列出的 `publicField/privateField/protectedField/packageField` 及 `publicMethod/...` 正是 `public/private/protected/package` 的 PlantUML 名称，前缀符号相同）。
+- 该映射属于**渲染细节**，应放在输出模型层的成员渲染处（`PumlClassExporter`），而非领域模型 `MyAttribute`/`MyOperation`（它们持原始可见性字符串，便于将来导入）。
+
+**设计图（可见性映射）：**
+
+```plantuml
+@startuml
+enum VisibilitySymbol {
+  + fromVp(String): String   // public→+ private→- protected→# package→~ else→""
+}
+class PumlClassExporter {
+  - writeVisibility(String): String
+}
+PumlClassExporter ..> VisibilitySymbol : 复用/内联映射
+@enduml
+```
+
+**实施步骤：**
+
+1. **映射逻辑（输出模型层）。**
+   - 方案：在 `PumlClassExporter`（或输出模型包内一个小的可见性辅助）提供 `String visibilityToSymbol(String vpVisibility)`：`public→+`、`private→-`、`protected→#`、`package→~`、其余（含 null/空/未知）→`""`。
+   - 理由：与旧 `writeVisibility` 行为对齐；作为纯函数易于单测，不污染领域模型。
+   - 验证：为此映射写单测，覆盖四种可见性 + 空字符串 + 未知值（断言未知与空返回空前缀）。
+
+2. **接入类体渲染。**
+   - 方案：在 #12/#13 生成的属性行与操作行的行首调用该映射，若返回值非空则输出 `符号 + " "`；可见性省略（返回空）时行首为空，随后的 `{static}`/`{abstract}`/名称正常输出。
+   - 对应需求输出对齐：
+     - 属性：`+ publicField: int`、`- privateField: int`、`# protectedField: int`、`~ packageField: int`（可见性+名称+类型）。
+     - 操作：`+ publicMethod(): void`、`- privateMethod(): void`、`# protectedMethod(): void`、`~ packageMethod(): void`。
+   - 验证：为 `PumlClassExporter` 补单测，构造带四种可见性的属性与操作，断言行首符号与需求一致；再构造可见性为空/未知的成员，断言无符号前缀（对应 “属性名称、类型、可见性都可省略”）。
+
+3. **接线与回归。** 可见性映射随 #12/#13 的成员钩子一并落地，无新增登记；整体 `mvn test` 无回归。
+
+**说明/边界：** 本条目仅处理可见性前缀的渲染，不涉及导入方向（VP 侧可见性的写入在导入条目另行设计）。`{static}`/`{abstract}` 前缀与可见性符号的拼接顺序沿用旧 writer（可见性在前，其后依次 `{static}`/`{abstract}`）。未知或缺失的可见性一律输出空前缀，以保证“可见性可省略”。
+- 状态：待方案设计
+
+
+## 15 关键字 Keyword
+###  需求
+
+```plantuml
+@startuml
+
+namespace AModel <<model>> {
+}
+
+interface AnInterface <<interface>> {
+}
+
+@enduml
+
+```
+
+
+## 16 类、包的泛型 Stereotype
 - 状态：待方案设计
 
 ### 需求
@@ -579,7 +681,6 @@ TODO
 @startuml
 class class1 <<service>> {}
 abstract class class2 <<repository>> {}
-interface interface1 <<interface>> {}
 
 package package1 <<framework>> {
     class class3 {}
