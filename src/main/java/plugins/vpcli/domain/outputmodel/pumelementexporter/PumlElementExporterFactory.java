@@ -22,6 +22,7 @@ public class PumlElementExporterFactory {
         PumlModelRelationshipContainerExporter modelRelationshipContainerExporter,
         PumlUseCaseExporter useCaseExporter,
         PumlDependencyExporter dependencyExporter,
+        PumlGeneralizationExporter generalizationExporter,
         PumlUnimplementedExporter unimplementedExporter
     ) {
         register(MyElementType.ASSOCIATION, associationExporter);
@@ -31,6 +32,7 @@ public class PumlElementExporterFactory {
         register(MyElementType.RELATIONSHIPS, modelRelationshipContainerExporter);
         register(MyElementType.USE_CASE, useCaseExporter);
         register(MyElementType.DEPENDENCY, dependencyExporter);
+        register(MyElementType.GENERALIZATION, generalizationExporter);
         register(MyElementType.UNIMPLEMENTED_ELEMENT, unimplementedExporter);
     }
 

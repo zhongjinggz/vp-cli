@@ -15,6 +15,7 @@ public enum DiagramElementType {
     USE_CASE(SHAPE_TYPE_USE_CASE, Kind.SHAPE),
     ASSOCIATION(SHAPE_TYPE_ASSOCIATION, Kind.EDGE),
     DEPENDENCY(SHAPE_TYPE_DEPENDENCY, Kind.EDGE),
+    GENERALIZATION(SHAPE_TYPE_GENERALIZATION, Kind.EDGE),
     UNIMPLEMENTED_DIAGRAM_ELEMENT("UnimplementedDiagramElement", Kind.SHAPE),;
 
     private static final Logger log = LoggerFactory.getLogger(DiagramElementType.class);

@@ -18,6 +18,7 @@ public enum MyElementType {
     ASSOCIATION("diagram_has_no_model_type", ".association"),
     ASSOCIATION_END(MODEL_TYPE_ASSOCIATION_END, ".association-end"),
     DEPENDENCY(MODEL_TYPE_DEPENDENCY, ".dependency"),
+    GENERALIZATION(MODEL_TYPE_GENERALIZATION, ".generalization"),
     RELATIONSHIPS(MODEL_TYPE_MODEL_RELATIONSHIP_CONTAINER, ".relationships"),
     STEREOTYPE(MODEL_TYPE_STEREOTYPE, ".stereotype"),
     UNIMPLEMENTED_ELEMENT(UnimplementedElement.MODEL_TYPE_TEXT, ".unimplemented-element");

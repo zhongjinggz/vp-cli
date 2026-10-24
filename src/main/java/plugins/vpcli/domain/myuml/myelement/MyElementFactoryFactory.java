@@ -6,6 +6,7 @@ import plugins.vpcli.domain.myuml.myassociation.MyAssociationEndFactory;
 import plugins.vpcli.domain.myuml.myassociation.MyAssociationFactory;
 import plugins.vpcli.domain.myuml.myclassifier.MyClassFactory;
 import plugins.vpcli.domain.myuml.mydependency.MyDependencyFactory;
+import plugins.vpcli.domain.myuml.mygeneralization.MyGeneralizationFactory;
 import plugins.vpcli.domain.myuml.mymodelrelationshipcontainer.MyModelRelationshipContainerFactory;
 import plugins.vpcli.domain.myuml.mymodel.MyModelFactory;
 import plugins.vpcli.domain.myuml.mypackage.MyPackageFactory;
@@ -37,6 +38,7 @@ public class MyElementFactoryFactory {
         MyAssociationFactory myAssociationFactory,
         MyAssociationEndFactory myAssociationEndFactory,
         MyDependencyFactory myDependencyFactory,
+        MyGeneralizationFactory myGeneralizationFactory,
         MyModelRelationshipContainerFactory myModelRelationshipContainerFactory,
         MyStereotypeFactory myStereotypeFactory,
         UnimplementedElementFactory unimplementedElementFactory
@@ -48,6 +50,7 @@ public class MyElementFactoryFactory {
         register(MODEL_TYPE_ASSOCIATION, myAssociationFactory);
         register(MODEL_TYPE_ASSOCIATION_END, myAssociationEndFactory);
         register(MODEL_TYPE_DEPENDENCY, myDependencyFactory);
+        register(MODEL_TYPE_GENERALIZATION, myGeneralizationFactory);
         register(MODEL_TYPE_MODEL_RELATIONSHIP_CONTAINER, myModelRelationshipContainerFactory);
         register(MODEL_TYPE_STEREOTYPE, myStereotypeFactory);
         register(UnimplementedElement.MODEL_TYPE_TEXT, unimplementedElementFactory);

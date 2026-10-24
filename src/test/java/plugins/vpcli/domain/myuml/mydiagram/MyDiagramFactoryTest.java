@@ -17,6 +17,7 @@ import plugins.vpcli.domain.myuml.myassociation.MyAssociationFactory;
 import plugins.vpcli.domain.myuml.myclassifier.MyClassFactory;
 import plugins.vpcli.domain.myuml.mydependency.MyDependency;
 import plugins.vpcli.domain.myuml.mydependency.MyDependencyFactory;
+import plugins.vpcli.domain.myuml.mygeneralization.MyGeneralizationFactory;
 import plugins.vpcli.domain.myuml.myelement.MyElement;
 import plugins.vpcli.domain.myuml.myelement.MyElementFactoryFactory;
 import plugins.vpcli.domain.myuml.myelement.MyElementPool;
@@ -57,6 +58,7 @@ class MyDiagramFactoryTest {
             new MyAssociationFactory(pool),
             new MyAssociationEndFactory(pool),
             new MyDependencyFactory(pool),
+            new MyGeneralizationFactory(pool),
             new MyModelRelationshipContainerFactory(pool),
             new MyStereotypeFactory(pool),
             new UnimplementedElementFactory(pool)
