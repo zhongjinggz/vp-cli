@@ -2,8 +2,8 @@ package plugins.vpcli.domain.vpmodelvisitor.element;
 
 import com.vp.plugin.diagram.IDiagramUIModel;
 import com.vp.plugin.model.IModelElement;
-import plugins.vpcli.domain.myuml.mycommon.MyElementFactory;
-import plugins.vpcli.domain.myuml.mycommon.MyElementFactoryFactory;
+import plugins.vpcli.domain.myuml.myelement.MyElementFactory;
+import plugins.vpcli.domain.myuml.myelement.MyElementFactoryFactory;
 
 import static com.vp.plugin.model.factory.IModelElementFactory.*;
 

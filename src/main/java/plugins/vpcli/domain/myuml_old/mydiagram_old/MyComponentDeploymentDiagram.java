@@ -13,7 +13,7 @@ import plugins.vpcli.domain.myuml_old.myclass_old.MyOperation_old;
 import plugins.vpcli.domain.myuml_old.mycomponent_old.MyComponent_old;
 import plugins.vpcli.domain.myuml_old.mycomponent_old.MyComponent_old.PortData;
 import plugins.vpcli.domain.myuml.mypackage.MyPackage;
-import plugins.vpcli.domain.myuml.mycommon.MyRelationship;
+import plugins.vpcli.domain.myuml_old.mycommon_old.MyRelationship_old;
 import plugins.vpcli.domain.myuml_old.myclass_old.MyAttribute_old;
 import plugins.vpcli.domain.myuml_old.myclass_old.MyClass_old;
 import plugins.vpcli.domain.myuml_old.mydeployment_old.MyArtifact_old;
@@ -26,7 +26,7 @@ public class MyComponentDeploymentDiagram extends OldDiagram {
 	
 	private final List<MyComponent_old> exportedComponents = new ArrayList<>();
 	private final List<MyClass_old> exportedInterfaces = new ArrayList<>();
-	private final List<MyRelationship> myRelationships = new ArrayList<>();
+	private final List<MyRelationship_old> myRelationships = new ArrayList<>();
 	private final List<MyArtifact_old> exportedArtifacts = new ArrayList<>();
     private final List<MyPackage> exportedPackages = new ArrayList<>();
 	private final List<PortData> allExportedPorts = new ArrayList<>();
@@ -252,7 +252,7 @@ public class MyComponentDeploymentDiagram extends OldDiagram {
 		}
 
 
-		MyRelationship myRelationship = new MyRelationship(sourceName, targetName, relationship.getModelType(),
+		MyRelationship_old myRelationship = new MyRelationship_old(sourceName, targetName, relationship.getModelType(),
 				relationship.getName());
 		myRelationships.add(myRelationship);
 	}
@@ -405,7 +405,7 @@ public class MyComponentDeploymentDiagram extends OldDiagram {
 	public List<MyPackage> getExportedPackages() {
 		return exportedPackages;
 	}
-	public List<MyRelationship> getRelationshipDatas() {
+	public List<MyRelationship_old> getRelationshipDatas() {
 		return myRelationships;
 	}
 

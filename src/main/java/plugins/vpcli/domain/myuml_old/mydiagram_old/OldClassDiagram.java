@@ -15,7 +15,7 @@ import plugins.vpcli.domain.myuml_old.mynary_old.MyNary_old;
 import plugins.vpcli.domain.myuml_old.myclass_old.MyOperation_old;
 import plugins.vpcli.domain.myuml_old.myclass_old.MyOperation_old.Parameter;
 import plugins.vpcli.domain.myuml.mypackage.MyPackage;
-import plugins.vpcli.domain.myuml.mycommon.MyRelationship;
+import plugins.vpcli.domain.myuml_old.mycommon_old.MyRelationship_old;
 
 import static com.vp.plugin.diagram.IShapeTypeConstants.SHAPE_TYPE_PACKAGE;
 
@@ -24,7 +24,7 @@ public class OldClassDiagram extends OldDiagram {
 	private final IDiagramUIModel diagramUIModel;
 
 	private final List<MyClass_old> exportedClasses = new ArrayList<>();
-	private final List<MyRelationship> myRelationships = new ArrayList<>();
+	private final List<MyRelationship_old> myRelationships = new ArrayList<>();
 	private final List<MyPackage> exportedPackages = new ArrayList<>();
 	private final List<MyNary_old> exportedNary = new ArrayList<>();
 
@@ -140,7 +140,7 @@ public class OldClassDiagram extends OldDiagram {
 		IModelElement target = relationship.getToShape().getModelElement();
 		String sourceName = source.getName();
 		String targetName = target.getName();
-		MyRelationship myRelationship = new MyRelationship(sourceName, targetName, "Containment", "");
+		MyRelationship_old myRelationship = new MyRelationship_old(sourceName, targetName, "Containment", "");
 		myRelationships.add(myRelationship);
 	}
 
@@ -205,7 +205,7 @@ public class OldClassDiagram extends OldDiagram {
 			}
 		}
 
-		MyRelationship myRelationship = new MyRelationship(sourceName, targetName, relationship.getModelType(), relationship.getName());
+		MyRelationship_old myRelationship = new MyRelationship_old(sourceName, targetName, relationship.getModelType(), relationship.getName());
 		myRelationships.add(myRelationship);
 	}
 
@@ -287,7 +287,7 @@ public class OldClassDiagram extends OldDiagram {
 		return exportedClasses;
 	}
 
-	public List<MyRelationship> getRelationshipDatas() {
+	public List<MyRelationship_old> getRelationshipDatas() {
 		return myRelationships;
 	}
 

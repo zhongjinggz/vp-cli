@@ -1,5 +1,8 @@
 package plugins.vpcli.domain.myuml.mydiagram.mydiagramelement;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.util.Objects;
 
 import static com.vp.plugin.diagram.IShapeTypeConstants.*;
@@ -9,8 +12,11 @@ public enum DiagramElementType {
     PACKAGE(SHAPE_TYPE_PACKAGE, Kind.SHAPE),
     MODEL(SHAPE_TYPE_MODEL, Kind.SHAPE),
     CLASS(SHAPE_TYPE_CLASS, Kind.SHAPE),
-    USECASE(SHAPE_TYPE_USE_CASE, Kind.SHAPE),
-    ASSOCIATION(SHAPE_TYPE_ASSOCIATION, Kind.EDGE);
+    USE_CASE(SHAPE_TYPE_USE_CASE, Kind.SHAPE),
+    ASSOCIATION(SHAPE_TYPE_ASSOCIATION, Kind.EDGE),
+    UNIMPLEMENTED_DIAGRAM_ELEMENT("UnimplementedDiagramElement", Kind.SHAPE),;
+
+    private static final Logger log = LoggerFactory.getLogger(DiagramElementType.class);
 
     private final String vpShapeType;
     private final Kind kind;
@@ -26,7 +32,9 @@ public enum DiagramElementType {
                 return aValue;
             }
         }
-        throw new IllegalArgumentException("'" + vpShapeType + "' is not a valid shape type.");
+        log.warn("Unimplemented vp diagram element type: {}", vpShapeType);
+        return UNIMPLEMENTED_DIAGRAM_ELEMENT;
+        // throw new IllegalArgumentException("'" + vpShapeType + "' is not a valid shape type.");
     }
 
 
@@ -42,7 +50,7 @@ public enum DiagramElementType {
         return Objects.equals(this.kind, Kind.EDGE);
     }
 
-    public static enum Kind {
+    public enum Kind {
         DIAGRAM,
         SHAPE,
         EDGE

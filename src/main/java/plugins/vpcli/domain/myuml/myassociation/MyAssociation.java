@@ -1,8 +1,8 @@
 package plugins.vpcli.domain.myuml.myassociation;
 
-import plugins.vpcli.domain.myuml.mycommon.MyElementType;
-import plugins.vpcli.domain.myuml.mycommon.MyElement;
-import plugins.vpcli.domain.myuml.mycommon.MyStereotype;
+import plugins.vpcli.domain.myuml.myelement.MyElementType;
+import plugins.vpcli.domain.myuml.myelement.MyElement;
+import plugins.vpcli.domain.myuml.mystereotype.MyStereotype;
 
 import java.util.List;
 

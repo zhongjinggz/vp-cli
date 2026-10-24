@@ -4,7 +4,7 @@ import plugins.vpcli.domain.myuml_old.myactivity_old.MyAction;
 import plugins.vpcli.domain.myuml_old.myactivity_old.MyFlowNode;
 import plugins.vpcli.domain.myuml_old.myactivity_old.MyJoinFlowNode;
 import plugins.vpcli.domain.myuml_old.myactivity_old.MySplitFlowNode;
-import plugins.vpcli.domain.myuml.mycommon.MyNote;
+import plugins.vpcli.domain.myuml_old.mycommon_old.MyNote_old;
 
 import java.io.File;
 import java.io.IOException;
@@ -20,7 +20,7 @@ public class ActivityUMLWriter extends PlantUMLWriter {
     private final Stack<MyJoinFlowNode> joinStack = new Stack<>();
     private String activeSwimlane = "";
 
-    public ActivityUMLWriter(List<MyNote> notes, MyFlowNode rootFlowNode) {
+    public ActivityUMLWriter(List<MyNote_old> notes, MyFlowNode rootFlowNode) {
         super(notes);
         this.rootFlowNode = rootFlowNode;
     }

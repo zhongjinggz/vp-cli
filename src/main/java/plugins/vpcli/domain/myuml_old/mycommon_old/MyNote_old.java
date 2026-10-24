@@ -1,13 +1,13 @@
-package plugins.vpcli.domain.myuml.mycommon;
+package plugins.vpcli.domain.myuml_old.mycommon_old;
 
-public class MyNote {
+public class MyNote_old {
     private final String name;
     private String content;
     private final String id;
     private final String alias;
     private String Uid;
 
-    public MyNote(String name, String content, String id) {
+    public MyNote_old(String name, String content, String id) {
         this.name = (name != null && !name.isEmpty()) ? name : null;
         this.content = content;
         this.id = id;

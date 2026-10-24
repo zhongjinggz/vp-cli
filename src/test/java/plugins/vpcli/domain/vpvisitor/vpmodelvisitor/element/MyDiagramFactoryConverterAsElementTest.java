@@ -10,7 +10,7 @@ import com.vp.plugin.diagram.IDiagramUIModel;
 import java.util.List;
 
 import org.junit.jupiter.api.Test;
-import plugins.vpcli.domain.myuml.mycommon.MyElementType;
+import plugins.vpcli.domain.myuml.myelement.MyElementType;
 import plugins.vpcli.domain.vpmodelvisitor.element.ViDiagramAsElement;
 
 class MyDiagramFactoryConverterAsElementTest {

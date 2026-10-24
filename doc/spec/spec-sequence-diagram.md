@@ -302,7 +302,7 @@ ref over a, b : refer to another diagram
 - 状态：需求已编写
 
 ### 需求
-- 说明：注释（Note）可附着于某个生命线、覆盖多个生命线或位于对象右侧，对应代码中 `MyNote` 的处理。
+- 说明：注释（Note）可附着于某个生命线、覆盖多个生命线或位于对象右侧，对应代码中 `MyNote_old` 的处理。
 
 ```plantuml
 @startuml

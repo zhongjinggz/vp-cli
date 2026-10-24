@@ -1,13 +1,13 @@
 package plugins.vpcli.domain.myuml.mymodelrelationshipcontainer;
 
 import com.vp.plugin.model.IModelElement;
-import plugins.vpcli.domain.myuml.mycommon.MyElement;
-import plugins.vpcli.domain.myuml.mycommon.MyElementFactory;
-import plugins.vpcli.domain.myuml.mycommon.MyElementPool;
+import plugins.vpcli.domain.myuml.myelement.MyElement;
+import plugins.vpcli.domain.myuml.myelement.MyElementFactory;
+import plugins.vpcli.domain.myuml.myelement.MyElementPool;
 
 import jakarta.inject.Inject;
 import jakarta.inject.Singleton;
-import plugins.vpcli.domain.myuml.mycommon.MyStereotype;
+import plugins.vpcli.domain.myuml.mystereotype.MyStereotype;
 
 import java.util.List;
 

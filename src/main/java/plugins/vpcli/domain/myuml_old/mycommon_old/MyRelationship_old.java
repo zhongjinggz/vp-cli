@@ -1,12 +1,12 @@
-package plugins.vpcli.domain.myuml.mycommon;
+package plugins.vpcli.domain.myuml_old.mycommon_old;
 
-public class MyRelationship {
+public class MyRelationship_old {
 	private String source;
 	private String target;
 	private String type;
     private String name;
 
-	public MyRelationship(String source, String target, String type, String name) {
+	public MyRelationship_old(String source, String target, String type, String name) {
 		this.source = source;
 		this.target = target;
 		setType(type);

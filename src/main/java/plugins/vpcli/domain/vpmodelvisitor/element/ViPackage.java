@@ -1,8 +1,8 @@
 package plugins.vpcli.domain.vpmodelvisitor.element;
 
 import com.vp.plugin.model.IModelElement;
-import plugins.vpcli.domain.myuml.mycommon.MyElement;
-import plugins.vpcli.domain.myuml.mycommon.MyElementFactory;
+import plugins.vpcli.domain.myuml.myelement.MyElement;
+import plugins.vpcli.domain.myuml.myelement.MyElementFactory;
 import plugins.vpcli.domain.myuml.mypackage.MyPackage;
 import plugins.vpcli.domain.vpmodelvisitor.visitor.ViElementVisitor;
 

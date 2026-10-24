@@ -1,6 +1,6 @@
 package plugins.vpcli.domain.myuml.mycomponent;
 
-import plugins.vpcli.domain.myuml.mycommon.MyElement;
+import plugins.vpcli.domain.myuml.myelement.MyElement;
 import plugins.vpcli.domain.myuml_old.myclass_old.MyAttribute_old;
 import plugins.vpcli.domain.myuml_old.myclass_old.MyOperation_old;
 import plugins.vpcli.domain.myuml_old.mydeployment_old.MyArtifact_old;

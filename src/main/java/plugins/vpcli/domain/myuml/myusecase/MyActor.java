@@ -1,6 +1,6 @@
 package plugins.vpcli.domain.myuml.myusecase;
 
-import plugins.vpcli.domain.myuml.mycommon.MyElement;
+import plugins.vpcli.domain.myuml.myelement.MyElement;
 
 public class MyActor extends MyElement {
 

@@ -2,7 +2,7 @@ package plugins.vpcli.domain.vpmodelvisitor.structure;
 
 import com.vp.plugin.model.IProject;
 import org.jetbrains.annotations.NotNull;
-import plugins.vpcli.domain.myuml.mycommon.MyElementType;
+import plugins.vpcli.domain.myuml.myelement.MyElementType;
 import plugins.vpcli.domain.vpmodelvisitor.element.ViElement;
 import plugins.vpcli.domain.vpmodelvisitor.element.ViElementFactory;
 import plugins.vpcli.domain.vpmodelvisitor.visitor.ViElementVisitor;

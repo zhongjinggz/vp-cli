@@ -1,9 +1,9 @@
 package plugins.vpcli.domain.myuml_old.myinteraction_old;
 
 
-import plugins.vpcli.domain.myuml.mycommon.MyRelationship;
+import plugins.vpcli.domain.myuml_old.mycommon_old.MyRelationship_old;
 
-public class MessageData extends MyRelationship {
+public class MessageData extends MyRelationship_old {
 
 	private String sequenceNumber;
 	private boolean isReply;

@@ -1,4 +1,7 @@
-package plugins.vpcli.domain.myuml.mycommon;
+package plugins.vpcli.domain.myuml.mystereotype;
+
+import plugins.vpcli.domain.myuml.myelement.MyElement;
+import plugins.vpcli.domain.myuml.myelement.MyElementType;
 
 import java.util.ArrayList;
 

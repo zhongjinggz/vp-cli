@@ -5,7 +5,7 @@ import com.vp.plugin.diagram.IDiagramElement;
 import com.vp.plugin.diagram.IDiagramUIModel;
 import com.vp.plugin.model.*;
 import plugins.vpcli.domain.myuml_old.myactivity_old.MyForkJoin;
-import plugins.vpcli.domain.myuml.mycommon.MyRelationship;
+import plugins.vpcli.domain.myuml_old.mycommon_old.MyRelationship_old;
 import plugins.vpcli.domain.myuml_old.mystatemachine_old.MyHistory;
 import plugins.vpcli.domain.myuml_old.mystatemachine_old.MyStateChoice;
 import plugins.vpcli.domain.myuml_old.mystatemachine_old.MyState;
@@ -21,7 +21,7 @@ public class MyStateDiagram extends OldDiagram {
     private final IDiagramUIModel diagram;
     private final List<MyState> myStates = new ArrayList<>();
     private final List<MyHistory> histories = new ArrayList<>();
-    private List<MyRelationship> transitions = new ArrayList<>();
+    private List<MyRelationship_old> transitions = new ArrayList<>();
     private final List<MyStateChoice> choices = new ArrayList<>();
     private final List<MyForkJoin> forkJoins = new ArrayList<>();
 
@@ -188,7 +188,7 @@ public class MyStateDiagram extends OldDiagram {
         }
 
         if (Objects.equals(relationship.getModelType(), "Anchor")) return;
-        MyRelationship myRelationship = new MyRelationship(sourceName, targetName, relationship.getModelType(), relationship.getName());
+        MyRelationship_old myRelationship = new MyRelationship_old(sourceName, targetName, relationship.getModelType(), relationship.getName());
 
         MyState sourceState = findStateById(source.getId());
         MyState targetState = findStateById(target.getId());
@@ -340,9 +340,9 @@ public class MyStateDiagram extends OldDiagram {
     }
 
     private void filterAndExportTransitions() {
-        List<MyRelationship> validTransitions = new ArrayList<>();
+        List<MyRelationship_old> validTransitions = new ArrayList<>();
 
-        for (MyRelationship transition : transitions) {
+        for (MyRelationship_old transition : transitions) {
             MyState sourceState = findStateByAlias(transition.getSource());
             MyState targetState = findStateByAlias(transition.getTarget());
 
@@ -384,7 +384,7 @@ public class MyStateDiagram extends OldDiagram {
         transitions = validTransitions;
     }
 
-    private void outputLostTransitionWarning(MyRelationship transition, String reason) {
+    private void outputLostTransitionWarning(MyRelationship_old transition, String reason) {
         ApplicationManager.instance().getViewManager()
                 .showMessage("Warning: Transition '" + transition.getName() + "' lost during export because it's illegal in PlantUML. Reason: " + reason);
         addWarning("Transition '" + transition.getName() + "' lost during export because it's illegal in PlantUML. Reason: " + reason);
@@ -432,7 +432,7 @@ public class MyStateDiagram extends OldDiagram {
         return forkJoins;
     }
 
-    public List<MyRelationship> getTransitions() {
+    public List<MyRelationship_old> getTransitions() {
         return transitions;
     }
 

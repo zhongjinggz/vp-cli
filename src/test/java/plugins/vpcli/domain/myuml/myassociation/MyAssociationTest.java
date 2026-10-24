@@ -12,14 +12,16 @@ import java.util.List;
 import org.junit.jupiter.api.Test;
 import plugins.vpcli.domain.myuml.myclassifier.MyClass;
 import plugins.vpcli.domain.myuml.myclassifier.MyClassFactory;
-import plugins.vpcli.domain.myuml.mycommon.MyElementFactoryFactory;
-import plugins.vpcli.domain.myuml.mycommon.MyElementPool;
-import plugins.vpcli.domain.myuml.mycommon.MyElementType;
-import plugins.vpcli.domain.myuml.mycommon.MyStereotype;
+import plugins.vpcli.domain.myuml.myelement.MyElementFactoryFactory;
+import plugins.vpcli.domain.myuml.myelement.MyElementPool;
+import plugins.vpcli.domain.myuml.myelement.MyElementType;
+import plugins.vpcli.domain.myuml.mystereotype.MyStereotype;
 import plugins.vpcli.domain.myuml.mymodel.MyModelFactory;
 import plugins.vpcli.domain.myuml.mypackage.MyPackageFactory;
 import plugins.vpcli.domain.myuml.mymodelrelationshipcontainer.MyModelRelationshipContainerFactory;
 import plugins.vpcli.domain.myuml.myproject.MyProject;
+import plugins.vpcli.domain.myuml.mystereotype.MyStereotypeFactory;
+import plugins.vpcli.domain.myuml.myunknownelement.UnimplementedElementFactory;
 import plugins.vpcli.domain.myuml.myusecase.MyUseCase;
 import plugins.vpcli.domain.myuml.myusecase.MyUseCaseFactory;
 
@@ -131,7 +133,8 @@ class MyAssociationTest {
             new MyAssociationFactory(pool),
             new MyAssociationEndFactory(pool),
             new MyModelRelationshipContainerFactory(pool),
-            new plugins.vpcli.domain.myuml.mycommon.MyStereotypeFactory(pool)
+            new MyStereotypeFactory(pool),
+            new UnimplementedElementFactory(pool)
         );
 
         MyAssociationFactory factory = new MyAssociationFactory(pool);
@@ -246,7 +249,8 @@ class MyAssociationTest {
             new MyAssociationFactory(pool),
             new MyAssociationEndFactory(pool),
             new MyModelRelationshipContainerFactory(pool),
-            new plugins.vpcli.domain.myuml.mycommon.MyStereotypeFactory(pool)
+            new MyStereotypeFactory(pool),
+            new UnimplementedElementFactory(pool)
         );
 
         MyAssociationFactory factory = new MyAssociationFactory(pool);

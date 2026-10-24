@@ -16,7 +16,7 @@ import com.vp.plugin.model.IUseCase;
 import plugins.vpcli.domain.myuml_old.myusecase_old.MyActor_old;
 import plugins.vpcli.domain.myuml_old.myassociation_old.MyAssociation_old;
 import plugins.vpcli.domain.myuml.mypackage.MyPackage;
-import plugins.vpcli.domain.myuml.mycommon.MyRelationship;
+import plugins.vpcli.domain.myuml_old.mycommon_old.MyRelationship_old;
 import plugins.vpcli.domain.myuml.myusecase.MyUseCase;
 
 import java.util.ArrayList;
@@ -36,7 +36,7 @@ public class MyUseCaseDiagram extends OldDiagram {
     
     private final List<MyActor_old> exportedActors = new ArrayList<>();
     
-    private final List<MyRelationship> myRelationships = new ArrayList<>();
+    private final List<MyRelationship_old> myRelationships = new ArrayList<>();
     private final List<MyPackage> exportedPackages = new ArrayList<>();
     private final List<MyUseCase> exportedUseCases = new ArrayList<>();
 
@@ -179,7 +179,7 @@ public class MyUseCaseDiagram extends OldDiagram {
         	return;
         }
 
-        MyRelationship myRelationship = new MyRelationship(sourceName, targetName, relationship.getModelType(), relationship.getName());
+        MyRelationship_old myRelationship = new MyRelationship_old(sourceName, targetName, relationship.getModelType(), relationship.getName());
         myRelationships.add(myRelationship);
     }
 
@@ -229,7 +229,7 @@ public class MyUseCaseDiagram extends OldDiagram {
 	}
 
 
-	public List<MyRelationship> getExportedRelationships() {
+	public List<MyRelationship_old> getExportedRelationships() {
 		return myRelationships;
 	}
 

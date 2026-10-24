@@ -1,4 +1,4 @@
-package plugins.vpcli.domain.myuml.mycommon;
+package plugins.vpcli.domain.myuml.myelement;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -10,6 +10,7 @@ import plugins.vpcli.domain.myuml.myclassifier.MyClass;
 import plugins.vpcli.domain.myuml.mymodel.MyModel;
 import plugins.vpcli.domain.myuml.mypackage.MyPackage;
 import plugins.vpcli.domain.myuml.myproject.MyProject;
+import plugins.vpcli.domain.myuml.mystereotype.MyStereotype;
 import plugins.vpcli.domain.myuml.myusecase.MyUseCase;
 
 class MyElementQualifiedNameTest {

@@ -1,4 +1,4 @@
-package plugins.vpcli.domain.myuml.mycommon;
+package plugins.vpcli.domain.myuml.myelement;
 
 import plugins.vpcli.domain.myuml.myproject.MyProject;
 import plugins.vpcli.domain.myuml.myproject.MyProjectFactory;

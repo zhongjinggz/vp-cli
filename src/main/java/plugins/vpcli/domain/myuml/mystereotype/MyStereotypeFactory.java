@@ -1,8 +1,11 @@
-package plugins.vpcli.domain.myuml.mycommon;
+package plugins.vpcli.domain.myuml.mystereotype;
 
 import com.vp.plugin.model.IModelElement;
 import jakarta.inject.Inject;
 import jakarta.inject.Singleton;
+import plugins.vpcli.domain.myuml.myelement.MyElement;
+import plugins.vpcli.domain.myuml.myelement.MyElementFactory;
+import plugins.vpcli.domain.myuml.myelement.MyElementPool;
 
 import java.util.List;
 

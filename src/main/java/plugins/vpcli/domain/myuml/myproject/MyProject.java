@@ -1,7 +1,7 @@
 package plugins.vpcli.domain.myuml.myproject;
 
-import plugins.vpcli.domain.myuml.mycommon.MyElementType;
-import plugins.vpcli.domain.myuml.mycommon.MyElement;
+import plugins.vpcli.domain.myuml.myelement.MyElementType;
+import plugins.vpcli.domain.myuml.myelement.MyElement;
 
 public class MyProject extends MyElement {
 

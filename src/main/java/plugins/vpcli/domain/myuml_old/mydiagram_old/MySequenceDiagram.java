@@ -12,7 +12,7 @@ import com.vp.plugin.diagram.IDiagramElement;
 import com.vp.plugin.diagram.IDiagramUIModel;
 import com.vp.plugin.model.*;
 
-import plugins.vpcli.domain.myuml.mycommon.MyRelationship;
+import plugins.vpcli.domain.myuml_old.mycommon_old.MyRelationship_old;
 import plugins.vpcli.domain.myuml_old.myinteraction_old.MyCombinedFragment;
 import plugins.vpcli.domain.myuml_old.myinteraction_old.MyInteractionRef;
 import plugins.vpcli.domain.myuml_old.myinteraction_old.MyLifeline;
@@ -28,7 +28,7 @@ public class MySequenceDiagram extends OldDiagram {
 	private final List<MessageData> exportedMessages = new ArrayList<>();
 	private final List<MyCombinedFragment> exportedFragments = new ArrayList<>();
 	private final List<MyInteractionRef> exportedRefs = new ArrayList<>();
-	private final List<MyRelationship> exportedAnchors = new ArrayList<>();
+	private final List<MyRelationship_old> exportedAnchors = new ArrayList<>();
 
 	private final Map<IInteractionLifeLine, MyLifeline> lifelineMap = new HashMap<>();
 	private final Set<IMessage> processedMessages = new HashSet<>(); // Set to track processed messages
@@ -116,7 +116,7 @@ public class MySequenceDiagram extends OldDiagram {
 			addWarning("One of the Anchor's elements were null possibly due to illegal relationship (e.g. an Anchor between classes)");
 			return;
 		}
-		MyRelationship myRelationship = new MyRelationship(sourceName, targetName, relationship.getModelType(),
+		MyRelationship_old myRelationship = new MyRelationship_old(sourceName, targetName, relationship.getModelType(),
 				relationship.getName());
 		exportedAnchors.add(myRelationship);
 	}
@@ -243,7 +243,7 @@ public class MySequenceDiagram extends OldDiagram {
 		return exportedRefs;
 	}
 	
-	public List<MyRelationship> getExportedAnchors() {
+	public List<MyRelationship_old> getExportedAnchors() {
 		return exportedAnchors;
 	}
 }

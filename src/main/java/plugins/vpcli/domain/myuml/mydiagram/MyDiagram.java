@@ -1,8 +1,8 @@
 package plugins.vpcli.domain.myuml.mydiagram;
 
 import org.jetbrains.annotations.NotNull;
-import plugins.vpcli.domain.myuml.mycommon.MyElementType;
-import plugins.vpcli.domain.myuml.mycommon.MyElement;
+import plugins.vpcli.domain.myuml.myelement.MyElementType;
+import plugins.vpcli.domain.myuml.myelement.MyElement;
 import plugins.vpcli.domain.myuml.mydiagram.mydiagramelement.DiagramElementType;
 import plugins.vpcli.domain.myuml.mydiagram.mydiagramelement.MyDiagramElement;
 import plugins.vpcli.domain.myuml.mydiagram.mydiagramelement.ProperMyDiagramElement;

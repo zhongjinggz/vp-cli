@@ -1,4 +1,8 @@
-package plugins.vpcli.domain.myuml.mycommon;
+package plugins.vpcli.domain.myuml.myelement;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import plugins.vpcli.domain.myuml.myunknownelement.UnimplementedElement;
 
 import java.util.Objects;
 
@@ -12,9 +16,12 @@ public enum MyElementType {
     CLASS(MODEL_TYPE_CLASS, ".class"),
     USE_CASE(MODEL_TYPE_USE_CASE, ".usecase"),
     ASSOCIATION("diagram_has_no_model_type", ".association"),
-    ASSOCIATION_END(MODEL_TYPE_ASSOCIATION_END, ".associationend"),
+    ASSOCIATION_END(MODEL_TYPE_ASSOCIATION_END, ".association-end"),
     RELATIONSHIPS(MODEL_TYPE_MODEL_RELATIONSHIP_CONTAINER, ".relationships"),
-    STEREOTYPE(MODEL_TYPE_STEREOTYPE, ".stereotype");
+    STEREOTYPE(MODEL_TYPE_STEREOTYPE, ".stereotype"),
+    UNIMPLEMENTED_ELEMENT(UnimplementedElement.MODEL_TYPE_TEXT, ".unimplemented-element");
+
+    private static final Logger log = LoggerFactory.getLogger(MyElementType.class);
 
     private final String vpModelType;
     private final String suffix;
@@ -30,7 +37,8 @@ public enum MyElementType {
                 return aValue;
             }
         }
-        return null;
+        log.warn("Unimplemented vp model element type: {}", vpElementType);
+        return UNIMPLEMENTED_ELEMENT;
     }
 
     public String getVPModelType() {
@@ -38,7 +46,6 @@ public enum MyElementType {
     }
 
     public boolean vpModelTypeIs(String theType) {
-        //return this.vpModelType.equals(theType);
         return Objects.equals(this.vpModelType, theType);
     }
 

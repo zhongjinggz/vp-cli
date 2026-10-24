@@ -1,9 +1,9 @@
-package plugins.vpcli.domain.myuml.mycommon;
+package plugins.vpcli.domain.myuml_old.mycommon_old;
 //import com.fasterxml.jackson.annotation.JsonInclude;
 
-public class MyReference {
+public class MyReference_old {
 	
-	public MyReference() {} // required for jackson JSON parsing
+	public MyReference_old() {} // required for jackson JSON parsing
  
 	private String type; // diagram, url, file, folder, shape, model
 	
@@ -17,7 +17,7 @@ public class MyReference {
 //	@JsonInclude(JsonInclude.Include.NON_EMPTY)
 	private String modelType; // type of model element, relevant when type is "model_element"
 
-	public MyReference(String type, String description, String name, String diagramType, String modelType) {
+	public MyReference_old(String type, String description, String name, String diagramType, String modelType) {
 		setType(type);
 		setDescription(description);
 		setName(name);

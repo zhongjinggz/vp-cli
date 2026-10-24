@@ -1,6 +1,6 @@
 package plugins.vpcli.domain.myuml_old.mystatemachine_old;
 
-import plugins.vpcli.domain.myuml.mycommon.MyRelationship;
+import plugins.vpcli.domain.myuml_old.mycommon_old.MyRelationship_old;
 import plugins.vpcli.domain.myuml_old.mycommon_old.MyElement_old;
 
 import java.util.ArrayList;
@@ -86,7 +86,7 @@ public class MyState extends MyElement_old {
 
     public static class StateRegion {
         private List<MyState> subStates = new ArrayList<>();
-        private final List<MyRelationship> regTransitions = new ArrayList<>();
+        private final List<MyRelationship_old> regTransitions = new ArrayList<>();
 
         public StateRegion() {
 
@@ -96,7 +96,7 @@ public class MyState extends MyElement_old {
             return subStates;
         }
 
-        public List<MyRelationship> getRegTransitions() {
+        public List<MyRelationship_old> getRegTransitions() {
             return regTransitions;
         }
 

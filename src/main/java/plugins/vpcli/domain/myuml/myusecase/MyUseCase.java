@@ -1,15 +1,12 @@
 package plugins.vpcli.domain.myuml.myusecase;
 
-import plugins.vpcli.domain.myuml.mycommon.MyElementType;
-import plugins.vpcli.domain.myuml.mycommon.MyElement;
-import plugins.vpcli.domain.myuml.mycommon.MyStereotype;
+import plugins.vpcli.domain.myuml.myelement.MyElementType;
+import plugins.vpcli.domain.myuml.myelement.MyElement;
+import plugins.vpcli.domain.myuml.mystereotype.MyStereotype;
 
 import java.util.List;
 
 public class MyUseCase extends MyElement {
-    private List<String> stereotypes;
-    private boolean isInPackage;
-    private boolean isBusiness;
     private String Uid;
 
 
@@ -23,32 +20,4 @@ public class MyUseCase extends MyElement {
             , Description, stereotypes);
     }
 
-    public void setStereotypes(List<String> stereotypes) {
-        this.stereotypes = stereotypes;
-    }
-
-
-    public boolean isInPackage() {
-        return isInPackage;
-    }
-
-    public void setInPackage(boolean isInPackage) {
-        this.isInPackage = isInPackage;
-    }
-
-    public boolean isBusiness() {
-        return isBusiness;
-    }
-
-    public void setBusiness(boolean isBusiness) {
-        this.isBusiness = isBusiness;
-    }
-
-    public String getUid() {
-        return Uid;
-    }
-
-    public void setUid(String uid) {
-        Uid = uid;
-    }
 }

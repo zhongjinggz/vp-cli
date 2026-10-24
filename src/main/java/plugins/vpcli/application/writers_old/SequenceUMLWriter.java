@@ -12,8 +12,8 @@ import java.util.stream.Collectors;
 
 import com.vp.plugin.ApplicationManager;
 
-import plugins.vpcli.domain.myuml.mycommon.MyNote;
-import plugins.vpcli.domain.myuml.mycommon.MyRelationship;
+import plugins.vpcli.domain.myuml_old.mycommon_old.MyNote_old;
+import plugins.vpcli.domain.myuml_old.mycommon_old.MyRelationship_old;
 import plugins.vpcli.domain.myuml_old.myinteraction_old.MyCombinedFragment;
 import plugins.vpcli.domain.myuml_old.myinteraction_old.MyInteractionRef;
 import plugins.vpcli.domain.myuml_old.myinteraction_old.MyLifeline;
@@ -27,12 +27,12 @@ public class SequenceUMLWriter extends PlantUMLWriter {
 	private final List<MessageData> messages;
 	private final List<MyCombinedFragment> fragments;
 	private final List<MyInteractionRef> refs;
-	private final List<MyRelationship> anchors;
+	private final List<MyRelationship_old> anchors;
 
 	private final Set<String> activatedLifelines = new HashSet<>();
 
-	public SequenceUMLWriter(List<MyNote> notes, List<MyActor_old> actors, List<MyLifeline> lifelines,
-							 List<MessageData> messages, List<MyCombinedFragment> fragments, List<MyInteractionRef> refs, List<MyRelationship> anchors) {
+	public SequenceUMLWriter(List<MyNote_old> notes, List<MyActor_old> actors, List<MyLifeline> lifelines,
+                             List<MessageData> messages, List<MyCombinedFragment> fragments, List<MyInteractionRef> refs, List<MyRelationship_old> anchors) {
 		super(notes);
 		this.actors = actors;
 		this.lifelines = lifelines;
@@ -67,7 +67,7 @@ public class SequenceUMLWriter extends PlantUMLWriter {
 		
 		plantUMLContent.append(writeNotes());
 		
-		for (MyRelationship anchor : anchors) {
+		for (MyRelationship_old anchor : anchors) {
 			plantUMLContent.append(anchor.toExportFormat());
 		}
 

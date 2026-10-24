@@ -1,6 +1,6 @@
 package plugins.vpcli.domain.myuml.mydiagram.mydiagramelement;
 
-import plugins.vpcli.domain.myuml.mycommon.MyElement;
+import plugins.vpcli.domain.myuml.myelement.MyElement;
 
 import java.util.List;
 

@@ -11,13 +11,7 @@ public class PumlModelRelationshipContainerExporter extends PumlElementExporter 
 
 
     @Inject
-    public PumlModelRelationshipContainerExporter(
-       // MyElementTypeRepository myElementTypeRepository
-//        , PumlElementExporterFactory pumlElementExporterFactory
-    ) {
-//        super(myElementTypeRepository, MyElementTypeModelRelationshipContainer.class
-////            , pumlElementExporterFactory
-//        );
+    public PumlModelRelationshipContainerExporter() {
     }
 
     public void to(PumlDiagram result, ProperMyDiagramElement myDiagramElement) {

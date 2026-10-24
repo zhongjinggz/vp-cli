@@ -1,12 +1,13 @@
 package plugins.vpcli.domain.outputmodel.pumelementexporter;
 
-import plugins.vpcli.domain.myuml.mycommon.MyElementType;
+import plugins.vpcli.domain.myuml.myelement.MyElementType;
 
 import java.util.HashMap;
 import java.util.Map;
 
 import jakarta.inject.Inject;
 import jakarta.inject.Singleton;
+import plugins.vpcli.util.BugException;
 
 @Singleton
 public class PumlElementExporterFactory {
@@ -19,7 +20,8 @@ public class PumlElementExporterFactory {
         PumlPackageExporter packageExporter,
         PumlModelExporter modelExporter,
         PumlModelRelationshipContainerExporter modelRelationshipContainerExporter,
-        PumlUseCaseExporter useCaseExporter
+        PumlUseCaseExporter useCaseExporter,
+        PumlUnimplementedExporter unimplementedExporter
     ) {
         register(MyElementType.ASSOCIATION, associationExporter);
         register(MyElementType.CLASS, classExporter);
@@ -27,6 +29,7 @@ public class PumlElementExporterFactory {
         register(MyElementType.MODEL, modelExporter);
         register(MyElementType.RELATIONSHIPS, modelRelationshipContainerExporter);
         register(MyElementType.USE_CASE, useCaseExporter);
+        register(MyElementType.UNIMPLEMENTED_ELEMENT, unimplementedExporter);
     }
 
 
@@ -39,7 +42,7 @@ public class PumlElementExporterFactory {
         if (this.exporters.containsKey(myElementType)) {
             return this.exporters.get(myElementType);
         } else {
-            throw new IllegalArgumentException(String.format("Element type %s not found", myElementType));
+            throw new BugException(String.format("Element type %s not found", myElementType));
         }
     }
 }

@@ -3,7 +3,7 @@ package plugins.vpcli.domain.myuml.mydiagram;
 import com.vp.plugin.diagram.IDiagramUIModel;
 import com.vp.plugin.diagram.IShapeUIModel;
 import org.slf4j.Logger;
-import plugins.vpcli.domain.myuml.mycommon.*;
+import plugins.vpcli.domain.myuml.myelement.*;
 
 import static com.vp.plugin.diagram.IShapeTypeConstants.SHAPE_TYPE_ASSOCIATION;
 import static org.slf4j.LoggerFactory.getLogger;

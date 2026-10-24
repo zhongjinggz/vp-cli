@@ -1,6 +1,6 @@
 package plugins.vpcli.domain.myuml.mynary;
 
-import plugins.vpcli.domain.myuml.mycommon.MyElement;
+import plugins.vpcli.domain.myuml.myelement.MyElement;
 
 public class MyNary extends MyElement {
     private final String name;

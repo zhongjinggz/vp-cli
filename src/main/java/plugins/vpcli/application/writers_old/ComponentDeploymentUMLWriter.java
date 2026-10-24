@@ -13,9 +13,9 @@ import plugins.vpcli.domain.myuml_old.mycomponent_old.MyComponent_old.PortData;
 import plugins.vpcli.domain.myuml_old.myclass_old.MyAttribute_old;
 import plugins.vpcli.domain.myuml_old.myclass_old.MyClass_old;
 import plugins.vpcli.domain.myuml_old.myclass_old.MyOperation_old;
-import plugins.vpcli.domain.myuml.mycommon.MyNote;
+import plugins.vpcli.domain.myuml_old.mycommon_old.MyNote_old;
 import plugins.vpcli.domain.myuml.mypackage.MyPackage;
-import plugins.vpcli.domain.myuml.mycommon.MyRelationship;
+import plugins.vpcli.domain.myuml_old.mycommon_old.MyRelationship_old;
 import plugins.vpcli.domain.myuml_old.mydeployment_old.MyArtifact_old;
 
 public class ComponentDeploymentUMLWriter extends PlantUMLWriter {
@@ -23,10 +23,10 @@ public class ComponentDeploymentUMLWriter extends PlantUMLWriter {
 	private final List<MyComponent_old> components;
 	private final List<MyClass_old> interfaces;
 	private final List<MyPackage> packages;
-	private final List<MyRelationship> relationships;
+	private final List<MyRelationship_old> relationships;
 	private final List<MyArtifact_old> artifacts;
 
-    public ComponentDeploymentUMLWriter(List<MyNote> notes, List<MyComponent_old> components, List<MyClass_old> interfaces, List<MyArtifact_old> artifacts, List<MyPackage> packages, List<MyRelationship> relationships) {
+    public ComponentDeploymentUMLWriter(List<MyNote_old> notes, List<MyComponent_old> components, List<MyClass_old> interfaces, List<MyArtifact_old> artifacts, List<MyPackage> packages, List<MyRelationship_old> relationships) {
 		super(notes);
 		this.components = components;
 		this.interfaces = interfaces;
@@ -64,7 +64,7 @@ public class ComponentDeploymentUMLWriter extends PlantUMLWriter {
 
 		plantUMLContent.append(writeNotes());
 
-		for (MyRelationship relationship : relationships) {
+		for (MyRelationship_old relationship : relationships) {
 			plantUMLContent.append(writeRelationship(relationship));
 		}
 
@@ -82,7 +82,7 @@ public class ComponentDeploymentUMLWriter extends PlantUMLWriter {
 		return artifactString.toString();
 	}
 
-	private String writeRelationship(MyRelationship relationship) {
+	private String writeRelationship(MyRelationship_old relationship) {
 		
 		return relationship.toExportFormat();
     }

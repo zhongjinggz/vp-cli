@@ -1,7 +1,7 @@
 package plugins.vpcli.domain.vpmodelvisitor.element;
 
 import com.vp.plugin.diagram.IDiagramUIModel;
-import plugins.vpcli.domain.myuml.mycommon.MyElementType;
+import plugins.vpcli.domain.myuml.myelement.MyElementType;
 import plugins.vpcli.domain.vpmodelvisitor.visitor.ViElementVisitor;
 
 import java.io.IOException;

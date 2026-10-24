@@ -1,6 +1,6 @@
 package plugins.vpcli.domain.myuml_old.mydeployment_old;
 
-import plugins.vpcli.domain.myuml.mycommon.MyElement;
+import plugins.vpcli.domain.myuml.myelement.MyElement;
 
 public class MyArtifact extends MyElement {
 

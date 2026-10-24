@@ -1,10 +1,10 @@
 package plugins.vpcli.domain.myuml_old.myassociation_old;
 
-import plugins.vpcli.domain.myuml.mycommon.MyRelationship;
+import plugins.vpcli.domain.myuml_old.mycommon_old.MyRelationship_old;
 
 import java.util.Objects;
 
-public class MyAssociation_old extends MyRelationship {
+public class MyAssociation_old extends MyRelationship_old {
 
 	private final String fromEndMultiplicity;
 	private final String toEndMultiplicity;

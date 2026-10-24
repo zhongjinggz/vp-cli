@@ -6,14 +6,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 import plugins.vpcli.domain.myuml_old.myclass_old.MyAttribute_old;
-import plugins.vpcli.domain.myuml.mycommon.MyNote;
+import plugins.vpcli.domain.myuml_old.mycommon_old.MyNote_old;
 import plugins.vpcli.domain.myuml_old.myclass_old.MyOperation_old;
 
 public abstract class PlantUMLWriter {
     
-    protected List<MyNote> notes = new ArrayList<>();
+    protected List<MyNote_old> notes = new ArrayList<>();
     
-    public PlantUMLWriter(List<MyNote> notes) {
+    public PlantUMLWriter(List<MyNote_old> notes) {
         if (notes != null) {
             this.notes = notes;
         }
@@ -23,13 +23,13 @@ public abstract class PlantUMLWriter {
     
     protected String writeNotes() {
         StringBuilder notesContent = new StringBuilder();
-        for (MyNote myNote : notes) {
+        for (MyNote_old myNote : notes) {
             notesContent.append(writeNote(myNote)).append("\n");
         }
         return notesContent.toString();
     }
     
-    protected String writeNote(MyNote myNote) {
+    protected String writeNote(MyNote_old myNote) {
         String content = myNote.getContent().replaceAll("\n", "\\\\n");
         
         // Return an empty string if content is null or empty

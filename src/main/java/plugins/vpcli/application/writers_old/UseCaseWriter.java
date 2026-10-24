@@ -8,19 +8,19 @@ import java.util.stream.Collectors;
 
 
 import plugins.vpcli.domain.myuml_old.myusecase_old.MyActor_old;
-import plugins.vpcli.domain.myuml.mycommon.MyNote;
+import plugins.vpcli.domain.myuml_old.mycommon_old.MyNote_old;
 import plugins.vpcli.domain.myuml.mypackage.MyPackage;
-import plugins.vpcli.domain.myuml.mycommon.MyRelationship;
+import plugins.vpcli.domain.myuml_old.mycommon_old.MyRelationship_old;
 import plugins.vpcli.domain.myuml.myusecase.MyUseCase;
 
 public class UseCaseWriter extends PlantUMLWriter {
     
 	private final List<MyPackage> packages;
     private final List<MyActor_old> actors;
-    private final List<MyRelationship> relationships;
+    private final List<MyRelationship_old> relationships;
     private final List<MyUseCase> useCases;
 
-    public UseCaseWriter(List<MyUseCase> useCases, List<MyRelationship> relationships, List<MyPackage> packages, List<MyActor_old> actors, List<MyNote> notes) {
+    public UseCaseWriter(List<MyUseCase> useCases, List<MyRelationship_old> relationships, List<MyPackage> packages, List<MyActor_old> actors, List<MyNote_old> notes) {
     	super(notes);
     	this.packages = packages;
     	this.useCases = useCases;
@@ -42,13 +42,13 @@ public class UseCaseWriter extends PlantUMLWriter {
         }
 
         for (MyUseCase usecaseU : useCases) {
-        	if(!usecaseU.isInPackage())
-        		plantUMLContent.append(writeUseCase(usecaseU, ""));
+//        	if(!usecaseU.isInPackage())
+//        		plantUMLContent.append(writeUseCase(usecaseU, ""));
         }
         
         plantUMLContent.append(writeNotes());
 
-        for (MyRelationship relationship : relationships) {
+        for (MyRelationship_old relationship : relationships) {
             plantUMLContent.append(writeRelationship(relationship));
         }
         
@@ -86,11 +86,11 @@ public class UseCaseWriter extends PlantUMLWriter {
 	private String writeUseCase(MyUseCase uUseCase, String indent) {
 	    StringBuilder usecaseString = new StringBuilder();
 	    String name = uUseCase.getName();
-	    String business = uUseCase.isBusiness() ? "/" : "";
+//	    String business = uUseCase.isBusiness() ? "/" : "";
 		String aliasDeclaration = formatAlias(uUseCase.getName()).equals(uUseCase.getName()) ? "" : (" as " + formatAlias(uUseCase.getName()));
-	    usecaseString.append(indent).append("usecase").append(business)
-	                 .append(" (").append(name).append(")").append(aliasDeclaration);
-	    
+//	    usecaseString.append(indent).append("usecase").append(business)
+//	                 .append(" (").append(name).append(")").append(aliasDeclaration);
+//
 	    if (!uUseCase.getStereotypes().isEmpty()) {
 	        String stereotypesString = uUseCase.getStereotypes().stream()
 	            .filter(stereotype -> !"UseCase".equals(stereotype)) // Exclude "UseCase", VP auto applies it to every use case for some reason
@@ -122,7 +122,7 @@ public class UseCaseWriter extends PlantUMLWriter {
 		return actorString.toString();
 	}
 
-	private String writeRelationship(MyRelationship relationship) {
+	private String writeRelationship(MyRelationship_old relationship) {
 		return relationship.toExportFormat();
     }
 

@@ -3,8 +3,8 @@ package plugins.vpcli.domain.myuml.mydiagram.mydiagramelement;
 import com.vp.plugin.diagram.IDiagramElement;
 import com.vp.plugin.model.IModelElement;
 import org.jetbrains.annotations.NotNull;
-import plugins.vpcli.domain.myuml.mycommon.MyElement;
-import plugins.vpcli.domain.myuml.mycommon.MyElementFactoryFactory;
+import plugins.vpcli.domain.myuml.myelement.MyElement;
+import plugins.vpcli.domain.myuml.myelement.MyElementFactoryFactory;
 
 import jakarta.inject.Inject;
 import jakarta.inject.Singleton;
@@ -14,10 +14,7 @@ public class MyDiagramElementFactory {
     private final MyElementFactoryFactory buildMyElementFactory;
 
     @Inject
-    public MyDiagramElementFactory(
-        MyElementFactoryFactory myElementFactoryFactory
-//        , MyDiagramElementCreator myDiagramElementCreator
-    ) {
+    public MyDiagramElementFactory(MyElementFactoryFactory myElementFactoryFactory) {
         this.buildMyElementFactory = myElementFactoryFactory;
     }
 

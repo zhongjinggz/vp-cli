@@ -1,6 +1,7 @@
-package plugins.vpcli.domain.myuml.mycommon;
+package plugins.vpcli.domain.myuml.myelement;
 
 import org.jetbrains.annotations.NotNull;
+import plugins.vpcli.domain.myuml.mystereotype.MyStereotype;
 
 import java.util.ArrayList;
 import java.util.Collections;

@@ -1,7 +1,7 @@
 package plugins.vpcli.domain.vpmodelvisitor.element;
 
 import com.vp.plugin.model.IModelElement;
-import plugins.vpcli.domain.myuml.mycommon.MyElementFactoryFactory;
+import plugins.vpcli.domain.myuml.myelement.MyElementFactoryFactory;
 
 public class ViPackageFactory extends ViElementFactory {
     public ViPackageFactory(MyElementFactoryFactory myElementFactoryFactory) {

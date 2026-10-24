@@ -1,9 +1,9 @@
 package plugins.vpcli.domain.myuml.mypackage;
 
 import plugins.vpcli.domain.myuml.myclassifier.*;
-import plugins.vpcli.domain.myuml.mycommon.MyElementType;
-import plugins.vpcli.domain.myuml.mycommon.MyElement;
-import plugins.vpcli.domain.myuml.mycommon.MyStereotype;
+import plugins.vpcli.domain.myuml.myelement.MyElementType;
+import plugins.vpcli.domain.myuml.myelement.MyElement;
+import plugins.vpcli.domain.myuml.mystereotype.MyStereotype;
 import plugins.vpcli.domain.myuml.mycomponent.MyComponent;
 import plugins.vpcli.domain.myuml.mynary.MyNary;
 import plugins.vpcli.domain.myuml.myusecase.MyActor;

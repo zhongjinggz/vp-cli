@@ -1,6 +1,6 @@
 package plugins.vpcli.domain.vpmodelvisitor.visitor.exportdiagramvisitor;
 
-import plugins.vpcli.domain.myuml.mycommon.MyElement;
+import plugins.vpcli.domain.myuml.myelement.MyElement;
 import plugins.vpcli.domain.myuml.mydiagram.MyDiagram;
 import plugins.vpcli.domain.myuml.myproject.MyProject;
 import plugins.vpcli.domain.outputmodel.PumlDiagram;

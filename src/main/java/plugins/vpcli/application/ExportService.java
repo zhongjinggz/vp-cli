@@ -10,7 +10,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.List;
 
-import static plugins.vpcli.domain.myuml.mycommon.MyElementType.*;
+import static plugins.vpcli.domain.myuml.myelement.MyElementType.*;
 
 import jakarta.inject.Inject;
 import jakarta.inject.Singleton;

@@ -9,14 +9,14 @@ import com.vp.plugin.model.IModelElement;
 import com.vp.plugin.model.INOTE;
 import com.vp.plugin.model.IStereotype;
 
-import plugins.vpcli.domain.myuml.mycommon.MyNote;
+import plugins.vpcli.domain.myuml_old.mycommon_old.MyNote_old;
 
 public abstract class OldDiagram {
 
 	public abstract void extract();
 	private final List<String> warnings = new ArrayList<>();
 
-	private final List<MyNote> myNotes = new ArrayList<>();
+	private final List<MyNote_old> myNotes = new ArrayList<>();
 
 	// Set of all exported elements for constant lookup so that no relationships with un-exported elements are written
     protected final Set<IModelElement> allExportedElements = new HashSet<>();
@@ -26,12 +26,12 @@ public abstract class OldDiagram {
 		String name = noteModel.getName();
 		String content = noteModel.getDescription();
 		String id = noteModel.getId();
-		MyNote myNote = new MyNote(name, content, id);
+		MyNote_old myNote = new MyNote_old(name, content, id);
 		myNotes.add(myNote);
 	}
 
 	protected String getNoteAliasById(String naryId) {
-		for (MyNote myNote : myNotes) {
+		for (MyNote_old myNote : myNotes) {
 			if (myNote.getId().equals(naryId)) {
 				return myNote.getAlias();
 			}
@@ -59,7 +59,7 @@ public abstract class OldDiagram {
 		return isRootLevel(modelElement) || !packageModelIds.contains(modelElement.getParent().getId());
 	}
 
-	public List<MyNote> getNotes() {
+	public List<MyNote_old> getNotes() {
 		return myNotes;
 	}
 

@@ -1,8 +1,8 @@
 package plugins.vpcli.application.writers_old;
 
 import plugins.vpcli.domain.myuml_old.myactivity_old.MyForkJoin;
-import plugins.vpcli.domain.myuml.mycommon.MyNote;
-import plugins.vpcli.domain.myuml.mycommon.MyRelationship;
+import plugins.vpcli.domain.myuml_old.mycommon_old.MyNote_old;
+import plugins.vpcli.domain.myuml_old.mycommon_old.MyRelationship_old;
 import plugins.vpcli.domain.myuml_old.mystatemachine_old.MyHistory;
 import plugins.vpcli.domain.myuml_old.mystatemachine_old.MyStateChoice;
 import plugins.vpcli.domain.myuml_old.mystatemachine_old.MyState;
@@ -17,12 +17,12 @@ import java.util.List;
 public class StateUMLWriter extends PlantUMLWriter {
 
     private final List<MyState> states;
-    private final List<MyRelationship> transitions;
+    private final List<MyRelationship_old> transitions;
     private final List<MyStateChoice> choices;
     private final List<MyHistory> histories;
     private final List<MyForkJoin> forkJoins;
 
-    public StateUMLWriter(List<MyNote> notes, List<MyState> states, List<MyRelationship> transitions, List<MyStateChoice> choices, List<MyHistory> histories, List<MyForkJoin> forkJoins) {
+    public StateUMLWriter(List<MyNote_old> notes, List<MyState> states, List<MyRelationship_old> transitions, List<MyStateChoice> choices, List<MyHistory> histories, List<MyForkJoin> forkJoins) {
         super(notes);
         this.states = states;
         this.choices = choices;
@@ -61,7 +61,7 @@ public class StateUMLWriter extends PlantUMLWriter {
 
         plantUMLContent.append(writeNotes());
 
-        for (MyRelationship transition : transitions) {
+        for (MyRelationship_old transition : transitions) {
             plantUMLContent.append(writeRelationship(transition));
         }
 
@@ -84,7 +84,7 @@ public class StateUMLWriter extends PlantUMLWriter {
         return indent + "state " + stateChoice.getAlias() + " <<choice>>\n";
     }
 
-    private String writeRelationship(MyRelationship transition) {
+    private String writeRelationship(MyRelationship_old transition) {
         return transition.toExportFormat();
     }
 
@@ -138,7 +138,7 @@ public class StateUMLWriter extends PlantUMLWriter {
                     }
                 }
 
-                for (MyRelationship transition : region.getRegTransitions()) {
+                for (MyRelationship_old transition : region.getRegTransitions()) {
                     stateString.append(indent).append("\t").append(transition.toExportFormat());
                 }
                 // concurrent if there's more than one region

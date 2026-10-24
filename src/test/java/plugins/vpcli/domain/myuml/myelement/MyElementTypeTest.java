@@ -1,8 +1,7 @@
-package plugins.vpcli.domain.myuml.mycommon;
+package plugins.vpcli.domain.myuml.myelement;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.junit.jupiter.api.Test;
@@ -28,13 +27,13 @@ class MyElementTypeTest {
     }
 
     @Test
-    void shouldReturnNullWhenNoTypeMatches() {
-        assertNull(MyElementType.of("no-such-type"));
+    void shouldReturnUnknownElementWhenNoTypeMatches() {
+        assertEquals(MyElementType.UNIMPLEMENTED_ELEMENT, MyElementType.of("no-such-type"));
     }
 
     @Test
-    void shouldReturnNullWhenKindMismatchOnMatchingType() {
-        assertNull(MyElementType.of("unknown-type"));
+    void shouldReturnUnknownElementWhenKindMismatchOnMatchingType() {
+        assertEquals(MyElementType.UNIMPLEMENTED_ELEMENT, MyElementType.of("unknown-type"));
     }
 
     @Test

@@ -1,8 +1,9 @@
-package plugins.vpcli.domain.myuml.mycommon;
+package plugins.vpcli.domain.myuml.myelement;
 
 import com.vp.plugin.model.IModelElement;
 import org.jspecify.annotations.NonNull;
 import org.slf4j.Logger;
+import plugins.vpcli.domain.myuml.mystereotype.MyStereotype;
 
 import java.util.ArrayList;
 import java.util.List;

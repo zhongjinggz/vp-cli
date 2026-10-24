@@ -1,7 +1,7 @@
 package plugins.vpcli.domain.outputmodel.pumelementexporter;
 
 import plugins.vpcli.domain.myuml.mydiagram.mydiagramelement.ProperMyDiagramElement;
-import plugins.vpcli.domain.myuml.mycommon.MyElement;
+import plugins.vpcli.domain.myuml.myelement.MyElement;
 import plugins.vpcli.domain.outputmodel.PumlDiagram;
 
 public abstract class PumlElementExporter {
