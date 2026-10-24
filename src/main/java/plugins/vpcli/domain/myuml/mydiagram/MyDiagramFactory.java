@@ -1,7 +1,9 @@
 package plugins.vpcli.domain.myuml.mydiagram;
 
+import com.vp.plugin.diagram.IDiagramElement;
 import com.vp.plugin.diagram.IDiagramUIModel;
 import com.vp.plugin.diagram.IShapeUIModel;
+import com.vp.plugin.diagram.connector.IAnchorUIModel;
 import org.slf4j.Logger;
 import plugins.vpcli.domain.myuml.myelement.*;
 
@@ -53,13 +55,19 @@ public class MyDiagramFactory {
         if (vpConnectors != null) {
             for (var aConnector : vpConnectors) {
                 // 只处理关联连接线，其余类型（依赖/泛化等）留给后续步骤
-                if (SHAPE_TYPE_ASSOCIATION.equals(aConnector.getShapeType())) {
+                //if (SHAPE_TYPE_ASSOCIATION.equals(aConnector.getShapeType())) {
+                if (needToHandle(aConnector) ){
                     buildMyDiagramElement.ofConnector(aConnector, result);
                 }
+                //}
             }
         }
 
         return result;
+    }
+
+    public boolean needToHandle(IDiagramElement vpDiagramElement) {
+        return !(vpDiagramElement instanceof IAnchorUIModel);
     }
 
     MyDiagram creatMyDiagram(

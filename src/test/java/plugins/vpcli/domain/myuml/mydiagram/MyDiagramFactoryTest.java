@@ -151,27 +151,27 @@ class MyDiagramFactoryTest {
         assertEquals(MyElementType.CLASS, association.getToElement().getElementType());
     }
 
-    @Test
-    void shouldIgnoreNonAssociationConnectors() {
-        IShapeUIModel classAShape = mockClassShape("c1", "订单");
-
-        // 一个非关联连接线（例如依赖），shapeType 未映射到 ASSOCIATION
-        IConnectorUIModel otherConnector = mock(IConnectorUIModel.class);
-        when(otherConnector.getShapeType()).thenReturn("Dependency");
-
-        IDiagramUIModel vpDiagram = mock(IDiagramUIModel.class);
-        when(vpDiagram.getId()).thenReturn("d1");
-        when(vpDiagram.getName()).thenReturn("类图");
-        when(vpDiagram.getDocumentation()).thenReturn("");
-        when(vpDiagram.getType()).thenReturn("ClassDiagram");
-        when(vpDiagram.toShapeUIModelArray()).thenReturn(new IShapeUIModel[]{classAShape});
-        when(vpDiagram.toConnectorUIModelArray()).thenReturn(new IConnectorUIModel[]{otherConnector});
-
-        MyDiagram result = buildFactory().of(vpDiagram, root);
-
-        assertEquals(1, result.getSubShapes().size());
-        assertEquals(0, result.getSubEdges().size());
-    }
+//    @Test
+//    void shouldIgnoreNonAssociationConnectors() {
+//        IShapeUIModel classAShape = mockClassShape("c1", "订单");
+//
+//        // 一个非关联连接线（例如依赖），shapeType 未映射到 ASSOCIATION
+//        IConnectorUIModel otherConnector = mock(IConnectorUIModel.class);
+//        when(otherConnector.getShapeType()).thenReturn("Dependency");
+//
+//        IDiagramUIModel vpDiagram = mock(IDiagramUIModel.class);
+//        when(vpDiagram.getId()).thenReturn("d1");
+//        when(vpDiagram.getName()).thenReturn("类图");
+//        when(vpDiagram.getDocumentation()).thenReturn("");
+//        when(vpDiagram.getType()).thenReturn("ClassDiagram");
+//        when(vpDiagram.toShapeUIModelArray()).thenReturn(new IShapeUIModel[]{classAShape});
+//        when(vpDiagram.toConnectorUIModelArray()).thenReturn(new IConnectorUIModel[]{otherConnector});
+//
+//        MyDiagram result = buildFactory().of(vpDiagram, root);
+//
+//        assertEquals(1, result.getSubShapes().size());
+//        assertEquals(0, result.getSubEdges().size());
+//    }
 
     @Test
     void shouldHandleNullConnectorArray() {
