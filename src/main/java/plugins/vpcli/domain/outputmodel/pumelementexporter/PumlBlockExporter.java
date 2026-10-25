@@ -21,20 +21,14 @@ public abstract class PumlBlockExporter extends PumlElementExporter {
     public void to(PumlDiagram result, ProperMyDiagramElement myDiagramElement) {
         var myElement = myDiagramElement.getModelElement();
 
-//        logger.debug("exporting block: elementType={} name={} alias={} suffix={}",
-//            myElement.getElementType(),
-//            myElement.getName(),
-//            getPumlAlias(myElement),
-//            getBlockSuffix()
-//        );
-
-//        result.beginBlock(getBlockType() + " \"" + myElement.getName() + "\" as " + getPumlAlias(myElement) + getBlockSuffix());
         result.beginBlock(
             getBlockType(),
             myElement.getName(),
             getPumlAlias(myElement),
             getBlockSuffix()
         );
+
+        writeBlockBody(result, myDiagramElement);
 
         for (var aSubShape : myDiagramElement.getSubShapes()) {
             var exporter = pumlElementExporterFactory.of(aSubShape.getModelElement().getElementType());
@@ -49,5 +43,9 @@ public abstract class PumlBlockExporter extends PumlElementExporter {
     // 供需要在块声明末尾追加内容（如 <<model>> 原型）的子类覆写
     String getBlockSuffix() {
         return "";
+    }
+
+    // 供子类在块的成员区（beginBlock 之后、子形状之前）追加成员行；默认空实现
+    void writeBlockBody(PumlDiagram result, ProperMyDiagramElement myDiagramElement) {
     }
 }

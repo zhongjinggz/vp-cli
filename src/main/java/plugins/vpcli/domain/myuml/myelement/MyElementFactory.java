@@ -64,7 +64,7 @@ public abstract class MyElementFactory {
         return factory.of(vpElement);
     }
 
-    private MyElement createWithParent(MyElement parent, IModelElement vpElement) {
+    protected MyElement createWithParent(MyElement parent, IModelElement vpElement) {
         String id = vpElement.getId();
 
         if (elementPool.contains(id)) {

@@ -14,7 +14,7 @@ namespace package1 {
 }
 @enduml
 ```
--注意： PlantUML 中的 "namespace" 才对应 UML package
+- 注意： PlantUML 中的 "namespace" 才对应 UML package
 
 ### 方案
 略
@@ -194,10 +194,13 @@ class3 "1"o--"0..*" class4: < doSomething
 **目标：** 扩展导出渲染，使关联线可输出名称及阅读方向三角；不改动导入，仅触及输出模型层（`PumlDiagram`）与关联导出器（`PumlAssociationExporter`）、关联模型（`MyAssociation`）。
 
 **现状分析（已核对源码）：**
+
 - 关联线渲染集中在 `PumlDiagram.writeEdge(PumlEdgeEnd, PumlEdgeEnd, LineStyle)`（src/.../outputmodel/PumlDiagram.java:82）：目前把 role 与 multiplicity 合并成**每一端一个**引号标签，不输出关联名称，也不带方向三角。
 - `PumlEdgeEnd.ShapeKind`（.../PumlEdgeEnd.java）表达的是**端点的导航符号**，与名称阅读方向三角是两个概念，不可混用。
 - 阅读方向的真实数据来源是 VP 的 `IAssociation.getDirection()`，返回 `IAssociation.DIRECTION_FROM_TO` 或 `IAssociation.DIRECTION_TO_FROM`。
 - `MyAssociation.getName()`（.../myassociation/MyAssociation.java:18 经 `MyElement`）已持有 VP 的关联名称；从 VP 获取关联名称时若返回 `null`，在读数层归一化为空串 `""`。
+
+
 
 **设计图（导出器内部协作）：**
 
