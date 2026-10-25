@@ -18,7 +18,7 @@ public abstract class MyElementFactory {
     private final MyElementPool elementPool;
     private MyElementFactoryFactory factoryFactory;
 
-    MyElementFactory(MyElementPool myElementPool ) {
+    protected MyElementFactory(MyElementPool myElementPool) {
         this.elementPool = myElementPool;
     }
 
