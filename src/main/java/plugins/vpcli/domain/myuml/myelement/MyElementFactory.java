@@ -3,6 +3,7 @@ package plugins.vpcli.domain.myuml.myelement;
 import com.vp.plugin.model.IModelElement;
 import org.jspecify.annotations.NonNull;
 import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import plugins.vpcli.domain.myuml.mystereotype.MyStereotype;
 
 import java.util.ArrayList;
@@ -12,25 +13,13 @@ import static org.slf4j.LoggerFactory.getLogger;
 
 public abstract class MyElementFactory {
 
-    private final Logger logger;
+    private static final Logger logger = LoggerFactory.getLogger(MyElementFactory.class);
 
     private final MyElementPool elementPool;
     private MyElementFactoryFactory factoryFactory;
 
-    public MyElementFactory(
-        MyElementPool myElementPool
-    ) {
-        this(myElementPool,
-            getLogger(MyElementFactory.class));
-    }
-
-    // 仅用于单元测试，可注入 Logger
-    MyElementFactory(MyElementPool myElementPool,
-                     Logger logger
-    ) {
+    MyElementFactory(MyElementPool myElementPool ) {
         this.elementPool = myElementPool;
-        this.logger = logger;
-
     }
 
     // set by MyElementFactoryFactory, by-direction navigation
@@ -38,9 +27,9 @@ public abstract class MyElementFactory {
         this.factoryFactory = factoryFactory;
     }
 
-    public abstract MyElement reallyCreate(MyElement parent, IModelElement vpElement, List<MyStereotype> myStereotypes);
+    public abstract MyElement reallyBuild(MyElement parent, IModelElement vpElement, List<MyStereotype> myStereotypes);
 
-    public MyElement of(IModelElement vpElement) {
+    public MyElement build(IModelElement vpElement) {
         MyElement myParentElement;
         var vpParentElement = vpElement.getParent();
 
@@ -55,16 +44,16 @@ public abstract class MyElementFactory {
                 myParentElement = buildRelatedElement(vpParentElement);
             }
         }
-        return createWithParent(myParentElement, vpElement);
+        return buildMySelfWithParent(myParentElement, vpElement);
     }
 
     // use proper factory to build
     protected MyElement buildRelatedElement(IModelElement vpElement) {
         var factory = factoryFactory.of(vpElement.getModelType());
-        return factory.of(vpElement);
+        return factory.build(vpElement);
     }
 
-    protected MyElement createWithParent(MyElement parent, IModelElement vpElement) {
+    protected MyElement buildMySelfWithParent(MyElement parent, IModelElement vpElement) {
         String id = vpElement.getId();
 
         if (elementPool.contains(id)) {
@@ -74,12 +63,13 @@ public abstract class MyElementFactory {
 
             List<MyStereotype> myStereotypes = buildMyStereotypes(vpElement);
 
-            var result = reallyCreate(parent, vpElement, myStereotypes);
+            var result = reallyBuild(parent, vpElement, myStereotypes);
             elementPool.put(id, result);
             return result;
         }
     }
 
+    // May simplify Stereotype, not to think it an element?
     private @NonNull List<MyStereotype> buildMyStereotypes(IModelElement vpElement) {
         List<MyStereotype> result = new ArrayList<>();
 

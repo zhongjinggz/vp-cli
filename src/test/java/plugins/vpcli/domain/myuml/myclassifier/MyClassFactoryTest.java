@@ -105,7 +105,7 @@ class MyClassFactoryTest {
         when(pool.getMyProject()).thenReturn(root);
 
         MyClassFactory factory = new MyClassFactory(pool);
-        MyClass myClass = (MyClass) factory.reallyCreate(root, vpClass, stereotypes);
+        MyClass myClass = (MyClass) factory.reallyBuild(root, vpClass, stereotypes);
 
         assertEquals(MyElementType.CLASS, myClass.getElementType());
         assertEquals("订单", myClass.getName());
@@ -141,7 +141,7 @@ class MyClassFactoryTest {
         when(pool.getMyProject()).thenReturn(root);
 
         MyClassFactory factory = new MyClassFactory(pool);
-        MyClass myClass = (MyClass) factory.reallyCreate(root, vpClass, stereotypes);
+        MyClass myClass = (MyClass) factory.reallyBuild(root, vpClass, stereotypes);
 
         assertEquals(2, myClass.getOperations().size());
 

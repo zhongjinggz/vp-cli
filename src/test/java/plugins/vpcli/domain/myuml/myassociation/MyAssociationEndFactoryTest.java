@@ -69,7 +69,7 @@ class MyAssociationEndFactoryTest {
         MyAssociationEndFactory factory = new MyAssociationEndFactory(pool);
         factory.setFactoryFactory(buildFactoryFactory(pool));
 
-        MyAssociationEnd end = factory.reallyCreate(root, vpEnd, stereotypes);
+        MyAssociationEnd end = factory.reallyBuild(root, vpEnd, stereotypes);
 
         assertEquals(MyElementType.ASSOCIATION_END, end.getElementType());
         assertEquals("0..*", end.getMultiplicity());
@@ -99,7 +99,7 @@ class MyAssociationEndFactoryTest {
         MyAssociationEndFactory factory = new MyAssociationEndFactory(pool);
         factory.setFactoryFactory(buildFactoryFactory(pool));
 
-        MyAssociationEnd end = factory.reallyCreate(root, vpEnd, stereotypes);
+        MyAssociationEnd end = factory.reallyBuild(root, vpEnd, stereotypes);
 
         assertEquals("", end.getMultiplicity());
         assertEquals(MyAssociationEnd.NAVIGABLE_UNSPECIFIED, end.getNavigable());

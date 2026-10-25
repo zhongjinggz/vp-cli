@@ -100,7 +100,7 @@ class MyDependencyTest {
         MyDependencyFactory factory = new MyDependencyFactory(pool);
         factory.setFactoryFactory(buildFactoryFactory(pool));
 
-        MyDependency dependency = factory.reallyCreate(root, dependencyVp, stereotypes);
+        MyDependency dependency = factory.reallyBuild(root, dependencyVp, stereotypes);
 
         assertEquals(MyElementType.DEPENDENCY, dependency.getElementType());
         assertEquals("使用", dependency.getName());

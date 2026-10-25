@@ -25,7 +25,7 @@ public class MyClassFactory extends MyElementFactory {
     }
 
     @Override
-    public MyElement reallyCreate(MyElement parent, IModelElement vpElement, List<MyStereotype> stereotypes) {
+    public MyElement reallyBuild(MyElement parent, IModelElement vpElement, List<MyStereotype> stereotypes) {
         MyClass myClass = new MyClass(
             parent,
             vpElement.getId(),

@@ -144,7 +144,7 @@ class MyAssociationTest {
         MyAssociationFactory factory = new MyAssociationFactory(pool);
         factory.setFactoryFactory(factoryFactory);
 
-        MyAssociation association = factory.reallyCreate(root, associationVp, stereotypes);
+        MyAssociation association = factory.reallyBuild(root, associationVp, stereotypes);
 
         assertEquals(MyElementType.ASSOCIATION, association.getElementType());
         assertEquals("订单", association.getFromElement().getName());
@@ -261,6 +261,6 @@ class MyAssociationTest {
 
         MyAssociationFactory factory = new MyAssociationFactory(pool);
         factory.setFactoryFactory(factoryFactory);
-        return factory.reallyCreate(root, associationVp, stereotypes);
+        return factory.reallyBuild(root, associationVp, stereotypes);
     }
 }

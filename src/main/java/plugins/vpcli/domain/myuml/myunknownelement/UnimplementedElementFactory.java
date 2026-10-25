@@ -19,7 +19,7 @@ public class UnimplementedElementFactory extends MyElementFactory {
     }
 
     @Override
-    public UnimplementedElement reallyCreate(
+    public UnimplementedElement reallyBuild(
         MyElement parent,
         IModelElement vpElement,
         List<MyStereotype> stereotypes

@@ -20,7 +20,7 @@ public class MyUseCaseFactory extends MyElementFactory {
     }
 
     @Override
-    public MyUseCase reallyCreate(
+    public MyUseCase reallyBuild(
         MyElement parent,
         IModelElement vpElement,
         List<MyStereotype> stereotypes

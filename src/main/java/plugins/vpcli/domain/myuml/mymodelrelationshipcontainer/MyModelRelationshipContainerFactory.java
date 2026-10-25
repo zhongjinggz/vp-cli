@@ -24,7 +24,7 @@ public class MyModelRelationshipContainerFactory extends MyElementFactory {
     }
 
     @Override
-    public MyModelRelationshipContainer reallyCreate(MyElement parent, IModelElement vpElement, List<MyStereotype> myStereotypes) {
+    public MyModelRelationshipContainer reallyBuild(MyElement parent, IModelElement vpElement, List<MyStereotype> myStereotypes) {
         return new MyModelRelationshipContainer(
             parent,
             vpElement.getId(),

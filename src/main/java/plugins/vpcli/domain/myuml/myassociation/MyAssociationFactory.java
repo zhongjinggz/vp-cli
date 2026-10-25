@@ -20,7 +20,7 @@ public class MyAssociationFactory extends MyElementFactory {
     }
 
     @Override
-    public MyAssociation reallyCreate(
+    public MyAssociation reallyBuild(
         MyElement parent,
         IModelElement vpElement,
         List<MyStereotype> stereotypes

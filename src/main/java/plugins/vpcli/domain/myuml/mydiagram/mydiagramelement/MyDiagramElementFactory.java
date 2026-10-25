@@ -48,7 +48,7 @@ public class MyDiagramElementFactory {
 
         var buildMyElement = buildMyElementFactory.of(vpElement.getModelType());
 
-        var myElement = buildMyElement.of(vpElement);
+        var myElement = buildMyElement.build(vpElement);
 
         var result = createMyDiagramElement(vpDiagramElement, parentDiagramElement, myElement);
         return result;

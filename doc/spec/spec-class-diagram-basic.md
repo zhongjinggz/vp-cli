@@ -510,7 +510,7 @@ PumlClassExporter ..> MyClass : 读取属性并渲染行
    - 验证：为 `PumlClassExporter` 写单元测试，构造含属性/操作的 `ProperMyDiagramElement`，断言生成的类体行与需求中的 PlantUML 一致（含空白成员组合、`{static}`/`{abstract}`、参数默认值）。
 
 4. **注册与接线（工厂）。**
-   - 方案：本条不新增 `MyElementType`/`DiagramElementType`/新导出器类（类的类型 CLASS 早已登记），仅需确认 `MyClassFactory`（读取阶段填充成员）与 `PumlClassExporter`（渲染钩子）被正确注入。若 `MyClassFactory` 的 `reallyCreate` 签名需扩展（例如需额外注入 `IClass` 相关依赖），在 `MyElementFactoryFactory`（.../myuml/myelement/MyElementFactoryFactory.java）保持既有注册即可，无新增登记。
+   - 方案：本条不新增 `MyElementType`/`DiagramElementType`/新导出器类（类的类型 CLASS 早已登记），仅需确认 `MyClassFactory`（读取阶段填充成员）与 `PumlClassExporter`（渲染钩子）被正确注入。若 `MyClassFactory` 的 `reallyBuild` 签名需扩展（例如需额外注入 `IClass` 相关依赖），在 `MyElementFactoryFactory`（.../myuml/myelement/MyElementFactoryFactory.java）保持既有注册即可，无新增登记。
    - 验证：既有 `MyDiagramFactoryTest` 及整体 `mvn test` 无回归。
 
 5. **集成验证。**

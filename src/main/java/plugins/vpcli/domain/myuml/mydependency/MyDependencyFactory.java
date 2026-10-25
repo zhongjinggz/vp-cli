@@ -20,7 +20,7 @@ public class MyDependencyFactory extends MyElementFactory {
     }
 
     @Override
-    public MyDependency reallyCreate(
+    public MyDependency reallyBuild(
         MyElement parent,
         IModelElement vpElement,
         List<MyStereotype> stereotypes

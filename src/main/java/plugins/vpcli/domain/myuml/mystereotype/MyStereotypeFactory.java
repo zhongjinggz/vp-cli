@@ -18,7 +18,7 @@ public class MyStereotypeFactory extends MyElementFactory {
     }
 
     @Override
-    public MyStereotype reallyCreate(MyElement parent, IModelElement vpElement, List<MyStereotype> myStereotypes) {
+    public MyStereotype reallyBuild(MyElement parent, IModelElement vpElement, List<MyStereotype> myStereotypes) {
         return new MyStereotype(
             parent,
             vpElement.getId(),

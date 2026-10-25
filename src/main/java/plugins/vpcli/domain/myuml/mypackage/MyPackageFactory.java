@@ -24,7 +24,7 @@ public class MyPackageFactory extends MyElementFactory {
     }
 
     @Override
-    public MyPackage reallyCreate(MyElement parent, IModelElement vpElement, List<MyStereotype> myStereotypes) {
+    public MyPackage reallyBuild(MyElement parent, IModelElement vpElement, List<MyStereotype> myStereotypes) {
         return new MyPackage(
             parent,
             vpElement.getId(),

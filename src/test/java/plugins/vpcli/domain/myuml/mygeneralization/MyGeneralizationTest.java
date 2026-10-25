@@ -103,7 +103,7 @@ class MyGeneralizationTest {
         MyGeneralizationFactory factory = new MyGeneralizationFactory(pool);
         factory.setFactoryFactory(buildFactoryFactory(pool));
 
-        MyGeneralization generalization = factory.reallyCreate(root, generalizationVp, stereotypes);
+        MyGeneralization generalization = factory.reallyBuild(root, generalizationVp, stereotypes);
 
         assertEquals(MyElementType.GENERALIZATION, generalization.getElementType());
         assertEquals("继承", generalization.getName());

@@ -20,7 +20,7 @@ public class MyModelFactory extends MyElementFactory {
     }
 
     @Override
-    public MyElement reallyCreate(MyElement parent, IModelElement vpElement, List<MyStereotype> myStereotypes) {
+    public MyElement reallyBuild(MyElement parent, IModelElement vpElement, List<MyStereotype> myStereotypes) {
         return new MyModel(
             parent,
             vpElement.getId(),

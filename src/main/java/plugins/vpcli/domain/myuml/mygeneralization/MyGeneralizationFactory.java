@@ -20,7 +20,7 @@ public class MyGeneralizationFactory extends MyElementFactory {
     }
 
     @Override
-    public MyGeneralization reallyCreate(
+    public MyGeneralization reallyBuild(
         MyElement parent,
         IModelElement vpElement,
         List<MyStereotype> stereotypes

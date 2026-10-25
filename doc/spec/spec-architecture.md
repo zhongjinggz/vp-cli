@@ -152,9 +152,9 @@ MyProperty "associationEnd 0..*" --> "classifier 1" MyClassifier
 ### 方案
 
 1. MyAssociationEnd 改名为 MyProperty
-2. 在 MyElementFactory 中增加 createRelatedElementWithParent(parent, vpElement), 在本例中代替原来的 createRelatedElement(), 否则会死循环
-3. 在 MyAssociationFactory 中调用 createRelatedElementWithParent() 创建 fromEnd 和 toEnd 
-
+2. 在 MyElementFactory 中增加 createRelatedElementWithParent(parent, vpElement), 在本例中代替原来的 createRelatedElement(), 否则可能会死循环，目前之所以没有死循环，是因为AssociationEnd 的parentId 恰好为空
+3. 当调用者是被调用这的父亲时，应使用 createRelatedElementWithParent(), 否则使用原来的 createRelatedParent()
+3. 在 MyAssociationFactory 中调用 createRelatedElementWithParent() 创建 fromEnd 和 toEnd
 
 
 ## 2 merge "MyAttribute" to 'MyProperty' 
