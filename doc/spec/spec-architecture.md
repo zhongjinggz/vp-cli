@@ -126,6 +126,7 @@ MyOperation "1" *--> "0..*" MyParameter
 ### 需求
 - 使 MyAssociationEnd 的父亲是 MyAssociation
 - MyAssociationEnd 改名为 MyProperty 
+
 #### Association
 
 ```plantuml
@@ -156,7 +157,54 @@ MyProperty "associationEnd 0..*" --> "classifier 1" MyClassifier
 
 
 
-## 2 merge 'MyProperty' to "MyAttribute" 
+## 2 merge "MyAttribute" to 'MyProperty' 
+
+### 背景
+
+- 目前只有一套 MyElementType，暗示着 VP 和本系统的元素分类一致。
+- VP 中的分类基本上遵循 UML1, 和 UML2 中不一致，例如：
+    - VP 中的 IAttribute 和 IAssociationEnd 在 UML2 中都是 Property
+    - UML 中独立的 Interface ，在 VP 中是带 `<<interface>>` 的 IClass (VP 中也有 IInterface 但似乎无用？)
+    - VP 中目前的做法其实是 UML1 的做法
+- 目前代码中 MyAttribute 不是 MyElement, 虽然目前功能正确，但由于不符合 UML，可能后续带来问题
+
+### 需求
+
+- 为 VP 和 MyElement 建立两套不同的元素类型
+- 使用 Property 代替 MyAttribute
+- MyProperty 已经是 MyElement，因此 MyAttribute 不是 MyElement的问题自然解决
+
+```plantuml
+@startuml
+
+abstract class MyClassifier {
+}
+
+class MyProperty {
+    isStatic: boolean
+    multiplicity: String
+}
+    
+    
+MyClassifier "0..1" *--> "attribute 0..*" MyProperty
 
 
-## 用 JSON 打印出内存中的元素树
+@enduml
+```
+
+
+### 方案
+
+
+步骤
+
+
+## 3 在 MyElement 中插入 vpParentId / vpElementType 等信息
+
+### 需求
+两个目的
+- 调试
+- 未来双向修改（从 VP 到处 PlantUML，修改后，再倒回 VP
+
+
+## 4 用 JSON 打印出内存中的元素树
