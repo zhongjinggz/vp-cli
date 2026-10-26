@@ -2,7 +2,7 @@ package plugins.vpcli.domain.outputmodel.pumelementexporter;
 
 import plugins.vpcli.domain.myuml.mydiagram.mydiagramelement.ProperMyDiagramElement;
 import plugins.vpcli.domain.myuml.myassociation.MyAssociation;
-import plugins.vpcli.domain.myuml.myassociation.MyAssociationEnd;
+import plugins.vpcli.domain.myuml.myassociation.MyProperty;
 
 import jakarta.inject.Inject;
 import jakarta.inject.Singleton;
@@ -38,18 +38,18 @@ public class PumlAssociationExporter extends PumlElementExporter {
      * from 端在行的左侧（尖端朝左的符号才能使箭头/叉号贴合 from 端）。
      * 聚合/组合菱形优先于导航符号——同端两者无法在 PlantUML 中共存。
      */
-    private ShapeKind fromShapeFor(MyAssociationEnd end) {
+    private ShapeKind fromShapeFor(MyProperty end) {
         String aggregation = end.getAggregationKind();
-        if (MyAssociationEnd.AGGREGATION_SHARED.equals(aggregation)) {
+        if (MyProperty.AGGREGATION_SHARED.equals(aggregation)) {
             return ShapeKind.DIAMOND;
         }
-        if (MyAssociationEnd.AGGREGATION_COMPOSITE.equals(aggregation)) {
+        if (MyProperty.AGGREGATION_COMPOSITE.equals(aggregation)) {
             return ShapeKind.SOLID_DIAMOND;
         }
         switch (end.getNavigable()) {
-            case MyAssociationEnd.NAVIGABLE_NAVIGABLE:
+            case MyProperty.NAVIGABLE_NAVIGABLE:
                 return ShapeKind.REVERSE_ARROW;
-            case MyAssociationEnd.NAVIGABLE_NON_NAVIGABLE:
+            case MyProperty.NAVIGABLE_NON_NAVIGABLE:
                 return ShapeKind.CROSS;
             default:
                 return ShapeKind.NONE;
@@ -60,18 +60,18 @@ public class PumlAssociationExporter extends PumlElementExporter {
      * to 端在行的右侧（尖端朝右的符号）。
      * 聚合/组合菱形优先于导航符号——同端两者无法在 PlantUML 中共存。
      */
-    private ShapeKind toShapeFor(MyAssociationEnd end) {
+    private ShapeKind toShapeFor(MyProperty end) {
         String aggregation = end.getAggregationKind();
-        if (MyAssociationEnd.AGGREGATION_SHARED.equals(aggregation)) {
+        if (MyProperty.AGGREGATION_SHARED.equals(aggregation)) {
             return ShapeKind.DIAMOND;
         }
-        if (MyAssociationEnd.AGGREGATION_COMPOSITE.equals(aggregation)) {
+        if (MyProperty.AGGREGATION_COMPOSITE.equals(aggregation)) {
             return ShapeKind.SOLID_DIAMOND;
         }
         switch (end.getNavigable()) {
-            case MyAssociationEnd.NAVIGABLE_NAVIGABLE:
+            case MyProperty.NAVIGABLE_NAVIGABLE:
                 return ShapeKind.ARROW;
-            case MyAssociationEnd.NAVIGABLE_NON_NAVIGABLE:
+            case MyProperty.NAVIGABLE_NON_NAVIGABLE:
                 return ShapeKind.CROSS;
             default:
                 return ShapeKind.NONE;

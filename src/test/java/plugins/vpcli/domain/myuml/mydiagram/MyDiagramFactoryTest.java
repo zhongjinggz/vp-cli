@@ -11,7 +11,7 @@ import static org.mockito.Mockito.when;
 
 import org.junit.jupiter.api.Test;
 import plugins.vpcli.domain.myuml.myassociation.MyAssociation;
-import plugins.vpcli.domain.myuml.myassociation.MyAssociationEnd;
+import plugins.vpcli.domain.myuml.myassociation.MyProperty;
 import plugins.vpcli.domain.myuml.myassociation.MyAssociationEndFactory;
 import plugins.vpcli.domain.myuml.myassociation.MyAssociationFactory;
 import plugins.vpcli.domain.myuml.myclassifier.MyClassFactory;
@@ -95,7 +95,7 @@ class MyDiagramFactoryTest {
         when(vpFromEnd.getDescription()).thenReturn("");
         when(vpFromEnd.getModelElement()).thenReturn(vpFrom);
         when(vpFromEnd.getMultiplicity()).thenReturn("");
-        when(vpFromEnd.getNavigable()).thenReturn(MyAssociationEnd.NAVIGABLE_NAVIGABLE);
+        when(vpFromEnd.getNavigable()).thenReturn(MyProperty.NAVIGABLE_NAVIGABLE);
 
         IAssociationEnd vpToEnd = mock(IAssociationEnd.class);
         when(vpToEnd.getModelType()).thenReturn(IModelElementFactory.MODEL_TYPE_ASSOCIATION_END);
@@ -104,7 +104,7 @@ class MyDiagramFactoryTest {
         when(vpToEnd.getDescription()).thenReturn("");
         when(vpToEnd.getModelElement()).thenReturn(vpTo);
         when(vpToEnd.getMultiplicity()).thenReturn("");
-        when(vpToEnd.getNavigable()).thenReturn(MyAssociationEnd.NAVIGABLE_NON_NAVIGABLE);
+        when(vpToEnd.getNavigable()).thenReturn(MyProperty.NAVIGABLE_NON_NAVIGABLE);
 
         IAssociation association = mock(IAssociation.class);
         when(association.getModelType()).thenReturn(IModelElementFactory.MODEL_TYPE_ASSOCIATION);

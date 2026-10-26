@@ -16,7 +16,7 @@ public enum MyElementType {
     CLASS(MODEL_TYPE_CLASS, ".class"),
     USE_CASE(MODEL_TYPE_USE_CASE, ".usecase"),
     ASSOCIATION("diagram_has_no_model_type", ".association"),
-    ASSOCIATION_END(MODEL_TYPE_ASSOCIATION_END, ".association-end"),
+    PROPERTY(MODEL_TYPE_ASSOCIATION_END, ".property"),
     DEPENDENCY(MODEL_TYPE_DEPENDENCY, ".dependency"),
     GENERALIZATION(MODEL_TYPE_GENERALIZATION, ".generalization"),
     RELATIONSHIPS(MODEL_TYPE_MODEL_RELATIONSHIP_CONTAINER, ".relationships"),

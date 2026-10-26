@@ -151,11 +151,14 @@ MyProperty "associationEnd 0..*" --> "classifier 1" MyClassifier
 
 ### 方案
 
-1. MyAssociationEnd 改名为 MyProperty
-2. 在 MyElementFactory 中增加 createRelatedElementWithParent(parent, vpElement), 在本例中代替原来的 createRelatedElement(), 否则可能会死循环，目前之所以没有死循环，是因为AssociationEnd 的parentId 恰好为空
-3. 当调用者是被调用这的父亲时，应使用 createRelatedElementWithParent(), 否则使用原来的 createRelatedParent()
-3. 在 MyAssociationFactory 中调用 createRelatedElementWithParent() 创建 fromEnd 和 toEnd
+- MyAssociationEnd 改名为 MyProperty
+- MyElementType 相应改名
+- 在 MyElementFactory 中增加 createRelatedElementWithParent(parent, vpElement), 在本例中代替原来的 createRelatedElement(), 否则可能会死循环，目前之所以没有死循环，是因为AssociationEnd 的parentId 恰好为空
+- 当调用者是被调用这的父亲时，应使用 createRelatedElementWithParent(), 否则使用原来的 createRelatedParent()
+- 在 MyAssociationFactory 中调用 createRelatedElementWithParent() 创建 fromEnd 和 toEnd
+- 顺手把常量改为枚举
 
+- 注意： MyAssociationEndFactory, MyElementFactoryFactory, PumlExporterFactory 暂不改名，这是由于VP 和 MyElement 会存在非一对一转换的问题，下一步解决这个问题时统一改名。
 
 ## 2 merge "MyAttribute" to 'MyProperty' 
 

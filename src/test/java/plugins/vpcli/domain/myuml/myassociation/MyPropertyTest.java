@@ -12,7 +12,7 @@ import plugins.vpcli.domain.myuml.myelement.MyElementType;
 import plugins.vpcli.domain.myuml.mystereotype.MyStereotype;
 import plugins.vpcli.domain.myuml.myproject.MyProject;
 
-class MyAssociationEndTest {
+class MyPropertyTest {
 
     private static final List<MyStereotype> stereotypes = new ArrayList<>();
 
@@ -21,14 +21,14 @@ class MyAssociationEndTest {
         MyProject root = new MyProject("p", "项目");
         MyClass order = new MyClass(root, "c1", "订单", "", stereotypes);
 
-        MyAssociationEnd end = new MyAssociationEnd(
+        MyProperty end = new MyProperty(
             root, "e1", "订单端", "", stereotypes, order, "0..*",
-            MyAssociationEnd.NAVIGABLE_NAVIGABLE, MyAssociationEnd.AGGREGATION_NONE);
+            MyProperty.NAVIGABLE_NAVIGABLE, MyProperty.AGGREGATION_NONE);
 
-        assertEquals(MyElementType.ASSOCIATION_END, end.getElementType());
+        assertEquals(MyElementType.PROPERTY, end.getElementType());
         assertSame(order, end.getElement());
         assertEquals("0..*", end.getMultiplicity());
-        assertEquals(MyAssociationEnd.NAVIGABLE_NAVIGABLE, end.getNavigable());
+        assertEquals(MyProperty.NAVIGABLE_NAVIGABLE, end.getNavigable());
     }
 
     @Test
@@ -36,9 +36,9 @@ class MyAssociationEndTest {
         MyProject root = new MyProject("p", "项目");
         MyClass order = new MyClass(root, "c1", "订单", "", stereotypes);
 
-        MyAssociationEnd end = new MyAssociationEnd(
+        MyProperty end = new MyProperty(
             root, "e1", "订单端", "", stereotypes, order, "Unspecified",
-            MyAssociationEnd.NAVIGABLE_NAVIGABLE, MyAssociationEnd.AGGREGATION_NONE);
+            MyProperty.NAVIGABLE_NAVIGABLE, MyProperty.AGGREGATION_NONE);
 
         assertEquals("", end.getMultiplicity());
     }
@@ -48,9 +48,9 @@ class MyAssociationEndTest {
         MyProject root = new MyProject("p", "项目");
         MyClass order = new MyClass(root, "c1", "订单", "", stereotypes);
 
-        MyAssociationEnd end = new MyAssociationEnd(
+        MyProperty end = new MyProperty(
             root, "e1", "订单端", "", stereotypes, order, null,
-            MyAssociationEnd.NAVIGABLE_NAVIGABLE, MyAssociationEnd.AGGREGATION_NONE);
+            MyProperty.NAVIGABLE_NAVIGABLE, MyProperty.AGGREGATION_NONE);
 
         assertEquals("", end.getMultiplicity());
     }
@@ -60,9 +60,9 @@ class MyAssociationEndTest {
         MyProject root = new MyProject("p", "项目");
         MyClass order = new MyClass(root, "c1", "订单", "", stereotypes);
 
-        MyAssociationEnd end = new MyAssociationEnd(
+        MyProperty end = new MyProperty(
             root, "e1", "订单端", "", stereotypes, order, "",
-            MyAssociationEnd.NAVIGABLE_NON_NAVIGABLE, MyAssociationEnd.AGGREGATION_NONE);
+            MyProperty.NAVIGABLE_NON_NAVIGABLE, MyProperty.AGGREGATION_NONE);
 
         assertEquals("订单端", end.getQualifiedName());
     }
@@ -72,10 +72,10 @@ class MyAssociationEndTest {
         MyProject root = new MyProject("p", "项目");
         MyClass order = new MyClass(root, "c1", "订单", "", stereotypes);
 
-        MyAssociationEnd end = new MyAssociationEnd(
+        MyProperty end = new MyProperty(
             root, "e1", "订单端", "", stereotypes, order, "",
-            MyAssociationEnd.NAVIGABLE_UNSPECIFIED, MyAssociationEnd.AGGREGATION_NONE);
+            MyProperty.NAVIGABLE_UNSPECIFIED, MyProperty.AGGREGATION_NONE);
 
-        assertEquals(MyAssociationEnd.NAVIGABLE_UNSPECIFIED, end.getNavigable());
+        assertEquals(MyProperty.NAVIGABLE_UNSPECIFIED, end.getNavigable());
     }
 }

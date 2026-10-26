@@ -11,7 +11,7 @@ import java.util.List;
  * 关联的一端：封装该端关联到的端点元素 {@link #element}，
  * 以及该端的多重性 {@link #multiplicity}（与 VP 的 IAssociationEnd 对应）。
  */
-public class MyAssociationEnd extends MyElement {
+public class MyProperty extends MyElement {
 
     /** 领域层导航性常量，值与 VP SDK 的 IAssociationEnd 常量一致（直接透传）。 */
     public static final int NAVIGABLE_NAVIGABLE = 0;
@@ -28,7 +28,7 @@ public class MyAssociationEnd extends MyElement {
     private int navigable = NAVIGABLE_UNSPECIFIED;
     private String aggregationKind = AGGREGATION_NONE;
 
-    public MyAssociationEnd(
+    public MyProperty(
         MyElement parent,
         String id,
         String name,
@@ -39,7 +39,7 @@ public class MyAssociationEnd extends MyElement {
         int navigable,
         String aggregationKind
     ) {
-        super(parent, id, name, MyElementType.ASSOCIATION_END, description, stereotypes);
+        super(parent, id, name, MyElementType.PROPERTY, description, stereotypes);
         this.element = element;
         setMultiplicity(multiplicity);
         this.navigable = navigable;
@@ -47,7 +47,7 @@ public class MyAssociationEnd extends MyElement {
     }
 
     /** 便捷构造器：未提供聚合信息时，聚合/组合默认为 none。 */
-    public MyAssociationEnd(
+    public MyProperty(
         MyElement parent,
         String id,
         String name,

@@ -27,7 +27,7 @@ import com.vp.plugin.model.IAssociationEnd;
 import com.vp.plugin.model.IModelElement;
 import com.vp.plugin.model.factory.IModelElementFactory;
 
-class MyAssociationEndFactoryTest {
+class MyPropertyFactoryTest {
 
     private static final List<MyStereotype> stereotypes = new ArrayList<>();
 
@@ -63,18 +63,18 @@ class MyAssociationEndFactoryTest {
         IAssociationEnd vpEnd = mock(IAssociationEnd.class);
         when(vpEnd.getModelElement()).thenReturn(vpEndpoint);
         when(vpEnd.getMultiplicity()).thenReturn("0..*");
-        when(vpEnd.getNavigable()).thenReturn(MyAssociationEnd.NAVIGABLE_NAVIGABLE);
-        when(vpEnd.getAggregationKind()).thenReturn(MyAssociationEnd.AGGREGATION_SHARED);
+        when(vpEnd.getNavigable()).thenReturn(MyProperty.NAVIGABLE_NAVIGABLE);
+        when(vpEnd.getAggregationKind()).thenReturn(MyProperty.AGGREGATION_SHARED);
 
         MyAssociationEndFactory factory = new MyAssociationEndFactory(pool);
         factory.setFactoryFactory(buildFactoryFactory(pool));
 
-        MyAssociationEnd end = factory.reallyBuild(root, vpEnd, stereotypes);
+        MyProperty end = factory.reallyBuild(root, vpEnd, stereotypes);
 
-        assertEquals(MyElementType.ASSOCIATION_END, end.getElementType());
+        assertEquals(MyElementType.PROPERTY, end.getElementType());
         assertEquals("0..*", end.getMultiplicity());
-        assertEquals(MyAssociationEnd.NAVIGABLE_NAVIGABLE, end.getNavigable());
-        assertEquals(MyAssociationEnd.AGGREGATION_SHARED, end.getAggregationKind());
+        assertEquals(MyProperty.NAVIGABLE_NAVIGABLE, end.getNavigable());
+        assertEquals(MyProperty.AGGREGATION_SHARED, end.getAggregationKind());
         assertEquals("订单", end.getElement().getName());
         assertEquals(MyElementType.CLASS, end.getElement().getElementType());
     }
@@ -93,15 +93,15 @@ class MyAssociationEndFactoryTest {
         IAssociationEnd vpEnd = mock(IAssociationEnd.class);
         when(vpEnd.getModelElement()).thenReturn(vpEndpoint);
         when(vpEnd.getMultiplicity()).thenReturn("Unspecified");
-        when(vpEnd.getNavigable()).thenReturn(MyAssociationEnd.NAVIGABLE_UNSPECIFIED);
-        when(vpEnd.getAggregationKind()).thenReturn(MyAssociationEnd.AGGREGATION_NONE);
+        when(vpEnd.getNavigable()).thenReturn(MyProperty.NAVIGABLE_UNSPECIFIED);
+        when(vpEnd.getAggregationKind()).thenReturn(MyProperty.AGGREGATION_NONE);
 
         MyAssociationEndFactory factory = new MyAssociationEndFactory(pool);
         factory.setFactoryFactory(buildFactoryFactory(pool));
 
-        MyAssociationEnd end = factory.reallyBuild(root, vpEnd, stereotypes);
+        MyProperty end = factory.reallyBuild(root, vpEnd, stereotypes);
 
         assertEquals("", end.getMultiplicity());
-        assertEquals(MyAssociationEnd.NAVIGABLE_UNSPECIFIED, end.getNavigable());
+        assertEquals(MyProperty.NAVIGABLE_UNSPECIFIED, end.getNavigable());
     }
 }

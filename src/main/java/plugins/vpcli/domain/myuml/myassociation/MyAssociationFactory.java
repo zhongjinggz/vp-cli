@@ -36,8 +36,8 @@ public class MyAssociationFactory extends MyElementFactory {
             vpElement.getName(),
             vpElement.getDescription(),
             stereotypes,
-            (MyAssociationEnd) fromEnd,
-            (MyAssociationEnd) toEnd
+            (MyProperty) fromEnd,
+            (MyProperty) toEnd
         );
         result.setNameDirection(toNameDirection(vpAssociation.getDirection()));
 

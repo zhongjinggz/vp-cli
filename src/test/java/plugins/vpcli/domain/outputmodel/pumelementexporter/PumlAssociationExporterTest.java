@@ -7,7 +7,7 @@ import java.util.List;
 
 import org.junit.jupiter.api.Test;
 import plugins.vpcli.domain.myuml.myassociation.MyAssociation;
-import plugins.vpcli.domain.myuml.myassociation.MyAssociationEnd;
+import plugins.vpcli.domain.myuml.myassociation.MyProperty;
 import plugins.vpcli.domain.myuml.myclassifier.MyClass;
 import plugins.vpcli.domain.myuml.mydiagram.DiagramType;
 import plugins.vpcli.domain.myuml.mydiagram.MyDiagram;
@@ -32,10 +32,10 @@ class PumlAssociationExporterTest {
         MyClass order = new MyClass(pkg, "c1", "订单", "", stereotypes);
         MyClass customer = new MyClass(pkg, "c2", "客户", "", stereotypes);
         new MyAssociation(root, "a1", "", "", stereotypes,
-            new MyAssociationEnd(root, "fe", "", "", stereotypes, order, "1",
-                MyAssociationEnd.NAVIGABLE_UNSPECIFIED),
-            new MyAssociationEnd(root, "te", "", "", stereotypes, customer, "0..*",
-                MyAssociationEnd.NAVIGABLE_UNSPECIFIED));
+            new MyProperty(root, "fe", "", "", stereotypes, order, "1",
+                MyProperty.NAVIGABLE_UNSPECIFIED),
+            new MyProperty(root, "te", "", "", stereotypes, customer, "0..*",
+                MyProperty.NAVIGABLE_UNSPECIFIED));
         return root;
     }
 
@@ -83,10 +83,10 @@ class PumlAssociationExporterTest {
         MyClass customer = findClass(root, "客户");
         MyAssociation association =
             new MyAssociation(root, "a2", "", "", stereotypes,
-                new MyAssociationEnd(root, "fe", "", "", stereotypes, order, "1",
-                    MyAssociationEnd.NAVIGABLE_UNSPECIFIED),
-                new MyAssociationEnd(root, "te", "", "", stereotypes, customer, "0..*",
-                    MyAssociationEnd.NAVIGABLE_UNSPECIFIED));
+                new MyProperty(root, "fe", "", "", stereotypes, order, "1",
+                    MyProperty.NAVIGABLE_UNSPECIFIED),
+                new MyProperty(root, "te", "", "", stereotypes, customer, "0..*",
+                    MyProperty.NAVIGABLE_UNSPECIFIED));
 
         PumlDiagram diagram = newDiagram();
         new PumlAssociationExporter().to(diagram, wrap(association));
@@ -105,10 +105,10 @@ class PumlAssociationExporterTest {
 
         MyAssociation association =
             new MyAssociation(root, "a4", "", "", stereotypes,
-                new MyAssociationEnd(root, "fe", "", "", stereotypes, order, "",
-                    MyAssociationEnd.NAVIGABLE_UNSPECIFIED),
-                new MyAssociationEnd(root, "te", "", "", stereotypes, customer, "",
-                    MyAssociationEnd.NAVIGABLE_UNSPECIFIED));
+                new MyProperty(root, "fe", "", "", stereotypes, order, "",
+                    MyProperty.NAVIGABLE_UNSPECIFIED),
+                new MyProperty(root, "te", "", "", stereotypes, customer, "",
+                    MyProperty.NAVIGABLE_UNSPECIFIED));
 
         PumlDiagram diagram = newDiagram();
         new PumlAssociationExporter().to(diagram, wrap(association));
@@ -127,10 +127,10 @@ class PumlAssociationExporterTest {
         // 关联线以 PumlAssociationExporter 生成
         MyAssociation association =
             new MyAssociation(root, "a3", "", "", stereotypes,
-                new MyAssociationEnd(root, "fe", "", "", stereotypes, order, "",
-                    MyAssociationEnd.NAVIGABLE_UNSPECIFIED),
-                new MyAssociationEnd(root, "te", "", "", stereotypes, customer, "",
-                    MyAssociationEnd.NAVIGABLE_UNSPECIFIED));
+                new MyProperty(root, "fe", "", "", stereotypes, order, "",
+                    MyProperty.NAVIGABLE_UNSPECIFIED),
+                new MyProperty(root, "te", "", "", stereotypes, customer, "",
+                    MyProperty.NAVIGABLE_UNSPECIFIED));
         PumlDiagram associationDiagram = newDiagram();
         new PumlAssociationExporter().to(associationDiagram, wrap(association));
 
@@ -154,10 +154,10 @@ class PumlAssociationExporterTest {
         // 两端都带角色名，无多重性 → 每端一个引号标签
         MyAssociation association =
             new MyAssociation(root, "a9", "", "", stereotypes,
-                new MyAssociationEnd(root, "fe", "订单端", "", stereotypes, order, "",
-                    MyAssociationEnd.NAVIGABLE_UNSPECIFIED),
-                new MyAssociationEnd(root, "te", "客户端", "", stereotypes, customer, "",
-                    MyAssociationEnd.NAVIGABLE_UNSPECIFIED));
+                new MyProperty(root, "fe", "订单端", "", stereotypes, order, "",
+                    MyProperty.NAVIGABLE_UNSPECIFIED),
+                new MyProperty(root, "te", "客户端", "", stereotypes, customer, "",
+                    MyProperty.NAVIGABLE_UNSPECIFIED));
 
         PumlDiagram diagram = newDiagram();
         new PumlAssociationExporter().to(diagram, wrap(association));
@@ -176,10 +176,10 @@ class PumlAssociationExporterTest {
         // 角色名 + 多重性并存 → 合并进同一引号：role 在前、multiplicity 在后
         MyAssociation association =
             new MyAssociation(root, "a10", "", "", stereotypes,
-                new MyAssociationEnd(root, "fe", "订单端", "", stereotypes, order, "1",
-                    MyAssociationEnd.NAVIGABLE_UNSPECIFIED),
-                new MyAssociationEnd(root, "te", "客户端", "", stereotypes, customer, "0..*",
-                    MyAssociationEnd.NAVIGABLE_UNSPECIFIED));
+                new MyProperty(root, "fe", "订单端", "", stereotypes, order, "1",
+                    MyProperty.NAVIGABLE_UNSPECIFIED),
+                new MyProperty(root, "te", "客户端", "", stereotypes, customer, "0..*",
+                    MyProperty.NAVIGABLE_UNSPECIFIED));
 
         PumlDiagram diagram = newDiagram();
         new PumlAssociationExporter().to(diagram, wrap(association));
@@ -198,10 +198,10 @@ class PumlAssociationExporterTest {
 
         MyAssociation association =
             new MyAssociation(root, "a5", "", "", stereotypes,
-                new MyAssociationEnd(root, "fe", "", "", stereotypes, order, "",
-                    MyAssociationEnd.NAVIGABLE_UNSPECIFIED),
-                new MyAssociationEnd(root, "te", "", "", stereotypes, customer, "",
-                    MyAssociationEnd.NAVIGABLE_NAVIGABLE));
+                new MyProperty(root, "fe", "", "", stereotypes, order, "",
+                    MyProperty.NAVIGABLE_UNSPECIFIED),
+                new MyProperty(root, "te", "", "", stereotypes, customer, "",
+                    MyProperty.NAVIGABLE_NAVIGABLE));
 
         PumlDiagram diagram = newDiagram();
         new PumlAssociationExporter().to(diagram, wrap(association));
@@ -220,10 +220,10 @@ class PumlAssociationExporterTest {
 
         MyAssociation association =
             new MyAssociation(root, "a6", "", "", stereotypes,
-                new MyAssociationEnd(root, "fe", "", "", stereotypes, order, "",
-                    MyAssociationEnd.NAVIGABLE_NAVIGABLE),
-                new MyAssociationEnd(root, "te", "", "", stereotypes, customer, "",
-                    MyAssociationEnd.NAVIGABLE_NAVIGABLE));
+                new MyProperty(root, "fe", "", "", stereotypes, order, "",
+                    MyProperty.NAVIGABLE_NAVIGABLE),
+                new MyProperty(root, "te", "", "", stereotypes, customer, "",
+                    MyProperty.NAVIGABLE_NAVIGABLE));
 
         PumlDiagram diagram = newDiagram();
         new PumlAssociationExporter().to(diagram, wrap(association));
@@ -242,10 +242,10 @@ class PumlAssociationExporterTest {
 
         MyAssociation association =
             new MyAssociation(root, "a7", "", "", stereotypes,
-                new MyAssociationEnd(root, "fe", "", "", stereotypes, order, "",
-                    MyAssociationEnd.NAVIGABLE_NON_NAVIGABLE),
-                new MyAssociationEnd(root, "te", "", "", stereotypes, customer, "",
-                    MyAssociationEnd.NAVIGABLE_NAVIGABLE));
+                new MyProperty(root, "fe", "", "", stereotypes, order, "",
+                    MyProperty.NAVIGABLE_NON_NAVIGABLE),
+                new MyProperty(root, "te", "", "", stereotypes, customer, "",
+                    MyProperty.NAVIGABLE_NAVIGABLE));
 
         PumlDiagram diagram = newDiagram();
         new PumlAssociationExporter().to(diagram, wrap(association));
@@ -264,10 +264,10 @@ class PumlAssociationExporterTest {
 
         MyAssociation association =
             new MyAssociation(root, "a8", "", "", stereotypes,
-                new MyAssociationEnd(root, "fe", "", "", stereotypes, order, "",
-                    MyAssociationEnd.NAVIGABLE_NON_NAVIGABLE),
-                new MyAssociationEnd(root, "te", "", "", stereotypes, customer, "",
-                    MyAssociationEnd.NAVIGABLE_NON_NAVIGABLE));
+                new MyProperty(root, "fe", "", "", stereotypes, order, "",
+                    MyProperty.NAVIGABLE_NON_NAVIGABLE),
+                new MyProperty(root, "te", "", "", stereotypes, customer, "",
+                    MyProperty.NAVIGABLE_NON_NAVIGABLE));
 
         PumlDiagram diagram = newDiagram();
         new PumlAssociationExporter().to(diagram, wrap(association));
@@ -286,10 +286,10 @@ class PumlAssociationExporterTest {
 
         MyAssociation association =
             new MyAssociation(root, "a11", "", "", stereotypes,
-                new MyAssociationEnd(root, "fe", "", "", stereotypes, order, "",
-                    MyAssociationEnd.NAVIGABLE_NAVIGABLE, MyAssociationEnd.AGGREGATION_NONE),
-                new MyAssociationEnd(root, "te", "", "", stereotypes, customer, "",
-                    MyAssociationEnd.NAVIGABLE_NAVIGABLE, MyAssociationEnd.AGGREGATION_SHARED));
+                new MyProperty(root, "fe", "", "", stereotypes, order, "",
+                    MyProperty.NAVIGABLE_NAVIGABLE, MyProperty.AGGREGATION_NONE),
+                new MyProperty(root, "te", "", "", stereotypes, customer, "",
+                    MyProperty.NAVIGABLE_NAVIGABLE, MyProperty.AGGREGATION_SHARED));
 
         PumlDiagram diagram = newDiagram();
         new PumlAssociationExporter().to(diagram, wrap(association));
@@ -308,10 +308,10 @@ class PumlAssociationExporterTest {
 
         MyAssociation association =
             new MyAssociation(root, "a12", "", "", stereotypes,
-                new MyAssociationEnd(root, "fe", "", "", stereotypes, order, "",
-                    MyAssociationEnd.NAVIGABLE_NAVIGABLE, MyAssociationEnd.AGGREGATION_COMPOSITE),
-                new MyAssociationEnd(root, "te", "", "", stereotypes, customer, "",
-                    MyAssociationEnd.NAVIGABLE_NAVIGABLE, MyAssociationEnd.AGGREGATION_NONE));
+                new MyProperty(root, "fe", "", "", stereotypes, order, "",
+                    MyProperty.NAVIGABLE_NAVIGABLE, MyProperty.AGGREGATION_COMPOSITE),
+                new MyProperty(root, "te", "", "", stereotypes, customer, "",
+                    MyProperty.NAVIGABLE_NAVIGABLE, MyProperty.AGGREGATION_NONE));
 
         PumlDiagram diagram = newDiagram();
         new PumlAssociationExporter().to(diagram, wrap(association));
@@ -330,10 +330,10 @@ class PumlAssociationExporterTest {
 
         MyAssociation association =
             new MyAssociation(root, "a13", "", "", stereotypes,
-                new MyAssociationEnd(root, "fe", "", "", stereotypes, order, "",
-                    MyAssociationEnd.NAVIGABLE_NON_NAVIGABLE, MyAssociationEnd.AGGREGATION_SHARED),
-                new MyAssociationEnd(root, "te", "", "", stereotypes, customer, "",
-                    MyAssociationEnd.NAVIGABLE_NAVIGABLE, MyAssociationEnd.AGGREGATION_NONE));
+                new MyProperty(root, "fe", "", "", stereotypes, order, "",
+                    MyProperty.NAVIGABLE_NON_NAVIGABLE, MyProperty.AGGREGATION_SHARED),
+                new MyProperty(root, "te", "", "", stereotypes, customer, "",
+                    MyProperty.NAVIGABLE_NAVIGABLE, MyProperty.AGGREGATION_NONE));
 
         PumlDiagram diagram = newDiagram();
         new PumlAssociationExporter().to(diagram, wrap(association));
@@ -353,10 +353,10 @@ class PumlAssociationExporterTest {
 
         MyAssociation association =
             new MyAssociation(root, "a14", "doSomething", "", stereotypes,
-                new MyAssociationEnd(root, "fe", "", "", stereotypes, order, "",
-                    MyAssociationEnd.NAVIGABLE_UNSPECIFIED),
-                new MyAssociationEnd(root, "te", "", "", stereotypes, customer, "",
-                    MyAssociationEnd.NAVIGABLE_UNSPECIFIED));
+                new MyProperty(root, "fe", "", "", stereotypes, order, "",
+                    MyProperty.NAVIGABLE_UNSPECIFIED),
+                new MyProperty(root, "te", "", "", stereotypes, customer, "",
+                    MyProperty.NAVIGABLE_UNSPECIFIED));
         association.setNameDirection(MyAssociation.NameDirection.NONE);
 
         PumlDiagram diagram = newDiagram();
@@ -375,10 +375,10 @@ class PumlAssociationExporterTest {
 
         MyAssociation association =
             new MyAssociation(root, "a15", "doSomething", "", stereotypes,
-                new MyAssociationEnd(root, "fe", "", "", stereotypes, order, "",
-                    MyAssociationEnd.NAVIGABLE_UNSPECIFIED),
-                new MyAssociationEnd(root, "te", "", "", stereotypes, customer, "",
-                    MyAssociationEnd.NAVIGABLE_UNSPECIFIED));
+                new MyProperty(root, "fe", "", "", stereotypes, order, "",
+                    MyProperty.NAVIGABLE_UNSPECIFIED),
+                new MyProperty(root, "te", "", "", stereotypes, customer, "",
+                    MyProperty.NAVIGABLE_UNSPECIFIED));
         association.setNameDirection(MyAssociation.NameDirection.FROM_TO);
 
         PumlDiagram diagram = newDiagram();
@@ -398,10 +398,10 @@ class PumlAssociationExporterTest {
 
         MyAssociation association =
             new MyAssociation(root, "a16", "doSomething", "", stereotypes,
-                new MyAssociationEnd(root, "fe", "", "", stereotypes, order, "",
-                    MyAssociationEnd.NAVIGABLE_UNSPECIFIED),
-                new MyAssociationEnd(root, "te", "", "", stereotypes, customer, "",
-                    MyAssociationEnd.NAVIGABLE_UNSPECIFIED));
+                new MyProperty(root, "fe", "", "", stereotypes, order, "",
+                    MyProperty.NAVIGABLE_UNSPECIFIED),
+                new MyProperty(root, "te", "", "", stereotypes, customer, "",
+                    MyProperty.NAVIGABLE_UNSPECIFIED));
         association.setNameDirection(MyAssociation.NameDirection.TO_FROM);
 
         PumlDiagram diagram = newDiagram();
@@ -422,10 +422,10 @@ class PumlAssociationExporterTest {
         // 名称为纯空白 + 方向 FROM_TO → 不应输出 : name 也不画三角
         MyAssociation association =
             new MyAssociation(root, "a17", "   ", "", stereotypes,
-                new MyAssociationEnd(root, "fe", "", "", stereotypes, order, "",
-                    MyAssociationEnd.NAVIGABLE_UNSPECIFIED),
-                new MyAssociationEnd(root, "te", "", "", stereotypes, customer, "",
-                    MyAssociationEnd.NAVIGABLE_UNSPECIFIED));
+                new MyProperty(root, "fe", "", "", stereotypes, order, "",
+                    MyProperty.NAVIGABLE_UNSPECIFIED),
+                new MyProperty(root, "te", "", "", stereotypes, customer, "",
+                    MyProperty.NAVIGABLE_UNSPECIFIED));
         association.setNameDirection(MyAssociation.NameDirection.FROM_TO);
 
         PumlDiagram diagram = newDiagram();

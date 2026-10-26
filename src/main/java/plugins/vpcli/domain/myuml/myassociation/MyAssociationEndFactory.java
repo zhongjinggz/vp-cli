@@ -20,25 +20,25 @@ public class MyAssociationEndFactory extends MyElementFactory {
     }
 
     @Override
-    public MyAssociationEnd reallyBuild(
+    public MyProperty reallyBuild(
         MyElement parent,
-        IModelElement vpAssociationEnd,
+        IModelElement vpElement,
         List<MyStereotype> stereotypes
     ) {
-        IAssociationEnd vpEnd = (IAssociationEnd) vpAssociationEnd;
+        IAssociationEnd vpAssociationEnd = (IAssociationEnd) vpElement;
 
-        MyElement endpointElement = buildRelatedElement(vpEnd.getModelElement());
+        MyElement endpointElement = buildRelatedElement(vpAssociationEnd.getModelElement());
 
-        return new MyAssociationEnd(
+        return new MyProperty(
             parent,
-            vpAssociationEnd.getId(),
-            vpAssociationEnd.getName(),
-            vpAssociationEnd.getDescription(),
+            vpElement.getId(),
+            vpElement.getName(),
+            vpElement.getDescription(),
             stereotypes,
             endpointElement,
-            vpEnd.getMultiplicity(),
-            vpEnd.getNavigable(),
-            vpEnd.getAggregationKind()
+            vpAssociationEnd.getMultiplicity(),
+            vpAssociationEnd.getNavigable(),
+            vpAssociationEnd.getAggregationKind()
         );
     }
 }

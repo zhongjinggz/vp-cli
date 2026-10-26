@@ -12,12 +12,11 @@ public class MyAssociation extends MyElement {
     public enum NameDirection {
         FROM_TO,
         TO_FROM,
-        /** 仅用作“无名称”时的占位，不输出方向三角。 */
-        NONE
+        NONE   // 仅用作“无名称”时的占位，不输出方向三角。
     }
 
-    private MyAssociationEnd fromEnd;
-    private MyAssociationEnd toEnd;
+    private MyProperty fromEnd;
+    private MyProperty toEnd;
     private NameDirection nameDirection = NameDirection.NONE;
 
     public MyAssociation(
@@ -26,8 +25,8 @@ public class MyAssociation extends MyElement {
         String name,
         String description,
         List<MyStereotype> stereotypes,
-        MyAssociationEnd fromEnd,
-        MyAssociationEnd toEnd
+        MyProperty fromEnd,
+        MyProperty toEnd
     ) {
         super(parent, id, name, MyElementType.ASSOCIATION, description, stereotypes);
         this.fromEnd = fromEnd;
@@ -42,19 +41,19 @@ public class MyAssociation extends MyElement {
         this.nameDirection = nameDirection == null ? NameDirection.NONE : nameDirection;
     }
 
-    public MyAssociationEnd getFromEnd() {
+    public MyProperty getFromEnd() {
         return fromEnd;
     }
 
-    public void setFromEnd(MyAssociationEnd fromEnd) {
+    public void setFromEnd(MyProperty fromEnd) {
         this.fromEnd = fromEnd;
     }
 
-    public MyAssociationEnd getToEnd() {
+    public MyProperty getToEnd() {
         return toEnd;
     }
 
-    public void setToEnd(MyAssociationEnd toEnd) {
+    public void setToEnd(MyProperty toEnd) {
         this.toEnd = toEnd;
     }
 
@@ -65,8 +64,8 @@ public class MyAssociation extends MyElement {
 
     public void setFromElement(MyElement fromElement) {
         if (fromEnd == null) {
-            fromEnd = new MyAssociationEnd(this, "", "", "", List.of(), fromElement, "",
-                MyAssociationEnd.NAVIGABLE_UNSPECIFIED, MyAssociationEnd.AGGREGATION_NONE);
+            fromEnd = new MyProperty(this, "", "", "", List.of(), fromElement, "",
+                MyProperty.NAVIGABLE_UNSPECIFIED, MyProperty.AGGREGATION_NONE);
         }
         fromEnd.setElement(fromElement);
     }
@@ -78,8 +77,8 @@ public class MyAssociation extends MyElement {
 
     public void setToElement(MyElement toElement) {
         if (toEnd == null) {
-            toEnd = new MyAssociationEnd(this, "", "", "", List.of(), toElement, "",
-                MyAssociationEnd.NAVIGABLE_UNSPECIFIED, MyAssociationEnd.AGGREGATION_NONE);
+            toEnd = new MyProperty(this, "", "", "", List.of(), toElement, "",
+                MyProperty.NAVIGABLE_UNSPECIFIED, MyProperty.AGGREGATION_NONE);
         }
         toEnd.setElement(toElement);
     }

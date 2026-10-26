@@ -22,8 +22,8 @@ class MyElementTypeTest {
 
     @Test
     void shouldResolveAssociationEndByType() {
-        MyElementType t = MyElementType.of(MyElementType.ASSOCIATION_END.getVPModelType());
-        assertEquals(MyElementType.ASSOCIATION_END, t);
+        MyElementType t = MyElementType.of(MyElementType.PROPERTY.getVPModelType());
+        assertEquals(MyElementType.PROPERTY, t);
     }
 
     @Test

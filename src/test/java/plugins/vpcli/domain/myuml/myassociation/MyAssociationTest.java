@@ -43,10 +43,10 @@ class MyAssociationTest {
         MyClass from = new MyClass(root, "c1", "订单", "", stereotypes);
         MyUseCase to = new MyUseCase(root, "u1", "下订单", "", stereotypes);
 
-        MyAssociationEnd fromEnd = new MyAssociationEnd(root, "fe", "", "", stereotypes, from, "1",
-            MyAssociationEnd.NAVIGABLE_NAVIGABLE, MyAssociationEnd.AGGREGATION_NONE);
-        MyAssociationEnd toEnd = new MyAssociationEnd(root, "te", "", "", stereotypes, to, "0..*",
-            MyAssociationEnd.NAVIGABLE_NON_NAVIGABLE, MyAssociationEnd.AGGREGATION_NONE);
+        MyProperty fromEnd = new MyProperty(root, "fe", "", "", stereotypes, from, "1",
+            MyProperty.NAVIGABLE_NAVIGABLE, MyProperty.AGGREGATION_NONE);
+        MyProperty toEnd = new MyProperty(root, "te", "", "", stereotypes, to, "0..*",
+            MyProperty.NAVIGABLE_NON_NAVIGABLE, MyProperty.AGGREGATION_NONE);
 
         MyAssociation association = new MyAssociation(
             root, "a1", "", "",
@@ -81,8 +81,8 @@ class MyAssociationTest {
 
         assertSame(from, association.getFromElement());
         assertSame(to, association.getToElement());
-        assertEquals(MyElementType.ASSOCIATION_END, association.getFromEnd().getElementType());
-        assertEquals(MyElementType.ASSOCIATION_END, association.getToEnd().getElementType());
+        assertEquals(MyElementType.PROPERTY, association.getFromEnd().getElementType());
+        assertEquals(MyElementType.PROPERTY, association.getToEnd().getElementType());
     }
 
     @Test
@@ -106,7 +106,7 @@ class MyAssociationTest {
         when(vpFromEnd.getDescription()).thenReturn("");
         when(vpFromEnd.getModelElement()).thenReturn(vpFrom);
         when(vpFromEnd.getMultiplicity()).thenReturn("1");
-        when(vpFromEnd.getNavigable()).thenReturn(MyAssociationEnd.NAVIGABLE_NAVIGABLE);
+        when(vpFromEnd.getNavigable()).thenReturn(MyProperty.NAVIGABLE_NAVIGABLE);
 
         IAssociationEnd vpToEnd = mock(IAssociationEnd.class);
         when(vpToEnd.getModelType()).thenReturn(IModelElementFactory.MODEL_TYPE_ASSOCIATION_END);
@@ -115,7 +115,7 @@ class MyAssociationTest {
         when(vpToEnd.getDescription()).thenReturn("");
         when(vpToEnd.getModelElement()).thenReturn(vpTo);
         when(vpToEnd.getMultiplicity()).thenReturn("0..*");
-        when(vpToEnd.getNavigable()).thenReturn(MyAssociationEnd.NAVIGABLE_NON_NAVIGABLE);
+        when(vpToEnd.getNavigable()).thenReturn(MyProperty.NAVIGABLE_NON_NAVIGABLE);
 
         IAssociation associationVp = mock(IAssociation.class);
         when(associationVp.getId()).thenReturn("a1");
@@ -150,12 +150,12 @@ class MyAssociationTest {
         assertEquals("订单", association.getFromElement().getName());
         assertEquals(MyElementType.CLASS, association.getFromElement().getElementType());
         assertEquals("1", association.getFromEnd().getMultiplicity());
-        assertEquals(MyElementType.ASSOCIATION_END, association.getFromEnd().getElementType());
-        assertEquals(MyAssociationEnd.NAVIGABLE_NAVIGABLE, association.getFromEnd().getNavigable());
+        assertEquals(MyElementType.PROPERTY, association.getFromEnd().getElementType());
+        assertEquals(MyProperty.NAVIGABLE_NAVIGABLE, association.getFromEnd().getNavigable());
         assertEquals("下订单", association.getToElement().getName());
         assertEquals(MyElementType.USE_CASE, association.getToElement().getElementType());
         assertEquals("0..*", association.getToEnd().getMultiplicity());
-        assertEquals(MyAssociationEnd.NAVIGABLE_NON_NAVIGABLE, association.getToEnd().getNavigable());
+        assertEquals(MyProperty.NAVIGABLE_NON_NAVIGABLE, association.getToEnd().getNavigable());
     }
 
     // ---- 关联名称阅读方向（#9） ----
@@ -220,7 +220,7 @@ class MyAssociationTest {
         when(vpFromEnd.getDescription()).thenReturn("");
         when(vpFromEnd.getModelElement()).thenReturn(vpFrom);
         when(vpFromEnd.getMultiplicity()).thenReturn("1");
-        when(vpFromEnd.getNavigable()).thenReturn(MyAssociationEnd.NAVIGABLE_UNSPECIFIED);
+        when(vpFromEnd.getNavigable()).thenReturn(MyProperty.NAVIGABLE_UNSPECIFIED);
 
         IAssociationEnd vpToEnd = mock(IAssociationEnd.class);
         when(vpToEnd.getModelType()).thenReturn(IModelElementFactory.MODEL_TYPE_ASSOCIATION_END);
@@ -229,7 +229,7 @@ class MyAssociationTest {
         when(vpToEnd.getDescription()).thenReturn("");
         when(vpToEnd.getModelElement()).thenReturn(vpTo);
         when(vpToEnd.getMultiplicity()).thenReturn("0..*");
-        when(vpToEnd.getNavigable()).thenReturn(MyAssociationEnd.NAVIGABLE_UNSPECIFIED);
+        when(vpToEnd.getNavigable()).thenReturn(MyProperty.NAVIGABLE_UNSPECIFIED);
 
         IAssociation associationVp = mock(IAssociation.class);
         when(associationVp.getId()).thenReturn("a1");
