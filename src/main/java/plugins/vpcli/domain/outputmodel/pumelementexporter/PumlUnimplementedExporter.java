@@ -6,14 +6,22 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import plugins.vpcli.domain.myuml.mydiagram.mydiagramelement.ProperMyDiagramElement;
 import plugins.vpcli.domain.outputmodel.PumlDiagram;
+import plugins.vpcli.domain.myuml.myunknownelement.UnimplementedElement;
 
 @Singleton
 public class PumlUnimplementedExporter extends PumlElementExporter {
-    Logger log = LoggerFactory.getLogger(PumlUnimplementedExporter.class);
+    private static final Logger log = LoggerFactory.getLogger(PumlUnimplementedExporter.class);
 
+    public static final String SHAPE_TYPE_UNIMPLEMENTED = "UnimplementedShapeType_is_not_a_true_shape_type";
 
     @Inject
     public PumlUnimplementedExporter() {
+    }
+
+    @Override
+    public String getShapeType() {
+        // 未实现元素在 IShapeTypeConstants 中没有对应的常量，因此，用自定义常量作为占位符
+        return SHAPE_TYPE_UNIMPLEMENTED;
     }
 
     public void to(PumlDiagram result, ProperMyDiagramElement myDiagramElement) {

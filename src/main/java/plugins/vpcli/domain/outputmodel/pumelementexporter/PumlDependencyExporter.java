@@ -1,5 +1,6 @@
 package plugins.vpcli.domain.outputmodel.pumelementexporter;
 
+import com.vp.plugin.diagram.IShapeTypeConstants;
 import plugins.vpcli.domain.myuml.mydependency.MyDependency;
 import plugins.vpcli.domain.myuml.mydiagram.mydiagramelement.ProperMyDiagramElement;
 import plugins.vpcli.domain.myuml.myassociation.MyAssociation;
@@ -15,6 +16,11 @@ import jakarta.inject.Singleton;
 public class PumlDependencyExporter extends PumlElementExporter {
     @Inject
     public PumlDependencyExporter() {
+    }
+
+    @Override
+    public String getShapeType() {
+        return IShapeTypeConstants.SHAPE_TYPE_DEPENDENCY;
     }
 
     @Override

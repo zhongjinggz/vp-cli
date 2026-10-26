@@ -2,6 +2,7 @@ package plugins.vpcli.domain.outputmodel.pumelementexporter;
 
 import jakarta.inject.Inject;
 import jakarta.inject.Singleton;
+import com.vp.plugin.diagram.IShapeTypeConstants;
 import plugins.vpcli.domain.myuml.myclassifier.MyAttribute;
 import plugins.vpcli.domain.myuml.myclassifier.MyClass;
 import plugins.vpcli.domain.myuml.myclassifier.MyOperation;
@@ -12,6 +13,11 @@ import plugins.vpcli.domain.outputmodel.PumlDiagram;
 public class PumlClassExporter extends PumlBlockExporter {
     @Inject
     public PumlClassExporter() {
+    }
+
+    @Override
+    public String getShapeType() {
+        return IShapeTypeConstants.SHAPE_TYPE_CLASS;
     }
 
     @Override

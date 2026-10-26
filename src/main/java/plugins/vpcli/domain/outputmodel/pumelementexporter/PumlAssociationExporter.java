@@ -1,5 +1,6 @@
 package plugins.vpcli.domain.outputmodel.pumelementexporter;
 
+import com.vp.plugin.diagram.IShapeTypeConstants;
 import plugins.vpcli.domain.myuml.mydiagram.mydiagramelement.ProperMyDiagramElement;
 import plugins.vpcli.domain.myuml.myassociation.MyAssociation;
 import plugins.vpcli.domain.myuml.myassociation.MyAssociationEnd;
@@ -15,6 +16,11 @@ import plugins.vpcli.domain.outputmodel.PumlEdgeEnd.ShapeKind;
 public class PumlAssociationExporter extends PumlElementExporter {
     @Inject
     public PumlAssociationExporter() {
+    }
+
+    @Override
+    public String getShapeType() {
+        return IShapeTypeConstants.SHAPE_TYPE_ASSOCIATION;
     }
 
     public void to(PumlDiagram result, ProperMyDiagramElement myDiagramElement) {

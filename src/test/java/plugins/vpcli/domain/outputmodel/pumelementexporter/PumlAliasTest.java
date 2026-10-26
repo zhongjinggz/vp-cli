@@ -27,6 +27,12 @@ class PumlAliasTest {
         }
 
         @Override
+        public String getShapeType() {
+            // 测试桩：本测试仅验证别名算法，形状类型不参与
+            return "";
+        }
+
+        @Override
         public void to(PumlDiagram result, ProperMyDiagramElement myDiagramElement) {
             // 不通过 to() 输出，仅用于暴露别名方法
         }

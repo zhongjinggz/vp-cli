@@ -146,7 +146,28 @@
        直接透传 `vpDiagram`；真正的结构层改造留待阶段 B（步 B4）统一处理。
   验证：新增入口编译通过、行为与旧签名等价；`mvn test` 通过。
 
-- **步 A3 — `PumlElementExporter` 别名（alias）改读 VP 原生全限定名。**
+- **步 A3 — `PumlElementExporterFactory` 增加以 VP 形状常量为 key 的分发。（依赖 A2）**
+  `PumlElementExporterFactory.java` 当前仅一张 `Map<MyElementType, PumlElementExporter>`，
+  经 `@Inject` 注入 9 个 exporter 并按 `MyElementType`（ASSOCIATION/CLASS/PACKAGE/MODEL/RELATIONSHIPS/
+  USE_CASE/DEPENDENCY/GENERALIZATION/UNIMPLEMENTED_ELEMENT）注册；`of(MyElementType)` 缺类型抛
+  `BugException`。一旦 Exporter 改读 VP 原生模型，分发的输入就从 `MyElement.getElementType()`
+  （`MyElementType` 枚举）变成 `IDiagramElement.getShapeType()`（返回 VP 形状类型字符串），
+  因此需要第二张以 VP 常量为 key 的 Map 与对应的 `of(String)`。
+  改造：
+  - 新增 `Map<String, PumlElementExporter>`，key 用 VP `IShapeTypeConstants.SHAPE_TYPE_*`
+    （实测常量存在 `SHAPE_TYPE_CLASS/SHAPE_TYPE_ASSOCIATION/SHAPE_TYPE_DEPENDENCY/
+    SHAPE_TYPE_GENERALIZATION/SHAPE_TYPE_USE_CASE/SHAPE_TYPE_PACKAGE/SHAPE_TYPE_MODEL`；
+    **注意实际接口名是 `IShapeTypeConstants`，而非 `IShapeTypeConsts`**）；
+  - 两张 Map 由同一 `register` 喂入：注册时不仅存 `MyElementType → exporter`，同时存
+    「exporter 所代表形状类型 → exporter」。为避免两处硬编码漂移，给 `PumlElementExporter`
+    增加一个返回自身 VP 形状类型字符串的字段/方法（单一来源），或者在此步显式列出
+    `ASSOCIATION↔SHAPE_TYPE_ASSOCIATION` 等一一对应表；
+  - 新增 `PumlElementExporter of(String shapeType)`（缺类型抛 `BugException`）；过渡期
+    `of(MyElementType)` 保留，并委托到形状类型版，供 MyElement 侧旧调用方继续使用。
+  验证：两套分发入口返回同一批 exporter 实例；`PumlElementExporterFactory` 相关契约测试通过；
+  `mvn test`。
+
+- **步 A4 — `PumlElementExporter` 别名（alias）改读 VP 原生全限定名。**
   既有的 `protected String getPumlAlias(MyElement)`（`PumlElementExporter.java:24`）
   依赖 `MyElement.getQualifiedName()`。
   改造：新增 `getPumlAlias(IModelElement)`，用 VP 原生 `IModelElement.getQualifiedName()`
@@ -155,7 +176,7 @@
   `getPumlAlias(MyElement)` 作为过渡委托到原生版本。
   验证：`PumlAliasTest` 等契约测试继续通过，输出别名与本阶段前后一致。
 
-- **步 A4 — `PumlAssociationExporter` 直接读 `IAssociation`。**
+- **步 A5 — `PumlAssociationExporter` 直接读 `IAssociation`。**
   `PumlAssociationExporter.java:20` 目前强转 `(MyAssociation)`，
   借 `MyAssociationEnd` 常量与兼容 getter（`getElement/getMultiplicity/getName/getNavigable/getAggregationKind`）
   与 `MyAssociation.NameDirection`。
@@ -167,7 +188,7 @@
   （沿用 FROM_TO/TO_FROM/NONE 语义，常量可内聚到前端枚举，不再依赖 myuml）。
   验证：`PumlAssociationExporterTest` 行为等价通过（用 VP 桩替换 myuml 桩）。
 
-- **步 A5 — `PumlDependencyExporter` / `PumlGeneralizationExporter` 直接读 VP 关系。**
+- **步 A6 — `PumlDependencyExporter` / `PumlGeneralizationExporter` 直接读 VP 关系。**
   - `PumlDependencyExporter.java:21` 强转 `(MyDependency)`，`getFrom()/getTo()`：
     改为 `(IDependency)`，`toFromRelationshipEndArray()[0].getModelElement()`（from）、
     `toToRelationshipEndArray()[0].getModelElement()`（to）。
@@ -176,10 +197,20 @@
     VP `getFrom()`=父类(general)、`getTo()`=子类(specific)。
   验证：两张导出器各自契约测试行为等价；整体 `mvn test`。
 
-- **步 A6 — `PumlClassExporter` 直接读 `IClass`，并承接 #12/#13 的映射结论。**
-  - `PumlClassExporter`（`PumlClassExporter.java:22` 现读 `(MyClass)`）与 `PumlBlockExporter`
-    目前渲染属性/操作。
-    改造：`PumlClassExporter` 读 `(IClass)`：`IClass.attributeIterator()/operationIterator()`
+- **步 A7 — `PumlBlockExporter`（抽象基类）改为直读 VP 原生模型。**
+  `PumlBlockExporter.java:20-39` 是所有块型 exporter 的**父类**，直接依赖 myuml，须最先改：
+  其 `to(...)` 中 `myElement.getName()`、`getPumlAlias(myElement)`、以及遍历
+  `myDiagramElement.getSubShapes()` 时 `pumlElementExporterFactory.of(...getElementType())`
+  的分发，全部建立在 `ProperMyDiagramElement`（myuml）之上。
+  改造：改走步 A1 的 VP 入口，块名/别名/子形状分发改为读 `IModelElement`/VP 图表元素；
+  其 `writeBlockBody` 钩子签名同步调整。
+  **此步是先于其子类（`PumlClassExporter`/`PumlPackageExporter`/`PumlModelExporter`）的前置，必须最先做**，
+  否则子类覆写的 `writeBlockBody` 签名无从对齐。
+  验证：编译通过；块型 exporter 输出与迁移前等价；`mvn test`。
+
+- **步 A8 — `PumlClassExporter` 直接读 `IClass`，并承接 #12/#13 的映射结论。**
+  - `PumlClassExporter`（`PumlClassExporter.java:22` 现读 `(MyClass)`，继承自已改造的
+    `PumlBlockExporter`），用 `IClass.attributeIterator()/operationIterator()`
     直接生成类体 PlantUML 成员行（属性 `+ name: type = init`、操作含 `{static}/{abstract}` 与
     参数列表），可见性符号沿用 #14 映射。
   - **关键澄清（与 #12/#13 的关系）：** `spec-class-diagram-basic.md` 的 #12/#13 曾计划把
@@ -190,7 +221,29 @@
     不引入新的 `MyAttribute/MyOperation` 消费。
   验证：`PumlClassExporterTest`（#12/#13/#14 相关）行为等价通过；整体 `mvn test`。
 
-- **步 A7 — 清场：当全部 Exporter 迁移完成后删除过渡代码。**
+- **步 A9 — `PumlUseCaseExporter` 改为直读 VP 原生模型。**
+  `PumlUseCaseExporter.java` 直接依赖 myuml：`myElement.getName()` + `getPumlAlias(myElement)`。
+  改造：改为读 `IModelElement`（use case 的分类器）的 `getName()` 与 VP 全限定名别名。
+  验证：`PumlUseCaseExporter` 相关契约测试行为等价通过；`mvn test`。
+
+- **步 A10 — `PumlUnimplementedExporter` 改为直读 VP 原生模型。**
+  `PumlUnimplementedExporter.java` 直接依赖 myuml：`myDiagramElement.getModelElement()
+  .getName()/getElementType()`。
+  改造：改为读 VP 原生元素（`IModelElement.getName()/getModelType()`），或接收裸参数后仅打日志。
+  验证：编译通过；日志输出等价；`mvn test`。
+
+- **步 A11 — `PumlModelRelationshipContainerExporter` 删除空方法。**
+  `PumlModelRelationshipContainerExporter.java` 方法体为空，注释已注明
+  "will never be called, remove later"；仅方法签名引用 `ProperMyDiagramElement`（myuml）。
+  改造：连同空方法一并删除（Null Object 语义），从而去掉最后一个 myuml import。
+  验证：`outputmodel` 下 `grep -r "myuml"` 无命中；`mvn test`。
+
+- **步 A12 — `PumlPackageExporter` / `PumlModelExporter` 复核。**
+  二者继承 `PumlBlockExporter`，自身只覆写 `getBlockType()`/`getBlockSuffix()`，无 MyElement 代码，
+  随步 A7 基类改造自动完成。此步仅作复核：确认其依赖图不再向下触碰 myuml。
+  验证：`outputmodel` 下 `grep -r "myuml"` 无命中；`mvn test`。
+
+- **步 A13 — 清场：当全部 Exporter 迁移完成后删除过渡代码。**
   确认 `outputmodel` 全部 `Puml*Exporter` 均已直读 VP 模型后：
   - 删除 `of(MyDiagram)` 旧签名，`PumlDiagramFactory.of` 只保留接收 VP 参数的版本；
   - 删除 `PumlElementExporter.getPumlAlias(MyElement)` 过渡装饰，只留
@@ -257,7 +310,7 @@
 **目标：** 整包删除 `myuml`，收尾活跃流水线。
 
 - **步 C1 — 前置整理：确认 #12/#13 不再引入新成员。**
-  若此前按步 A6 将属性/操作读法内聚进 `PumlClassExporter`，则 `MyClass/MyAttribute/MyOperation/MyOperation.Parameter`
+  若此前按步 A8 将属性/操作读法内聚进 `PumlClassExporter`，则 `MyClass/MyAttribute/MyOperation/MyOperation.Parameter`
   不再被消费，可删除。
 
 - **步 C2 — 删除 `domain/myuml` 全部子包与顶层类。**
@@ -323,9 +376,9 @@
 - **行为基准：** 各阶段以 `src/test` 中 `outputmodel`/`pumelementexporter` 测试及 `myuml` 契约测试为回归基准，
   逐步把桩从 `MyElement` 家族切换为 VP 原生模型接口。
 - **主要风险一：VP 原生 `getQualifiedName()` 的段序/分隔归一。** 别名是导出一致性的关键，
-  需在步 A3 用现有 `PumlAliasTest` 用例锁定输出；若 VP 原生全限定名与现 `MyElement.getQualifiedName()`
+  需在步 A4 用现有 `PumlAliasTest` 用例锁定输出；若 VP 原生全限定名与现 `MyElement.getQualifiedName()`
   （跳过 PROJECT 根节点）有差异，需在 `PumlElementExporter` 内做等价归一后再迁移测试桩。
 - **主要风险二：`of` 签名扩容期间的"元素对应"。** 在步 A1 需稳定建立
   MyElement 模型元素 ↔ VP 原生元素的对应（建议按 VP 元素 `getId()` 建索引），
-  避免分发错配导致输出漂移；该对应在阶段 A 末尾（步 A7）随旧逻辑一并移除。
+  避免分发错配导致输出漂移；该对应在阶段 A 末尾（步 A13）随旧逻辑一并移除。
 - **注意：** `src/main/python/__pycache__/` 为未跟踪杂物，不属本次改造范围，勿纳入提交。
