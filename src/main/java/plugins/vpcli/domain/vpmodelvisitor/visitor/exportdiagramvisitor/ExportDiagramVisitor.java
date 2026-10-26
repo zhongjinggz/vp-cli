@@ -62,7 +62,7 @@ public class ExportDiagramVisitor extends ViElementVisitor {
             vpDiagram,
             ((ExportDiagramVisitor) higherVisitor).myElement
         );
-        PumlDiagram puml = buildPlantUML.of(myDiagram);
+        PumlDiagram puml = buildPlantUML.of(myDiagram, vpDiagram);
         write.plantUML(puml, ((ExportDiagramVisitor) higherVisitor).getPath());
     }
 

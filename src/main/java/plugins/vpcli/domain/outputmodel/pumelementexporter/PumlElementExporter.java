@@ -1,5 +1,6 @@
 package plugins.vpcli.domain.outputmodel.pumelementexporter;
 
+import com.vp.plugin.diagram.IDiagramElement;
 import plugins.vpcli.domain.myuml.mydiagram.mydiagramelement.ProperMyDiagramElement;
 import plugins.vpcli.domain.myuml.myelement.MyElement;
 import plugins.vpcli.domain.outputmodel.PumlDiagram;
@@ -16,6 +17,16 @@ public abstract class PumlElementExporter {
     }
 
     abstract public void to(PumlDiagram result, ProperMyDiagramElement myDiagramElement);
+
+    /**
+     * 过渡入口（步 A1）：在导出器直读 VP 原生模型前，先铺好"接收对应 VP 图形元素"的通路。
+     * ProperMyDiagramElement 是基于 VP 的 IDiagramElement 构造的，故此处下发 IDiagramElement。
+     * 当前只是透传 VP 元素却不消费——直接委托回既有读法，保证此刻输出字节级等价。
+     * 后续每迁移一个子类，才在其内部改写为直读 vpDiagramElement。
+     */
+    public void to(PumlDiagram result, ProperMyDiagramElement myDiagramElement, IDiagramElement vpDiagramElement) {
+        to(result, myDiagramElement);
+    }
 
     /**
      * PlantUML 别名：将元素全限定名各段清洗（仅保留各语言字母和数字，其余转 "_"）后，
