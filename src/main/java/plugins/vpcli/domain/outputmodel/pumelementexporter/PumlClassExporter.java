@@ -1,8 +1,13 @@
 package plugins.vpcli.domain.outputmodel.pumelementexporter;
 
+import com.vp.plugin.diagram.IShapeTypeConstants;
+import com.vp.plugin.model.IAttribute;
+import com.vp.plugin.model.IClass;
+import com.vp.plugin.model.IModelElement;
+import com.vp.plugin.model.IOperation;
+import com.vp.plugin.model.IParameter;
 import jakarta.inject.Inject;
 import jakarta.inject.Singleton;
-import com.vp.plugin.diagram.IShapeTypeConstants;
 import plugins.vpcli.domain.myuml.myclassifier.MyAttribute;
 import plugins.vpcli.domain.myuml.myclassifier.MyClass;
 import plugins.vpcli.domain.myuml.myclassifier.MyOperation;
@@ -36,6 +41,26 @@ public class PumlClassExporter extends PumlBlockExporter {
         }
         for (MyOperation operation : myClass.getOperations()) {
             result.writeTerminalShape(formatOperationLine(operation));
+        }
+    }
+
+    /**
+     * 步 A8：直接读 VP 原生 IClass 的成员（attributeIterator/operationIterator）渲染类体，
+     * 可见性/静态/抽象/参数/初值映射沿用 #14/#12/#13 结论。
+     */
+    @Override
+    void writeBlockBody(PumlDiagram result, IModelElement vpElement) {
+        if (!(vpElement instanceof IClass)) {
+            return;
+        }
+        IClass clazz = (IClass) vpElement;
+        var attributeIterator = clazz.attributeIterator();
+        while (attributeIterator.hasNext()) {
+            result.writeTerminalShape(formatVpAttributeLine((IAttribute) attributeIterator.next()));
+        }
+        var operationIterator = clazz.operationIterator();
+        while (operationIterator.hasNext()) {
+            result.writeTerminalShape(formatVpOperationLine((IOperation) operationIterator.next()));
         }
     }
 
@@ -100,6 +125,74 @@ public class PumlClassExporter extends PumlBlockExporter {
         }
         if (param.getDefaultValue() != null && !param.getDefaultValue().isEmpty()) {
             sb.append(" = ").append(param.getDefaultValue());
+        }
+        return sb.toString();
+    }
+
+    // VP 版属性行，与 myuml 版格式逐段对齐
+    private String formatVpAttributeLine(IAttribute attribute) {
+        StringBuilder sb = new StringBuilder();
+        appendVisibility(sb, attribute.getVisibility());
+        if (IAttribute.SCOPE_CLASSIFIER.equals(attribute.getScope())) {
+            sb.append("{static} ");
+        }
+        if (attribute.getName() != null) {
+            sb.append(attribute.getName());
+        }
+        String type = attribute.getTypeAsString();
+        if (type != null && !type.isEmpty()) {
+            sb.append(": ").append(type);
+        }
+        String initialValue = attribute.getInitialValueAsString();
+        if (initialValue != null && !initialValue.isEmpty()) {
+            sb.append(" = ").append(initialValue);
+        }
+        return sb.toString();
+    }
+
+    // VP 版操作行，与 myuml 版格式逐段对齐
+    private String formatVpOperationLine(IOperation operation) {
+        StringBuilder sb = new StringBuilder();
+        appendVisibility(sb, operation.getVisibility());
+        if (operation.isAbstract()) {
+            sb.append("{abstract} ");
+        }
+        if (operation.isStatic()) {
+            sb.append("{static} ");
+        }
+        if (operation.getName() != null) {
+            sb.append(operation.getName());
+        }
+        sb.append('(');
+        for (int i = 0; i < operation.parameterCount(); i++) {
+            if (i > 0) {
+                sb.append(", ");
+            }
+            sb.append(formatVpParameter(operation.getParameterByIndex(i)));
+        }
+        sb.append(')');
+        String returnType = operation.getReturnTypeAsString();
+        if (returnType != null && !returnType.isEmpty()) {
+            sb.append(": ").append(returnType);
+        }
+        return sb.toString();
+    }
+
+    private String formatVpParameter(IParameter param) {
+        StringBuilder sb = new StringBuilder();
+        if (param.getName() != null) {
+            sb.append(param.getName());
+        }
+        String type = param.getTypeAsString();
+        if (type != null && !type.isEmpty()) {
+            if (sb.length() > 0) {
+                sb.append(": ");
+            }
+            sb.append(type);
+        }
+        String defaultValue = param.getDefaultValueAsString();
+        if (defaultValue != null && !defaultValue.isEmpty()) {
+            sb.append(" = ").append(defaultValue);
         }
         return sb.toString();
     }

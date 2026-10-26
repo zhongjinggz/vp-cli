@@ -1,9 +1,11 @@
 package plugins.vpcli.domain.outputmodel.pumelementexporter;
 
+import com.vp.plugin.diagram.IDiagramElement;
 import com.vp.plugin.diagram.IShapeTypeConstants;
-import plugins.vpcli.domain.myuml.mygeneralization.MyGeneralization;
+import com.vp.plugin.model.IGeneralization;
 import plugins.vpcli.domain.myuml.mydiagram.mydiagramelement.ProperMyDiagramElement;
-import plugins.vpcli.domain.myuml.myassociation.MyAssociation;
+import plugins.vpcli.domain.myuml.mygeneralization.MyGeneralization;
+import plugins.vpcli.domain.outputmodel.NameDirection;
 import plugins.vpcli.domain.outputmodel.PumlDiagram;
 import plugins.vpcli.domain.outputmodel.PumlDiagram.LineStyle;
 import plugins.vpcli.domain.outputmodel.PumlEdgeEnd;
@@ -37,6 +39,25 @@ public class PumlGeneralizationExporter extends PumlElementExporter {
             PumlEdgeEnd.of(specificAlias, "", "", ShapeKind.NONE),
             LineStyle.SOLID,
             generalization.getName(),
-            MyAssociation.NameDirection.NONE);
+            NameDirection.NONE);
+    }
+
+    /**
+     * 步 A6：直接读 VP 原生泛化关系。连接线的 getModelElement() 即 IGeneralization；
+     * getFrom()=general(父)、getTo()=specific(子)，from 恒在左，输出 `general <|-- specific`。
+     */
+    @Override
+    public void to(PumlDiagram result, ProperMyDiagramElement myDiagramElement, IDiagramElement vpDiagramElement) {
+        IGeneralization generalization = (IGeneralization) vpDiagramElement.getModelElement();
+
+        String generalAlias = getPumlAlias(generalization.getFrom());
+        String specificAlias = getPumlAlias(generalization.getTo());
+
+        result.writeEdge(
+            PumlEdgeEnd.of(generalAlias, "", "", ShapeKind.REVERSE_TRIANGLE),
+            PumlEdgeEnd.of(specificAlias, "", "", ShapeKind.NONE),
+            LineStyle.SOLID,
+            generalization.getName(),
+            NameDirection.NONE);
     }
 }

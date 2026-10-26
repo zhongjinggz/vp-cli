@@ -1,9 +1,11 @@
 package plugins.vpcli.domain.outputmodel.pumelementexporter;
 
+import com.vp.plugin.diagram.IDiagramElement;
 import com.vp.plugin.diagram.IShapeTypeConstants;
+import com.vp.plugin.model.IDependency;
 import plugins.vpcli.domain.myuml.mydependency.MyDependency;
 import plugins.vpcli.domain.myuml.mydiagram.mydiagramelement.ProperMyDiagramElement;
-import plugins.vpcli.domain.myuml.myassociation.MyAssociation;
+import plugins.vpcli.domain.outputmodel.NameDirection;
 import plugins.vpcli.domain.outputmodel.PumlDiagram;
 import plugins.vpcli.domain.outputmodel.PumlDiagram.LineStyle;
 import plugins.vpcli.domain.outputmodel.PumlEdgeEnd;
@@ -36,6 +38,25 @@ public class PumlDependencyExporter extends PumlElementExporter {
             PumlEdgeEnd.of(toAlias, "", "", ShapeKind.ARROW),
             LineStyle.DASHED,
             dependency.getName(),
-            MyAssociation.NameDirection.NONE);
+            NameDirection.NONE);
+    }
+
+    /**
+     * 步 A6：直接读 VP 原生依赖关系。连接线的 getModelElement() 即 IDependency；
+     * 经继承自 IRelationship 的 getFrom()/getTo() 取两端分类器作别名。
+     */
+    @Override
+    public void to(PumlDiagram result, ProperMyDiagramElement myDiagramElement, IDiagramElement vpDiagramElement) {
+        IDependency dependency = (IDependency) vpDiagramElement.getModelElement();
+
+        String fromAlias = getPumlAlias(dependency.getFrom());
+        String toAlias = getPumlAlias(dependency.getTo());
+
+        result.writeEdge(
+            PumlEdgeEnd.of(fromAlias, "", "", ShapeKind.NONE),
+            PumlEdgeEnd.of(toAlias, "", "", ShapeKind.ARROW),
+            LineStyle.DASHED,
+            dependency.getName(),
+            NameDirection.NONE);
     }
 }
