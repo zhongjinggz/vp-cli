@@ -1,17 +1,14 @@
 package plugins.vpcli.domain.outputmodel.pumelementexporter;
 
-import plugins.vpcli.domain.myuml_old.myelement_old.MyElementType;
-
 import java.util.HashMap;
 import java.util.Map;
 
 import jakarta.inject.Inject;
 import jakarta.inject.Singleton;
-import plugins.vpcli.util.BugException;
 
 @Singleton
 public class PumlElementExporterFactory {
-    private final Map<MyElementType, PumlElementExporter> oldExporters = new HashMap<>();
+//    private final Map<MyElementType, PumlElementExporter> oldExporters = new HashMap<>();
     private final Map<String, PumlElementExporter> shapeTypeExporters = new HashMap<>();
     private final PumlUnimplementedExporter unimplementedExporter;
 
@@ -28,20 +25,20 @@ public class PumlElementExporterFactory {
         PumlUnimplementedExporter unimplementedExporter
     ) {
         this.unimplementedExporter = unimplementedExporter;
-        register(MyElementType.ASSOCIATION, associationExporter);
-        register(MyElementType.CLASS, classExporter);
-        register(MyElementType.PACKAGE, packageExporter);
-        register(MyElementType.MODEL, modelExporter);
-        register(MyElementType.RELATIONSHIPS, modelRelationshipContainerExporter);
-        register(MyElementType.USE_CASE, useCaseExporter);
-        register(MyElementType.DEPENDENCY, dependencyExporter);
-        register(MyElementType.GENERALIZATION, generalizationExporter);
-        register(MyElementType.UNIMPLEMENTED_ELEMENT, unimplementedExporter);
+        register(associationExporter);
+        register(classExporter);
+        register(packageExporter);
+        register(modelExporter);
+        register(modelRelationshipContainerExporter);
+        register(useCaseExporter);
+        register(dependencyExporter);
+        register(generalizationExporter);
+        register(unimplementedExporter);
     }
 
 
-    private void register(MyElementType myElementType, PumlElementExporter exporter) {
-        oldExporters.put(myElementType, exporter);
+    private void register(PumlElementExporter exporter) {
+//        oldExporters.put(myElementType, exporter);
         shapeTypeExporters.put(exporter.getShapeType(), exporter); // 单一来源：@Override getShapeType()
         exporter.setExporterFactory(this); // to build the bi-direction dependency
     }
