@@ -1,9 +1,7 @@
 package plugins.vpcli.domain.vpmodelvisitor.visitor.exportdiagramvisitor;
 
 import org.jetbrains.annotations.NotNull;
-import plugins.vpcli.domain.myuml.myproject.MyProjectFactory;
 import plugins.vpcli.domain.outputmodel.PumlDiagramFactory;
-import plugins.vpcli.domain.myuml.mydiagram.MyDiagramFactory;
 import plugins.vpcli.domain.vpmodelvisitor.visitor.ViElementVisitor;
 import plugins.vpcli.domain.vpmodelvisitor.visitor.ViElementVisitorFactory;
 import plugins.vpcli.drivenadapter.DocWriter;
@@ -17,8 +15,6 @@ import jakarta.inject.Singleton;
 @Singleton
 public class ExportDiagramVisitorFactory implements ViElementVisitorFactory {
 
-    private final MyProjectFactory myProjectFactory;
-    private final MyDiagramFactory myDiagramFactory;
     private final PumlDiagramFactory pumlDiagramFactory;
     private final DocWriter docWriter;
     private final MyIO myIO;
@@ -26,14 +22,10 @@ public class ExportDiagramVisitorFactory implements ViElementVisitorFactory {
 
     @Inject
     public ExportDiagramVisitorFactory(
-        MyProjectFactory myProjectFactory,
-        MyDiagramFactory myDiagramFactory,
         PumlDiagramFactory pumlDiagramFactory,
         DocWriter docWriter,
         MyIO myIO
     ) {
-        this.myProjectFactory = myProjectFactory;
-        this.myDiagramFactory = myDiagramFactory;
         this.pumlDiagramFactory = pumlDiagramFactory;
         this.docWriter = docWriter;
         this.myIO = myIO;
@@ -43,7 +35,6 @@ public class ExportDiagramVisitorFactory implements ViElementVisitorFactory {
     public ViElementVisitor under(@NotNull ViElementVisitor higherVisitor) {
         return new ExportDiagramVisitor(
             (ExportDiagramVisitor) higherVisitor,
-            myDiagramFactory,
             pumlDiagramFactory,
             docWriter,
             myIO
@@ -53,8 +44,7 @@ public class ExportDiagramVisitorFactory implements ViElementVisitorFactory {
 
     @Override
     public ViElementVisitor createRoot() {
-        var myProject = myProjectFactory.fromGlobal();
-        return new RootExportDiagramVisitor(this.rootDir, myProject);
+        return new RootExportDiagramVisitor(this.rootDir);
     }
 
     public void setRootDir(File dir) {
