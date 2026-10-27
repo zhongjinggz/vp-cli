@@ -11,7 +11,7 @@ import plugins.vpcli.util.BugException;
 
 @Singleton
 public class PumlElementExporterFactory {
-    private final Map<MyElementType, PumlElementExporter> exporters = new HashMap<>();
+    private final Map<MyElementType, PumlElementExporter> oldExporters = new HashMap<>();
     private final Map<String, PumlElementExporter> shapeTypeExporters = new HashMap<>();
     private final PumlUnimplementedExporter unimplementedExporter;
 
@@ -41,18 +41,18 @@ public class PumlElementExporterFactory {
 
 
     private void register(MyElementType myElementType, PumlElementExporter exporter) {
-        exporters.put(myElementType, exporter);
+        oldExporters.put(myElementType, exporter);
         shapeTypeExporters.put(exporter.getShapeType(), exporter); // 单一来源：@Override getShapeType()
         exporter.setExporterFactory(this); // to build the bi-direction dependency
     }
 
-    public PumlElementExporter of(MyElementType myElementType) {
-        if (this.exporters.containsKey(myElementType)) {
-            return this.exporters.get(myElementType);
-        } else {
-            throw new BugException(String.format("Element type %s not found", myElementType));
-        }
-    }
+//    public PumlElementExporter of(MyElementType myElementType) {
+//        if (this.oldExporters.containsKey(myElementType)) {
+//            return this.oldExporters.get(myElementType);
+//        } else {
+//            throw new BugException(String.format("Element type %s not found", myElementType));
+//        }
+//    }
 
     /**
      * 步 A3/A13：以 VP 形状类型字符串分发。未知类型兜底到未实现 exporter
