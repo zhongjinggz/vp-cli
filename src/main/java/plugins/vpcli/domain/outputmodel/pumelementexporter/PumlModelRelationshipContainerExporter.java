@@ -1,7 +1,6 @@
 package plugins.vpcli.domain.outputmodel.pumelementexporter;
 
 import com.vp.plugin.diagram.IDiagramElement;
-import plugins.vpcli.domain.myuml.mydiagram.mydiagramelement.ProperMyDiagramElement;
 
 import jakarta.inject.Inject;
 import jakarta.inject.Singleton;
@@ -23,8 +22,8 @@ public class PumlModelRelationshipContainerExporter extends PumlElementExporter 
         return SHAPE_TYPE_MODEL_RELATIONSHIP_CONTAINER;
     }
 
-    // 步 A11：改为三参版（方法体仍为空）；未实现元素不打入图，仅走空体即丢弃
+    // 步 A11：方法体仍为空；未实现元素不打入图，仅走空体即丢弃
     @Override
-    public void to(PumlDiagram result, ProperMyDiagramElement myDiagramElement, IDiagramElement vpDiagramElement) {
+    public void to(PumlDiagram result, IDiagramElement vpDiagramElement) {
     }
 }

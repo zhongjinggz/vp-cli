@@ -3,7 +3,6 @@ package plugins.vpcli.domain.outputmodel.pumelementexporter;
 import com.vp.plugin.diagram.IDiagramElement;
 import com.vp.plugin.diagram.IShapeTypeConstants;
 import com.vp.plugin.model.IGeneralization;
-import plugins.vpcli.domain.myuml.mydiagram.mydiagramelement.ProperMyDiagramElement;
 import plugins.vpcli.domain.outputmodel.NameDirection;
 import plugins.vpcli.domain.outputmodel.PumlDiagram;
 import plugins.vpcli.domain.outputmodel.PumlDiagram.LineStyle;
@@ -25,7 +24,7 @@ public class PumlGeneralizationExporter extends PumlElementExporter {
     }
 
     @Override
-    public void to(PumlDiagram result, ProperMyDiagramElement myDiagramElement, IDiagramElement vpDiagramElement) {
+    public void to(PumlDiagram result, IDiagramElement vpDiagramElement) {
         IGeneralization generalization = (IGeneralization) vpDiagramElement.getModelElement();
 
         String generalAlias = getPumlAlias(generalization.getFrom());

@@ -3,7 +3,6 @@ package plugins.vpcli.domain.outputmodel.pumelementexporter;
 import com.vp.plugin.diagram.IDiagramElement;
 import com.vp.plugin.diagram.IShapeTypeConstants;
 import com.vp.plugin.model.IDependency;
-import plugins.vpcli.domain.myuml.mydiagram.mydiagramelement.ProperMyDiagramElement;
 import plugins.vpcli.domain.outputmodel.NameDirection;
 import plugins.vpcli.domain.outputmodel.PumlDiagram;
 import plugins.vpcli.domain.outputmodel.PumlDiagram.LineStyle;
@@ -29,7 +28,7 @@ public class PumlDependencyExporter extends PumlElementExporter {
      * 经继承自 IRelationship 的 getFrom()/getTo() 取两端分类器作别名。
      */
     @Override
-    public void to(PumlDiagram result, ProperMyDiagramElement myDiagramElement, IDiagramElement vpDiagramElement) {
+    public void to(PumlDiagram result, IDiagramElement vpDiagramElement) {
         IDependency dependency = (IDependency) vpDiagramElement.getModelElement();
 
         String fromAlias = getPumlAlias(dependency.getFrom());

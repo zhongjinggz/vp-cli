@@ -6,7 +6,6 @@ import jakarta.inject.Inject;
 import jakarta.inject.Singleton;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import plugins.vpcli.domain.myuml.mydiagram.mydiagramelement.ProperMyDiagramElement;
 import plugins.vpcli.domain.outputmodel.PumlDiagram;
 
 @Singleton
@@ -29,7 +28,7 @@ public class PumlUnimplementedExporter extends PumlElementExporter {
      * 步 A10：直读 VP 原生模型。未实现元素不打入图，仅读 VP 元素名称/类型打警告日志。
      */
     @Override
-    public void to(PumlDiagram result, ProperMyDiagramElement myDiagramElement, IDiagramElement vpDiagramElement) {
+    public void to(PumlDiagram result, IDiagramElement vpDiagramElement) {
         IModelElement vpElement = vpDiagramElement.getModelElement();
         log.warn(
             "Unimplemented element will not be exported, name={} type ={}",

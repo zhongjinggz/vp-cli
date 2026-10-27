@@ -4,7 +4,6 @@ import com.vp.plugin.diagram.IDiagramElement;
 import com.vp.plugin.diagram.IShapeTypeConstants;
 import com.vp.plugin.model.IAssociation;
 import com.vp.plugin.model.IAssociationEnd;
-import plugins.vpcli.domain.myuml.mydiagram.mydiagramelement.ProperMyDiagramElement;
 
 import jakarta.inject.Inject;
 import jakarta.inject.Singleton;
@@ -31,7 +30,7 @@ public class PumlAssociationExporter extends PumlElementExporter {
      * 自带 multiplicity/navigable/aggregation 与 role 名称），端分类器取 getModelElement()。
      */
     @Override
-    public void to(PumlDiagram result, ProperMyDiagramElement myDiagramElement, IDiagramElement vpDiagramElement) {
+    public void to(PumlDiagram result, IDiagramElement vpDiagramElement) {
         IAssociation association = (IAssociation) vpDiagramElement.getModelElement();
 
         IAssociationEnd fromEnd = (IAssociationEnd) association.getFromEnd();

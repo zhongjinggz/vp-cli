@@ -2,7 +2,6 @@ package plugins.vpcli.domain.outputmodel.pumelementexporter;
 
 import com.vp.plugin.diagram.IDiagramElement;
 import com.vp.plugin.model.IModelElement;
-import plugins.vpcli.domain.myuml.mydiagram.mydiagramelement.ProperMyDiagramElement;
 import plugins.vpcli.domain.myuml_old.myelement_old.MyElement_old2;
 import plugins.vpcli.domain.outputmodel.PumlDiagram;
 
@@ -20,9 +19,6 @@ public abstract class PumlElementExporter {
         this.pumlElementExporterFactory = pumlElementExporterFactory;
     }
 
-//    public void to(PumlDiagram result, ProperMyDiagramElement myDiagramElement) {
-//    }
-
     /**
      * 步 A3：返回该 exporter 所代表的 VP 形状类型字符串（单一来源）。
      * 供 {@link PumlElementExporterFactory} 以 VP 形状常量为 key 分发；
@@ -31,13 +27,10 @@ public abstract class PumlElementExporter {
     abstract public String getShapeType();
 
     /**
-     * 过渡入口（步 A1）：在导出器直读 VP 原生模型前，先铺好"接收对应 VP 图形元素"的通路。
-     * ProperMyDiagramElement 是基于 VP 的 IDiagramElement 构造的，故此处下发 IDiagramElement。
-     * 当前只是透传 VP 元素却不消费——直接委托回既有读法，保证此刻输出字节级等价。
-     * 后续每迁移一个子类，才在其内部改写为直读 vpDiagramElement。
+     * 步 A1：导出入口。导出器直读 VP 原生模型——此处下发的即 VP 图形元素（IDiagramElement），
+     * 各子类在内部直读其 IModelElement。
      */
-    public void to(PumlDiagram result, ProperMyDiagramElement myDiagramElement, IDiagramElement vpDiagramElement) {
-        to(result, myDiagramElement, vpDiagramElement);
+    public void to(PumlDiagram result, IDiagramElement vpDiagramElement) {
     }
 
     /**

@@ -35,7 +35,7 @@ public class PumlDiagramFactory {
                 if (aShape.getParent() != null) {
                     continue;
                 }
-                exporterFactory.of(aShape.getShapeType()).to(result, null, aShape);
+                exporterFactory.of(aShape.getShapeType()).to(result, aShape);
             }
         }
 
@@ -45,7 +45,7 @@ public class PumlDiagramFactory {
                 if (aConnector instanceof IAnchorUIModel) {
                     continue;
                 }
-                exporterFactory.of(aConnector.getShapeType()).to(result, null, aConnector);
+                exporterFactory.of(aConnector.getShapeType()).to(result, aConnector);
             }
         }
 
