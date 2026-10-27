@@ -333,8 +333,11 @@
     覆写（含"恒返回 null"），移除对 `MyPackage/MyModel/MyElement/MyElementFactory` 的 import。
   - `ViElementFactory`：删除 `myElementFactoryFactory` 字段、`@Inject MyElementFactoryFactory` 构造依赖、
     `getMyElementFactory`；`from(IModelElement)` 内 `new ViPackage(element, this)` 等（去掉第 3 参）。
-  - `ViPackageFactory`：调用 `super()`（无参），`from` 内 `new ViPackage(vpElement, this)`。
-  验证：编译通过；`vpmodelvisitor` 下 `grep -r "myuml"` 无命中；`mvn test`。
+   - `ViPackageFactory`：调用 `super()`（无参），`from` 内 `new ViPackage(vpElement, this)`。
+   > **执行确认（步 B5）：** 7 个 element 文件已改，`vpmodelvisitor` 下 `grep -r "myuml"` 仅剩 `ViElementType` 注释文字
+   > （无 import）、`toMyElementUnder` 已零残留；`mvn test` 通过（Tests run: 111 全绿）。注意：`ViElementFactory`
+   > 构造改无参后须保留 `@Inject`（Dagger `@Singleton` 依赖注入）。
+   验证：编译通过；`vpmodelvisitor` 下 `grep -r "myuml"` 无命中；`mvn test`。
 
 - **步 B6 — 阶段 B 收尾核对。**
   `grep -r "domain.myuml[^_]" src/main/java/plugins/vpcli/domain/vpmodelvisitor src/main/java/plugins/vpcli/application`
