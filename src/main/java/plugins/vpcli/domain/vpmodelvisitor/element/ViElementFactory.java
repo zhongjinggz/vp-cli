@@ -2,8 +2,6 @@ package plugins.vpcli.domain.vpmodelvisitor.element;
 
 import com.vp.plugin.diagram.IDiagramUIModel;
 import com.vp.plugin.model.IModelElement;
-import plugins.vpcli.domain.myuml.myelement.MyElementFactory;
-import plugins.vpcli.domain.myuml.myelement.MyElementFactoryFactory;
 
 import static com.vp.plugin.model.factory.IModelElementFactory.*;
 
@@ -12,24 +10,21 @@ import jakarta.inject.Singleton;
 
 @Singleton
 public class ViElementFactory {
-    protected final MyElementFactoryFactory myElementFactoryFactory;
 
     @Inject
-    public ViElementFactory(MyElementFactoryFactory myElementFactoryFactory) {
-        this.myElementFactoryFactory = myElementFactoryFactory;
+    public ViElementFactory() {
     }
 
     public ViElement from(IModelElement element) {
-        var myElementFactory = myElementFactoryFactory.of(element.getModelType());
         switch (element.getModelType()) {
             case MODEL_TYPE_PACKAGE:
-                return new ViPackage(element, this, myElementFactory);
+                return new ViPackage(element, this);
             case MODEL_TYPE_MODEL:
-                return new ViModel(element, this, myElementFactory);
+                return new ViModel(element, this);
             case MODEL_TYPE_CLASS:
-                return new ViClass(element, this, myElementFactory);
+                return new ViClass(element, this);
             case MODEL_TYPE_USE_CASE:
-                return new ViUseCase(element, this, myElementFactory);
+                return new ViUseCase(element, this);
             default:
                 throw new IllegalArgumentException("Wrong element type:" + element.getModelType());
         }
@@ -39,7 +34,4 @@ public class ViElementFactory {
         return new ViDiagramAsElement(diagram);
     }
 
-    protected MyElementFactory getMyElementFactory(IModelElement element) {
-        return myElementFactoryFactory.of(element.getModelType());
-    }
 }

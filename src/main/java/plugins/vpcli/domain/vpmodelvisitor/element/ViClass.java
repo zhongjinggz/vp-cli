@@ -1,28 +1,19 @@
 package plugins.vpcli.domain.vpmodelvisitor.element;
 
 import com.vp.plugin.model.IModelElement;
-import plugins.vpcli.domain.myuml.myelement.MyElement;
-import plugins.vpcli.domain.myuml.myelement.MyElementFactory;
-import plugins.vpcli.domain.myuml.mypackage.MyPackage;
 import plugins.vpcli.domain.vpmodelvisitor.visitor.ViElementVisitor;
 
 import java.io.IOException;
 
 public class ViClass extends ViModelElement {
     public ViClass(IModelElement vpElement,
-                   ViElementFactory viElementFactory,
-                   MyElementFactory myElementFactory
+                   ViElementFactory viElementFactory
     ) {
-        super(vpElement, viElementFactory, myElementFactory);
+        super(vpElement, viElementFactory);
     }
 
     @Override
     public void accept(ViElementVisitor visitor) throws IOException {
         visitor.visit(this);
-    }
-
-    @Override
-    public MyPackage toMyElementUnder(MyElement parent) {
-        return null;
     }
 }
