@@ -11,6 +11,7 @@ import java.util.List;
 
 import org.junit.jupiter.api.Test;
 import plugins.vpcli.domain.myuml.myelement.MyElementType;
+import plugins.vpcli.domain.vpmodelvisitor.ViElementType;
 import plugins.vpcli.domain.vpmodelvisitor.element.ViDiagramAsElement;
 
 class MyDiagramFactoryConverterAsElementTest {
@@ -35,6 +36,6 @@ class MyDiagramFactoryConverterAsElementTest {
     void shouldReturnEmptyChildren() {
         IDiagramUIModel diagram = mock(IDiagramUIModel.class);
         ViDiagramAsElement vp = new ViDiagramAsElement(diagram);
-        assertTrue(vp.getChildren(List.of(MyElementType.DIAGRAM)).isEmpty());
+        assertTrue(vp.getChildren(List.of(ViElementType.DIAGRAM)).isEmpty());
     }
 }

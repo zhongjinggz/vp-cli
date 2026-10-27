@@ -6,6 +6,7 @@ import plugins.vpcli.domain.myuml.myelement.MyElementType;
 import plugins.vpcli.domain.myuml.myelement.MyElement;
 import plugins.vpcli.domain.myuml.myelement.MyElementFactory;
 import plugins.vpcli.domain.myuml.mypackage.MyPackage;
+import plugins.vpcli.domain.vpmodelvisitor.ViElementType;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -34,7 +35,7 @@ public abstract class ViModelElement extends ViElement {
     }
 
     @Override
-    public List<ViElement> getChildren(List<MyElementType> myElementTypes) {
+    public List<ViElement> getChildren(List<ViElementType> myElementTypes) {
         List<ViElement> result = new ArrayList<>();
 
         var vpDiagrams = this.vpElement.toSubDiagramArray();
@@ -45,8 +46,8 @@ public abstract class ViModelElement extends ViElement {
         }
 
         String[] vpModelTypes = myElementTypes.stream()
-            .filter(MyElementType::isModelElement)
-            .map(MyElementType::getVPModelType)
+            .filter(ViElementType::isModelElement)
+            .map(ViElementType::getVPModelType)
             .toArray(String[]::new);
 
         var vpModelElements = this.vpElement.toChildArray(vpModelTypes);

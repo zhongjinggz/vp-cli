@@ -2,6 +2,7 @@ package plugins.vpcli.domain.vpmodelvisitor.element;
 
 import com.vp.plugin.diagram.IDiagramUIModel;
 import plugins.vpcli.domain.myuml.myelement.MyElementType;
+import plugins.vpcli.domain.vpmodelvisitor.ViElementType;
 import plugins.vpcli.domain.vpmodelvisitor.visitor.ViElementVisitor;
 
 import java.io.IOException;
@@ -28,7 +29,7 @@ public class ViDiagramAsElement extends ViElement {
     }
 
     @Override
-    public List<ViElement> getChildren(List<MyElementType> myElementTypes) {
+    public List<ViElement> getChildren(List<ViElementType> myElementTypes) {
         return List.of();
     }
 

@@ -284,11 +284,21 @@
   行为与 `MyElementType` 完全同构，仅属不同的包。
   验证：编译通过；`ViElementType` 不引用 `myuml`；`mvn test`。
 
-- **步 B2 — `ViProject` 与 `application` 调用点切到 `ViElementType`（连带清 `MyElementType` 静态 import）。**
+- **步 B2 — `ViProject` 持有的类型切到 `ViElementType`，连带 `getChildren` 签名链（团）,（application 同步清静态 import）。**
+  这是 B1 之后第一个闭合单元：只要 `ViProject.myElementTypes` 换成 `List<ViElementType>`，就必然连带
+  `ViElement.getChildren`、`ViModelElement.getChildren`、`ViDiagramAsElement.getChildren` 三个签名同步换
+  （`ViProject.elementsAccept` 在 ViProject.java:71 把持有的 list 直接传给 `anElement.getChildren(...)`，
+  形参类型被实参类型钳制，无法拆开）。因此把「持有类型 + `getChildren` 签名链」作为一个原子步收在 B2；
+  **`getType()/typeIs()` 与 list 传递无关，留到 B3 再切**。
   - `ViProject.myElementTypes`：`List<MyElementType>` → `List<ViElementType>`；
     `setElementTypes(List<ViElementType>)`；`getVpModelTypeArray()` 的
     `filter(MyElementType::isModelElement).map(MyElementType::getVPModelType)` 改为
     `filter(ViElementType::isModelElement).map(ViElementType::getVPModelType)`。
+  - 连带 `getChildren` 签名链：
+    - `ViElement`：`getChildren(List<MyElementType>)` → `getChildren(List<ViElementType>)`；
+    - `ViModelElement`：`getChildren(List<ViElementType>)`，方法体内的 `filter/map` 用 `ViElementType`；
+    - `ViDiagramAsElement`：`getChildren(List<ViElementType>)`。
+    - 注意：这三处只改 `getChildren` 的形参类型与内部 `MyElementType` 引用，**不动 `getType()`**。
   - `TreeService.java`、`ExportService.java`：`import static ...MyElementType.*` 改为
     `import static ...ViElementType.*`，`List.of(PACKAGE, MODEL, DIAGRAM /*, CLASS */)` 改用新常量。
   至此 `application` 对 `myuml` 的引用清零（阶段 B 中首次达成）。
