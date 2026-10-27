@@ -20,11 +20,6 @@ public class PumlUseCaseExporter extends PumlElementExporter {
         return IShapeTypeConstants.SHAPE_TYPE_USE_CASE;
     }
 
-    public void to(PumlDiagram result, ProperMyDiagramElement myDiagramElement) {
-        var myElement = myDiagramElement.getModelElement();
-        result.writeTerminalShape("usecase \"" + myElement.getName() + "\" as " + getPumlAlias(myElement));
-    }
-
     /**
      * 步 A9：直读 VP 原生模型。use case 对应的 IModelElement 提供 getName() 与 VP 全限定名别名。
      */

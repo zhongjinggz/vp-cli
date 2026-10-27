@@ -20,8 +20,8 @@ public abstract class PumlElementExporter {
         this.pumlElementExporterFactory = pumlElementExporterFactory;
     }
 
-    public void to(PumlDiagram result, ProperMyDiagramElement myDiagramElement) {
-    }
+//    public void to(PumlDiagram result, ProperMyDiagramElement myDiagramElement) {
+//    }
 
     /**
      * 步 A3：返回该 exporter 所代表的 VP 形状类型字符串（单一来源）。

@@ -32,10 +32,10 @@ class PumlAliasTest {
             return "";
         }
 
-        @Override
-        public void to(PumlDiagram result, ProperMyDiagramElement myDiagramElement) {
-            // 不通过 to() 输出，仅用于暴露别名方法
-        }
+//        @Override
+//        public void to(PumlDiagram result, ProperMyDiagramElement myDiagramElement) {
+//            // 不通过 to() 输出，仅用于暴露别名方法
+//        }
     }
 
     private Exposer exposer = new Exposer();

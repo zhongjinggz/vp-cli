@@ -56,10 +56,6 @@ public abstract class PumlBlockExporter extends PumlElementExporter {
         return "";
     }
 
-    // 供子类在块的成员区（beginBlock 之后、子形状之前）追加成员行；默认空实现（步 A1 过渡，myuml 读法）
-    void writeBlockBody(PumlDiagram result, ProperMyDiagramElement myDiagramElement) {
-    }
-
     // 步 A7：VP 原生读法的成员区钩子；默认空实现，子类按需覆写
     void writeBlockBody(PumlDiagram result, IModelElement vpElement) {
     }

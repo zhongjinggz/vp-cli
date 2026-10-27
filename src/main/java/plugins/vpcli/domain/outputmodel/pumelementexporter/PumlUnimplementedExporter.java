@@ -25,14 +25,6 @@ public class PumlUnimplementedExporter extends PumlElementExporter {
         return SHAPE_TYPE_UNIMPLEMENTED;
     }
 
-    public void to(PumlDiagram result, ProperMyDiagramElement myDiagramElement) {
-        log.warn(
-            "Unimplemented element will not be exported, name={} type ={}",
-            myDiagramElement.getModelElement().getName(),
-            myDiagramElement.getModelElement().getElementType()
-        );
-    }
-
     /**
      * 步 A10：直读 VP 原生模型。未实现元素不打入图，仅读 VP 元素名称/类型打警告日志。
      */

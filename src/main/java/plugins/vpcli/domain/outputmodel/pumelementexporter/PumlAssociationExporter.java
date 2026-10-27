@@ -5,8 +5,6 @@ import com.vp.plugin.diagram.IShapeTypeConstants;
 import com.vp.plugin.model.IAssociation;
 import com.vp.plugin.model.IAssociationEnd;
 import plugins.vpcli.domain.myuml.mydiagram.mydiagramelement.ProperMyDiagramElement;
-import plugins.vpcli.domain.myuml.myassociation.MyAssociation;
-import plugins.vpcli.domain.myuml.myassociation.MyAssociationEnd;
 
 import jakarta.inject.Inject;
 import jakarta.inject.Singleton;
@@ -25,28 +23,6 @@ public class PumlAssociationExporter extends PumlElementExporter {
     @Override
     public String getShapeType() {
         return IShapeTypeConstants.SHAPE_TYPE_ASSOCIATION;
-    }
-
-    /**
-     * 过渡入口（步 A1 以来的通行对）：经由 myuml 构造的 ProperMyDiagramElement 读取。
-     * 步 A5 起关联改走下方 3 参 VP 版本，本方法仅保留给尚未迁移到 VP 的旧调用方。
-     */
-    @Override
-    public void to(PumlDiagram result, ProperMyDiagramElement myDiagramElement) {
-        var association = (MyAssociation) myDiagramElement.getModelElement();
-
-        var fromEnd = association.getFromEnd();
-        var toEnd = association.getToEnd();
-
-        String fromAlias = getPumlAlias(fromEnd.getElement());
-        String toAlias   = getPumlAlias(toEnd.getElement());
-
-        result.writeEdge(
-            PumlEdgeEnd.of(fromAlias, fromEnd.getMultiplicity(), fromEnd.getName(), fromShapeFor(fromEnd)),
-            PumlEdgeEnd.of(toAlias, toEnd.getMultiplicity(), toEnd.getName(), toShapeFor(toEnd)),
-            LineStyle.SOLID,
-            association.getName(),
-            toDirection(association.getNameDirection()));
     }
 
     /**
@@ -71,50 +47,6 @@ public class PumlAssociationExporter extends PumlElementExporter {
             LineStyle.SOLID,
             association.getName(),
             toDirectionVP(association.getDirection()));
-    }
-
-    /**
-     * from 端在行的左侧（尖端朝左的符号才能使箭头/叉号贴合 from 端）。
-     * 聚合/组合菱形优先于导航符号——同端两者无法在 PlantUML 中共存。
-     */
-    private ShapeKind fromShapeFor(MyAssociationEnd end) {
-        String aggregation = end.getAggregationKind();
-        if (MyAssociationEnd.AGGREGATION_SHARED.equals(aggregation)) {
-            return ShapeKind.DIAMOND;
-        }
-        if (MyAssociationEnd.AGGREGATION_COMPOSITE.equals(aggregation)) {
-            return ShapeKind.SOLID_DIAMOND;
-        }
-        switch (end.getNavigable()) {
-            case MyAssociationEnd.NAVIGABLE_NAVIGABLE:
-                return ShapeKind.REVERSE_ARROW;
-            case MyAssociationEnd.NAVIGABLE_NON_NAVIGABLE:
-                return ShapeKind.CROSS;
-            default:
-                return ShapeKind.NONE;
-        }
-    }
-
-    /**
-     * to 端在行的右侧（尖端朝右的符号）。
-     * 聚合/组合菱形优先于导航符号——同端两者无法在 PlantUML 中共存。
-     */
-    private ShapeKind toShapeFor(MyAssociationEnd end) {
-        String aggregation = end.getAggregationKind();
-        if (MyAssociationEnd.AGGREGATION_SHARED.equals(aggregation)) {
-            return ShapeKind.DIAMOND;
-        }
-        if (MyAssociationEnd.AGGREGATION_COMPOSITE.equals(aggregation)) {
-            return ShapeKind.SOLID_DIAMOND;
-        }
-        switch (end.getNavigable()) {
-            case MyAssociationEnd.NAVIGABLE_NAVIGABLE:
-                return ShapeKind.ARROW;
-            case MyAssociationEnd.NAVIGABLE_NON_NAVIGABLE:
-                return ShapeKind.CROSS;
-            default:
-                return ShapeKind.NONE;
-        }
     }
 
     /** 步 A5：VP 原生版本复用的形状映射，经 IAssociationEnd 读取。 */
@@ -150,18 +82,6 @@ public class PumlAssociationExporter extends PumlElementExporter {
             return "";
         }
         return multiplicity;
-    }
-
-    /** 把企业级 NameDirection 映射为前端枚举（过渡路径）。 */
-    private NameDirection toDirection(MyAssociation.NameDirection direction) {
-        switch (direction == null ? MyAssociation.NameDirection.NONE : direction) {
-            case FROM_TO:
-                return NameDirection.FROM_TO;
-            case TO_FROM:
-                return NameDirection.TO_FROM;
-            default:
-                return NameDirection.NONE;
-        }
     }
 
     /** 把 VP 方向常量映射为前端枚举，两者之外归为 NONE（与 MyAssociationFactory 逻辑一致）。 */
