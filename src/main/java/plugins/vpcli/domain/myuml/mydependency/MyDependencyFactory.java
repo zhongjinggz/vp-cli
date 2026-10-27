@@ -2,9 +2,9 @@ package plugins.vpcli.domain.myuml.mydependency;
 
 import com.vp.plugin.model.IDependency;
 import com.vp.plugin.model.IModelElement;
-import plugins.vpcli.domain.myuml.myelement.MyElement;
-import plugins.vpcli.domain.myuml.myelement.MyElementFactory;
-import plugins.vpcli.domain.myuml.myelement.MyElementPool;
+import plugins.vpcli.domain.myuml_old.myelement_old.MyElement_old2;
+import plugins.vpcli.domain.myuml_old.myelement_old.MyElementFactory;
+import plugins.vpcli.domain.myuml_old.myelement_old.MyElementPool;
 import plugins.vpcli.domain.myuml.mystereotype.MyStereotype;
 
 import jakarta.inject.Inject;
@@ -21,15 +21,15 @@ public class MyDependencyFactory extends MyElementFactory {
 
     @Override
     public MyDependency reallyCreate(
-        MyElement parent,
+        MyElement_old2 parent,
         IModelElement vpElement,
         List<MyStereotype> stereotypes
     ) {
         IDependency vpDependency = (IDependency) vpElement;
 
         // 依赖在 VP 中没有独立的 relationshipEnd 模型，端点直接从关系两端取（IRelationship.getFrom/getTo）
-        MyElement from = buildRelatedElement(vpDependency.getFrom());
-        MyElement to = buildRelatedElement(vpDependency.getTo());
+        MyElement_old2 from = buildRelatedElement(vpDependency.getFrom());
+        MyElement_old2 to = buildRelatedElement(vpDependency.getTo());
 
         return new MyDependency(
             parent,

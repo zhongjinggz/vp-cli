@@ -1,6 +1,6 @@
 package plugins.vpcli.domain.myuml.mycomponent;
 
-import plugins.vpcli.domain.myuml.myelement.MyElement;
+import plugins.vpcli.domain.myuml_old.myelement_old.MyElement_old2;
 import plugins.vpcli.domain.myuml_old.myclass_old.MyAttribute_old;
 import plugins.vpcli.domain.myuml_old.myclass_old.MyOperation_old;
 import plugins.vpcli.domain.myuml_old.mydeployment_old.MyArtifact_old;
@@ -8,7 +8,7 @@ import plugins.vpcli.domain.myuml_old.mydeployment_old.MyArtifact_old;
 import java.util.ArrayList;
 import java.util.List;
 
-public class MyComponent extends MyElement {
+public class MyComponent extends MyElement_old2 {
 
 	private final boolean isInPackage;
 	private String Uid;

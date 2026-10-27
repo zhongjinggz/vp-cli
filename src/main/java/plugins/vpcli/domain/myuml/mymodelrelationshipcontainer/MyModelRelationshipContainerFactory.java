@@ -1,9 +1,9 @@
 package plugins.vpcli.domain.myuml.mymodelrelationshipcontainer;
 
 import com.vp.plugin.model.IModelElement;
-import plugins.vpcli.domain.myuml.myelement.MyElement;
-import plugins.vpcli.domain.myuml.myelement.MyElementFactory;
-import plugins.vpcli.domain.myuml.myelement.MyElementPool;
+import plugins.vpcli.domain.myuml_old.myelement_old.MyElement_old2;
+import plugins.vpcli.domain.myuml_old.myelement_old.MyElementFactory;
+import plugins.vpcli.domain.myuml_old.myelement_old.MyElementPool;
 
 import jakarta.inject.Inject;
 import jakarta.inject.Singleton;
@@ -24,7 +24,7 @@ public class MyModelRelationshipContainerFactory extends MyElementFactory {
     }
 
     @Override
-    public MyModelRelationshipContainer reallyCreate(MyElement parent, IModelElement vpElement, List<MyStereotype> myStereotypes) {
+    public MyModelRelationshipContainer reallyCreate(MyElement_old2 parent, IModelElement vpElement, List<MyStereotype> myStereotypes) {
         return new MyModelRelationshipContainer(
             parent,
             vpElement.getId(),

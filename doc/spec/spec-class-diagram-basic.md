@@ -198,7 +198,7 @@ class3 "1"o--"0..*" class4: < doSomething
 - 关联线渲染集中在 `PumlDiagram.writeEdge(PumlEdgeEnd, PumlEdgeEnd, LineStyle)`（src/.../outputmodel/PumlDiagram.java:82）：目前把 role 与 multiplicity 合并成**每一端一个**引号标签，不输出关联名称，也不带方向三角。
 - `PumlEdgeEnd.ShapeKind`（.../PumlEdgeEnd.java）表达的是**端点的导航符号**，与名称阅读方向三角是两个概念，不可混用。
 - 阅读方向的真实数据来源是 VP 的 `IAssociation.getDirection()`，返回 `IAssociation.DIRECTION_FROM_TO` 或 `IAssociation.DIRECTION_TO_FROM`。
-- `MyAssociation.getName()`（.../myassociation/MyAssociation.java:18 经 `MyElement`）已持有 VP 的关联名称；从 VP 获取关联名称时若返回 `null`，在读数层归一化为空串 `""`。
+- `MyAssociation.getName()`（.../myassociation/MyAssociation.java:18 经 `MyElement_old2`）已持有 VP 的关联名称；从 VP 获取关联名称时若返回 `null`，在读数层归一化为空串 `""`。
 
 
 
@@ -316,7 +316,7 @@ PumlDependencyExporter ..> PumlDiagram : writeEdge(虚线+箭头)
 **实施步骤（每步可独立验证）：**
 
 1. **建模（领域模型层）。**
-   - 方案：新建 `MyDependency extends MyElement`，持有 from / to（各为一个 `MyElement`）。在 `MyElementType`（.../myuml/myelement/MyElementType.java）增加 `DEPENDENCY` 枚举项，绑定 VP 类型 `MODEL_TYPE_DEPENDENCY`。
+   - 方案：新建 `MyDependency extends MyElement`，持有 from / to（各为一个 `MyElement_old2`）。在 `MyElementType`（.../myuml/myelement/MyElementType.java）增加 `DEPENDENCY` 枚举项，绑定 VP 类型 `MODEL_TYPE_DEPENDENCY`。
    - 理由：依赖与关联在 UML 上是不同关系类型，独立建模便于后续导入与发展。
    - 验证：为 `MyDependency` 及工厂写基础单元测试（构造、getter、类型后缀、`vpModelTypeIs("Dependency")`）。
 
@@ -399,7 +399,7 @@ PumlGeneralizationExporter --> PumlDiagram : writeEdge(实线+三角)
 **实施步骤（每步可独立验证）：**
 
 1. **建模（领域模型层）。**
-   - 方案：新建 `MyGeneralization extends MyElement`，持有 general / specific（各为一个 `MyElement`），并提供 `getGeneral()` / `getSpecific()`（以及对应的 setter）。在 `MyElementType`（.../myuml/myelement/MyElementType.java）新增 `GENERALIZATION(MODEL_TYPE_GENERALIZATION, ".generalization")` 枚举项。
+   - 方案：新建 `MyGeneralization extends MyElement`，持有 general / specific（各为一个 `MyElement_old2`），并提供 `getGeneral()` / `getSpecific()`（以及对应的 setter）。在 `MyElementType`（.../myuml/myelement/MyElementType.java）新增 `GENERALIZATION(MODEL_TYPE_GENERALIZATION, ".generalization")` 枚举项。
    - 理由：泛化在 UML 语义上不同于关联/依赖，独立建模便于后续导入与发展；字段命名用 UML 规范术语 `general`（一般/父类）/ `specific`（特化/子类），**避免使用 `parent`/`child`**，以免与 VP API 的 parent/child 语义混淆。
    - 验证：为 `MyGeneralization` 及工厂写基础单元测试（构造、getter、类型后缀）。
 

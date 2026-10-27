@@ -14,7 +14,7 @@ import plugins.vpcli.domain.myuml_old.myclass_old.MyClass_old;
 import plugins.vpcli.domain.myuml_old.mynary_old.MyNary_old;
 import plugins.vpcli.domain.myuml_old.myclass_old.MyOperation_old;
 import plugins.vpcli.domain.myuml_old.myclass_old.MyOperation_old.Parameter;
-import plugins.vpcli.domain.myuml.mypackage.MyPackage;
+import plugins.vpcli.domain.myuml_old.mypackage_old.MyPackage_old;
 import plugins.vpcli.domain.myuml_old.mycommon_old.MyRelationship_old;
 
 import static com.vp.plugin.diagram.IShapeTypeConstants.SHAPE_TYPE_PACKAGE;
@@ -25,7 +25,7 @@ public class OldClassDiagram extends OldDiagram {
 
 	private final List<MyClass_old> exportedClasses = new ArrayList<>();
 	private final List<MyRelationship_old> myRelationships = new ArrayList<>();
-	private final List<MyPackage> exportedPackages = new ArrayList<>();
+	private final List<MyPackage_old> exportedPackages = new ArrayList<>();
 	private final List<MyNary_old> exportedNary = new ArrayList<>();
 
 
@@ -95,7 +95,7 @@ public class OldClassDiagram extends OldDiagram {
 
 
 
-	private void extractClass(IClass classModel, MyPackage myPackage) {
+	private void extractClass(IClass classModel, MyPackage_old myPackage) {
 		boolean isInPackage = !isRootLevelInDiagram(classModel);
 		MyClass_old myClass = new MyClass_old(classModel.getName()
 			, classModel.isAbstract()
@@ -111,7 +111,7 @@ public class OldClassDiagram extends OldDiagram {
 //			myPackage.getClasses().add(myClass);
 	}
 
-	private void extractNary(INARY naryModel, MyPackage uPackage) {
+	private void extractNary(INARY naryModel, MyPackage_old uPackage) {
 		boolean isInPackage = !isRootLevelInDiagram(naryModel);
 		String name = naryModel.getName();
 		String id = naryModel.getId();
@@ -212,7 +212,7 @@ public class OldClassDiagram extends OldDiagram {
 	private void extractPackage(IPackage packageModel) {
 
 		if (isRootLevelInDiagram(packageModel)) {
-			MyPackage uPackage = new MyPackage(packageModel.getName(), null, null, null, false, false);
+			MyPackage_old uPackage = new MyPackage_old(packageModel.getName(), null, null, null, false, false);
 //			uPackage.setDescription(packageModel.getDescription());
 			IModelElement[] childElements = packageModel.toChildArray();
 			for (IModelElement childElement : childElements) {
@@ -228,9 +228,9 @@ public class OldClassDiagram extends OldDiagram {
 		}
 	}
 
-	private void extractPackagedPackage(IPackage packageModel, MyPackage parent) {
+	private void extractPackagedPackage(IPackage packageModel, MyPackage_old parent) {
 
-		MyPackage uPackage = new MyPackage(packageModel.getName(), null, null, null, true, false);
+		MyPackage_old uPackage = new MyPackage_old(packageModel.getName(), null, null, null, true, false);
 //		uPackage.setDescription(packageModel.getDescription());
 		IModelElement[] childElements = packageModel.toChildArray();
 		for (IModelElement childElement : childElements) {
@@ -291,7 +291,7 @@ public class OldClassDiagram extends OldDiagram {
 		return myRelationships;
 	}
 
-	public List<MyPackage> getExportedPackages() {
+	public List<MyPackage_old> getExportedPackages() {
 		return exportedPackages;
 	}
 

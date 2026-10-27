@@ -1,4 +1,4 @@
-package plugins.vpcli.domain.myuml.myelement;
+package plugins.vpcli.domain.myuml.myelement_old;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -8,10 +8,10 @@ import java.util.List;
 import org.junit.jupiter.api.Test;
 import plugins.vpcli.domain.myuml.myclassifier.MyClass;
 import plugins.vpcli.domain.myuml.mymodel.MyModel;
-import plugins.vpcli.domain.myuml.mypackage.MyPackage;
+import plugins.vpcli.domain.myuml_old.mypackage_old.MyPackage_old;
 import plugins.vpcli.domain.myuml.myproject.MyProject;
 import plugins.vpcli.domain.myuml.mystereotype.MyStereotype;
-import plugins.vpcli.domain.myuml.myusecase.MyUseCase;
+import plugins.vpcli.domain.myuml_old.myusecase_old.MyUseCase_old;
 
 class MyElementQualifiedNameTest {
 
@@ -21,13 +21,13 @@ class MyElementQualifiedNameTest {
     private static class Tree {
         MyProject root;
         MyModel model;
-        MyPackage orderPkg;
+        MyPackage_old orderPkg;
         MyClass orderClass;
         MyClass orderItemClass;
-        MyPackage productPkg;
+        MyPackage_old productPkg;
         MyClass productClass;
         MyClass userClass;
-        MyUseCase addUserUseCase;
+        MyUseCase_old addUserUseCase;
         MyClass specialNameClass;
     }
 
@@ -35,12 +35,12 @@ class MyElementQualifiedNameTest {
         Tree t = new Tree();
         t.root = new MyProject("p", "我的项目");
         t.model = new MyModel(t.root, "m", "领域模型", "", stereotypes);
-        t.orderPkg = new MyPackage(t.model, "pk1", "订单", "", stereotypes);
+        t.orderPkg = new MyPackage_old(t.model, "pk1", "订单", "", stereotypes);
         t.orderClass = new MyClass(t.orderPkg, "c1", "订单", "", stereotypes);        t.orderItemClass = new MyClass(t.orderPkg, "c2", "订单项", "", stereotypes);
-        t.productPkg = new MyPackage(t.orderPkg, "pk2", "产品", "", stereotypes);
+        t.productPkg = new MyPackage_old(t.orderPkg, "pk2", "产品", "", stereotypes);
         t.productClass = new MyClass(t.productPkg, "c3", "产品", "", stereotypes);
         t.userClass = new MyClass(t.root, "c4", "用户", "", stereotypes);
-        t.addUserUseCase = new MyUseCase(t.root, "u1", "增加用户", "", stereotypes);
+        t.addUserUseCase = new MyUseCase_old(t.root, "u1", "增加用户", "", stereotypes);
         if (withSpecialName) {
             t.specialNameClass = new MyClass(t.model, "c5", "A-B C", "", stereotypes);
         }

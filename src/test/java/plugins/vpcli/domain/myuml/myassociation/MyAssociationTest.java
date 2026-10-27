@@ -12,20 +12,20 @@ import java.util.List;
 import org.junit.jupiter.api.Test;
 import plugins.vpcli.domain.myuml.myclassifier.MyClass;
 import plugins.vpcli.domain.myuml.myclassifier.MyClassFactory;
-import plugins.vpcli.domain.myuml.myelement.MyElementFactoryFactory;
-import plugins.vpcli.domain.myuml.myelement.MyElementPool;
-import plugins.vpcli.domain.myuml.myelement.MyElementType;
+import plugins.vpcli.domain.myuml_old.myelement_old.MyElementFactoryFactory;
+import plugins.vpcli.domain.myuml_old.myelement_old.MyElementPool;
+import plugins.vpcli.domain.myuml_old.myelement_old.MyElementType;
 import plugins.vpcli.domain.myuml.mydependency.MyDependencyFactory;
 import plugins.vpcli.domain.myuml.mygeneralization.MyGeneralizationFactory;
 import plugins.vpcli.domain.myuml.mystereotype.MyStereotype;
 import plugins.vpcli.domain.myuml.mymodel.MyModelFactory;
-import plugins.vpcli.domain.myuml.mypackage.MyPackageFactory;
+import plugins.vpcli.domain.myuml_old.mypackage_old.MyPackageFactory;
 import plugins.vpcli.domain.myuml.mymodelrelationshipcontainer.MyModelRelationshipContainerFactory;
 import plugins.vpcli.domain.myuml.myproject.MyProject;
 import plugins.vpcli.domain.myuml.mystereotype.MyStereotypeFactory;
 import plugins.vpcli.domain.myuml.myunknownelement.UnimplementedElementFactory;
-import plugins.vpcli.domain.myuml.myusecase.MyUseCase;
-import plugins.vpcli.domain.myuml.myusecase.MyUseCaseFactory;
+import plugins.vpcli.domain.myuml_old.myusecase_old.MyUseCase_old;
+import plugins.vpcli.domain.myuml_old.myusecase_old.MyUseCaseFactory;
 
 import com.vp.plugin.model.IAssociation;
 import com.vp.plugin.model.IAssociationEnd;
@@ -41,7 +41,7 @@ class MyAssociationTest {
     @Test
     void shouldExposeEndpoints() {
         MyClass from = new MyClass(root, "c1", "订单", "", stereotypes);
-        MyUseCase to = new MyUseCase(root, "u1", "下订单", "", stereotypes);
+        MyUseCase_old to = new MyUseCase_old(root, "u1", "下订单", "", stereotypes);
 
         MyAssociationEnd fromEnd = new MyAssociationEnd(root, "fe", "", "", stereotypes, from, "1",
             MyAssociationEnd.NAVIGABLE_NAVIGABLE, MyAssociationEnd.AGGREGATION_NONE);
@@ -73,7 +73,7 @@ class MyAssociationTest {
     @Test
     void shouldPopulateEndpointsThroughCompatibilitySetters() {
         MyClass from = new MyClass(root, "c1", "订单", "", stereotypes);
-        MyUseCase to = new MyUseCase(root, "u1", "下订单", "", stereotypes);
+        MyUseCase_old to = new MyUseCase_old(root, "u1", "下订单", "", stereotypes);
 
         MyAssociation association = new MyAssociation(root, "a1", "", "", stereotypes, null, null);
         association.setFromElement(from);

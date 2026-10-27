@@ -15,9 +15,9 @@ import com.vp.plugin.model.IUseCase;
 
 import plugins.vpcli.domain.myuml_old.myusecase_old.MyActor_old;
 import plugins.vpcli.domain.myuml_old.myassociation_old.MyAssociation_old;
-import plugins.vpcli.domain.myuml.mypackage.MyPackage;
+import plugins.vpcli.domain.myuml_old.mypackage_old.MyPackage_old;
 import plugins.vpcli.domain.myuml_old.mycommon_old.MyRelationship_old;
-import plugins.vpcli.domain.myuml.myusecase.MyUseCase;
+import plugins.vpcli.domain.myuml_old.myusecase_old.MyUseCase_old;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -37,8 +37,8 @@ public class MyUseCaseDiagram extends OldDiagram {
     private final List<MyActor_old> exportedActors = new ArrayList<>();
     
     private final List<MyRelationship_old> myRelationships = new ArrayList<>();
-    private final List<MyPackage> exportedPackages = new ArrayList<>();
-    private final List<MyUseCase> exportedUseCases = new ArrayList<>();
+    private final List<MyPackage_old> exportedPackages = new ArrayList<>();
+    private final List<MyUseCase_old> exportedUseCases = new ArrayList<>();
 
     public void extract() {
 
@@ -101,7 +101,7 @@ public class MyUseCaseDiagram extends OldDiagram {
     }
 
 
-	private void extractUseCase(IUseCase modelElement, MyPackage uPackage) {
+	private void extractUseCase(IUseCase modelElement, MyPackage_old uPackage) {
     	boolean isInPackage = !isRootLevelInDiagram(modelElement);
     	String name = modelElement.getName();
     	boolean isBusiness = modelElement.isBusinessModel();
@@ -115,7 +115,7 @@ public class MyUseCaseDiagram extends OldDiagram {
 	}
 
 
-	private void extractActor(IActor modelElement, MyPackage uPackage) {
+	private void extractActor(IActor modelElement, MyPackage_old uPackage) {
 		boolean isInPackage = !isRootLevelInDiagram(modelElement);
         boolean isBusiness = modelElement.isBusinessModel();
     	String name = modelElement.getName();
@@ -187,7 +187,7 @@ public class MyUseCaseDiagram extends OldDiagram {
 	private void extractPackage(IModelElement modelElement) {
         
         if (isRootLevelInDiagram(modelElement)) {
-	        MyPackage uPackage = new MyPackage(modelElement.getName(), null, null, null, false, modelElement instanceof ISystem);
+	        MyPackage_old uPackage = new MyPackage_old(modelElement.getName(), null, null, null, false, modelElement instanceof ISystem);
 //            uPackage.setDescription(modelElement.getDescription());
             IModelElement[] childElements = modelElement.toChildArray();
 	        for (IModelElement childElement : childElements) {
@@ -204,10 +204,10 @@ public class MyUseCaseDiagram extends OldDiagram {
         }
     }
 
-	private void extractPackagedPackage(IModelElement childElement, MyPackage parent) {
+	private void extractPackagedPackage(IModelElement childElement, MyPackage_old parent) {
 //        ApplicationManager.instance().getViewManager().showMessage("Extracting package: " + childElement.getName());
         
-        MyPackage uPackage = new MyPackage(childElement.getName(), null, null, null, true, childElement instanceof ISystem);
+        MyPackage_old uPackage = new MyPackage_old(childElement.getName(), null, null, null, true, childElement instanceof ISystem);
 //        uPackage.setDescription(childElement.getDescription());
         IModelElement[] childElements = childElement.toChildArray();
         for (IModelElement childElement1 : childElements) {
@@ -224,7 +224,7 @@ public class MyUseCaseDiagram extends OldDiagram {
     }
 
 
-	public List<MyUseCase> getExportedUseCases() {
+	public List<MyUseCase_old> getExportedUseCases() {
 		return exportedUseCases;
 	}
 
@@ -234,7 +234,7 @@ public class MyUseCaseDiagram extends OldDiagram {
 	}
 
 
-	public List<MyPackage> getExportedPackages() {
+	public List<MyPackage_old> getExportedPackages() {
 		return exportedPackages;
 	}
 

@@ -9,18 +9,18 @@ import java.util.stream.Collectors;
 
 import plugins.vpcli.domain.myuml_old.myusecase_old.MyActor_old;
 import plugins.vpcli.domain.myuml_old.mycommon_old.MyNote_old;
-import plugins.vpcli.domain.myuml.mypackage.MyPackage;
+import plugins.vpcli.domain.myuml_old.mypackage_old.MyPackage_old;
 import plugins.vpcli.domain.myuml_old.mycommon_old.MyRelationship_old;
-import plugins.vpcli.domain.myuml.myusecase.MyUseCase;
+import plugins.vpcli.domain.myuml_old.myusecase_old.MyUseCase_old;
 
 public class UseCaseWriter extends PlantUMLWriter {
     
-	private final List<MyPackage> packages;
+	private final List<MyPackage_old> packages;
     private final List<MyActor_old> actors;
     private final List<MyRelationship_old> relationships;
-    private final List<MyUseCase> useCases;
+    private final List<MyUseCase_old> useCases;
 
-    public UseCaseWriter(List<MyUseCase> useCases, List<MyRelationship_old> relationships, List<MyPackage> packages, List<MyActor_old> actors, List<MyNote_old> notes) {
+    public UseCaseWriter(List<MyUseCase_old> useCases, List<MyRelationship_old> relationships, List<MyPackage_old> packages, List<MyActor_old> actors, List<MyNote_old> notes) {
     	super(notes);
     	this.packages = packages;
     	this.useCases = useCases;
@@ -31,7 +31,7 @@ public class UseCaseWriter extends PlantUMLWriter {
     public void writeToFile(File file) throws IOException {
         StringBuilder plantUMLContent = new StringBuilder("@startuml\n");
         
-        for (MyPackage uPackage : packages) {
+        for (MyPackage_old uPackage : packages) {
         	if(!uPackage.isSubpackage())
         		plantUMLContent.append(writePackage(uPackage, ""));
         }
@@ -41,7 +41,7 @@ public class UseCaseWriter extends PlantUMLWriter {
         		plantUMLContent.append(writeActor(myActor, ""));
         }
 
-        for (MyUseCase usecaseU : useCases) {
+        for (MyUseCase_old usecaseU : useCases) {
 //        	if(!usecaseU.isInPackage())
 //        		plantUMLContent.append(writeUseCase(usecaseU, ""));
         }
@@ -60,7 +60,7 @@ public class UseCaseWriter extends PlantUMLWriter {
     
     
 
-	private String writePackage(MyPackage uPackage, String indent) {
+	private String writePackage(MyPackage_old uPackage, String indent) {
     	StringBuilder packageString = new StringBuilder();
     	String name = formatName(uPackage.getName());
     	String definition = uPackage.isRectangle() ? "rectangle " : "package " ;
@@ -69,11 +69,11 @@ public class UseCaseWriter extends PlantUMLWriter {
 //    	for (MyActor_old myActor : uPackage.getActors()) {
 //    		packageString.append(writeActor(myActor, indent + "\t"));
 //    	}
-    	for (MyUseCase uUseCase : uPackage.getUseCases()) {
+    	for (MyUseCase_old uUseCase : uPackage.getUseCases()) {
     		packageString.append(writeUseCase(uUseCase, indent + "\t"));
     	}
     	
-    	for (MyPackage subPackage : uPackage.getSubPackages()) {
+    	for (MyPackage_old subPackage : uPackage.getSubPackages()) {
     		packageString.append(writePackage(subPackage, indent + "\t"));
     		
     	}
@@ -83,7 +83,7 @@ public class UseCaseWriter extends PlantUMLWriter {
     }
 
 
-	private String writeUseCase(MyUseCase uUseCase, String indent) {
+	private String writeUseCase(MyUseCase_old uUseCase, String indent) {
 	    StringBuilder usecaseString = new StringBuilder();
 	    String name = uUseCase.getName();
 //	    String business = uUseCase.isBusiness() ? "/" : "";

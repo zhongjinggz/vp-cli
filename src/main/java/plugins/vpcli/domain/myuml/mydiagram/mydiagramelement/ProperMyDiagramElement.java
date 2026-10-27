@@ -1,6 +1,6 @@
 package plugins.vpcli.domain.myuml.mydiagram.mydiagramelement;
 
-import plugins.vpcli.domain.myuml.myelement.MyElement;
+import plugins.vpcli.domain.myuml_old.myelement_old.MyElement_old2;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -12,7 +12,7 @@ import java.util.List;
 public class ProperMyDiagramElement implements MyDiagramElement {
     protected String id;
     protected DiagramElementType diagramElementType;
-    protected MyElement modelElement;
+    protected MyElement_old2 modelElement;
     protected MyDiagramElement parentDiagramElement;
     protected List<ProperMyDiagramElement> subShapes = new ArrayList<>();
     protected List<ProperMyDiagramElement> subEdges = new ArrayList<>();
@@ -20,7 +20,7 @@ public class ProperMyDiagramElement implements MyDiagramElement {
     public ProperMyDiagramElement(
         String id,
         DiagramElementType diagramElementType,
-        MyElement modelElement,
+        MyElement_old2 modelElement,
         MyDiagramElement parentDiagramElement
     ) {
         this.id = id;
@@ -41,7 +41,7 @@ public class ProperMyDiagramElement implements MyDiagramElement {
     }
 
     @Override
-    public MyElement getModelElement() {
+    public MyElement_old2 getModelElement() {
         return modelElement;
     }
 

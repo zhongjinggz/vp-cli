@@ -1,10 +1,11 @@
-package plugins.vpcli.domain.myuml.myelement;
+package plugins.vpcli.domain.myuml.myelement_old;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.junit.jupiter.api.Test;
+import plugins.vpcli.domain.myuml_old.myelement_old.MyElementType;
 
 class MyElementTypeTest {
 

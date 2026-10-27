@@ -1,8 +1,8 @@
 package plugins.vpcli.domain.myuml.mynary;
 
-import plugins.vpcli.domain.myuml.myelement.MyElement;
+import plugins.vpcli.domain.myuml_old.myelement_old.MyElement_old2;
 
-public class MyNary extends MyElement {
+public class MyNary extends MyElement_old2 {
     private final String name;
     private final String id;
     private final String alias;

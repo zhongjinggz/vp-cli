@@ -1,4 +1,4 @@
-package plugins.vpcli.domain.myuml.myelement;
+package plugins.vpcli.domain.myuml_old.myelement_old;
 
 import com.vp.plugin.model.IModelElement;
 import org.jspecify.annotations.NonNull;
@@ -38,10 +38,10 @@ public abstract class MyElementFactory {
         this.factoryFactory = factoryFactory;
     }
 
-    public abstract MyElement reallyCreate(MyElement parent, IModelElement vpElement, List<MyStereotype> myStereotypes);
+    public abstract MyElement_old2 reallyCreate(MyElement_old2 parent, IModelElement vpElement, List<MyStereotype> myStereotypes);
 
-    public MyElement of(IModelElement vpElement) {
-        MyElement myParentElement;
+    public MyElement_old2 of(IModelElement vpElement) {
+        MyElement_old2 myParentElement;
         var vpParentElement = vpElement.getParent();
 
         // 如果 parent 为空，意味着是顶层元素，其上级是项目本身
@@ -59,12 +59,12 @@ public abstract class MyElementFactory {
     }
 
     // use proper factory to build
-    protected MyElement buildRelatedElement(IModelElement vpElement) {
+    protected MyElement_old2 buildRelatedElement(IModelElement vpElement) {
         var factory = factoryFactory.of(vpElement.getModelType());
         return factory.of(vpElement);
     }
 
-    protected MyElement createWithParent(MyElement parent, IModelElement vpElement) {
+    protected MyElement_old2 createWithParent(MyElement_old2 parent, IModelElement vpElement) {
         String id = vpElement.getId();
 
         if (elementPool.contains(id)) {
@@ -86,7 +86,7 @@ public abstract class MyElementFactory {
         var vpStereotypes = vpElement.toStereotypeModelArray();
         if (vpStereotypes != null) {
             for (var aStereotype : vpStereotypes) {
-                MyElement myElement = buildRelatedElement(aStereotype);
+                MyElement_old2 myElement = buildRelatedElement(aStereotype);
                 result.add((MyStereotype) myElement);
             }
         }

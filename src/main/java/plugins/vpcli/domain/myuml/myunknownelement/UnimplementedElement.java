@@ -1,13 +1,13 @@
 package plugins.vpcli.domain.myuml.myunknownelement;
 
 import org.jetbrains.annotations.NotNull;
-import plugins.vpcli.domain.myuml.myelement.MyElement;
-import plugins.vpcli.domain.myuml.myelement.MyElementType;
+import plugins.vpcli.domain.myuml_old.myelement_old.MyElement_old2;
+import plugins.vpcli.domain.myuml_old.myelement_old.MyElementType;
 import plugins.vpcli.domain.myuml.mystereotype.MyStereotype;
 
 import java.util.List;
 
-public class UnimplementedElement extends MyElement {
+public class UnimplementedElement extends MyElement_old2 {
 
     public static final String MODEL_TYPE_TEXT = "UnimplementedElement";
 
@@ -15,7 +15,7 @@ public class UnimplementedElement extends MyElement {
 
 
     public UnimplementedElement(
-        MyElement parent,
+        MyElement_old2 parent,
         String id,
         String name,
         String Description,

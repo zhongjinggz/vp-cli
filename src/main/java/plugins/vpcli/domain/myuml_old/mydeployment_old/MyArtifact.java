@@ -1,8 +1,8 @@
 package plugins.vpcli.domain.myuml_old.mydeployment_old;
 
-import plugins.vpcli.domain.myuml.myelement.MyElement;
+import plugins.vpcli.domain.myuml_old.myelement_old.MyElement_old2;
 
-public class MyArtifact extends MyElement {
+public class MyArtifact extends MyElement_old2 {
 
     private final boolean isInPackage;
     private final boolean isInNode;

@@ -10,8 +10,8 @@ import java.util.Iterator;
 import java.util.List;
 
 import org.junit.jupiter.api.Test;
-import plugins.vpcli.domain.myuml.myelement.MyElementType;
-import plugins.vpcli.domain.myuml.myelement.MyElementPool;
+import plugins.vpcli.domain.myuml_old.myelement_old.MyElementType;
+import plugins.vpcli.domain.myuml_old.myelement_old.MyElementPool;
 import plugins.vpcli.domain.myuml.myproject.MyProject;
 import plugins.vpcli.domain.myuml.mystereotype.MyStereotype;
 

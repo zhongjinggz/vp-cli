@@ -14,7 +14,7 @@ import plugins.vpcli.domain.myuml_old.myclass_old.MyAttribute_old;
 import plugins.vpcli.domain.myuml_old.myclass_old.MyClass_old;
 import plugins.vpcli.domain.myuml_old.myclass_old.MyOperation_old;
 import plugins.vpcli.domain.myuml_old.mycommon_old.MyNote_old;
-import plugins.vpcli.domain.myuml.mypackage.MyPackage;
+import plugins.vpcli.domain.myuml_old.mypackage_old.MyPackage_old;
 import plugins.vpcli.domain.myuml_old.mycommon_old.MyRelationship_old;
 import plugins.vpcli.domain.myuml_old.mydeployment_old.MyArtifact_old;
 
@@ -22,11 +22,11 @@ public class ComponentDeploymentUMLWriter extends PlantUMLWriter {
 
 	private final List<MyComponent_old> components;
 	private final List<MyClass_old> interfaces;
-	private final List<MyPackage> packages;
+	private final List<MyPackage_old> packages;
 	private final List<MyRelationship_old> relationships;
 	private final List<MyArtifact_old> artifacts;
 
-    public ComponentDeploymentUMLWriter(List<MyNote_old> notes, List<MyComponent_old> components, List<MyClass_old> interfaces, List<MyArtifact_old> artifacts, List<MyPackage> packages, List<MyRelationship_old> relationships) {
+    public ComponentDeploymentUMLWriter(List<MyNote_old> notes, List<MyComponent_old> components, List<MyClass_old> interfaces, List<MyArtifact_old> artifacts, List<MyPackage_old> packages, List<MyRelationship_old> relationships) {
 		super(notes);
 		this.components = components;
 		this.interfaces = interfaces;
@@ -57,7 +57,7 @@ public class ComponentDeploymentUMLWriter extends PlantUMLWriter {
 				plantUMLContent.append(writeArtifact(uArtifact, ""));
 		}
 
-		for (MyPackage uPackage : packages) {
+		for (MyPackage_old uPackage : packages) {
 			if(!uPackage.isSubpackage())
 				plantUMLContent.append(writePackage(uPackage, ""));
 		}
@@ -87,7 +87,7 @@ public class ComponentDeploymentUMLWriter extends PlantUMLWriter {
 		return relationship.toExportFormat();
     }
 	
-	private String writePackage(MyPackage uPackage, String indent) {
+	private String writePackage(MyPackage_old uPackage, String indent) {
 		StringBuilder packageString = new StringBuilder();
 		String name = formatName(uPackage.getName());
 
@@ -104,7 +104,7 @@ public class ComponentDeploymentUMLWriter extends PlantUMLWriter {
 //			packageString.append(writeComponent(myComponent, indent + "\t"));
 //		}
 
-		for (MyPackage subPackage : uPackage.getSubPackages()) {
+		for (MyPackage_old subPackage : uPackage.getSubPackages()) {
 			packageString.append(writePackage(subPackage, indent + "\t"));
 		}
 

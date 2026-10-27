@@ -5,9 +5,9 @@ import com.vp.plugin.model.IClass;
 import com.vp.plugin.model.IModelElement;
 import com.vp.plugin.model.IOperation;
 import com.vp.plugin.model.IParameter;
-import plugins.vpcli.domain.myuml.myelement.MyElement;
-import plugins.vpcli.domain.myuml.myelement.MyElementFactory;
-import plugins.vpcli.domain.myuml.myelement.MyElementPool;
+import plugins.vpcli.domain.myuml_old.myelement_old.MyElement_old2;
+import plugins.vpcli.domain.myuml_old.myelement_old.MyElementFactory;
+import plugins.vpcli.domain.myuml_old.myelement_old.MyElementPool;
 import plugins.vpcli.domain.myuml.mystereotype.MyStereotype;
 
 import java.util.ArrayList;
@@ -25,7 +25,7 @@ public class MyClassFactory extends MyElementFactory {
     }
 
     @Override
-    public MyElement reallyCreate(MyElement parent, IModelElement vpElement, List<MyStereotype> stereotypes) {
+    public MyElement_old2 reallyCreate(MyElement_old2 parent, IModelElement vpElement, List<MyStereotype> stereotypes) {
         MyClass myClass = new MyClass(
             parent,
             vpElement.getId(),

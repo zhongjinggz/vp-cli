@@ -1,4 +1,4 @@
-package plugins.vpcli.domain.myuml.myelement;
+package plugins.vpcli.domain.myuml_old.myelement_old;
 
 import org.jetbrains.annotations.NotNull;
 import plugins.vpcli.domain.myuml.mystereotype.MyStereotype;
@@ -8,19 +8,19 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 
-public class MyElement {
+public class MyElement_old2 {
     private String id = "";
     private String name;
     private String description = "";
     private final List<MyStereotype> stereotypes = new ArrayList<>();
     private MyElementType myElementType;
 
-    protected MyElement parentElement;
-    protected final List<MyElement> subElements = new ArrayList<>();
+    protected MyElement_old2 parentElement;
+    protected final List<MyElement_old2> subElements = new ArrayList<>();
 
     // for new elements
-    public MyElement(
-        MyElement parentElement,
+    public MyElement_old2(
+        MyElement_old2 parentElement,
         String id,
         String name,
         MyElementType myElementType,
@@ -37,12 +37,12 @@ public class MyElement {
     }
 
     // old
-    public MyElement(String name) {
+    public MyElement_old2(String name) {
         this.name = name;
     }
 
     //for MyProject
-    public MyElement(String id, String name, MyElementType myElementType) {
+    public MyElement_old2(String id, String name, MyElementType myElementType) {
         this.id = id;
         this.name = name;
         this.myElementType = myElementType;
@@ -68,15 +68,15 @@ public class MyElement {
         return description;
     }
 
-    public List<MyElement> getSubElements() {
+    public List<MyElement_old2> getSubElements() {
         return Collections.unmodifiableList(subElements);
     }
 
-    public void addSubElement(MyElement subElement) {
+    public void addSubElement(MyElement_old2 subElement) {
         this.subElements.add(subElement);
     }
 
-    public void addSubElements(@NotNull List<? extends MyElement> elements) {
+    public void addSubElements(@NotNull List<? extends MyElement_old2> elements) {
         Objects.requireNonNull(elements, "Bug: elements can't be null");
         for (var element : elements) {
             addSubElement(element);
@@ -106,7 +106,7 @@ public class MyElement {
         this.stereotypes.add(stereotype);
     }
 
-    private static void collectQualifiedName(StringBuilder sb, MyElement element) {
+    private static void collectQualifiedName(StringBuilder sb, MyElement_old2 element) {
         if (element == null) {
             return;
         }

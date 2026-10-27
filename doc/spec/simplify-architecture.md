@@ -20,7 +20,7 @@
 
 ### 结论：可行
 
-把 `MyElement` 从导出路径中移除，改为直接以 VP 原生模型为数据源，是可行的。
+把 `MyElement_old2` 从导出路径中移除，改为直接以 VP 原生模型为数据源，是可行的。
 依据在于：
 
 - **VP 原生模型已具备输出所需的一切读取能力。** 已用 `javap` 反编译 VP SDK
@@ -54,7 +54,7 @@
 
 ### 关键依赖顺序（必须先删哪些）
 
-`writers_old` **还引用了新 `myuml`**（`MyPackage`、`MyUseCase`），因此：
+`writers_old` **还引用了新 `myuml`**（`MyPackage_old`、`MyUseCase_old`），因此：
 必须先删 `writers_old` → 再清理 `MyComponent` 的 3 个 `myuml_old` import →
 之后 `myuml_old` 与 `writers_old` 才可整包删除。
 
@@ -72,7 +72,7 @@
 在 `PumlDiagramFactory.of` 上增加 `IDiagramElement vpDiagramElement` 参数作为突破口：
 方法内部据此取得 VP 原生模型，再**逐一把 VP 元素传给各 Exporter**。各 Exporter 增加一个
 接收 VP 原生模型的入口（逐步把实现切换为读 VP 模型），而尚未改造的 Exporter 仍然使用
-`MyElement` 的子类。当所有 Exporter 都迁移到 VP 模型后，多余的参数与逻辑自然无用，届时安全删除。
+`MyElement_old2` 的子类。当所有 Exporter 都迁移到 VP 模型后，多余的参数与逻辑自然无用，届时安全删除。
 
 ## 总体实施步骤
 
@@ -84,12 +84,12 @@
 
 - **阶段 A：让 `outputmodel` 直接消费 VP 原生模型（核心）。**
   借助 `of(MyDiagram, IDiagramElement)` 签名扩容作为突破口，把 VP 原生模型逐一下传给
-  `Puml*Exporter`，使导出器族逐步从读 `MyElement` 切换为读 `IModelElement`/`IAssociation`/
+  `Puml*Exporter`，使导出器族逐步从读 `MyElement_old2` 切换为读 `IModelElement`/`IAssociation`/
   `IDependency`/`IGeneralization`/`IClass`。新旧逻辑并行，先保证输出字节级等价。
 
 - **阶段 B：让 `vpmodelvisitor` 直接消费 VP 原生模型。**
-  `Vi*` 结构与 visitor 不再构建 `MyElement` 树，直接携带/读取 VP 原生模型，
-  从而兑现 `MyElementFactory`/`MyDiagramFactory`/`MyProjectFactory` 及 `MyPackage`/`MyModel`/`MyClass` 的退役。
+  `Vi*` 结构与 visitor 不再构建 `MyElement_old2` 树，直接携带/读取 VP 原生模型，
+  从而兑现 `MyElementFactory`/`MyDiagramFactory`/`MyProjectFactory` 及 `MyPackage_old`/`MyModel`/`MyClass` 的退役。
 
 - **阶段 C：删除剩余 `myuml` 包。**
   迁移其内部契约测试桩后整包删除，收尾活跃流水线。
@@ -102,7 +102,7 @@
 
 ## 阶段A 详细步骤
 
-**目标：** 导出器族不再触碰 `MyElement` 家族，改读 VP 原生模型；**不动 `vpmodelvisitor`**，
+**目标：** 导出器族不再触碰 `MyElement_old2` 家族，改读 VP 原生模型；**不动 `vpmodelvisitor`**，
 通过给 `PumlDiagramFactory.of` 增加 VP 原生参数这一突破口，让新旧逻辑并行、输出字节级等价。
 
 > **编排说明：** A1 是 A2 的前置（先有 Exporter 的 VP 入口，`of` 才能向下分发），
@@ -129,7 +129,7 @@
   方法内：
   - `createPumlDiagram(myDiagram)`（名称/类型）暂不变，过渡期仍从 `MyDiagram` 取；
   - 以 `vpDiagramElement` 为入口取得 VP 原生模型集合（图表子元素所对应的模型元素），
-    建立「`MyElement` 模型元素 ↔ VP `IModelElement`」的映射（可按 VP `getId()`
+    建立「`MyElement_old2` 模型元素 ↔ VP `IModelElement`」的映射（可按 VP `getId()`
     对应到 MyElement 的 id），供后续分发给各 Exporter；
   - 遍历 `myDiagram.getSubShapes()/getSubEdges()` 时，把**对应的 VP 元素一并**传给
     各 `PumlElementExporter`（走步 A1 增设的 VP 入口）。
@@ -258,8 +258,8 @@
 
 ## 阶段B 详细步骤
 
-**目标：** `Vi*` 结构与 visitor 不再构建 `MyElement` 树，直接携带/读取 VP 原生模型，
-从而兑现 `MyElementFactory`、`MyDiagramFactory`、`MyProjectFactory`、`MyPackage`/`MyModel`/`MyClass` 的退役。
+**目标：** `Vi*` 结构与 visitor 不再构建 `MyElement_old2` 树，直接携带/读取 VP 原生模型，
+从而兑现 `MyElementFactory`、`MyDiagramFactory`、`MyProjectFactory`、`MyPackage_old`/`MyModel`/`MyClass` 的退役。
 最终 `vpmodelvisitor` 与 `application` 对 `myuml` 零依赖。
 
 > **关键耦合（本方案拆分依据）：**
@@ -313,7 +313,7 @@
   - `ExportDiagramVisitor.makeDirOf` 的 `getType().getSuffix()` 沿用（`ViElementType.getSuffix()` 已具备）。
   验证：编译通过；`vpmodelvisitor/element` 下无 `MyElementType` import；`mvn test`。
 
-- **步 B4 — `ExportDiagramVisitor`/`RootExportDiagramVisitor`/`ExportDiagramVisitorFactory` 不再构建 `MyElement`/`MyProject`（先于删 toMyElementUnder）。**
+- **步 B4 — `ExportDiagramVisitor`/`RootExportDiagramVisitor`/`ExportDiagramVisitorFactory` 不再构建 `MyElement_old2`/`MyProject`（先于删 toMyElementUnder）。**
   - `PumlDiagramFactory.of(MyDiagram, IDiagramUIModel)` → `of(IDiagramUIModel)`：方法体直接以 `vpDiagramElement`
     为数据源（`createPumlDiagram(IDiagramUIModel)` 从 `getDocumentation()/getName()/getType()` 取，
     迁移自 `MyDiagramFactory.creatMyDiagram` 的 name/type 逻辑）。阶段 A 已把导出器切到 VP 原生读法，此处只是把
@@ -369,7 +369,7 @@
 - **步 C2 — 删除 `domain/myuml` 全部子包与顶层类。**
   如 `myassociation`、`myclassifier`、`mycomponent`、`mydependency`、`mydiagram`、`myelement`、
   `mygeneralization`、`mymodel`、`mymodelrelationshipcontainer`、`mynary`、`mypackage`、`myproject`、
-  `mystereotype`、`myunknownelement`、`myusecase` 及其顶层 `MyElement`/`MyElementType`/`MyProject` 等。
+  `mystereotype`、`myunknownelement`、`myusecase` 及其顶层 `MyElement_old2`/`MyElementType`/`MyProject` 等。
 
 - **步 C3 — 迁移/删除 `myuml` 包内契约测试。**
   将 `src/test` 中那些仍依赖 `myuml` 的测试改为对 VP 原生模型桩
@@ -382,7 +382,7 @@
   （类/用例/时序/组件/部署/状态机/活动）做导入导出冒烟，确认 `.puml` 可被 PlantUML 解析渲染、
   命名冲突与语义往返（`project_semantics.puml`）行为不变。
 
-**阶段 C 产出：** `myuml`（含全部 `MyElement` 家族）消失，活跃流水线收尾。
+**阶段 C 产出：** `myuml`（含全部 `MyElement_old2` 家族）消失，活跃流水线收尾。
 
 ---
 
@@ -411,7 +411,7 @@
   含 5 个子包下的全部旧模型：`myactivity_old`、`myassociation_old`、`myclass_old`、
   `mycomponent_old`、`mydeployment_old`、`mydiagram_old`、`myinteraction_old`、`mymodel_old`、
   `mynary_old`、`mystatemachine_old`、`myusecase_old`、`mycommon_old` 等，以及顶层
-  `MyElement`/`MyElementType`/`MyProject`/... 的 `_old` 版本。
+  `MyElement_old2`/`MyElementType`/`MyProject`/... 的 `_old` 版本。
   验证：`grep -r "myuml_old"` 无命中；`mvn test`。
 
 - **步 D4 — 全局验收。**
@@ -427,7 +427,7 @@
 
 - **里程碑：** 阶段 A（输出层改造，核心、行为冻结点）→ 阶段 B（结构层改造）→ 阶段 C（删除 `myuml`）→ 阶段 D（退役死代码、收尾）。
 - **行为基准：** 各阶段以 `src/test` 中 `outputmodel`/`pumelementexporter` 测试及 `myuml` 契约测试为回归基准，
-  逐步把桩从 `MyElement` 家族切换为 VP 原生模型接口。
+  逐步把桩从 `MyElement_old2` 家族切换为 VP 原生模型接口。
 - **主要风险一：VP 原生 `getQualifiedName()` 的段序/分隔归一。** 别名是导出一致性的关键，
   需在步 A4 用现有 `PumlAliasTest` 用例锁定输出；若 VP 原生全限定名与现 `MyElement.getQualifiedName()`
   （跳过 PROJECT 根节点）有差异，需在 `PumlElementExporter` 内做等价归一后再迁移测试桩。

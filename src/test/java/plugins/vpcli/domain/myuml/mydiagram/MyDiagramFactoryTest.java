@@ -18,20 +18,20 @@ import plugins.vpcli.domain.myuml.myclassifier.MyClassFactory;
 import plugins.vpcli.domain.myuml.mydependency.MyDependency;
 import plugins.vpcli.domain.myuml.mydependency.MyDependencyFactory;
 import plugins.vpcli.domain.myuml.mygeneralization.MyGeneralizationFactory;
-import plugins.vpcli.domain.myuml.myelement.MyElement;
-import plugins.vpcli.domain.myuml.myelement.MyElementFactoryFactory;
-import plugins.vpcli.domain.myuml.myelement.MyElementPool;
-import plugins.vpcli.domain.myuml.myelement.MyElementType;
+import plugins.vpcli.domain.myuml_old.myelement_old.MyElement_old2;
+import plugins.vpcli.domain.myuml_old.myelement_old.MyElementFactoryFactory;
+import plugins.vpcli.domain.myuml_old.myelement_old.MyElementPool;
+import plugins.vpcli.domain.myuml_old.myelement_old.MyElementType;
 import plugins.vpcli.domain.myuml.mydiagram.mydiagramelement.DiagramElementType;
 import plugins.vpcli.domain.myuml.mydiagram.mydiagramelement.MyDiagramElementFactory;
 import plugins.vpcli.domain.myuml.mydiagram.mydiagramelement.ProperMyDiagramElement;
 import plugins.vpcli.domain.myuml.mymodel.MyModelFactory;
-import plugins.vpcli.domain.myuml.mypackage.MyPackageFactory;
+import plugins.vpcli.domain.myuml_old.mypackage_old.MyPackageFactory;
 import plugins.vpcli.domain.myuml.mymodelrelationshipcontainer.MyModelRelationshipContainerFactory;
 import plugins.vpcli.domain.myuml.myproject.MyProject;
 import plugins.vpcli.domain.myuml.mystereotype.MyStereotypeFactory;
 import plugins.vpcli.domain.myuml.myunknownelement.UnimplementedElementFactory;
-import plugins.vpcli.domain.myuml.myusecase.MyUseCaseFactory;
+import plugins.vpcli.domain.myuml_old.myusecase_old.MyUseCaseFactory;
 
 import com.vp.plugin.diagram.IConnectorUIModel;
 import com.vp.plugin.diagram.IDiagramUIModel;
@@ -147,7 +147,7 @@ class MyDiagramFactoryTest {
         assertTrue(edge.isEdge());
         assertFalse(edge.isShape());
 
-        MyElement modelElement = edge.getModelElement();
+        MyElement_old2 modelElement = edge.getModelElement();
         assertEquals(MyElementType.ASSOCIATION, modelElement.getElementType());
         assertTrue(modelElement instanceof MyAssociation);
 
@@ -202,7 +202,7 @@ class MyDiagramFactoryTest {
         assertTrue(edge.isEdge());
         assertFalse(edge.isShape());
 
-        MyElement modelElement = edge.getModelElement();
+        MyElement_old2 modelElement = edge.getModelElement();
         assertEquals(MyElementType.DEPENDENCY, modelElement.getElementType());
         assertTrue(modelElement instanceof MyDependency);
 

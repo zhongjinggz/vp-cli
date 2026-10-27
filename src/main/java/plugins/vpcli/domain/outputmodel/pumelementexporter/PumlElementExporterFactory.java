@@ -1,6 +1,6 @@
 package plugins.vpcli.domain.outputmodel.pumelementexporter;
 
-import plugins.vpcli.domain.myuml.myelement.MyElementType;
+import plugins.vpcli.domain.myuml_old.myelement_old.MyElementType;
 
 import java.util.HashMap;
 import java.util.Map;

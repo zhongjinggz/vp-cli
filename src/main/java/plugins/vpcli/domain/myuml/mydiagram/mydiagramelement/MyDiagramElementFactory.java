@@ -3,8 +3,8 @@ package plugins.vpcli.domain.myuml.mydiagram.mydiagramelement;
 import com.vp.plugin.diagram.IDiagramElement;
 import com.vp.plugin.model.IModelElement;
 import org.jetbrains.annotations.NotNull;
-import plugins.vpcli.domain.myuml.myelement.MyElement;
-import plugins.vpcli.domain.myuml.myelement.MyElementFactoryFactory;
+import plugins.vpcli.domain.myuml_old.myelement_old.MyElement_old2;
+import plugins.vpcli.domain.myuml_old.myelement_old.MyElementFactoryFactory;
 
 import jakarta.inject.Inject;
 import jakarta.inject.Singleton;
@@ -57,7 +57,7 @@ public class MyDiagramElementFactory {
     private @NotNull ProperMyDiagramElement createMyDiagramElement(
         IDiagramElement vpDiagramElement,
         MyDiagramElement parentDiagramElement,
-        MyElement myElement
+        MyElement_old2 myElement
     ) {
         return new ProperMyDiagramElement(
             vpDiagramElement.getId(),

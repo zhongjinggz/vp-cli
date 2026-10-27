@@ -8,20 +8,20 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.junit.jupiter.api.Test;
-import plugins.vpcli.domain.myuml.myelement.MyElementFactoryFactory;
-import plugins.vpcli.domain.myuml.myelement.MyElementPool;
-import plugins.vpcli.domain.myuml.myelement.MyElementType;
+import plugins.vpcli.domain.myuml_old.myelement_old.MyElementFactoryFactory;
+import plugins.vpcli.domain.myuml_old.myelement_old.MyElementPool;
+import plugins.vpcli.domain.myuml_old.myelement_old.MyElementType;
 import plugins.vpcli.domain.myuml.mydependency.MyDependencyFactory;
 import plugins.vpcli.domain.myuml.mygeneralization.MyGeneralizationFactory;
 import plugins.vpcli.domain.myuml.mystereotype.MyStereotype;
 import plugins.vpcli.domain.myuml.myclassifier.MyClassFactory;
 import plugins.vpcli.domain.myuml.mymodel.MyModelFactory;
-import plugins.vpcli.domain.myuml.mypackage.MyPackageFactory;
+import plugins.vpcli.domain.myuml_old.mypackage_old.MyPackageFactory;
 import plugins.vpcli.domain.myuml.mymodelrelationshipcontainer.MyModelRelationshipContainerFactory;
 import plugins.vpcli.domain.myuml.myproject.MyProject;
 import plugins.vpcli.domain.myuml.mystereotype.MyStereotypeFactory;
 import plugins.vpcli.domain.myuml.myunknownelement.UnimplementedElementFactory;
-import plugins.vpcli.domain.myuml.myusecase.MyUseCaseFactory;
+import plugins.vpcli.domain.myuml_old.myusecase_old.MyUseCaseFactory;
 
 import com.vp.plugin.model.IAssociationEnd;
 import com.vp.plugin.model.IModelElement;

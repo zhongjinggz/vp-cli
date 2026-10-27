@@ -1,4 +1,4 @@
-package plugins.vpcli.domain.myuml.myelement;
+package plugins.vpcli.domain.myuml_old.myelement_old;
 
 import plugins.vpcli.domain.myuml.myproject.MyProject;
 import plugins.vpcli.domain.myuml.myproject.MyProjectFactory;
@@ -12,7 +12,7 @@ import jakarta.inject.Singleton;
 @Singleton
 public class MyElementPool {
     private final MyProject myProject;
-    private final Map<String, MyElement> pool = new HashMap<>();
+    private final Map<String, MyElement_old2> pool = new HashMap<>();
 
     @Inject
     public MyElementPool(MyProjectFactory getMyProject) {
@@ -24,15 +24,15 @@ public class MyElementPool {
         return this.pool.containsKey(id);
     }
 
-    public MyElement get(String id) {
+    public MyElement_old2 get(String id) {
         return this.pool.get(id);
     }
 
-    public void  put(String id, MyElement element) {
+    public void  put(String id, MyElement_old2 element) {
         this.pool.put(id, element);
     }
 
-    public MyElement getMyProject() {
+    public MyElement_old2 getMyProject() {
         return myProject;
     }
 }

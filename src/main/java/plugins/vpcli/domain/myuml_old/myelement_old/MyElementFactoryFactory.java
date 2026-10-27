@@ -1,4 +1,4 @@
-package plugins.vpcli.domain.myuml.myelement;
+package plugins.vpcli.domain.myuml_old.myelement_old;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -9,11 +9,11 @@ import plugins.vpcli.domain.myuml.mydependency.MyDependencyFactory;
 import plugins.vpcli.domain.myuml.mygeneralization.MyGeneralizationFactory;
 import plugins.vpcli.domain.myuml.mymodelrelationshipcontainer.MyModelRelationshipContainerFactory;
 import plugins.vpcli.domain.myuml.mymodel.MyModelFactory;
-import plugins.vpcli.domain.myuml.mypackage.MyPackageFactory;
+import plugins.vpcli.domain.myuml_old.mypackage_old.MyPackageFactory;
 import plugins.vpcli.domain.myuml.mystereotype.MyStereotypeFactory;
 import plugins.vpcli.domain.myuml.myunknownelement.UnimplementedElement;
 import plugins.vpcli.domain.myuml.myunknownelement.UnimplementedElementFactory;
-import plugins.vpcli.domain.myuml.myusecase.MyUseCaseFactory;
+import plugins.vpcli.domain.myuml_old.myusecase_old.MyUseCaseFactory;
 
 import java.util.HashMap;
 import java.util.Map;

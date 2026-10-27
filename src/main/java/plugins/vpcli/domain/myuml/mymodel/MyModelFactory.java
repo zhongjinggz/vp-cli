@@ -1,9 +1,9 @@
 package plugins.vpcli.domain.myuml.mymodel;
 
 import com.vp.plugin.model.IModelElement;
-import plugins.vpcli.domain.myuml.myelement.MyElement;
-import plugins.vpcli.domain.myuml.myelement.MyElementFactory;
-import plugins.vpcli.domain.myuml.myelement.MyElementPool;
+import plugins.vpcli.domain.myuml_old.myelement_old.MyElement_old2;
+import plugins.vpcli.domain.myuml_old.myelement_old.MyElementFactory;
+import plugins.vpcli.domain.myuml_old.myelement_old.MyElementPool;
 
 import jakarta.inject.Inject;
 import jakarta.inject.Singleton;
@@ -20,7 +20,7 @@ public class MyModelFactory extends MyElementFactory {
     }
 
     @Override
-    public MyElement reallyCreate(MyElement parent, IModelElement vpElement, List<MyStereotype> myStereotypes) {
+    public MyElement_old2 reallyCreate(MyElement_old2 parent, IModelElement vpElement, List<MyStereotype> myStereotypes) {
         return new MyModel(
             parent,
             vpElement.getId(),

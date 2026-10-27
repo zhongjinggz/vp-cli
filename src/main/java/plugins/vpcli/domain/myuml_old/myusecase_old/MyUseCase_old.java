@@ -1,47 +1,23 @@
 package plugins.vpcli.domain.myuml_old.myusecase_old;
 
-import plugins.vpcli.domain.myuml_old.mycommon_old.MyElement_old;
+import plugins.vpcli.domain.myuml_old.myelement_old.MyElementType;
+import plugins.vpcli.domain.myuml_old.myelement_old.MyElement_old2;
+import plugins.vpcli.domain.myuml.mystereotype.MyStereotype;
 
 import java.util.List;
 
-public class MyUseCase_old extends MyElement_old {
-	private List<String> stereotypes;
-	private boolean isInPackage;
-	private boolean isBusiness;
-	private String Uid;
+public class MyUseCase_old extends MyElement_old2 {
+    private String Uid;
 
 
-	public MyUseCase_old(String name) {
-        super(name);
-	}
-	public List<String> getStereotypes() {
-		return stereotypes;
-	}
-
-	public void setStereotypes(List<String> stereotypes) {
-		this.stereotypes = stereotypes;
-	}
-
-
-	public boolean isInPackage() {
-		return isInPackage;
-	}
-
-	public void setInPackage(boolean isInPackage) {
-		this.isInPackage = isInPackage;
-	}
-	public boolean isBusiness() {
-		return isBusiness;
-	}
-	public void setBusiness(boolean isBusiness) {
-		this.isBusiness = isBusiness;
-	}
-
-    public String getUid() {
-		return  Uid;
+    public MyUseCase_old(
+        MyElement_old2 parent,
+        String id,
+        String name,
+        String Description,
+        List<MyStereotype> stereotypes) {
+        super(parent, id, name, MyElementType.USE_CASE
+            , Description, stereotypes);
     }
 
-    public void setUid(String uid) {
-        Uid = uid;
-    }
 }

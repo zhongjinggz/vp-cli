@@ -2,9 +2,9 @@ package plugins.vpcli.domain.myuml.mygeneralization;
 
 import com.vp.plugin.model.IGeneralization;
 import com.vp.plugin.model.IModelElement;
-import plugins.vpcli.domain.myuml.myelement.MyElement;
-import plugins.vpcli.domain.myuml.myelement.MyElementFactory;
-import plugins.vpcli.domain.myuml.myelement.MyElementPool;
+import plugins.vpcli.domain.myuml_old.myelement_old.MyElement_old2;
+import plugins.vpcli.domain.myuml_old.myelement_old.MyElementFactory;
+import plugins.vpcli.domain.myuml_old.myelement_old.MyElementPool;
 import plugins.vpcli.domain.myuml.mystereotype.MyStereotype;
 
 import jakarta.inject.Inject;
@@ -21,7 +21,7 @@ public class MyGeneralizationFactory extends MyElementFactory {
 
     @Override
     public MyGeneralization reallyCreate(
-        MyElement parent,
+        MyElement_old2 parent,
         IModelElement vpElement,
         List<MyStereotype> stereotypes
     ) {
@@ -29,8 +29,8 @@ public class MyGeneralizationFactory extends MyElementFactory {
 
         // IGeneralization 无专属方向方法，经继承链 ISimpleRelationship→IRelationship 暴露 getFrom()/getTo()
         // VP 语义：getFrom()=父类(general)、getTo()=子类(specific)。方向恒定，无需交换。
-        MyElement general = buildRelatedElement(vpGeneralization.getFrom());
-        MyElement specific = buildRelatedElement(vpGeneralization.getTo());
+        MyElement_old2 general = buildRelatedElement(vpGeneralization.getFrom());
+        MyElement_old2 specific = buildRelatedElement(vpGeneralization.getTo());
 
         return new MyGeneralization(
             parent,

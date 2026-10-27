@@ -2,9 +2,9 @@ package plugins.vpcli.domain.myuml.myassociation;
 
 import com.vp.plugin.model.IAssociation;
 import com.vp.plugin.model.IModelElement;
-import plugins.vpcli.domain.myuml.myelement.MyElement;
-import plugins.vpcli.domain.myuml.myelement.MyElementFactory;
-import plugins.vpcli.domain.myuml.myelement.MyElementPool;
+import plugins.vpcli.domain.myuml_old.myelement_old.MyElement_old2;
+import plugins.vpcli.domain.myuml_old.myelement_old.MyElementFactory;
+import plugins.vpcli.domain.myuml_old.myelement_old.MyElementPool;
 
 import jakarta.inject.Inject;
 import jakarta.inject.Singleton;
@@ -21,7 +21,7 @@ public class MyAssociationFactory extends MyElementFactory {
 
     @Override
     public MyAssociation reallyCreate(
-        MyElement parent,
+        MyElement_old2 parent,
         IModelElement vpElement,
         List<MyStereotype> stereotypes
     ) {

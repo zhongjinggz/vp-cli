@@ -1,4 +1,4 @@
-package plugins.vpcli.domain.myuml.myelement;
+package plugins.vpcli.domain.myuml_old.myelement_old;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

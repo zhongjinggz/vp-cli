@@ -1,8 +1,8 @@
 package plugins.vpcli.domain.myuml.mydiagram;
 
 import org.jetbrains.annotations.NotNull;
-import plugins.vpcli.domain.myuml.myelement.MyElementType;
-import plugins.vpcli.domain.myuml.myelement.MyElement;
+import plugins.vpcli.domain.myuml_old.myelement_old.MyElementType;
+import plugins.vpcli.domain.myuml_old.myelement_old.MyElement_old2;
 import plugins.vpcli.domain.myuml.mydiagram.mydiagramelement.DiagramElementType;
 import plugins.vpcli.domain.myuml.mydiagram.mydiagramelement.MyDiagramElement;
 import plugins.vpcli.domain.myuml.mydiagram.mydiagramelement.ProperMyDiagramElement;
@@ -14,16 +14,16 @@ import java.util.List;
 import static plugins.vpcli.domain.myuml.mydiagram.mydiagramelement.DiagramElementType.DIAGRAM;
 
 // 由于 Java 单继承的约束，MyDiagram 和 ProperMyDiagramElement 的代码略有重复，未来考虑是否要抽取
-public class MyDiagram extends MyElement implements MyDiagramElement {
+public class MyDiagram extends MyElement_old2 implements MyDiagramElement {
     private String name;
     private final DiagramType diagramType;
-    private MyElement parentModelElement;
+    private MyElement_old2 parentModelElement;
     protected List<ProperMyDiagramElement> subShapes = new ArrayList<>();
     protected List<ProperMyDiagramElement> subEdges = new ArrayList<>();
 
 
     public MyDiagram(
-        @NotNull MyElement parentElement,
+        @NotNull MyElement_old2 parentElement,
         @NotNull String id,
         @NotNull String name,
         @NotNull String description,
@@ -56,7 +56,7 @@ public class MyDiagram extends MyElement implements MyDiagramElement {
 
     @Override
     // Diagram 本身就是 UML 的 一种元素，因此指向自身
-    public MyElement getModelElement() {
+    public MyElement_old2 getModelElement() {
         return this;
     }
 

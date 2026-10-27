@@ -5,14 +5,13 @@ import com.vp.plugin.diagram.IDiagramUIModel;
 import com.vp.plugin.diagram.IShapeUIModel;
 import com.vp.plugin.diagram.connector.IAnchorUIModel;
 import org.slf4j.Logger;
-import plugins.vpcli.domain.myuml.myelement.*;
 
-import static com.vp.plugin.diagram.IShapeTypeConstants.SHAPE_TYPE_ASSOCIATION;
 import static org.slf4j.LoggerFactory.getLogger;
 
 import jakarta.inject.Inject;
 import jakarta.inject.Singleton;
 import plugins.vpcli.domain.myuml.mydiagram.mydiagramelement.MyDiagramElementFactory;
+import plugins.vpcli.domain.myuml_old.myelement_old.MyElement_old2;
 
 @Singleton
 public class MyDiagramFactory {
@@ -36,7 +35,7 @@ public class MyDiagramFactory {
         this.logger = logger;
     }
 
-    public MyDiagram of(IDiagramUIModel vpDiagram, MyElement parentElement) {
+    public MyDiagram of(IDiagramUIModel vpDiagram, MyElement_old2 parentElement) {
         MyDiagram result = creatMyDiagram(vpDiagram, parentElement);
 
         var vpShape = vpDiagram.toShapeUIModelArray();
@@ -72,7 +71,7 @@ public class MyDiagramFactory {
 
     MyDiagram creatMyDiagram(
         IDiagramUIModel vpDiagram,
-        MyElement parentElement
+        MyElement_old2 parentElement
     ) {
         var description = vpDiagram.getDocumentation() == null ? "" : vpDiagram.getDocumentation();
         return new MyDiagram(

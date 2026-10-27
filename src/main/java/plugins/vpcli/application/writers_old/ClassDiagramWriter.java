@@ -14,13 +14,13 @@ import java.util.stream.Collectors;
 import plugins.vpcli.domain.myuml_old.mydiagram_old.OldClassDiagram;
 import plugins.vpcli.domain.myuml_old.myclass_old.MyClass_old;
 import plugins.vpcli.domain.myuml_old.mynary_old.MyNary_old;
-import plugins.vpcli.domain.myuml.mypackage.MyPackage;
+import plugins.vpcli.domain.myuml_old.mypackage_old.MyPackage_old;
 import plugins.vpcli.domain.myuml_old.mycommon_old.MyRelationship_old;
 import plugins.vpcli.drivenadapter.FileCreator;
 
 public class ClassDiagramWriter extends PlantUMLWriter {
 
-    private final List<MyPackage> packages;
+    private final List<MyPackage_old> packages;
     private final List<MyClass_old> classes;
     private final List<MyRelationship_old> relationships;
     private List<MyNary_old> naries;
@@ -43,7 +43,7 @@ public class ClassDiagramWriter extends PlantUMLWriter {
     public void writeToFile(File file) throws IOException {
         StringBuilder plantUMLContent = new StringBuilder("@startuml\n");
 
-        for (MyPackage aPackage : packages) {
+        for (MyPackage_old aPackage : packages) {
             if (!aPackage.isSubpackage())
                 plantUMLContent.append(writePackage(aPackage, ""));
         }
@@ -83,13 +83,13 @@ public class ClassDiagramWriter extends PlantUMLWriter {
     }
 
 
-    private String writePackage(MyPackage myPackage, String indent) {
+    private String writePackage(MyPackage_old myPackage, String indent) {
         StringBuilder packageString = new StringBuilder();
         String name = formatName(myPackage.getName());
 
         packageString.append(indent).append("namespace ").append(name).append(" {\n");
 
-        for (MyPackage subPackage : myPackage.getSubPackages()) {
+        for (MyPackage_old subPackage : myPackage.getSubPackages()) {
             packageString.append(writePackage(subPackage, indent + "\t"));
 
         }

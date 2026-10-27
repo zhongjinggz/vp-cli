@@ -3,7 +3,7 @@ package plugins.vpcli.domain.outputmodel.pumelementexporter;
 import com.vp.plugin.diagram.IDiagramElement;
 import com.vp.plugin.model.IModelElement;
 import plugins.vpcli.domain.myuml.mydiagram.mydiagramelement.ProperMyDiagramElement;
-import plugins.vpcli.domain.myuml.myelement.MyElement;
+import plugins.vpcli.domain.myuml_old.myelement_old.MyElement_old2;
 import plugins.vpcli.domain.outputmodel.PumlDiagram;
 
 import java.util.ArrayList;
@@ -43,14 +43,14 @@ public abstract class PumlElementExporter {
      * PlantUML 别名：将元素全限定名各段清洗（仅保留各语言字母和数字，其余转 "_"）后，
      * 以 "__" 连接（对应全限定名中的 "."），保证别名唯一、可与元素一一对应。
      */
-    protected String getPumlAlias(MyElement myElement) {
+    protected String getPumlAlias(MyElement_old2 myElement) {
         return buildAliasFromSegments(myElement.getQualifiedName().split("\\."));
     }
 
     /**
      * 步 A4：别名改读 VP 原生模型。VP 的 {@link IModelElement} 无现成的 getQualifiedName()，
      * 故沿 getParent() 链自上而下收集各层名字，以 "." 连接（跳过空名；Project 根不属于
-     * 该链），再复用与 {@link #getPumlAlias(MyElement)} 相同的清洗/连接算法。
+     * 该链），再复用与 {@link #getPumlAlias(MyElement_old2)} 相同的清洗/连接算法。
      */
     protected String getPumlAlias(IModelElement vpElement) {
         List<String> segments = new ArrayList<>();

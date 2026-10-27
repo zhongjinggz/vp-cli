@@ -1,12 +1,12 @@
 package plugins.vpcli.domain.myuml.myassociation;
 
-import plugins.vpcli.domain.myuml.myelement.MyElementType;
-import plugins.vpcli.domain.myuml.myelement.MyElement;
+import plugins.vpcli.domain.myuml_old.myelement_old.MyElementType;
+import plugins.vpcli.domain.myuml_old.myelement_old.MyElement_old2;
 import plugins.vpcli.domain.myuml.mystereotype.MyStereotype;
 
 import java.util.List;
 
-public class MyAssociation extends MyElement {
+public class MyAssociation extends MyElement_old2 {
 
     /** 关联名称的阅读方向（对应 UML 关联名称旁的小实心三角）。 */
     public enum NameDirection {
@@ -21,7 +21,7 @@ public class MyAssociation extends MyElement {
     private NameDirection nameDirection = NameDirection.NONE;
 
     public MyAssociation(
-        MyElement parent,
+        MyElement_old2 parent,
         String id,
         String name,
         String description,
@@ -59,11 +59,11 @@ public class MyAssociation extends MyElement {
     }
 
     /** 兼容访问器：委托到端点的 element。 */
-    public MyElement getFromElement() {
+    public MyElement_old2 getFromElement() {
         return fromEnd == null ? null : fromEnd.getElement();
     }
 
-    public void setFromElement(MyElement fromElement) {
+    public void setFromElement(MyElement_old2 fromElement) {
         if (fromEnd == null) {
             fromEnd = new MyAssociationEnd(this, "", "", "", List.of(), fromElement, "",
                 MyAssociationEnd.NAVIGABLE_UNSPECIFIED, MyAssociationEnd.AGGREGATION_NONE);
@@ -72,11 +72,11 @@ public class MyAssociation extends MyElement {
     }
 
     /** 兼容访问器：委托到端点的 element。 */
-    public MyElement getToElement() {
+    public MyElement_old2 getToElement() {
         return toEnd == null ? null : toEnd.getElement();
     }
 
-    public void setToElement(MyElement toElement) {
+    public void setToElement(MyElement_old2 toElement) {
         if (toEnd == null) {
             toEnd = new MyAssociationEnd(this, "", "", "", List.of(), toElement, "",
                 MyAssociationEnd.NAVIGABLE_UNSPECIFIED, MyAssociationEnd.AGGREGATION_NONE);

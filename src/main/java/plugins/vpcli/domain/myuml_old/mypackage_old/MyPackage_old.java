@@ -1,23 +1,23 @@
-package plugins.vpcli.domain.myuml.mypackage;
+package plugins.vpcli.domain.myuml_old.mypackage_old;
 
 import plugins.vpcli.domain.myuml.myclassifier.*;
-import plugins.vpcli.domain.myuml.myelement.MyElementType;
-import plugins.vpcli.domain.myuml.myelement.MyElement;
+import plugins.vpcli.domain.myuml_old.myelement_old.MyElementType;
+import plugins.vpcli.domain.myuml_old.myelement_old.MyElement_old2;
 import plugins.vpcli.domain.myuml.mystereotype.MyStereotype;
 import plugins.vpcli.domain.myuml.mycomponent.MyComponent;
 import plugins.vpcli.domain.myuml.mynary.MyNary;
-import plugins.vpcli.domain.myuml.myusecase.MyActor;
-import plugins.vpcli.domain.myuml.myusecase.MyUseCase;
+import plugins.vpcli.domain.myuml_old.myusecase_old.MyActor;
+import plugins.vpcli.domain.myuml_old.myusecase_old.MyUseCase_old;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class MyPackage extends MyElement {
+public class MyPackage_old extends MyElement_old2 {
     private boolean isSubpackage;
     private boolean isRectangle = false; // is System in reality, but systems are not a different type in puml , just a rectangle shape
 
-    public MyPackage(
-        MyElement parent,
+    public MyPackage_old(
+        MyElement_old2 parent,
         String id,
         String name,
         String description,
@@ -33,8 +33,8 @@ public class MyPackage extends MyElement {
     }
 
     // used by MyModel to indicate the element type
-    public MyPackage(
-        MyElement parent,
+    public MyPackage_old(
+        MyElement_old2 parent,
         String id,
         String name,
         MyElementType myElementType,
@@ -50,15 +50,15 @@ public class MyPackage extends MyElement {
         );
     }
 
-    public MyPackage(String packageName, boolean isSubpackage) {
+    public MyPackage_old(String packageName, boolean isSubpackage) {
         super(packageName);
         this.isSubpackage = isSubpackage;
     }
     // old
 
-    public MyPackage(String packageName
+    public MyPackage_old(String packageName
         , List<MyClass> classes
-        , List<MyPackage> subPackages
+        , List<MyPackage_old> subPackages
         , List<MyNary> naries
         , boolean isSubpackage
         , boolean isRectangle) {
@@ -88,7 +88,7 @@ public class MyPackage extends MyElement {
     // TODO 抽取下述个方法的重复代码
     public List<MyClass> getClasses() {
         List<MyClass> result = new ArrayList<>();
-        for (MyElement element : getSubElements()) {
+        for (MyElement_old2 element : getSubElements()) {
             if (element instanceof MyClass) {
                 result.add((MyClass) element);
             }
@@ -96,23 +96,23 @@ public class MyPackage extends MyElement {
         return result;
     }
 
-    public List<MyPackage> getSubPackages() {
-        List<MyPackage> result = new ArrayList<>();
-        for (MyElement element : getSubElements()) {
-            if (element instanceof MyPackage) {
-                result.add((MyPackage) element);
+    public List<MyPackage_old> getSubPackages() {
+        List<MyPackage_old> result = new ArrayList<>();
+        for (MyElement_old2 element : getSubElements()) {
+            if (element instanceof MyPackage_old) {
+                result.add((MyPackage_old) element);
             }
         }
         return result;
     }
 
-    public void addSubPackage(MyPackage subPackage) {
+    public void addSubPackage(MyPackage_old subPackage) {
         addSubElement(subPackage);
     }
 
     public List<MyNary> getNaries() {
         List<MyNary> result = new ArrayList<>();
-        for (MyElement element : getSubElements()) {
+        for (MyElement_old2 element : getSubElements()) {
             if (element instanceof MyNary) {
                 result.add((MyNary) element);
             }
@@ -122,7 +122,7 @@ public class MyPackage extends MyElement {
 
     public List<MyActor> getActors() {
         List<MyActor> result = new ArrayList<>();
-        for (MyElement element : getSubElements()) {
+        for (MyElement_old2 element : getSubElements()) {
             if (element instanceof MyActor) {
                 result.add((MyActor) element);
             }
@@ -130,11 +130,11 @@ public class MyPackage extends MyElement {
         return result;
     }
 
-    public List<MyUseCase> getUseCases() {
-        List<MyUseCase> result = new ArrayList<>();
-        for (MyElement element : getSubElements()) {
-            if (element instanceof MyUseCase) {
-                result.add((MyUseCase) element);
+    public List<MyUseCase_old> getUseCases() {
+        List<MyUseCase_old> result = new ArrayList<>();
+        for (MyElement_old2 element : getSubElements()) {
+            if (element instanceof MyUseCase_old) {
+                result.add((MyUseCase_old) element);
             }
         }
         return result;
@@ -142,7 +142,7 @@ public class MyPackage extends MyElement {
 
     public List<MyComponent> getComponents() {
         List<MyComponent> result = new ArrayList<>();
-        for (MyElement element : getSubElements()) {
+        for (MyElement_old2 element : getSubElements()) {
             if (element instanceof MyComponent) {
                 result.add((MyComponent) element);
             }

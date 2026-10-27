@@ -1,9 +1,9 @@
-package plugins.vpcli.domain.myuml.myusecase;
+package plugins.vpcli.domain.myuml_old.myusecase_old;
 
 import com.vp.plugin.model.IModelElement;
-import plugins.vpcli.domain.myuml.myelement.MyElement;
-import plugins.vpcli.domain.myuml.myelement.MyElementFactory;
-import plugins.vpcli.domain.myuml.myelement.MyElementPool;
+import plugins.vpcli.domain.myuml_old.myelement_old.MyElement_old2;
+import plugins.vpcli.domain.myuml_old.myelement_old.MyElementFactory;
+import plugins.vpcli.domain.myuml_old.myelement_old.MyElementPool;
 
 import jakarta.inject.Inject;
 import jakarta.inject.Singleton;
@@ -20,12 +20,12 @@ public class MyUseCaseFactory extends MyElementFactory {
     }
 
     @Override
-    public MyUseCase reallyCreate(
-        MyElement parent,
+    public MyUseCase_old reallyCreate(
+        MyElement_old2 parent,
         IModelElement vpElement,
         List<MyStereotype> stereotypes
     ) {
-        return new MyUseCase(
+        return new MyUseCase_old(
             parent,
             vpElement.getId(),
             vpElement.getName(),

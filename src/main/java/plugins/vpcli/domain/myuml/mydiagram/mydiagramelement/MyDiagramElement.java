@@ -1,6 +1,6 @@
 package plugins.vpcli.domain.myuml.mydiagram.mydiagramelement;
 
-import plugins.vpcli.domain.myuml.myelement.MyElement;
+import plugins.vpcli.domain.myuml_old.myelement_old.MyElement_old2;
 
 import java.util.List;
 
@@ -9,7 +9,7 @@ public interface MyDiagramElement {
 
     public DiagramElementType getDiagramElementType();
 
-    public MyElement getModelElement();
+    public MyElement_old2 getModelElement();
 
     void addSubDiagramElement(ProperMyDiagramElement properMyDiagramElement);
 

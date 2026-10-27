@@ -12,7 +12,7 @@ import plugins.vpcli.domain.myuml_old.myassociation_old.MyAssociation_old;
 import plugins.vpcli.domain.myuml_old.myclass_old.MyOperation_old;
 import plugins.vpcli.domain.myuml_old.mycomponent_old.MyComponent_old;
 import plugins.vpcli.domain.myuml_old.mycomponent_old.MyComponent_old.PortData;
-import plugins.vpcli.domain.myuml.mypackage.MyPackage;
+import plugins.vpcli.domain.myuml_old.mypackage_old.MyPackage_old;
 import plugins.vpcli.domain.myuml_old.mycommon_old.MyRelationship_old;
 import plugins.vpcli.domain.myuml_old.myclass_old.MyAttribute_old;
 import plugins.vpcli.domain.myuml_old.myclass_old.MyClass_old;
@@ -28,7 +28,7 @@ public class MyComponentDeploymentDiagram extends OldDiagram {
 	private final List<MyClass_old> exportedInterfaces = new ArrayList<>();
 	private final List<MyRelationship_old> myRelationships = new ArrayList<>();
 	private final List<MyArtifact_old> exportedArtifacts = new ArrayList<>();
-    private final List<MyPackage> exportedPackages = new ArrayList<>();
+    private final List<MyPackage_old> exportedPackages = new ArrayList<>();
 	private final List<PortData> allExportedPorts = new ArrayList<>();
 
 	private final Set<String> compModelIds = new HashSet<>();
@@ -120,7 +120,7 @@ public class MyComponentDeploymentDiagram extends OldDiagram {
 	}
 
 
-	private void extractArtifact(IArtifact artifactModel, MyPackage uPackage, MyComponent_old nodeData) {
+	private void extractArtifact(IArtifact artifactModel, MyPackage_old uPackage, MyComponent_old nodeData) {
 		boolean isInPackage = (artifactModel.getParent() instanceof IPackage && packageModelIds.contains(artifactModel.getParent().getId()));
 
 		boolean isInNode = (artifactModel.getParent() instanceof INode && nodeModelIds.contains(artifactModel.getParent().getId()));
@@ -135,7 +135,7 @@ public class MyComponentDeploymentDiagram extends OldDiagram {
 			nodeData.getArtifacts().add(uArtifact);
 	}
 
-	private void extractNode(INode nodeModel, MyPackage uPackage, MyComponent_old parentNodeData) {
+	private void extractNode(INode nodeModel, MyPackage_old uPackage, MyComponent_old parentNodeData) {
 		boolean isInPackage = (nodeModel.getParent() instanceof IPackage && packageModelIds.contains(nodeModel.getParent().getId()));
 		boolean isResident = (nodeModel.getParent() instanceof IComponent && compModelIds.contains(nodeModel.getParent().getId()))
 
@@ -260,7 +260,7 @@ public class MyComponentDeploymentDiagram extends OldDiagram {
 	private void extractPackage(IPackage packageModel) {
 		
 		if (isRootLevelInDiagram2(packageModel)) {
-			MyPackage uPackage = new MyPackage(packageModel.getName(), false);
+			MyPackage_old uPackage = new MyPackage_old(packageModel.getName(), false);
 //			uPackage.setDescription(packageModel.getDescription());
 			IModelElement[] childElements = packageModel.toChildArray();
 			for (IModelElement childElement : childElements) {
@@ -280,8 +280,8 @@ public class MyComponentDeploymentDiagram extends OldDiagram {
 		}
 	}
 
-	private void extractPackagedPackage(IPackage packageModel, MyPackage parent) {
-		MyPackage uPackage = new MyPackage(packageModel.getName(), true);
+	private void extractPackagedPackage(IPackage packageModel, MyPackage_old parent) {
+		MyPackage_old uPackage = new MyPackage_old(packageModel.getName(), true);
 //		uPackage.setDescription(packageModel.getDescription());
 		IModelElement[] childElements = packageModel.toChildArray();
 		for (IModelElement childElement : childElements) {
@@ -301,7 +301,7 @@ public class MyComponentDeploymentDiagram extends OldDiagram {
 		
 	}
 
-	private void extractInterface(IClass interfaceModel, MyPackage uPackage) {
+	private void extractInterface(IClass interfaceModel, MyPackage_old uPackage) {
 		boolean isInPackage = (interfaceModel.getParent() instanceof IPackage && packageModelIds.contains(interfaceModel.getParent().getId()));
 		
 		MyClass_old interfaceData = new MyClass_old(interfaceModel.getName(), isInPackage);
@@ -320,7 +320,7 @@ public class MyComponentDeploymentDiagram extends OldDiagram {
 //			uPackage.getClasses().add(interfaceData);
 	}
 
-	private void extractComponent(IComponent componentModel, MyPackage uPackage, MyComponent_old parentMyComponent) {
+	private void extractComponent(IComponent componentModel, MyPackage_old uPackage, MyComponent_old parentMyComponent) {
 		boolean isInPackage = (componentModel.getParent() instanceof IPackage) && packageModelIds.contains(componentModel.getParent().getId());
 		boolean isResident = (componentModel.getParent() instanceof IComponent && compModelIds.contains(componentModel.getParent().getId()))
 
@@ -402,7 +402,7 @@ public class MyComponentDeploymentDiagram extends OldDiagram {
 		return exportedInterfaces;
 	}
 	
-	public List<MyPackage> getExportedPackages() {
+	public List<MyPackage_old> getExportedPackages() {
 		return exportedPackages;
 	}
 	public List<MyRelationship_old> getRelationshipDatas() {

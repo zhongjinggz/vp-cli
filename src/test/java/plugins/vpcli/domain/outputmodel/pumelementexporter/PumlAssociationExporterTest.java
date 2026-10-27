@@ -13,10 +13,10 @@ import plugins.vpcli.domain.myuml.mydiagram.DiagramType;
 import plugins.vpcli.domain.myuml.mydiagram.MyDiagram;
 import plugins.vpcli.domain.myuml.mydiagram.mydiagramelement.DiagramElementType;
 import plugins.vpcli.domain.myuml.mydiagram.mydiagramelement.ProperMyDiagramElement;
-import plugins.vpcli.domain.myuml.myelement.MyElement;
+import plugins.vpcli.domain.myuml_old.myelement_old.MyElement_old2;
 import plugins.vpcli.domain.myuml.mystereotype.MyStereotype;
 import plugins.vpcli.domain.myuml.mymodel.MyModel;
-import plugins.vpcli.domain.myuml.mypackage.MyPackage;
+import plugins.vpcli.domain.myuml_old.mypackage_old.MyPackage_old;
 import plugins.vpcli.domain.myuml.myproject.MyProject;
 import plugins.vpcli.domain.outputmodel.PumlDiagram;
 
@@ -28,7 +28,7 @@ class PumlAssociationExporterTest {
     private MyProject buildRootWithAssociation() {
         MyProject root = new MyProject("p", "我的项目");
         MyModel model = new MyModel(root, "m", "领域模型", "", stereotypes);
-        MyPackage pkg = new MyPackage(model, "pk1", "订单", "", stereotypes);
+        MyPackage_old pkg = new MyPackage_old(model, "pk1", "订单", "", stereotypes);
         MyClass order = new MyClass(pkg, "c1", "订单", "", stereotypes);
         MyClass customer = new MyClass(pkg, "c2", "客户", "", stereotypes);
         new MyAssociation(root, "a1", "", "", stereotypes,
@@ -39,9 +39,9 @@ class PumlAssociationExporterTest {
         return root;
     }
 
-    private ProperMyDiagramElement wrap(MyElement element) {
+    private ProperMyDiagramElement wrap(MyElement_old2 element) {
         MyDiagram parent = new MyDiagram(
-            new MyElement("root"),
+            new MyElement_old2("root"),
             "diagram",
             "订单概览",
             "",
@@ -60,11 +60,11 @@ class PumlAssociationExporterTest {
     }
 
     private MyClass findClass(MyProject root, String name) {
-        for (MyElement e : root.getSubElements()) {
+        for (MyElement_old2 e : root.getSubElements()) {
             if (e instanceof MyModel) {
-                for (MyElement s : e.getSubElements()) {
-                    if (s instanceof MyPackage) {
-                        for (MyElement c : s.getSubElements()) {
+                for (MyElement_old2 s : e.getSubElements()) {
+                    if (s instanceof MyPackage_old) {
+                        for (MyElement_old2 c : s.getSubElements()) {
                             if (c instanceof MyClass && name.equals(c.getName())) {
                                 return (MyClass) c;
                             }
