@@ -1,7 +1,7 @@
 package plugins.vpcli.domain.myuml_old.myelement_old;
 
-import plugins.vpcli.domain.myuml.myproject.MyProject;
-import plugins.vpcli.domain.myuml.myproject.MyProjectFactory;
+import plugins.vpcli.domain.myuml_old.myproject_old.MyProject;
+import plugins.vpcli.domain.myuml_old.myproject_old.MyProjectFactory;
 
 import java.util.HashMap;
 import java.util.Map;

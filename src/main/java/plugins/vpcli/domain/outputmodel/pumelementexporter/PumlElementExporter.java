@@ -36,7 +36,7 @@ public abstract class PumlElementExporter {
      * 后续每迁移一个子类，才在其内部改写为直读 vpDiagramElement。
      */
     public void to(PumlDiagram result, ProperMyDiagramElement myDiagramElement, IDiagramElement vpDiagramElement) {
-        to(result, myDiagramElement);
+        to(result, myDiagramElement, vpDiagramElement);
     }
 
     /**

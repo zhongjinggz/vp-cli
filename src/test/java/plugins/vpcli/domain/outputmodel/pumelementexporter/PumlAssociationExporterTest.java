@@ -17,7 +17,7 @@ import plugins.vpcli.domain.myuml_old.myelement_old.MyElement_old2;
 import plugins.vpcli.domain.myuml.mystereotype.MyStereotype;
 import plugins.vpcli.domain.myuml.mymodel.MyModel;
 import plugins.vpcli.domain.myuml_old.mypackage_old.MyPackage_old;
-import plugins.vpcli.domain.myuml.myproject.MyProject;
+import plugins.vpcli.domain.myuml_old.myproject_old.MyProject;
 import plugins.vpcli.domain.outputmodel.PumlDiagram;
 
 class PumlAssociationExporterTest {

@@ -1,4 +1,4 @@
-package plugins.vpcli.domain.myuml.myproject;
+package plugins.vpcli.domain.myuml_old.myproject_old;
 
 import plugins.vpcli.domain.myuml_old.myelement_old.MyElementType;
 import plugins.vpcli.domain.myuml_old.myelement_old.MyElement_old2;

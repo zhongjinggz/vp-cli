@@ -1,4 +1,4 @@
-package plugins.vpcli.domain.myuml.myproject;
+package plugins.vpcli.domain.myuml_old.myproject_old;
 
 import com.vp.plugin.model.IProject;
 import org.slf4j.Logger;
