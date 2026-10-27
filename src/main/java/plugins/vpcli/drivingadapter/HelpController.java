@@ -77,7 +77,7 @@ public class HelpController implements VPActionController {
             "    vp-tree -project <project name.vpp>\n";
 
         String changeLog = "Change Log:\n" +
-            " debug: creating top level diagram elements - 10:50";
+            " remove 2 param to() from PumlBlockExporter - 20:36";
 
         ApplicationManager.instance().getViewManager().showMessageDialog(
             ApplicationManager.instance()

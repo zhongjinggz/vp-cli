@@ -17,26 +17,6 @@ public abstract class PumlBlockExporter extends PumlElementExporter {
         this.logger = getLogger(PumlBlockExporter.class);
     }
 
-    @Override
-    public void to(PumlDiagram result, ProperMyDiagramElement myDiagramElement) {
-        var myElement = myDiagramElement.getModelElement();
-
-        result.beginBlock(
-            getBlockType(),
-            myElement.getName(),
-            getPumlAlias(myElement),
-            getBlockSuffix()
-        );
-
-        writeBlockBody(result, myDiagramElement);
-
-        for (var aSubShape : myDiagramElement.getSubShapes()) {
-            var exporter = pumlElementExporterFactory.of(aSubShape.getModelElement().getElementType());
-            exporter.to(result, aSubShape);
-        }
-        result.endBlock();
-    }
-
     /**
      * 步 A7：块型基类直读 VP 原生模型。块名/别名从 vpDiagramElement 的 IModelElement 读取，
      * 子形状沿 IShapeUIModel.toChildArray() 遍历（跳过无模型元素的形状，如属性文本等
