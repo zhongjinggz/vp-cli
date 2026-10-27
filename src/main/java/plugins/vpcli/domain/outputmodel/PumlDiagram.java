@@ -1,20 +1,19 @@
 package plugins.vpcli.domain.outputmodel;
 
 import org.jetbrains.annotations.NotNull;
-import plugins.vpcli.domain.myuml.mydiagram.DiagramType;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class PumlDiagram {
     private final String name;
-    private final DiagramType diagramType;
+//    private final DiagramType diagramType;
     private int indentLevel = 0;
     private final List<PumlStatement> statements = new ArrayList<>();
 
-    public PumlDiagram(String name, DiagramType diagramType) {
+    public PumlDiagram(String name) {
         this.name = name;
-        this.diagramType = diagramType;
+//        this.diagramType = diagramType;
     }
 
     public void indent() {

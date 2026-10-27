@@ -2,7 +2,6 @@ package plugins.vpcli.domain.outputmodel;
 
 import com.vp.plugin.diagram.IDiagramUIModel;
 import com.vp.plugin.diagram.connector.IAnchorUIModel;
-import plugins.vpcli.domain.myuml.mydiagram.DiagramType;
 
 import jakarta.inject.Inject;
 import jakarta.inject.Singleton;
@@ -54,6 +53,6 @@ public class PumlDiagramFactory {
 
     PumlDiagram createPumlDiagram(IDiagramUIModel vpDiagramElement) {
         String name = vpDiagramElement.getName();
-        return new PumlDiagram(name, DiagramType.of(vpDiagramElement.getType()));
+        return new PumlDiagram(name);
     }
 }
