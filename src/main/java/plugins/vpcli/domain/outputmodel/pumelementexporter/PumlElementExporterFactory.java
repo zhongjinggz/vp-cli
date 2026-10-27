@@ -13,6 +13,7 @@ import plugins.vpcli.util.BugException;
 public class PumlElementExporterFactory {
     private final Map<MyElementType, PumlElementExporter> exporters = new HashMap<>();
     private final Map<String, PumlElementExporter> shapeTypeExporters = new HashMap<>();
+    private final PumlUnimplementedExporter unimplementedExporter;
 
     @Inject
     public PumlElementExporterFactory(
@@ -26,6 +27,7 @@ public class PumlElementExporterFactory {
         PumlGeneralizationExporter generalizationExporter,
         PumlUnimplementedExporter unimplementedExporter
     ) {
+        this.unimplementedExporter = unimplementedExporter;
         register(MyElementType.ASSOCIATION, associationExporter);
         register(MyElementType.CLASS, classExporter);
         register(MyElementType.PACKAGE, packageExporter);
@@ -53,14 +55,11 @@ public class PumlElementExporterFactory {
     }
 
     /**
-     * 步 A3：以 VP 形状类型字符串分发（渐近式入口，供将来直读 VP 原生模型时使用）。
-     * 缺类型抛 {@link BugException}。
+     * 步 A3/A13：以 VP 形状类型字符串分发。未知类型兜底到未实现 exporter
+     * （警告并跳过），与迁移前经 MyElementFactory 归一化为 UNIMPLEMENTED_ELEMENT 等价。
      */
     public PumlElementExporter of(String shapeType) {
-        if (this.shapeTypeExporters.containsKey(shapeType)) {
-            return this.shapeTypeExporters.get(shapeType);
-        } else {
-            throw new BugException(String.format("Shape type %s not found", shapeType));
-        }
+        PumlElementExporter exporter = this.shapeTypeExporters.get(shapeType);
+        return exporter != null ? exporter : unimplementedExporter;
     }
 }

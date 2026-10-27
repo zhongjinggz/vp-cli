@@ -1,11 +1,8 @@
 package plugins.vpcli.domain.outputmodel;
 
-import com.vp.plugin.diagram.IDiagramElement;
 import com.vp.plugin.diagram.IDiagramUIModel;
+import com.vp.plugin.diagram.connector.IAnchorUIModel;
 import plugins.vpcli.domain.myuml.mydiagram.MyDiagram;
-
-import java.util.HashMap;
-import java.util.Map;
 
 import jakarta.inject.Inject;
 import jakarta.inject.Singleton;
@@ -22,44 +19,37 @@ public class PumlDiagramFactory {
         this.exporterFactory = exporterFactory;
     }
 
+    /**
+     * 步 A13：遍历来源直读 VP 原生图表，不再经 myuml 的 MyDiagram 集合。
+     * 形状只取顶层（沿用迁移前 MyDiagramFactory 的 aShape.getParent()==null 过滤），
+     * 嵌套形状由 PumlBlockExporter 沿 toChildArray() 递归渲染，故此处不重复处理；
+     * 连接线滤除锚点（IAnchorUIModel）。分发一律按 VP getShapeType()，未知类型由
+     * PumlElementExporterFactory 兜底到未实现 exporter（警告并跳过，行为等价）。
+     */
     public PumlDiagram of(MyDiagram myDiagram, IDiagramUIModel vpDiagramElement) {
         var result = createPumlDiagram(myDiagram);
-        var vpElementsById = collectVpDiagramElements(vpDiagramElement);
-        for (var aShape : myDiagram.getSubShapes()) {
-            var myElement = aShape.getModelElement();
-            var exportMyElement = exporterFactory.of(myElement.getElementType());
-            exportMyElement.to(result, aShape, vpElementsById.get(aShape.getId()));
-        }
-        for (var aEdge : myDiagram.getSubEdges()) {
-            var myElement = aEdge.getModelElement();
-            var exportMyElement = exporterFactory.of(myElement.getElementType());
-            exportMyElement.to(result, aEdge, vpElementsById.get(aEdge.getId()));
-        }
-        return result;
-    }
 
-    /**
-     * 以 VP 原生图表（IDiagramUIModel）为突破口，收集图表内全部图形/连接线元素
-     * 的「VP 元素 id → VP 图形元素(IDiagramElement)」映射。MyDiagram 中每个
-     * ProperMyDiagramElement 的 id 与对应 VP 元素的 id 一致，因此下游据此分发 VP 原生模型。
-     */
-    private Map<String, IDiagramElement> collectVpDiagramElements(IDiagramUIModel vpDiagram) {
-        Map<String, IDiagramElement> map = new HashMap<>();
-        var shapes = vpDiagram.toShapeUIModelArray();
+        var shapes = vpDiagramElement.toShapeUIModelArray();
         if (shapes != null) {
-            collectVpDiagramElements(map, shapes);
+            for (var aShape : shapes) {
+                if (aShape.getParent() != null) {
+                    continue;
+                }
+                exporterFactory.of(aShape.getShapeType()).to(result, null, aShape);
+            }
         }
-        var connectors = vpDiagram.toConnectorUIModelArray();
-        if (connectors != null) {
-            collectVpDiagramElements(map, connectors);
-        }
-        return map;
-    }
 
-    private void collectVpDiagramElements(Map<String, IDiagramElement> map, IDiagramElement[] elements) {
-        for (var element : elements) {
-            map.put(element.getId(), element);
+        var connectors = vpDiagramElement.toConnectorUIModelArray();
+        if (connectors != null) {
+            for (var aConnector : connectors) {
+                if (aConnector instanceof IAnchorUIModel) {
+                    continue;
+                }
+                exporterFactory.of(aConnector.getShapeType()).to(result, null, aConnector);
+            }
         }
+
+        return result;
     }
 
     PumlDiagram createPumlDiagram(MyDiagram myDiagram) {

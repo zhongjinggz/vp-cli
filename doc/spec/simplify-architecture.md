@@ -124,7 +124,7 @@
   `public PumlDiagram of(MyDiagram myDiagram)`。
   改为：
   ```java
-  public PumlDiagram of(MyDiagram myDiagram, IDiagramElement vpDiagramElement)
+  public PumlDiagram of(MyDiagram myDiagram, IDiagramElement vpDiagramElement){}
   ```
   方法内：
   - `createPumlDiagram(myDiagram)`（名称/类型）暂不变，过渡期仍从 `MyDiagram` 取；
@@ -260,45 +260,75 @@
 
 **目标：** `Vi*` 结构与 visitor 不再构建 `MyElement` 树，直接携带/读取 VP 原生模型，
 从而兑现 `MyElementFactory`、`MyDiagramFactory`、`MyProjectFactory`、`MyPackage`/`MyModel`/`MyClass` 的退役。
+最终 `vpmodelvisitor` 与 `application` 对 `myuml` 零依赖。
 
-- **步 B1 — `MyElementType` 降级为纯映射（去掉对 `MyElement`/工厂的依赖）。**
-  `MyElementType.java` 目前是枚举，仅在 `Vi` 层作 `of(String)/getVPModelType/isModelElement/getSuffix` 映射用。
-  保留该枚举作"VP 类型字符串 ↔ 后缀"纯常量即可；确认其不引用 `MyElement`/`UnimplementedElement` 之外的领域类。
-  验证：编译通过；`MyElementType` 无 `myuml` 模型依赖。
+> **关键耦合（本方案拆分依据）：**
+> ① `ViElement`/`ViProject` 用 `MyElementType` 表达类型，而 `ExportDiagramVisitor.makeDirOf` 需要
+> `getType().getSuffix()`、`ViProject`/`ViModelElement` 需要 `isModelElement()/getVPModelType()` 过滤，
+> 因此类型载体必须先迁移到一个 vpmodelvisitor 自有（且不依赖 myuml）的枚举上，后缀映射才能跟着走。
+> ② `ViElementFactory`/`ViPackageFactory` 携带的 `MyElementFactory` 只用于 `toMyElementUnder`，而
+> `toMyElementUnder` 的唯一生产消费点是 `ExportDiagramVisitor.buildElementModel`。因此**必须先改
+> `ExportDiagramVisitor` 使其不再调用 `toMyElementUnder`，之后才能删除 `toMyElementUnder` 与
+> `MyElementFactory` 参数** —— 顺序不可颠倒。
+> ③ `ViProject.setElementTypes` 的形参类型改变会立即要求 `TreeService`/`ExportService` 的静态 import
+> 同步调整，故 application 清引用随类型迁移一起做，而不是放到最后。
+>
+> 每步以「编译通过 + `mvn test`（现有 111 个契约测试）通过」为验收。myuml 各类（含契约测试桩）
+> 仅从 vpmodelvisitor/application 退役对它们的引用，类本身留到阶段 C 再删。
 
-- **步 B2 — `ViElementFactory` 不再经 `MyElementFactoryFactory`。**
-  `src/.../vpmodelvisitor/element/ViElementFactory.java:23` 目前 `myElementFactoryFactory.of(modelType)`。
-  改造：`ViElementFactory` 直接按 `element.getModelType()` 分发到 `ViPackage/ViModel/ViClass/ViUseCase`，
-  构造时只传 `IModelElement` 与 `ViElementFactory`（去掉 `MyElementFactory` 参数）；
-  移除对 `@Inject MyElementFactoryFactory` 的依赖。
-  验证：`ViElementFactory` 相关测试通过。
+- **步 B1 — 新增 vpmodelvisitor 自有的 `ViElementType` 枚举（替代对 `MyElementType` 的依赖）。**
+  `src/.../vpmodelvisitor/` 下新增 `ViElementType`，把 `MyElementType` 的"VP modelType ↔ 后缀"纯映射
+  复制过来（含 `of(String)/getVPModelType()/getSuffix()/isModelElement()` 与 PACKAGE/MODEL/CLASS/USE_CASE/
+  DIAGRAM 等常量），**不 import 任何 myuml 类**（DIAGRAM/PROJECT 的 `diagram_has_no_model_type`、
+  UNIMPLEMENTED 的文本 modelType 用等价字符串字面量或 VP 常量）。
+  行为与 `MyElementType` 完全同构，仅属不同的包。
+  验证：编译通过；`ViElementType` 不引用 `myuml`；`mvn test`。
 
-- **步 B3 — `ViModelElement` 族改为 VP 原生读取。**
-  `src/.../element/ViModelElement.java` 目前持 `MyElementFactory myElementFactory` 字段、
-  `getType()` 用 `MyElementType.of(vpElement.getModelType())`、`getChildren(...)` 用
-  `MyElementType::isModelElement/getVPModelType` 过滤、并有 `abstract MyPackage toMyElementUnder(...)`。
-  改造：
-  - 移除 `myElementFactory` 字段与 `toMyElementUnder`（及 `ViPackage/ViModel/ViClass/ViUseCase` 中
-    对应"恒返回 null"的实现）。
-  - `getType()` 改为裸露 VP 类型（或继续借 `MyElementType.of` 映射——届时尚且保留该枚举，可先不动）。
-  - `getChildren(...)` 不再需要 `List<MyElementType>` 形参，改由自身 `toSubDiagramArray()/toChildArray(vpModelTypes)`
-    直接遍历。
-  验证：`ViModelElement`/`ViPackage`/`ViModel`/`ViClass`/`ViUseCase` 相关测试通过。
+- **步 B2 — `ViProject` 与 `application` 调用点切到 `ViElementType`（连带清 `MyElementType` 静态 import）。**
+  - `ViProject.myElementTypes`：`List<MyElementType>` → `List<ViElementType>`；
+    `setElementTypes(List<ViElementType>)`；`getVpModelTypeArray()` 的
+    `filter(MyElementType::isModelElement).map(MyElementType::getVPModelType)` 改为
+    `filter(ViElementType::isModelElement).map(ViElementType::getVPModelType)`。
+  - `TreeService.java`、`ExportService.java`：`import static ...MyElementType.*` 改为
+    `import static ...ViElementType.*`，`List.of(PACKAGE, MODEL, DIAGRAM /*, CLASS */)` 改用新常量。
+  至此 `application` 对 `myuml` 的引用清零（阶段 B 中首次达成）。
+  验证：编译通过；`grep -r "myuml" application` 无命中；`mvn test`。
 
-- **步 B4 — 导出 visitor 改读 VP 原生图表。**
-  `ExportDiagramVisitor.java:41` 目前经 `MyProjectFactory.fromGlobal()` 构造、
-  `buildMyDiagram.of(vpDiagram, myElement)` 构建 `MyDiagram` 再交给 `PumlDiagramFactory.of(MyDiagram)`。
-  改造：`RootExportDiagramVisitor`/`ExportDiagramVisitorFactory` 直接持有当前包名的 VP 上下文
-  （`IProject.toDiagramArray` 或 `IElement.toSubDiagramArray`），把图表 `IDiagramUIModel` 交给
-  `PumlDiagramFactory.of(..., IDiagramElement)`（阶段 A 已把导出器切到 VP 原生读法），
-  不再构建任何 `MyDiagram`/`MyProject`。
-  验证：`ExportDiagramVisitor`/`RootExportDiagramVisitor`/`ExportDiagramVisitorFactory` 相关测试通过；整体 `mvn test`。
+- **步 B3 — `ViElement` 族类型载体切到 `ViElementType`（去 `MyElementType` import）。**
+  - `ViElement`：`getType()` 返回 `ViElementType`；`typeIs(ViElementType)`；`getChildren(List<ViElementType>)`。
+  - `ViModelElement`：`getType()` → `ViElementType.of(vpElement.getModelType())`；
+    `getChildren(List<ViElementType>)` 内 `filter/map` 用 `ViElementType`。
+  - `ViDiagramAsElement`：`getType()` → `ViElementType.DIAGRAM`。
+  - 移除以上文件对 `MyElementType` 的 import。
+  - `ExportDiagramVisitor.makeDirOf` 的 `getType().getSuffix()` 沿用（`ViElementType.getSuffix()` 已具备）。
+  验证：编译通过；`vpmodelvisitor/element` 下无 `MyElementType` import；`mvn test`。
 
-- **步 B5 — `application` 层清引用。**
-  `ExportService.java`、`TreeService.java` 静态 `import MyElementType.*`（用 PACKAGE/MODEL/DIAGRAM/CLASS 常量）。
-  随步 B3/B4 移除了 `List<MyElementType>` 入参后，改用 VP 常量
-  （`IModelElementFactory.MODEL_TYPE_PACKAGE` 等）或已降级的枚举，去除对 `myuml.myelement.MyElementType` 的依赖。
-  验证：编译通过；`application` 层不再 import `myuml`。
+- **步 B4 — `ExportDiagramVisitor`/`RootExportDiagramVisitor`/`ExportDiagramVisitorFactory` 不再构建 `MyElement`/`MyProject`（先于删 toMyElementUnder）。**
+  - `PumlDiagramFactory.of(MyDiagram, IDiagramUIModel)` → `of(IDiagramUIModel)`：方法体直接以 `vpDiagramElement`
+    为数据源（`createPumlDiagram(IDiagramUIModel)` 从 `getDocumentation()/getName()/getType()` 取，
+    迁移自 `MyDiagramFactory.creatMyDiagram` 的 name/type 逻辑）。阶段 A 已把导出器切到 VP 原生读法，此处只是把
+    顶层 `MyDiagram` 载体彻底去掉。
+  - `ExportDiagramVisitor`：删除 `buildMyDiagram` 字段、`myElement` 字段；`visit(ViDiagramAsElement)` 改为
+    `buildPlantUML.of(vpDiagram)`；删除 `buildElementModel(ViPackage)`；`visit(ViPackage)/visit(ViModel)` 只保留
+    `makeDirOf`。Root 专用构造去掉 `MyProject` 参数。
+  - `RootExportDiagramVisitor`：构造签名去掉 `MyProject`。
+  - `ExportDiagramVisitorFactory`：移除 `@Inject MyProjectFactory` 依赖与字段；`createRoot()` 改为
+    `new RootExportDiagramVisitor(this.rootDir)`。
+  此刻 `toMyElementUnder` 已无生产消费点，但**本步暂不删除它**（见 B5），保持改动面最小。
+  验证：编译通过；`mvn test`（myuml 的 `MyDiagramFactoryTest` 等契约测试仍在，因类未删）。
+
+- **步 B5 — 删除 `toMyElementUnder` 与 `MyElementFactory` 参数，`ViElementFactory`/`ViPackageFactory` 去除 `MyElementFactoryFactory`。**
+  - `ViModelElement`：删除 `myElementFactory` 字段、构造第 3 参、抽象方法 `toMyElementUnder`。
+  - `ViPackage/ViModel/ViClass/ViUseCase`：构造去掉 `MyElementFactory` 第 3 参，删除 `toMyElementUnder`
+    覆写（含"恒返回 null"），移除对 `MyPackage/MyModel/MyElement/MyElementFactory` 的 import。
+  - `ViElementFactory`：删除 `myElementFactoryFactory` 字段、`@Inject MyElementFactoryFactory` 构造依赖、
+    `getMyElementFactory`；`from(IModelElement)` 内 `new ViPackage(element, this)` 等（去掉第 3 参）。
+  - `ViPackageFactory`：调用 `super()`（无参），`from` 内 `new ViPackage(vpElement, this)`。
+  验证：编译通过；`vpmodelvisitor` 下 `grep -r "myuml"` 无命中；`mvn test`。
+
+- **步 B6 — 阶段 B 收尾核对。**
+  `grep -r "domain.myuml[^_]" src/main/java/plugins/vpcli/domain/vpmodelvisitor src/main/java/plugins/vpcli/application`
+  确认零命中；`mvn test` 通过（111 个）。至此 vpmodelvisitor/application 对 myuml 零依赖，为阶段 C 整删铺路。
 
 **阶段 B 产出：** `vpmodelvisitor` 与 `application` 不再依赖 `myuml`；
 `myuml` 已是零消费者（只剩自我内部引用与契约测试）。
@@ -309,9 +339,19 @@
 
 **目标：** 整包删除 `myuml`，收尾活跃流水线。
 
-- **步 C1 — 前置整理：确认 #12/#13 不再引入新成员。**
+- **步 C1 — 前置整理：确认 #12/#13 不再引入新成员。（已完成：确认结论——暂不可删）**
   若此前按步 A8 将属性/操作读法内聚进 `PumlClassExporter`，则 `MyClass/MyAttribute/MyOperation/MyOperation.Parameter`
   不再被消费，可删除。
+  > **执行确认（2024 步 C1）：** `MyClass` **现在还不能删**。核实依据——① `PumlClassExporter` 2 参过渡版
+  > `writeBlockBody(PumlDiagram, ProperMyDiagramElement)` 仍 `instanceof MyClass` 并遍历
+  > `myClass.getAttributes()/getOperations()`（`PumlClassExporter.java:34-45`，含 `MyClass/MyAttribute/MyOperation` import）；
+  > ② 构造链仍在：`vpmodelvisitor`（阶段 B 未动）→ `MyElementFactoryFactory`（注册 `MyClassFactory`，`MyElementFactoryFactory.java:47`）
+  > → `MyClassFactory.reallyCreate` 实例化 `MyClass` 并经 `IClass.attributeIterator()/operationIterator()` 填充成员；③ `MyPackage.getClasses()`
+  > 依赖 `MyClass` 类型（`MyPackage.java:89-93`）。
+  > 但 A8 内聚目标（VP 版 `writeBlockBody` 直读 `IClass`，不再为 `MyClass` 补新成员读法）已达成——
+  > **`MyClass/MyAttribute/MyOperation` 无需新增成员，只是删除时机未到**。
+  > **可删时机 = 阶段 B 退役 `MyElementFactoryFactory`/`MyClassFactory` 构造链之后**，届时随 C2 整包删除一并处理。
+  > 本步无文件改动。
 
 - **步 C2 — 删除 `domain/myuml` 全部子包与顶层类。**
   如 `myassociation`、`myclassifier`、`mycomponent`、`mydependency`、`mydiagram`、`myelement`、

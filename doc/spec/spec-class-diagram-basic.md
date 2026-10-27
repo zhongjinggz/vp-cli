@@ -658,24 +658,8 @@ PumlClassExporter ..> VisibilitySymbol : 复用/内联映射
 - 状态：待方案设计
 
 
-## 15 关键字 Keyword
-###  需求
 
-```plantuml
-@startuml
-
-namespace AModel <<model>> {
-}
-
-interface AnInterface <<interface>> {
-}
-
-@enduml
-
-```
-
-
-## 16 类、包的泛型 Stereotype
+## 15 类、包的泛型 Stereotype
 - 状态：待方案设计
 
 ### 需求
@@ -694,7 +678,7 @@ package package1 <<framework>> {
 ### 方案
 TODO
 
-## 17 关系的泛型 Stereotypes of Relationships
+## 16 关系的泛型 Stereotypes of Relationships
 - 状态：待方案设计
 
 ### 需求
@@ -745,17 +729,14 @@ TODO
 @startuml
 class class1 {
 }
+class class2 {
+}
 
-note left of class1
-  注释在类左侧
-end note
+note "UML Style" as N1
 
-note right of class1 : 也可写成单行注释
 
-class1 -- class2
-note on link
-  注释挂在关系上
-end note
+class2 .. N1
+class1 .. N1
 
 @enduml
 ```
