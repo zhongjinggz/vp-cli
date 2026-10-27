@@ -2,7 +2,6 @@ package plugins.vpcli.domain.vpmodelvisitor.element;
 
 import com.vp.plugin.diagram.IDiagramUIModel;
 import com.vp.plugin.model.IModelElement;
-import plugins.vpcli.domain.myuml.myelement.MyElementType;
 import plugins.vpcli.domain.myuml.myelement.MyElement;
 import plugins.vpcli.domain.myuml.myelement.MyElementFactory;
 import plugins.vpcli.domain.myuml.mypackage.MyPackage;
@@ -29,8 +28,8 @@ public abstract class ViModelElement extends ViElement {
         return vpElement.getName();
     }
 
-    public MyElementType getType() {
-        return MyElementType.of(
+    public ViElementType getType() {
+        return ViElementType.of(
             vpElement.getModelType());
     }
 

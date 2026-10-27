@@ -7,12 +7,9 @@ import com.vp.plugin.action.VPActionController;
 import javax.swing.*;
 
 // DOING
-// - export: 使用全路径名作为包和classifier 的别名，以避免同名
+// - export: 重写生成图表的程序 - Class Diagram
 
 // TODO
-// - export: 重写生成图表的程序 - Association
-// - export: 重写生成图表的程序 - Dependency(various kinds of dependency)
-// - export: 重写生成图表的程序 - Stereotype/Keyword
 // - export：将图表放入 markdown
 // - 翻译和修改 README
 
@@ -20,18 +17,20 @@ import javax.swing.*;
 // - ViElementFactory : use Abstract Factory pattern
 
 // - replace logback with tinylog
-// - export: 重写生成图表的程序 - Class 属性和操作
-// - export: circle or class style of Interface
 // - Tree: 根据参数控制 Tree 的类型和深度
 // - export: 根据模型内容生成 markdown
 // - export: 图表 markdown 中放入交叉引用
-// - 考虑将 python 改为 java
+// - 考虑将 python 改为 java or kotlin
 // - 引入 picocli
 // - 拆分成多个 Controller， 分别依赖注入?
 // - 改用 NIO
 // - 补充建立目录时的各种异常情况
 
 // DONE
+// - export: 重写生成图表的程序 - Class 属性和操作
+// - export: 重写生成图表的程序 - Association
+// - export: 重写生成图表的程序 - Dependency(various kinds of dependency)
+// - export: 使用全路径名作为包和classifier 的别名，以避免同名
 // - 引入 Dagger 2 for DI
 // - 重构依赖注入：通过内部类，将若干工具或工程组织在一起，简化依赖注入(例如 IO)
 // - 清理 IDEA 警告

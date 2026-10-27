@@ -1,6 +1,5 @@
 package plugins.vpcli.domain.vpmodelvisitor.element;
 
-import plugins.vpcli.domain.myuml.myelement.MyElementType;
 import plugins.vpcli.domain.vpmodelvisitor.ViElementType;
 import plugins.vpcli.domain.vpmodelvisitor.visitor.ViElementVisitor;
 
@@ -17,11 +16,11 @@ public abstract class ViElement {
 
     public abstract String getName();
 
-    public abstract MyElementType getType();
+    public abstract ViElementType getType();
 
     public abstract List<ViElement> getChildren(List<ViElementType> myElementTypes);
 
-    public boolean typeIs(MyElementType myElementType) {
-        return getType().equals(myElementType);
+    public boolean typeIs(ViElementType viElementType) {
+        return getType().equals(viElementType);
     }
 }

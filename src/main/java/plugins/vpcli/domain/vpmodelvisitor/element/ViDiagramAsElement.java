@@ -1,7 +1,6 @@
 package plugins.vpcli.domain.vpmodelvisitor.element;
 
 import com.vp.plugin.diagram.IDiagramUIModel;
-import plugins.vpcli.domain.myuml.myelement.MyElementType;
 import plugins.vpcli.domain.vpmodelvisitor.ViElementType;
 import plugins.vpcli.domain.vpmodelvisitor.visitor.ViElementVisitor;
 
@@ -24,8 +23,8 @@ public class ViDiagramAsElement extends ViElement {
         return diagram.getName();
     }
     
-    public MyElementType getType() {
-        return MyElementType.DIAGRAM;
+    public ViElementType getType() {
+        return ViElementType.DIAGRAM;
     }
 
     @Override
