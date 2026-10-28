@@ -26,6 +26,15 @@ public class PumlClassExporter extends PumlBlockExporter {
         return "class";
     }
 
+    /** 步 #15：抽象类在关键字前加 abstract。 */
+    @Override
+    String buildBlockType(IModelElement vpElement) {
+        if (vpElement instanceof IClass && ((IClass) vpElement).isAbstract()) {
+            return "abstract class";
+        }
+        return getBlockType();
+    }
+
     /**
      * 步 A8：直接读 VP 原生 IClass 的成员（attributeIterator/operationIterator）渲染类体，
      * 可见性/静态/抽象/参数/初值映射沿用 #14/#12/#13 结论。

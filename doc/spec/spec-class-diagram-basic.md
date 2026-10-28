@@ -676,7 +676,62 @@ package package1 <<framework>> {
 ```
 
 ### 方案
-TODO
+
+**目标：** 仅“导出/渲染”路径——读取 VP 类/包/模型元素上所施加的 stereotype（泛型名），在 PlantUML 块声明的块名后渲染为一组 `<<泛型名>>` 后缀（如 `class "class1" as class1 <<service>>`、`abstract class "class2" as class2 <<repository>>`、`namespace "package1" as package1 <<framework>>`）。**不涉及导入。** 泛型渲染复用 `PumlBlockExporter` 的块声明机制，同时为需求中的 `abstract class` 补齐抽象类判定。
+
+**现状分析（已核对源码）：**
+- 块渲染基础已具备：`PumlBlockExporter.export(...)`（src/.../outputmodel/pumelementexporter/PumlBlockExporter.java:18）统一调用 `result.beginBlock(getBlockType(), vpElement.getName(), getPumlAlias(vpElement), getBlockSuffix())`。其中 `getBlockSuffix()`（默认返回空串）就是“在块声明末尾追加内容”的现成钩子——`PumlModelExporter`（同包）已覆写它返回硬编码 `<<model>>`（src/.../PumlModelExporter.java:20）。
+- 泛型读取 API 已确认（javap openapi.jar）：`IModelElement` 提供 `String[] toStereotypeArray()`（元素上施加的泛型名数组，可空/可为空）及 `int stereotypeCount()` / `Iterator stereotypeIterator()`；`IClass` 提供 `boolean isAbstract()`。`IClass`、`IPackage`、`IModel` 均继承自 `IModelElement`，故类、包、模型三处统一经 `toStereotypeArray()` 读取即可。
+- 块类型现状：`PumlClassExporter.getBlockType()` 固定返回 `"class"`，**未区分抽象类**；`PumlPackageExporter.getBlockType()` 与 `PumlModelExporter.getBlockType()` 均返回 `"namespace"`（包用 namespace 关键字，与 #1 包条目既有实现一致）。
+- 泛型名直接原样输出：`toStereotypeArray()` 返回的泛型名本身即 PlantUML 合法文本，置于 `<<`、`>>` 之间，**无需净化**（泛型名中的空格/标点等字符可保留，PlantUML 徽标可正常显示）。
+
+**设计图（stereotype 渲染相关模块）：**
+
+```plantuml
+@startuml
+class PumlBlockExporter {
+  + export(result: PumlDiagram, vp: IDiagramElement): void
+  # renderStereotypes(vp: IModelElement): String
+  # getBlockType(): String
+  # getBlockSuffix(): String
+}
+class PumlClassExporter {
+  # getBlockType(): String   // class / abstract class
+  # buildBlockType(vp): String
+}
+class PumlPackageExporter {
+  # getBlockType(): String   // namespace
+}
+PumlClassExporter --|> PumlBlockExporter
+PumlPackageExporter --|> PumlBlockExporter
+@enduml
+```
+
+**实施步骤（每步可独立验证）：**
+
+1. **泛型后缀渲染（输出模型层，核心钩子）。**
+   - 方案：在 `PumlBlockExporter` 增加一个受保护方法 `String buildBlockSuffix(IModelElement vpElement)`（默认把 `getBlockSuffix()` 与 `renderStereotypes(vpElement)` 拼接），并在 `export(...)` 中把 `getBlockSuffix()` 的实参改为 `buildBlockSuffix(vpElement)`。
+   - `renderStereotypes(vpElement)` 的实现：调用 `vpElement.toStereotypeArray()`，若 `null`/长度为 0 则返回空串；否则对每个泛型名**原样**输出 `<<"泛型名">>`（无需净化），多项之间以单个空格连接，最后整体拼在 `getBlockSuffix()`（固定原型，如 model 的 `<<model>>`）之后——保证既输出元素自有泛型，又保留子类硬编码的原型。
+   - 理由：复用现有 `beginBlock` 的 `blockSuffix` 参数，一处接入即对 class/package/model 全生效；子类既有 `getBlockSuffix()` 覆写不受影响。
+   - 验证：为 `buildBlockSuffix`/`renderStereotypes` 写单元测试，覆盖：无泛型（返回空后缀）、单泛型、多泛型（空格分隔）、含空格/标点的泛型名（原样输出，不净化）、与 `getBlockSuffix()`（`<<model>>`）合并后的顺序。
+
+2. **类：抽象类判定与泛型渲染（PumlClassExporter）。**
+   - 方案：因 `getBlockType()` 无 `vpElement` 参数，改为在 `PumlBlockExporter.export(...)` 中调用一个可覆写、可访问 `vpElement` 的 `String buildBlockType(IModelElement vpElement)`（默认返回 `getBlockType()`），并让 export 用它替代 `getBlockType()`；`PumlClassExporter` 覆写 `buildBlockType`：若 `((IClass) vpElement).isAbstract()` 则返回 `"abstract class"`，否则 `"class"`。
+   - 泛型部分随步骤 1 的 `buildBlockSuffix` 自动落到类声明的块名后，输出形如 `class "class1" as class1 <<service>> {` 或 `abstract class "class2" as class2 <<repository>> {`。
+   - 理由：与当前重构后的“直读 VP 原生模型”一致；abstract 判定依赖具体 vpElement，故用可访问参数的方法。
+   - 验证：为 `PumlClassExporter` 补单测，桩 `IClass`（带 `isAbstract()` 与 `toStereotypeArray()`），断言：普通类→`class ... <<service>>`；抽象类→`abstract class ... <<repository>>`；无泛型的抽象类→`abstract class ...`（无后缀）；无泛型普通类→`class ...`（无后缀，行为不变）。
+
+3. **包与模型：泛型渲染（PumlPackageExporter / PumlModelExporter）。**
+   - 方案：无需改 `getBlockType()`（保持 namespace）。泛型经步骤 1 的 `buildBlockSuffix` 自动叠加：`PumlPackageExporter` 渲染 `namespace "package1" as package1 <<framework>> {`；`PumlModelExporter` 渲染 `<固定 <<model>>>` 与模型自有泛型合并（如模型带自有泛型时输出 `namespace ... <<model>> <<自有泛型>>`）。
+   - 理由：统一走 `buildBlockSuffix`，两处无需各自写逻辑。
+   - 验证：为 `PumlPackageExporter`/`PumlModelExporter` 补单测，断言包/模型带泛型时块头正确、无泛型时无后缀、`<<model>>` 固定原型仍保留。
+
+4. **接线与回归。** 本条不新增 `ViElementType`/`DiagramElementType`/新导出器类（CLASS/PACKAGE/MODEL 类型早已登记、仍按 `getShapeType()` 分发），仅 `PumlBlockExporter`/`PumlClassExporter` 的钩子与 `PumlPackageExporter`/`PumlModelExporter` 校验；整体 `mvn test` 无回归。
+
+5. **集成验证。**
+   - 验证：手动在 VP 中为类（含抽象类）与包设置若干 stereotype 后导出，检查 `.puml` 块声明后的 `<<泛型>>` 渲染与需求一致；用 PlantUML 预览确认泛型徽标可读、多泛型显示正常。
+
+**说明/边界：** 本条目仅处理类、包、模型块声明上的 stereotype 渲染，不涉及关系（关联/依赖/泛化）连线上的 stereotype（见 #16），也不涉及导入方向对 `<<...>>` 的解析。`<<model>>` 作为模型的固定原型仍然保留（叠在模型自有泛型之前）。泛型名直接原样置于 `<<`、`>>` 之间输出，不做任何净化。
 
 ## 16 关系的泛型 Stereotypes of Relationships
 - 状态：待方案设计
@@ -740,6 +795,23 @@ class1 .. N1
 
 @enduml
 ```
+
+
+```plantuml
+@startuml
+class class1 {
+}
+class class2 {
+}
+
+note "UML Style" as N1
+
+
+class2 .. N1
+class1 .. N1
+
+@enduml
+``
 
 ### 方案
 TODO
