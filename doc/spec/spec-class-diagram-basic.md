@@ -750,7 +750,61 @@ class7 <|-- class8: <<Stereotype4>>
 ```
 
 ### 方案
-TODO
+
+**目标：** 仅“导出/渲染”路径——读取 VP 关联/依赖/泛化关系上施加的 stereotype（泛型名），渲染到 PlantUML 连线的 `: 标签` 中，并支持两种形态：`名称 泛型`（如 `class1 -- class2: name <<Stereotype1>> >`）、仅泛型无名称（如 `class5 ..> class6: <<Stereotype3>>`）。泛型名原样输出、不净化（沿用 #15 结论），**不涉及导入**。
+
+**现状分析（已核对源码）：**
+- 三个关系 exporter 均继承 `PumlElementExporter`：`PumlAssociationExporter`（src/.../PumlAssociationExporter.java:33）、`PumlDependencyExporter`（L31）、`PumlGeneralizationExporter`（L27），各自的 `export()` 均通过 `result.writeEdge(from, to, lineStyle, name, direction)` 输出一条连线，当前 `name` 参数只传关系的 `getName()`。
+- `PumlDiagram.writeEdge`（src/.../PumlDiagram.java:80）对 `name` 的语义：**`name` 非空（非 blank）才输出 `: 标签`，并按 `direction` 在标签后追加阅读三角（FROM_TO→`>`、TO_FROM→`<`、NONE→无三角）**。因此把“名称+泛型”的合并串作为 `name` 传入，即可同时自然输出泛型徽标与阅读三角，**`writeEdge` 无需改动、兼容原有调用点**（空名/无泛型时仍省略标签）。
+- 泛型读取 `renderStereotypes(IModelElement)` 现位于 `PumlBlockExporter`（供 #15 的 class/package/model 使用），而关系 exporter 不继承 `PumlBlockExporter`；需把该方法**提升到公共基类 `PumlElementExporter`**（block 与关系共同继承，一处实现）。
+- 读取 API 已确认（javap openapi.jar）：`IGeneralization`、`IDependency`、`IAssociation` 均经 `IRelationship`→`IModelElement` 继承 `Iterator stereotypeModelIterator()`（返回 `IStereotype`，含 `getName()`），三类关系可统一用同一读取方法、无需类型强转。
+
+**设计图（关系泛型渲染相关模块）：**
+
+```plantuml
+@startuml
+class PumlElementExporter {
+  # renderStereotypes(vp: IModelElement): String
+}
+class PumlBlockExporter {
+  # buildBlockSuffix(vp: IModelElement): String
+}
+class PumlAssociationExporter {
+  + export(result, vp: IDiagramElement): void
+}
+class PumlDependencyExporter {
+  + export(result, vp: IDiagramElement): void
+}
+class PumlGeneralizationExporter {
+  + export(result, vp: IDiagramElement): void
+}
+PumlBlockExporter --|> PumlElementExporter
+PumlAssociationExporter --|> PumlElementExporter
+PumlDependencyExporter --|> PumlElementExporter
+PumlGeneralizationExporter --|> PumlElementExporter
+@enduml
+```
+
+**实施步骤（每步可独立验证）：**
+
+1. **泛型渲染工具上移（输出模型层）。** 把 `renderStereotypes(IModelElement vpElement)` 从 `PumlBlockExporter` 移到公共基类 `PumlElementExporter`（方法体不变：`stereotypeModelIterator()` 遍历 `IStereotype`、`getName()` 原样输出 `<</名/>>`、空格分隔、空名跳过、无泛型返回空串）。`PumlBlockExporter` 继承它即可，`buildBlockSuffix` 逻辑不变。此步为纯重构，不改变 #15 行为。
+   - 验证：既有的 `PumlBlockExporterStereotypeTest` 全部通过（`renderStereotypes`/`buildBlockSuffix` 断言不变），证明行为未回归。
+
+2. **关系标签合并（各关系 exporter）。** 在三个关系 exporter 中各加一个私有小方法，把“关系名称 + 泛型后缀”合并为单个标签串：若 `getName()` 非空且 `renderStereotypes` 非空则拼 `name <<...>>`；仅泛型则只有 `<<...>>`；都为空则空串。随后将 `export()` 里 `writeEdge(...)` 的 `name` 实参从 `xxx.getName()` 改为该合并串。`lineStyle`/`ShapeKind`/`direction` 保持各自现状（关联 SOLID `--`、依赖 DASHED `..>` + ARROW、泛化 SOLID `<|--` + REVERSE_TRIANGLE）。
+   - 理由：`writeEdge` 已按 name 非空逻辑覆盖“名称+泛型+三角”与“仅泛型”两形态，关系侧只需负责组装标签串。
+   - 验证：为三个关系 exporter 各写单测，桩关系（含 `getName()`、`getFrom()`/`getTo()`/`getFromEnd()`/`getToEnd()`、`stereotypeModelIterator()`），断言输出行：
+     - 关联带名称+泛型+方向 → `class1 -- class2: name <<Stereotype1>> >`
+     - 关联仅泛型无名称（方向 NONE）→ `class3 -- class4: <<Stereotype2>>`
+     - 依赖仅泛型 → `class5 ..> class6: <<Stereotype3>>`
+     - 泛化仅泛型 → `class7 <|-- class8: <<Stereotype4>>`
+     - 名称+泛型都为空 → 无冒号标签（行为不变）。
+
+3. **接线与回归。** 本条不新增 `ViElementType`/`DiagramElementType`/新导出器类（ASSOCIATION/DEPENDENCY/GENERALIZATION 的类型早已登记、仍按 `getShapeType()` 分发），仅上移共用方法与三个关系 exporter 的标签组装；整体 `mvn test` 无回归（原 51 个测试保持通过）。
+
+4. **集成验证。**
+   - 验证：手动在 VP 中为关联/依赖/泛化设置若干 stereotype 后导出，检查 `.puml` 连线 `: 标签` 处的泛型渲染与需求一致；用 PlantUML 预览确认泛型徽标与阅读三角正常显示、无名泛型连线无多余冒号。
+
+**说明/边界：** 本条目仅处理关系连线上的 stereotype 渲染，不涉及导入方向对 `<<...>>` 的解析；类/包/模型块声明上的 stereotype 已在 #15 完成，两者互不影响。泛型名直接原样置于 `<<`、`>>` 之间输出，不做净化。阅读方向三角仍由 `writeEdge` 按 direction 派生，关系侧不改此语义。
 
 ## 18 接口实现 Implementation (常规方式)
 - 状态：待方案设计

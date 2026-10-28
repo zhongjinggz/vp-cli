@@ -3,6 +3,7 @@ package plugins.vpcli.domain.outputmodel.pumelementexporter;
 import com.vp.plugin.diagram.IDiagramElement;
 import com.vp.plugin.diagram.IShapeTypeConstants;
 import com.vp.plugin.model.IDependency;
+import com.vp.plugin.model.IModelElement;
 import plugins.vpcli.domain.outputmodel.NameDirection;
 import plugins.vpcli.domain.outputmodel.PumlDiagram;
 import plugins.vpcli.domain.outputmodel.PumlDiagram.LineStyle;
@@ -38,7 +39,7 @@ public class PumlDependencyExporter extends PumlElementExporter {
             PumlEdgeEnd.of(fromAlias, "", "", ShapeKind.NONE),
             PumlEdgeEnd.of(toAlias, "", "", ShapeKind.ARROW),
             LineStyle.DASHED,
-            dependency.getName(),
+            buildEdgeLabel(dependency.getName(), dependency),
             NameDirection.NONE);
     }
 }

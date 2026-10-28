@@ -2,9 +2,11 @@ package plugins.vpcli.domain.outputmodel.pumelementexporter;
 
 import com.vp.plugin.diagram.IDiagramElement;
 import com.vp.plugin.model.IModelElement;
+import com.vp.plugin.model.IStereotype;
 import plugins.vpcli.domain.outputmodel.PumlDiagram;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 public abstract class PumlElementExporter {
@@ -61,5 +63,35 @@ public abstract class PumlElementExporter {
             sb.append(segment.replaceAll("[^\\p{L}\\p{N}]", "_"));
         }
         return sb.toString();
+    }
+
+    /** 步 #16：读取元素上施加的泛型名，原样输出为「<<名>>」，多项用单个空格分隔；无则返回空串。 */
+    protected String renderStereotypes(IModelElement vpElement) {
+        StringBuilder sb = new StringBuilder();
+        Iterator<?> it = vpElement.stereotypeModelIterator();
+        while (it.hasNext()) {
+            IStereotype stereotype = (IStereotype) it.next();
+            String name = stereotype.getName();
+            if (name == null || name.isEmpty()) {
+                continue;
+            }
+            if (sb.length() > 0) {
+                sb.append(' ');
+            }
+            sb.append("<<").append(name).append(">>");
+        }
+        return sb.toString();
+    }
+
+    /** 步 #16：把关系名称与所施加泛型合并为连线标签；两者皆空则返回空串。 */
+    protected String buildEdgeLabel(String name, IModelElement vpElement) {
+        String stereotypes = renderStereotypes(vpElement);
+        if (name == null || name.isEmpty()) {
+            return stereotypes;
+        }
+        if (stereotypes.isEmpty()) {
+            return name;
+        }
+        return name + " " + stereotypes;
     }
 }

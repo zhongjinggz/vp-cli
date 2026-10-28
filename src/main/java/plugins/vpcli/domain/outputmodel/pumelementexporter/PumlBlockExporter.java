@@ -3,16 +3,9 @@ package plugins.vpcli.domain.outputmodel.pumelementexporter;
 import com.vp.plugin.diagram.IDiagramElement;
 import com.vp.plugin.diagram.IShapeUIModel;
 import com.vp.plugin.model.IModelElement;
-import com.vp.plugin.model.IStereotype;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import plugins.vpcli.domain.outputmodel.PumlDiagram;
 
-import java.util.Iterator;
-
 public abstract class PumlBlockExporter extends PumlElementExporter {
-
-    private static final Logger logger = LoggerFactory.getLogger(PumlBlockExporter.class);
 
     public PumlBlockExporter() {
     }
@@ -69,24 +62,6 @@ public abstract class PumlBlockExporter extends PumlElementExporter {
             return fixed;
         }
         return fixed + " " + stereotypes;
-    }
-
-    /** 步 #15：读取元素上施加的泛型名，原样输出为「<<名>>」，多项用单个空格分隔；无则返回空串。 */
-    String renderStereotypes(IModelElement vpElement) {
-        StringBuilder sb = new StringBuilder();
-        Iterator<?> it = vpElement.stereotypeModelIterator();
-        while (it.hasNext()) {
-            IStereotype stereotype = (IStereotype) it.next();
-            String name = stereotype.getName();
-            if (name == null || name.isEmpty()) {
-                continue;
-            }
-            if (sb.length() > 0) {
-                sb.append(' ');
-            }
-            sb.append("<<").append(name).append(">>");
-        }
-        return sb.toString();
     }
 
     // 步 A7：VP 原生读法的成员区钩子；默认空实现，子类按需覆写

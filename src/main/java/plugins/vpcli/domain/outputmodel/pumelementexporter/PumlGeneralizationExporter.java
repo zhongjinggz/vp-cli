@@ -34,7 +34,7 @@ public class PumlGeneralizationExporter extends PumlElementExporter {
             PumlEdgeEnd.of(generalAlias, "", "", ShapeKind.REVERSE_TRIANGLE),
             PumlEdgeEnd.of(specificAlias, "", "", ShapeKind.NONE),
             LineStyle.SOLID,
-            generalization.getName(),
+            buildEdgeLabel(generalization.getName(), generalization),
             NameDirection.NONE);
     }
 }
