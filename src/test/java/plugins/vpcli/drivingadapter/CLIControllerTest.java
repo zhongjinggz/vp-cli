@@ -51,7 +51,7 @@ class CLIControllerTest {
     // ---------- invoke 的无效参数分支 ----------
 
     @Test
-    void invoke_invalidParams_printsErrorAndReturns() throws Throwable {
+    void invoke_invalidParams_printsErrorAndReturns() {
         invokeNoThrow(() -> invoke(new String[]{"-path", "x"}));
         verify(myIOMock).println(contains("Missing required argument -action"));
     }
@@ -59,7 +59,7 @@ class CLIControllerTest {
     // ---------- invoke -> performImport 分支 ----------
 
     @Test
-    void invoke_import_callsPerformImport() throws Throwable {
+    void invoke_import_callsPerformImport() {
         // performImport 当前为 TBD 占位实现，打印开发提示到日志；仅验证分发执行不抛异常
         invokeNoThrow(() -> invoke(
                 new String[]{"-action", "import", "-path", "some.puml"}));
@@ -104,7 +104,7 @@ class CLIControllerTest {
     }
 
     @Test
-    void invoke_exportSpecific_callsPipeline() throws Throwable {
+    void invoke_exportSpecific_callsPipeline() {
         File dir = tempDir.toFile();
         invokeNoThrow(() -> invoke(
                 new String[]{"-action", "export", "-target", "someDiagram", "-path", dir.getAbsolutePath()}));
@@ -115,7 +115,7 @@ class CLIControllerTest {
     // ---------- invoke -> listAvailableDiagrams 分支（转调 pipeline 列举） ----------
 
     @Test
-    void invoke_执行列出图表清单命令_则listDiagrams被调用() throws Throwable {
+    void invoke_执行列出图表清单命令_则listDiagrams被调用() {
         invokeNoThrow(() -> invoke(
                 new String[]{"-action", "list-diagrams"}));
         verify(listDiagramsServiceMock).listDiagrams();

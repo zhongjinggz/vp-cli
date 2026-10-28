@@ -11,7 +11,6 @@ import java.io.IOException;
 import static plugins.vpcli.drivingadapter.CLIParams.*;
 
 import jakarta.inject.Inject;
-import jakarta.inject.Inject;
 import jakarta.inject.Singleton;
 
 @Singleton

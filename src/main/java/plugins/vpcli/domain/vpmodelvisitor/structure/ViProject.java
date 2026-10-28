@@ -48,11 +48,10 @@ public class ViProject {
     }
 
     private String @NotNull [] getVpModelTypeArray() {
-        String[] vpModelTypes = myElementTypes.stream()
+        return myElementTypes.stream()
             .filter(ViElementType::isModelElement)
             .map( ViElementType::getVPModelType)
             .toArray(String[]::new);
-        return vpModelTypes;
     }
 
     private void elementsAccept(List<ViElement> elements

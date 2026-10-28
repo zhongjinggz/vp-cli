@@ -50,7 +50,4 @@ public abstract class ViModelElement extends ViElement {
         return result;
     }
 
-    public IModelElement getVPModelElement() {
-        return this.vpElement;
-    }
 }

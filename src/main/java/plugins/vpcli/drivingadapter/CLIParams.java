@@ -76,7 +76,6 @@ class CLIParams {
                     }
                     break;
                 case VALUE_LIST_DIAGRAMS:
-                    break;
                 case VALUE_TREE:
                     break;
                 default:

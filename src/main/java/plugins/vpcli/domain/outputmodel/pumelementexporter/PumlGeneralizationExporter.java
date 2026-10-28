@@ -24,7 +24,7 @@ public class PumlGeneralizationExporter extends PumlElementExporter {
     }
 
     @Override
-    public void to(PumlDiagram result, IDiagramElement vpDiagramElement) {
+    public void export(PumlDiagram result, IDiagramElement vpDiagramElement) {
         IGeneralization generalization = (IGeneralization) vpDiagramElement.getModelElement();
 
         String generalAlias = getPumlAlias(generalization.getFrom());

@@ -25,7 +25,7 @@ public class PumlDiagramFactory {
      * 连接线滤除锚点（IAnchorUIModel）。分发一律按 VP getShapeType()，未知类型由
      * PumlElementExporterFactory 兜底到未实现 exporter（警告并跳过，行为等价）。
      */
-    public PumlDiagram of(IDiagramUIModel vpDiagramElement) {
+    public PumlDiagram build(IDiagramUIModel vpDiagramElement) {
         var result = createPumlDiagram(vpDiagramElement);
 
         var shapes = vpDiagramElement.toShapeUIModelArray();
@@ -34,7 +34,7 @@ public class PumlDiagramFactory {
                 if (aShape.getParent() != null) {
                     continue;
                 }
-                exporterFactory.of(aShape.getShapeType()).to(result, aShape);
+                exporterFactory.build(aShape.getShapeType()).export(result, aShape);
             }
         }
 
@@ -44,7 +44,7 @@ public class PumlDiagramFactory {
                 if (aConnector instanceof IAnchorUIModel) {
                     continue;
                 }
-                exporterFactory.of(aConnector.getShapeType()).to(result, aConnector);
+                exporterFactory.build(aConnector.getShapeType()).export(result, aConnector);
             }
         }
 

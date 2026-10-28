@@ -24,6 +24,6 @@ public class PumlModelRelationshipContainerExporter extends PumlElementExporter 
 
     // 步 A11：方法体仍为空；未实现元素不打入图，仅走空体即丢弃
     @Override
-    public void to(PumlDiagram result, IDiagramElement vpDiagramElement) {
+    public void export(PumlDiagram result, IDiagramElement vpDiagramElement) {
     }
 }

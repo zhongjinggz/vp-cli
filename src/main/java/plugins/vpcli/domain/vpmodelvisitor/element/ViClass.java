@@ -3,8 +3,6 @@ package plugins.vpcli.domain.vpmodelvisitor.element;
 import com.vp.plugin.model.IModelElement;
 import plugins.vpcli.domain.vpmodelvisitor.visitor.ViElementVisitor;
 
-import java.io.IOException;
-
 public class ViClass extends ViModelElement {
     public ViClass(IModelElement vpElement,
                    ViElementFactory viElementFactory
@@ -13,7 +11,7 @@ public class ViClass extends ViModelElement {
     }
 
     @Override
-    public void accept(ViElementVisitor visitor) throws IOException {
+    public void accept(ViElementVisitor visitor) {
         visitor.visit(this);
     }
 }

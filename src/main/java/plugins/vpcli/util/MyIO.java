@@ -8,23 +8,18 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 
-import static org.slf4j.LoggerFactory.getLogger;
-
 import jakarta.inject.Inject;
 import jakarta.inject.Singleton;
+import org.slf4j.LoggerFactory;
 
 @Singleton
 public class MyIO {
-    private final Logger logger;
+    private static final Logger logger = LoggerFactory.getLogger(MyIO.class);
 
     @Inject
     public MyIO() {
-        this(getLogger(MyIO.class));
     }
 
-    private MyIO(Logger logger) {
-        this.logger = logger;
-    }
     public void writeFile(File parentDir, String fileName, String text) throws IOException {
         File outputFile = new File(parentDir, fileName);
         Path path = outputFile.toPath();

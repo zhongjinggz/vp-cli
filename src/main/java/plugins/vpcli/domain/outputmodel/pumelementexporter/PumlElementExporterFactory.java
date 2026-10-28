@@ -8,7 +8,6 @@ import jakarta.inject.Singleton;
 
 @Singleton
 public class PumlElementExporterFactory {
-//    private final Map<MyElementType, PumlElementExporter> oldExporters = new HashMap<>();
     private final Map<String, PumlElementExporter> shapeTypeExporters = new HashMap<>();
     private final PumlUnimplementedExporter unimplementedExporter;
 
@@ -38,24 +37,15 @@ public class PumlElementExporterFactory {
 
 
     private void register(PumlElementExporter exporter) {
-//        oldExporters.put(myElementType, exporter);
         shapeTypeExporters.put(exporter.getShapeType(), exporter); // 单一来源：@Override getShapeType()
         exporter.setExporterFactory(this); // to build the bi-direction dependency
     }
 
-//    public PumlElementExporter of(MyElementType myElementType) {
-//        if (this.oldExporters.containsKey(myElementType)) {
-//            return this.oldExporters.get(myElementType);
-//        } else {
-//            throw new BugException(String.format("Element type %s not found", myElementType));
-//        }
-//    }
 
     /**
-     * 步 A3/A13：以 VP 形状类型字符串分发。未知类型兜底到未实现 exporter
      * （警告并跳过），与迁移前经 MyElementFactory 归一化为 UNIMPLEMENTED_ELEMENT 等价。
      */
-    public PumlElementExporter of(String shapeType) {
+    public PumlElementExporter build(String shapeType) {
         PumlElementExporter exporter = this.shapeTypeExporters.get(shapeType);
         return exporter != null ? exporter : unimplementedExporter;
     }

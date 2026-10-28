@@ -30,7 +30,7 @@ public class PumlAssociationExporter extends PumlElementExporter {
      * 自带 multiplicity/navigable/aggregation 与 role 名称），端分类器取 getModelElement()。
      */
     @Override
-    public void to(PumlDiagram result, IDiagramElement vpDiagramElement) {
+    public void export(PumlDiagram result, IDiagramElement vpDiagramElement) {
         IAssociation association = (IAssociation) vpDiagramElement.getModelElement();
 
         IAssociationEnd fromEnd = (IAssociationEnd) association.getFromEnd();

@@ -4,26 +4,18 @@ import com.vp.plugin.diagram.IDiagramElement;
 import com.vp.plugin.diagram.IShapeUIModel;
 import com.vp.plugin.model.IModelElement;
 import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import plugins.vpcli.domain.outputmodel.PumlDiagram;
-
-import static org.slf4j.LoggerFactory.getLogger;
 
 public abstract class PumlBlockExporter extends PumlElementExporter {
 
-    private final Logger logger;
+    private static final Logger logger = LoggerFactory.getLogger(PumlBlockExporter.class);
 
     public PumlBlockExporter() {
-        this.logger = getLogger(PumlBlockExporter.class);
     }
 
-    /**
-     * 步 A7：块型基类直读 VP 原生模型。块名/别名从 vpDiagramElement 的 IModelElement 读取，
-     * 子形状沿 IShapeUIModel.toChildArray() 遍历（跳过无模型元素的形状，如属性文本等
-     * terminal shape，与迁移前 myuml 的 subShapes 一致，保证输出等价）。
-     * 块属性（成员区）经 VP 版 {@link #writeBlockBody(PumlDiagram, IModelElement)} 钩子渲染。
-     */
     @Override
-    public void to(PumlDiagram result, IDiagramElement vpDiagramElement) {
+    public void export(PumlDiagram result, IDiagramElement vpDiagramElement) {
         IModelElement vpElement = vpDiagramElement.getModelElement();
 
         result.beginBlock(
@@ -41,8 +33,8 @@ public abstract class PumlBlockExporter extends PumlElementExporter {
                 if (child.getModelElement() == null) {
                     continue;
                 }
-                var exporter = pumlElementExporterFactory.of(child.getShapeType());
-                exporter.to(result, child);
+                var exporter = pumlElementExporterFactory.build(child.getShapeType());
+                exporter.export(result, child);
             }
         }
         result.endBlock();

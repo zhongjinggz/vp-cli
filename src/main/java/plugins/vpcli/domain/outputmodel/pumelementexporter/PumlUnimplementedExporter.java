@@ -28,7 +28,7 @@ public class PumlUnimplementedExporter extends PumlElementExporter {
      * 步 A10：直读 VP 原生模型。未实现元素不打入图，仅读 VP 元素名称/类型打警告日志。
      */
     @Override
-    public void to(PumlDiagram result, IDiagramElement vpDiagramElement) {
+    public void export(PumlDiagram result, IDiagramElement vpDiagramElement) {
         IModelElement vpElement = vpDiagramElement.getModelElement();
         log.warn(
             "Unimplemented element will not be exported, name={} type ={}",

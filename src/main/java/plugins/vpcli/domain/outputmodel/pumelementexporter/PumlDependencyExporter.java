@@ -28,7 +28,7 @@ public class PumlDependencyExporter extends PumlElementExporter {
      * 经继承自 IRelationship 的 getFrom()/getTo() 取两端分类器作别名。
      */
     @Override
-    public void to(PumlDiagram result, IDiagramElement vpDiagramElement) {
+    public void export(PumlDiagram result, IDiagramElement vpDiagramElement) {
         IDependency dependency = (IDependency) vpDiagramElement.getModelElement();
 
         String fromAlias = getPumlAlias(dependency.getFrom());

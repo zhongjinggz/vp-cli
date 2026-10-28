@@ -1,5 +1,6 @@
 package plugins.vpcli.domain.vpmodelvisitor.visitor.exportdiagramvisitor;
 
+import org.jetbrains.annotations.NotNull;
 import plugins.vpcli.domain.outputmodel.PumlDiagramFactory;
 import plugins.vpcli.domain.vpmodelvisitor.element.*;
 import plugins.vpcli.domain.vpmodelvisitor.visitor.ViElementVisitor;
@@ -10,7 +11,7 @@ import java.io.File;
 import java.io.IOException;
 
 public class ExportDiagramVisitor extends ViElementVisitor {
-    private final PumlDiagramFactory buildPlantUML;
+    private final PumlDiagramFactory pumlDiagramFactory ;
     protected File path;
     private final DocWriter write;
     private final MyIO myIO;
@@ -23,7 +24,7 @@ public class ExportDiagramVisitor extends ViElementVisitor {
     ) {
         super(higherVisitor);
 
-        this.buildPlantUML = pumlDiagramFactory;
+        this.pumlDiagramFactory = pumlDiagramFactory;
         this.write = docWriter;
         this.myIO = myIO;
     }
@@ -33,7 +34,7 @@ public class ExportDiagramVisitor extends ViElementVisitor {
         super(null);
         this.write = null;
 
-        this.buildPlantUML = null;
+        this.pumlDiagramFactory = null;
 
         this.path = path;
         this.myIO = null;
@@ -45,9 +46,8 @@ public class ExportDiagramVisitor extends ViElementVisitor {
 
     @Override
     public void visit(ViDiagramAsElement viDiagram) throws IOException {
-        // 暂时不将图表放入全局模型缓存，以便节省内存。未来视情况而定。
         var vpDiagram = viDiagram.getVPDiagramUIModel();
-        var puml = buildPlantUML.of(vpDiagram);
+        var puml = pumlDiagramFactory.build(vpDiagram);
         write.plantUML(puml, ((ExportDiagramVisitor) higherVisitor).getPath());
     }
 

@@ -23,7 +23,7 @@ public class PumlUseCaseExporter extends PumlElementExporter {
      * 步 A9：直读 VP 原生模型。use case 对应的 IModelElement 提供 getName() 与 VP 全限定名别名。
      */
     @Override
-    public void to(PumlDiagram result, IDiagramElement vpDiagramElement) {
+    public void export(PumlDiagram result, IDiagramElement vpDiagramElement) {
         IModelElement vpElement = vpDiagramElement.getModelElement();
         result.writeTerminalShape("usecase \"" + vpElement.getName() + "\" as " + getPumlAlias(vpElement));
     }

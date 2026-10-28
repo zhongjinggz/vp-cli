@@ -16,11 +16,6 @@ public class PumlModelExporter extends PumlPackageExporter {
     }
 
     @Override
-    String getBlockType() {
-        return "namespace";
-    }
-
-    @Override
     String getBlockSuffix() {
         return "<<model>>";
     }

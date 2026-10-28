@@ -29,7 +29,7 @@ public abstract class PumlElementExporter {
      * 步 A1：导出入口。导出器直读 VP 原生模型——此处下发的即 VP 图形元素（IDiagramElement），
      * 各子类在内部直读其 IModelElement。
      */
-    public void to(PumlDiagram result, IDiagramElement vpDiagramElement) {
+    public void export(PumlDiagram result, IDiagramElement vpDiagramElement) {
     }
 
     /**

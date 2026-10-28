@@ -4,8 +4,6 @@ import com.vp.plugin.*;
 import plugins.vpcli.drivingadapter.CLIController;
 
 import java.io.File;
-import java.io.IOException;
-import java.rmi.server.ExportException;
 
 import ch.qos.logback.classic.LoggerContext;
 import ch.qos.logback.classic.util.ContextInitializer;

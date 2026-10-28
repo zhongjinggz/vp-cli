@@ -31,7 +31,7 @@ public class PumlDiagram {
         @NotNull String blockSuffix
     ) {
         String text = blockType + " \"" + name + "\" as " + pumlAlias;
-        if (blockSuffix.length() > 0) {
+        if (!blockSuffix.isEmpty()) {
             text += " " + blockSuffix;
         }
         text += " {";
@@ -70,12 +70,6 @@ public class PumlDiagram {
         sb.append("@enduml\n");
 
         return sb.toString();
-    }
-
-    public void writeEdge(String fromName, String toName) {
-        var text = fromName + " -- " + toName;
-        addStatement(text);
-
     }
 
     /**
