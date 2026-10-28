@@ -16,7 +16,7 @@ public class PumlModelExporter extends PumlPackageExporter {
     }
 
     @Override
-    String getBlockSuffix() {
+    String getKeyword() {
         return "<<model>>";
     }
 }

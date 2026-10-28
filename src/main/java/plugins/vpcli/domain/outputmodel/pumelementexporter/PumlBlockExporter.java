@@ -46,7 +46,7 @@ public abstract class PumlBlockExporter extends PumlElementExporter {
     abstract String getBlockType();
 
     // 供需要在块声明末尾追加内容（如 <<model>> 原型）的子类覆写
-    String getBlockSuffix() {
+    String getKeyword() {
         return "";
     }
 
@@ -56,11 +56,11 @@ public abstract class PumlBlockExporter extends PumlElementExporter {
     }
 
     /**
-     * 步 #15：块声明后缀 = 固定原型（getBlockSuffix()）+ 元素上施加的泛型。
+     * 步 #15：块声明后缀 = 固定原型（getKeyword()）+ 元素上施加的泛型。
      * 组合顺序：固定原型在前，随后是每个泛型。
      */
     String buildBlockSuffix(IModelElement vpElement) {
-        String fixed = getBlockSuffix();
+        String fixed = getKeyword();
         String stereotypes = renderStereotypes(vpElement);
         if (fixed.isEmpty()) {
             return stereotypes;
