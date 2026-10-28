@@ -21,6 +21,9 @@ public class PumlElementExporterFactory {
         PumlUseCaseExporter useCaseExporter,
         PumlDependencyExporter dependencyExporter,
         PumlGeneralizationExporter generalizationExporter,
+        PumlRealizationExporter realizationExporter,
+        PumlNoteExporter noteExporter,
+        PumlAnchorExporter anchorExporter,
         PumlUnimplementedExporter unimplementedExporter
     ) {
         this.unimplementedExporter = unimplementedExporter;
@@ -32,6 +35,9 @@ public class PumlElementExporterFactory {
         register(useCaseExporter);
         register(dependencyExporter);
         register(generalizationExporter);
+        register(realizationExporter);
+        register(noteExporter);
+        register(anchorExporter);
         register(unimplementedExporter);
     }
 

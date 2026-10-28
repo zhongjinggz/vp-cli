@@ -49,6 +49,10 @@ public abstract class PumlElementExporter {
         }
         collectQualifiedNameSegments(segments, element.getParent());
         String name = element.getName();
+        // 步 #19 修正：无 Name 时用 ID 代替，保证 Note 声明与 Anchor 连线引用同一别名。
+        if (name == null || name.isEmpty()) {
+            name = element.getId();
+        }
         if (name != null && !name.isEmpty()) {
             segments.add(name);
         }

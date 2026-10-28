@@ -826,7 +826,49 @@ interface2 <|.. class2
 ```
 
 ### 方案
-TODO
+
+**目标：** 仅“导出”路径——①把带 `<<interface>>` 泛型的类块声明为 `interface` 关键字；②把实现接口的连线（VP 中 Element Type = `Realization`）渲染为虚线的 `*<|..` 边，实现类指向接口。不涉及导入。
+
+**现状分析（已核对源码 + javap openapi.jar）：**
+- `IClass.stereotypeModelIterator()` 可读类上泛型（见 `PumlClassExporter` 现有 `renderStereotypes` 基类实现）。
+- SDK 已确认：`MODEL_TYPE_REALIZATION="Realization"`、`SHAPE_TYPE_REALIZATION="Realization"`（`com.vp.plugin.diagram.IShapeTypeConstants.SHAPE_TYPE_REALIZATION`）；`IRealization extends IHasRelationshipBaseSimpleRelationship`（→`ISimpleRelationship`→`IRelationship`→`IModelElement`），带 `getFrom()/getTo()` 与 `stereotypeModelIterator()`。
+- 旧架构 `MyRelationship_old.toExportFormat()`：`case "Realization": symbol = "<|.."`，即 from=getFrom、三角在 from 端、虚线。泛化（#16 已实现）正是同一结构且已实证可用（`class7 <|-- class8`），实现仅需把 SOLID 换成 DASHED。
+
+**设计图（新增导出器与注册）：**
+
+```plantuml
+@startuml
+class PumlElementExporter {
+  # getPumlAlias(vp): String
+  # renderStereotypes(vp): String
+  # buildEdgeLabel(name, vp): String
+}
+class PumlRealizationExporter extends PumlElementExporter {
+  + getShapeType(): String   // SHAPE_TYPE_REALIZATION
+  + export(result, vp: IDiagramElement): void
+}
+class PumlElementExporterFactory {
+  + build(shapeType): PumlElementExporter
+}
+PumlRealizationExporter --|> PumlElementExporter
+PumlElementExporterFactory ..> PumlRealizationExporter : register()
+@enduml
+```
+
+**实施步骤（每步可独立验证）：**
+
+1. **实现连线渲染（新增 `PumlRealizationExporter`）。** 新建 `PumlRealizationExporter extends PumlElementExporter`，`getShapeType()` 返回 `IShapeTypeConstants.SHAPE_TYPE_REALIZATION`；`export(...)` 仿 `PumlGeneralizationExporter`：取 `IRealization`，`fromAlias=getPumlAlias(getFrom())`、`toAlias=getPumlAlias(getTo())`，`result.writeEdge(PumlEdgeEnd.of(fromAlias,"","",ShapeKind.REVERSE_TRIANGLE), PumlEdgeEnd.of(toAlias,"","",ShapeKind.NONE), LineStyle.DASHED, buildEdgeLabel(getName(), realization), NameDirection.NONE)` → 输出 `实现类 <|.. 接口`（需求中 `class1 ..|> interface1` 与 `interface2 <|.. class2` 只是同一 relations 的两种阅读朝向，VP 以固定 from/to 端统一为一种输出）。
+   - 验证：单测桩 `IRealization`（`getName()`、`getFrom()`/`getTo()`、`stereotypeModelIterator()`），断言输出 `class1 <|.. interface1`；带泛型时输出 `class1 <|.. interface1: label <<Stereotype>>`。
+
+2. **接口块关键字（`PumlClassExporter`）。** 在 `buildBlockType` 中优先判断类是否带 `<<interface>>` 泛型——是则返回 `"interface"`（先于 abstract，接口通常非抽象）；否则沿用现有 abstract/class 逻辑。泛型后缀仍由 `buildBlockSuffix` 原样渲染，故块头形如 `interface "interface1" as interface1 <<interface>> {`。
+   - 验证：单测桩 `IClass` 带 `<<interface>>` 泛型，断言 `buildBlockType` 返回 `"interface"`；块头端到端含 `interface ... <<interface>>`。
+
+3. **接线与回归。** 在 `PumlElementExporterFactory` 构造器注入 `PumlRealizationExporter` 并 `register(...)`；类型分发按 `getShapeType()` 自动生效。未改 `ViElementType`/`DiagramElementType`/`writeEdge`；整体 `mvn test` 无回归（原 51 测试保持通过）。
+
+4. **集成验证。**
+   - 验证：手动在 VP 中画一个类实现接口后导出，检查 `.puml` 出现 `某实现类 <|.. 某接口` 与 `interface "某接口" as ... <<interface>> {`；用 PlantUML 预览确认虚线 + 空心三角指向接口、泛型徽标正常。
+
+**说明/边界：** 本条目仅处理 `<<interface>>` 的块关键字与实现（Realization）连线导出，不复用 `enum` 关键字（见 #20）、不改导入路径。三角方向沿用泛化语义（三角在 from/getFrom 端）。泛型名原样置于 `<< >>` 间，不净化。
 
 ## 19 注释 Note
 
@@ -851,24 +893,60 @@ class1 .. N1
 ```
 
 
+### 方案
+
+**目标：** 仅“导出”路径——①把图中的注释（VP 中模型 Element Type = `MODEL_TYPE_NOTE`、形状 SHAPE_TYPE_NOTE）渲染为 `note "<正文>" as <别名>`；②把注释与被注释元素之间的连线（VP 中 Element Type = `Anchor`）渲染为虚线 `..` 边，两端分别连注释与目标元素。不涉及导入。
+
+**现状分析（已核对源码 + javap openapi.jar + 旧架构）：**
+- 注释模型读取：`INOTE extends INoChildrenBaseModelElement`，正文经 `getDescription()`，别名沿用旧架构 `MyNote_old` 规则——有名用名、无名用 `note_<id洗净>`（id 中非 `[a-zA-Z0-9]` 换成 `_`）。
+- 连线类型（此前未决，现已确认）：旧架构 `MyRelationship_old.toExportFormat()` 有 `case "Anchor": symbol = ".."`；SDK 存在模型 `MODEL_TYPE_ANCHOR="Anchor"`、形状接口 `IAnchorUIModel extends IConnectorUIModel`、常量 `SHAPE_TYPE_ANCHOR="Anchor"`、模型接口 `IAnchor extends IHasRelationshipBaseSimpleRelationship`（→`IRelationship`→`IModelElement`，带 `getFrom()/getTo()`）。**故注释连线即 `Anchor`，需求里 `class2 .. N1` / `class1 .. N1` 是 anchor 边的两种阅读表现，VP 以固定 from/to 端统一输出为一条 `X .. N`。**
+- 当前 `PumlDiagramFactory`（src/.../PumlDiagramFactory.java:44）对连接线做了 `instanceof IAnchorUIModel` 过滤（b6bcf56 引入）——放开它即可让 anchor 进入分发。
+
+**设计图（新增导出器与注册）：**
+
 ```plantuml
 @startuml
-class class1 {
+class PumlElementExporter {
+  # getPumlAlias(vp): String
+  # renderStereotypes(vp): String
 }
-class class2 {
+class PumlNoteExporter extends PumlElementExporter {
+  + getShapeType(): String          // SHAPE_TYPE_NOTE
+  + export(result, vp): void
 }
-
-note "UML Style" as N1
-
-
-class2 .. N1
-class1 .. N1
-
+class PumlAnchorExporter extends PumlElementExporter {
+  + getShapeType(): String          // SHAPE_TYPE_ANCHOR
+  + export(result, vp): void
+}
+class PumlElementExporterFactory {
+  + build(shapeType): PumlElementExporter
+}
+PumlNoteExporter --|> PumlElementExporter
+PumlAnchorExporter --|> PumlElementExporter
+PumlElementExporterFactory ..> PumlNoteExporter : register()
+PumlElementExporterFactory ..> PumlAnchorExporter : register()
 @enduml
-``
+```
 
-### 方案
-TODO
+**实施步骤（每步可独立验证）：**
+
+1. **注释块渲染（新增 `PumlNoteExporter`）。** 新建 `PumlNoteExporter extends PumlElementExporter`，`getShapeType()` 返回 `IShapeTypeConstants.SHAPE_TYPE_NOTE`；`export(...)` 取 `INOTE`：正文 = `getDescription()`（把内部换行 `\n` 替换为字面 `\\n`，沿用旧 `writeNote`），别名 = 有名用名（`getName()` 清洗后）、无名用 `note_<id>`。输出 `result.writeTerminalShape("note \"" + 正文 + "\" as " + 别名)`。若正文为空则跳过（行为与旧版一致）。
+   - 验证：单测桩 `INOTE`（`getName()`/`getDescription()`/`getId()`），断言有名→`note "..." as 别名`、无名→`note "..." as note_<id>`、空正文→无输出。
+
+2. **放开 anchor 过滤（`PumlDiagramFactory`）。** 删除连接线循环里的 `if (aConnector instanceof IAnchorUIModel) continue;`，使 anchor 进入 `exporterFactory.build(aConnector.getShapeType())` 分发。同时去掉无用的 `IAnchorUIModel` import。
+   - 验证：`PumlDiagramFactoryTest` 若含 anchor 过滤断言需相应更新（会把原来被丢弃的 anchor 渲染为 `..`）。
+
+3. **anchor 连线渲染（新增 `PumlAnchorExporter`）。** 新建 `PumlAnchorExporter extends PumlElementExporter`，`getShapeType()` 返回 `IShapeTypeConstants.SHAPE_TYPE_ANCHOR`；`export(...)` 取 `IAnchor`：`fromAlias=getPumlAlias(getFrom())`、`toAlias=getPumlAlias(getTo())`，`result.writeEdge(PumlEdgeEnd.of(fromAlias,"","",ShapeKind.NONE), PumlEdgeEnd.of(toAlias,"","",ShapeKind.NONE), LineStyle.DASHED, "", NameDirection.NONE)` → 输出 `X .. N`（anchor 无名，故 name 传空串，无冒号标签）。
+   - 验证：单测桩 `IAnchor`（`getFrom()`/`getTo()`），断言输出 `class2 .. N1`。
+
+4. **接线与回归。** `PumlElementExporterFactory` 构造器注入 `PumlNoteExporter`、`PumlAnchorExporter` 并 `register(...)`；整体 `mvn test` 无回归（原 51 测试保持通过）。放开 anchor 属既有行为变更——会导致过去被静默丢弃的 anchor 全部渲染为 `..`（用户已确认可接受）。
+
+5. **集成验证。**
+   - 验证：手动在 VP 中为类添加注释并拉虚线到类后导出，检查 `.puml` 出现 `note "UML Style" as N1`、`class2 .. N1`、`class1 .. N1`；用 PlantUML 预览确认注释框与虚线、阅读指向正常。
+
+**说明/边界：** 本条目仅处理注释本身（NOTE 形状）与注释–元素连线（ANCHOR）的导出，不涉及导入路径对 `note` 的解析。泛型/别名净化沿用现成工具：块名与别名经 `getPumlAlias`（拉丁/希腊字母与数字保留下划线），注释别名另按旧规则处理。anchor 无名无冒号标签。
+
+## 20 枚举 Enumeration
 
 ## 20 枚举 Enumeration
 
@@ -901,5 +979,44 @@ enum Status <<enumeration>> {
 @enduml
 ```
 
+
+
 ### 方案
-TODO
+
+**目标：** 仅“导出”路径——①把带 `<<enumeration>>` 泛型的类块声明为 `enum` 关键字；②类体内用 `--` 分隔区渲染属性区/操作区/枚举值区，只有单区时不用 `--`，两区及以上时各区之间以 `--` 分隔；③枚举项从 `enumerationLiteralIterator()` 读取 `IEnumerationLiteral` 渲染为成员行。不涉及导入。
+
+**现状分析（已核对源码 + javap openapi.jar）：**
+- 枚举本质：SDK 无 `IEnumeration` 模型接口，且 `IEnumerationUIModel extends IClassUIModel`（图里枚举形状仍是类形状），类上以 `<<enumeration>>` 泛型标记——与【提示】一致。
+- 枚举项读取：`IClass.enumerationLiteralIterator()`（javap 已确认存在），返回 `IEnumerationLiteral`；`IEnumerationLiteral extends INoChildrenNoRelationshipBaseModelElement`，有 `getName()`（无参数/返回值等，仅名称，旧架构把它当“空可见性属性行”追加，见 `OldClassDiagram.extractAttributes`）。
+- 泛型读取：`IClass.stereotypeModelIterator()`（已在 #15/#16 使用）可判断是否 `<<enumeration>>`。
+- `PumlClassExporter.writeBlockBody`（src/.../PumlClassExporter.java:43）现仅依次写 attribute 与 operation；需重排为分区渲染并追加枚举值区。
+
+**设计图（PumlClassExporter 内部分区逻辑）：**
+
+```plantuml
+@startuml
+class PumlClassExporter extends PumlBlockExporter {
+  + getShapeType(): String
+  - buildBlockType(vp): String        // 覆写：<<interface>>→interface、<<enumeration>>→enum、abstract→abstract class、否则 class
+  - writeBlockBody(result, vp): void  // 覆写：分区渲染属性/操作/枚举值，-- 分隔
+  - writeMembers(result, attrs, ops, literals): void
+  - isEnumeration(vp): boolean
+  - isInterface(vp): boolean
+}
+@enduml
+```
+
+**实施步骤（每步可独立验证）：**
+
+1. **块关键字（`PumlClassExporter.buildBlockType`）。** 在现有 `buildBlockType` 前置判断：类带 `<<enumeration>>` 泛型 → 返回 `"enum"`；否则带 `<<interface>>` → `"interface"`（与 #18 共用同一判断，接口盖过 abstract）；否则沿用现有 abstract/class。判断逻辑放一个私有方法 `hasStereotype(vp, name)`（遍历 `stereotypeModelIterator()` 比对 `getName()` 忽略大小写，枚举同时匹配 `enumeration`，兼容需求 `<<enumeration>>`）。
+   - 验证：单测桩 `IClass` 分别带 `<<enumeration>>`/无，断言 `buildBlockType` 返回 `"enum"`/`"class"`。
+
+2. **分区体渲染（`PumlClassExporter.writeBlockBody` 重排）。** 读 `attributeIterator()`、`operationIterator()`、`enumerationLiteralIterator()` 各收集成三个行列表（沿用现 `formatVpAttributeLine`/`formatVpOperationLine`；枚举项行 = 枚举项名，无可见性符）。依次输出：凡该区非空才写该区；若已输出过某个非空区且又要输出另一非空区，则在两区之间先输出一行 `--`。具体：属性区非空→写属性行；随后操作区非空→（若之前已写过属性区则先 `--`）写操作行；随后枚举值区非空→（若之前已写过任一区则先 `--`）写枚举值行。这样只有单区时无 `--`，两区/三区时以 `--` 分隔，符合用户确认的统一逻辑且不破坏 PlantUML 约定。
+   - 验证：单测桩 `IClass` 覆盖：仅属性（无 `--`）；属性+操作（中间 `--`）；属性+操作+枚举值（两个 `--`）；仅枚举值（无 `--`）。
+
+3. **接线与回归。** 本条目仍是 `CLASS` 形状分发到 `PumlClassExporter`，不新增导出器类/类型登记；改动全部收敛在 `PumlClassExporter`。整体 `mvn test` 无回归（原 51 测试保持通过）。
+
+4. **集成验证。**
+   - 验证：手动在 VP 建一个 `enum`（加 `<<enumeration>>` 泛型、若干枚举值、再加属性和操作）后导出，检查 `.puml` 出现 `enum "Status" as Status <<enumeration>> {` 且体内按 `--` 分区；用 PlantUML 预览确认枚举块与分隔线正常。
+
+**说明/边界：** 本条目仅处理 `<<enumeration>>` 的 `enum` 关键字与分区体、枚举项导出，不涉及导入路径；`<<interface>>` 关键字见 #18。枚举项行不含可见性符/静态/抽象，仅名称。泛型名原样输出不净化。

@@ -10,6 +10,7 @@ import com.vp.plugin.model.IAssociationEnd;
 import com.vp.plugin.model.IDependency;
 import com.vp.plugin.model.IGeneralization;
 import com.vp.plugin.model.IModelElement;
+import com.vp.plugin.model.IRealization;
 import com.vp.plugin.model.IStereotype;
 import java.util.Arrays;
 import java.util.Collections;
@@ -108,6 +109,22 @@ class PumlRelationshipStereotypeTest {
             () -> "实际输出：\n" + diagram);
     }
 
+    // ---- 实现 Realization ----
+
+    @Test
+    void realizationWithOnlyStereotypeNoName() {
+        PumlDiagram diagram = new PumlDiagram("d");
+        IStereotype s = stereo("Stereotype4");
+        IRealization real = mock(IRealization.class);
+        when(real.getName()).thenReturn("");
+        when(real.stereotypeModelIterator()).thenReturn(iterOf(s));
+
+        new PumlRealizationExporter().export(diagram, edgeOf(real, model("class7"), model("class8")));
+
+        assertTrue(diagram.toString().contains("class7 <|.. class8: <<Stereotype4>>"),
+            () -> "实际输出：\n" + diagram);
+    }
+
     // ---- 无名称无泛型：行为不变（无冒号标签） ----
 
     @Test
@@ -179,6 +196,9 @@ class PumlRelationshipStereotypeTest {
         } else if (model instanceof IGeneralization) {
             when(((IGeneralization) model).getFrom()).thenReturn(from);
             when(((IGeneralization) model).getTo()).thenReturn(to);
+        } else if (model instanceof IRealization) {
+            when(((IRealization) model).getFrom()).thenReturn(from);
+            when(((IRealization) model).getTo()).thenReturn(to);
         }
         IDiagramElement e = mock(IDiagramElement.class);
         when(e.getModelElement()).thenReturn(model);

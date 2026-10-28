@@ -3,12 +3,16 @@ package plugins.vpcli.domain.outputmodel.pumelementexporter;
 import com.vp.plugin.diagram.IShapeTypeConstants;
 import com.vp.plugin.model.IAttribute;
 import com.vp.plugin.model.IClass;
+import com.vp.plugin.model.IEnumerationLiteral;
 import com.vp.plugin.model.IModelElement;
 import com.vp.plugin.model.IOperation;
 import com.vp.plugin.model.IParameter;
 import jakarta.inject.Inject;
 import jakarta.inject.Singleton;
 import plugins.vpcli.domain.outputmodel.PumlDiagram;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Singleton
 public class PumlClassExporter extends PumlBlockExporter {
@@ -26,18 +30,45 @@ public class PumlClassExporter extends PumlBlockExporter {
         return "class";
     }
 
-    /** 步 #15：抽象类在关键字前加 abstract。 */
+    /**
+     * 步 #18：接口关键字优先——带 <<interface>> 泛型的类声明为 interface（接口通常非抽象）；
+     * 步 #20：带 <<enumeration>> 泛型的类声明为 enum（枚举本质是带该泛型的 Class）；
+     * 步 #15：抽象类在关键字前加 abstract。
+     */
     @Override
     String buildBlockType(IModelElement vpElement) {
-        if (vpElement instanceof IClass && ((IClass) vpElement).isAbstract()) {
-            return "abstract class";
+        if (vpElement instanceof IClass) {
+            IClass clazz = (IClass) vpElement;
+            if (hasStereotype(clazz, "interface")) {
+                return "interface";
+            }
+            if (hasStereotype(clazz, "enumeration")) {
+                return "enum";
+            }
+            if (clazz.isAbstract()) {
+                return "abstract class";
+            }
         }
         return getBlockType();
     }
 
+    /** 判断元素是否带指定泛型名（忽略大小写）。 */
+    private boolean hasStereotype(IClass clazz, String stereotypeName) {
+        var it = clazz.stereotypeModelIterator();
+        while (it.hasNext()) {
+            IModelElement stereo = (IModelElement) it.next();
+            String name = stereo.getName();
+            if (name != null && name.equalsIgnoreCase(stereotypeName)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     /**
-     * 步 A8：直接读 VP 原生 IClass 的成员（attributeIterator/operationIterator）渲染类体，
-     * 可见性/静态/抽象/参数/初值映射沿用 #14/#12/#13 结论。
+     * 步 #20：分区渲染类体。依次读取属性区、操作区、枚举值区三个行列表；
+     * 凡该区非空才写，凡需输出一个新的非空区且前面已写过区，则先在两区之间补一行 `--`。
+     * 只有单区时无 `--`，两区及以上时以 `--` 分隔（用户确认的统一分区规则）。
      */
     @Override
     void writeBlockBody(PumlDiagram result, IModelElement vpElement) {
@@ -45,14 +76,67 @@ public class PumlClassExporter extends PumlBlockExporter {
             return;
         }
         IClass clazz = (IClass) vpElement;
+
+        List<String> attributeLines = collectAttributeLines(clazz);
+        List<String> operationLines = collectOperationLines(clazz);
+        List<String> enumerationLines = collectEnumerationLines(clazz);
+
+        boolean wroteAny = false;
+        if (!attributeLines.isEmpty()) {
+            for (String line : attributeLines) {
+                result.writeTerminalShape(line);
+            }
+            wroteAny = true;
+        }
+        if (!operationLines.isEmpty()) {
+            if (wroteAny) {
+                result.writeTerminalShape("--");
+            }
+            for (String line : operationLines) {
+                result.writeTerminalShape(line);
+            }
+            wroteAny = true;
+        }
+        if (!enumerationLines.isEmpty()) {
+            if (wroteAny) {
+                result.writeTerminalShape("--");
+            }
+            for (String line : enumerationLines) {
+                result.writeTerminalShape(line);
+            }
+            wroteAny = true;
+        }
+    }
+
+    private List<String> collectAttributeLines(IClass clazz) {
+        List<String> lines = new ArrayList<>();
         var attributeIterator = clazz.attributeIterator();
         while (attributeIterator.hasNext()) {
-            result.writeTerminalShape(formatVpAttributeLine((IAttribute) attributeIterator.next()));
+            lines.add(formatVpAttributeLine((IAttribute) attributeIterator.next()));
         }
+        return lines;
+    }
+
+    private List<String> collectOperationLines(IClass clazz) {
+        List<String> lines = new ArrayList<>();
         var operationIterator = clazz.operationIterator();
         while (operationIterator.hasNext()) {
-            result.writeTerminalShape(formatVpOperationLine((IOperation) operationIterator.next()));
+            lines.add(formatVpOperationLine((IOperation) operationIterator.next()));
         }
+        return lines;
+    }
+
+    /** 枚举项行 = 枚举项名，无可见性符（旧架构当作“空可见性属性行”追加）。 */
+    private List<String> collectEnumerationLines(IClass clazz) {
+        List<String> lines = new ArrayList<>();
+        var literalIterator = clazz.enumerationLiteralIterator();
+        while (literalIterator.hasNext()) {
+            IEnumerationLiteral literal = (IEnumerationLiteral) literalIterator.next();
+            if (literal.getName() != null && !literal.getName().isEmpty()) {
+                lines.add(literal.getName());
+            }
+        }
+        return lines;
     }
 
     // 属性行：<可见性符号> <{static}?> <名称> [: 类型] [= 初值]，各段按字段有无省略

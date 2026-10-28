@@ -124,6 +124,7 @@ class PumlBlockExporterStereotypeTest {
         PumlClassExporter exporter = new PumlClassExporter();
         IClass clazz = mock(IClass.class);
         when(clazz.isAbstract()).thenReturn(true);
+        when(clazz.stereotypeModelIterator()).thenReturn(Collections.emptyIterator());
 
         assertEquals("abstract class", exporter.buildBlockType(clazz));
     }
@@ -133,8 +134,58 @@ class PumlBlockExporterStereotypeTest {
         PumlClassExporter exporter = new PumlClassExporter();
         IClass clazz = mock(IClass.class);
         when(clazz.isAbstract()).thenReturn(false);
+        when(clazz.stereotypeModelIterator()).thenReturn(Collections.emptyIterator());
 
         assertEquals("class", exporter.buildBlockType(clazz));
+    }
+
+    // ---- buildBlockType：接口（#18） ----
+
+    @Test
+    void interfaceClassYieldsInterfaceKeyword() {
+        PumlClassExporter exporter = new PumlClassExporter();
+        IStereotype s = stereo("interface");
+        IClass clazz = mock(IClass.class);
+        when(clazz.isAbstract()).thenReturn(false);
+        when(clazz.stereotypeModelIterator()).thenReturn(iterOf(s));
+
+        assertEquals("interface", exporter.buildBlockType(clazz));
+    }
+
+    @Test
+    void interfaceKeywordPrecedesAbstractCheck() {
+        PumlClassExporter exporter = new PumlClassExporter();
+        IStereotype s = stereo("interface");
+        IClass clazz = mock(IClass.class);
+        when(clazz.isAbstract()).thenReturn(true);
+        when(clazz.stereotypeModelIterator()).thenReturn(iterOf(s));
+
+        assertEquals("interface", exporter.buildBlockType(clazz));
+    }
+
+    // ---- buildBlockType：枚举（#20） ----
+
+    @Test
+    void enumerationClassYieldsEnumKeyword() {
+        PumlClassExporter exporter = new PumlClassExporter();
+        IStereotype s = stereo("enumeration");
+        IClass clazz = mock(IClass.class);
+        when(clazz.isAbstract()).thenReturn(false);
+        when(clazz.stereotypeModelIterator()).thenAnswer(inv -> iterOf(s));
+
+        assertEquals("enum", exporter.buildBlockType(clazz));
+    }
+
+    @Test
+    void interfaceKeywordTakesPrecedenceOverEnumeration() {
+        PumlClassExporter exporter = new PumlClassExporter();
+        IStereotype iff = stereo("interface");
+        IStereotype en = stereo("enumeration");
+        IClass clazz = mock(IClass.class);
+        when(clazz.isAbstract()).thenReturn(false);
+        when(clazz.stereotypeModelIterator()).thenAnswer(inv -> iterOf(iff, en));
+
+        assertEquals("interface", exporter.buildBlockType(clazz));
     }
 
     @Test
@@ -154,7 +205,7 @@ class PumlBlockExporterStereotypeTest {
         IStereotype s = stereo("service");
         IClass clazz = model(IClass.class, "class1", null);
         when(clazz.isAbstract()).thenReturn(false);
-        when(clazz.stereotypeModelIterator()).thenReturn(iterOf(s));
+        when(clazz.stereotypeModelIterator()).thenAnswer(inv -> iterOf(s));
 
         new PumlClassExporter().export(diagram, elementOf(clazz, false));
 
@@ -169,7 +220,7 @@ class PumlBlockExporterStereotypeTest {
         IStereotype s = stereo("repository");
         IClass clazz = model(IClass.class, "class2", null);
         when(clazz.isAbstract()).thenReturn(true);
-        when(clazz.stereotypeModelIterator()).thenReturn(iterOf(s));
+        when(clazz.stereotypeModelIterator()).thenAnswer(inv -> iterOf(s));
 
         new PumlClassExporter().export(diagram, elementOf(clazz, false));
 
@@ -227,6 +278,7 @@ class PumlBlockExporterStereotypeTest {
         if (m instanceof IClass) {
             when(((IClass) m).attributeIterator()).thenReturn(Collections.emptyIterator());
             when(((IClass) m).operationIterator()).thenReturn(Collections.emptyIterator());
+            when(((IClass) m).enumerationLiteralIterator()).thenReturn(Collections.emptyIterator());
         }
         return m;
     }
