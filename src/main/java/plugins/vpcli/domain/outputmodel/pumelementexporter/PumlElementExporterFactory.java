@@ -5,9 +5,12 @@ import java.util.Map;
 
 import jakarta.inject.Inject;
 import jakarta.inject.Singleton;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 @Singleton
 public class PumlElementExporterFactory {
+    Logger log = LoggerFactory.getLogger(PumlElementExporterFactory.class);
     private final Map<String, PumlElementExporter> shapeTypeExporters = new HashMap<>();
     private final PumlUnimplementedExporter unimplementedExporter;
 
@@ -24,6 +27,15 @@ public class PumlElementExporterFactory {
         PumlRealizationExporter realizationExporter,
         PumlNoteExporter noteExporter,
         PumlAnchorExporter anchorExporter,
+        PumlUsageExporter usageExporter,
+        PumlBindingDependencyExporter bindingDependencyExporter,
+        PumlPermissionExporter permissionExporter,
+        PumlAccessExporter accessExporter,
+        PumlImportExporter importExporter,
+        PumlMergeExporter mergeExporter,
+        PumlInstantiationExporter instantiationExporter,
+        PumlSubstitutionExporter substitutionExporter,
+        PumlAbstractionExporter abstractionExporter,
         PumlUnimplementedExporter unimplementedExporter
     ) {
         this.unimplementedExporter = unimplementedExporter;
@@ -38,6 +50,16 @@ public class PumlElementExporterFactory {
         register(realizationExporter);
         register(noteExporter);
         register(anchorExporter);
+        /* #21：注册 9 类特殊依赖导出器。 */
+        register(usageExporter);
+        register(bindingDependencyExporter);
+        register(permissionExporter);
+        register(accessExporter);
+        register(importExporter);
+        register(mergeExporter);
+        register(instantiationExporter);
+        register(substitutionExporter);
+        register(abstractionExporter);
         register(unimplementedExporter);
     }
 
@@ -53,6 +75,11 @@ public class PumlElementExporterFactory {
      */
     public PumlElementExporter build(String shapeType) {
         PumlElementExporter exporter = this.shapeTypeExporters.get(shapeType);
-        return exporter != null ? exporter : unimplementedExporter;
+        if (exporter != null) {
+            return exporter;
+        }
+
+        log.warn("Unimplemented shape type: {}", shapeType);
+        return unimplementedExporter;
     }
 }

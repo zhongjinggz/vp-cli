@@ -31,7 +31,7 @@ public class PumlUnimplementedExporter extends PumlElementExporter {
     public void export(PumlDiagram result, IDiagramElement vpDiagramElement) {
         IModelElement vpElement = vpDiagramElement.getModelElement();
         log.warn(
-            "Unimplemented element will not be exported, name={} type ={}",
+            "Unimplemented element will not be exported, name={} model-type ={}",
             vpElement.getName(),
             vpElement.getModelType()
         );

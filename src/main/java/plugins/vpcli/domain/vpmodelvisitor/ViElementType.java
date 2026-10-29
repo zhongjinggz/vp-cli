@@ -19,6 +19,11 @@ public enum ViElementType {
     ASSOCIATION("diagram_has_no_model_type", ".association"),
     ASSOCIATION_END(MODEL_TYPE_ASSOCIATION_END, ".association-end"),
     DEPENDENCY(MODEL_TYPE_DEPENDENCY, ".dependency"),
+    /* #21：Usage / Bind / Permit / Abstraction 各有独立 model type，补登记导出映射。 */
+    USAGE(MODEL_TYPE_USAGE, ".usage"),
+    BINDING_DEPENDENCY(MODEL_TYPE_BINDING_DEPENDENCY, ".binding-dependency"),
+    PERMISSION(MODEL_TYPE_PERMISSION, ".permission"),
+    ABSTRACTION(MODEL_TYPE_ABSTRACTION, ".abstraction"),
     GENERALIZATION(MODEL_TYPE_GENERALIZATION, ".generalization"),
     RELATIONSHIPS(MODEL_TYPE_MODEL_RELATIONSHIP_CONTAINER, ".relationships"),
     STEREOTYPE(MODEL_TYPE_STEREOTYPE, ".stereotype"),

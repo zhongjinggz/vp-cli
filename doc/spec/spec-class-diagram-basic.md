@@ -1020,3 +1020,151 @@ class PumlClassExporter extends PumlBlockExporter {
    - 验证：手动在 VP 建一个 `enum`（加 `<<enumeration>>` 泛型、若干枚举值、再加属性和操作）后导出，检查 `.puml` 出现 `enum "Status" as Status <<enumeration>> {` 且体内按 `--` 分区；用 PlantUML 预览确认枚举块与分隔线正常。
 
 **说明/边界：** 本条目仅处理 `<<enumeration>>` 的 `enum` 关键字与分区体、枚举项导出，不涉及导入路径；`<<interface>>` 关键字见 #18。枚举项行不含可见性符/静态/抽象，仅名称。泛型名原样输出不净化。
+
+
+## 21 特殊的依赖 Special Dependency
+
+### 需求
+
+Visual Paradigm 中有若干特殊的 Dependency, 他们各自有不同的 shape type 、 model type 和 stereotype。
+
+```plantuml
+@startuml
+class Target {}
+
+Usage ..> Target: <<use>>  
+Bind ..> Target: <<bind>>  
+Permit ..> Target: <<permit>>  
+Access ..> Target: <<access>>  
+Import ..> Target: <<import>>  
+Merge ..> Target: <<merge>>  
+Instantiate ..> Target: <<instantiate>>  
+Substitute ..> Target: <<substitute>>  
+Abstraction ..> Target: <<abstraction>>  
+
+@enduml
+```
+
+### 方案
+
+【提示】
+- 这些不同种类的依赖，和目前已经实现的 Dependency 在逻辑上完全一样，但 shape type 不同，而model type 可能不同，也可能还是 MODEL_TYPE_DEPENDENCY，因此：
+  - 可以根据不同的 shape type，实现为 PumlDependencyExporter 的不同子类，但不需要写特殊的逻辑
+  - 需要补充 ViElementType 和 PumlElementExporterFactory 中的注册
+- 各特殊 Dependency 的 shape type 和 model type 如下：
+  - Usage
+    - shape type: IShapeTypeConstants.SHAPE_TYPE_USAGE
+    - model type: IModelElementFactory.MODEL_TYPE_USAGE
+  - Bind
+      - shape type: IShapeTypeConstants.SHAPE_TYPE_BINDING_DEPENDENCY
+      - model type: IModelElementFactory.MODEL_TYPE_BINDING_DEPENDENCY
+  - Permit
+      - shape type: IShapeTypeConstants.SHAPE_TYPE_PERMISSION
+      - model type: IModelElementFactory.MODEL_TYPE_PERMISSION
+  - Access
+      - shape type: IShapeTypeConstants.SHAPE_TYPE_ACCESS
+      - model type: IModelElementFactory.MODEL_TYPE_DEPENDENCY
+  - Import
+      - shape type: IShapeTypeConstants.SHAPE_TYPE_IMPORT
+      - model type: IModelElementFactory.MODEL_TYPE_DEPENDENCY
+  - Merge
+      - shape type: IShapeTypeConstants.SHAPE_TYPE_MERGE
+      - model type: IModelElementFactory.MODEL_TYPE_DEPENDENCY
+  - Instantiate
+      - shape type: IShapeTypeConstants.SHAPE_TYPE_INSTANTIATION
+      - model type: IModelElementFactory.MODEL_TYPE_DEPENDENCY
+  - Substitute
+      - shape type: IShapeTypeConstants.SHAPE_TYPE_SUBSTITUTION
+      - model type: IModelElementFactory.MODEL_TYPE_DEPENDENCY
+  - Abstraction
+      - shape type: IShapeTypeConstants.SHAPE_TYPE_ABSTRACTION
+      - model type: IModelElementFactory.MODEL_TYPE_ABSTRACTION
+
+**目标：** 仅“导出/渲染”路径——读取 VP 中 9 类特殊依赖（Usage / Bind / Permit / Access / Import / Merge / Instantiate / Substitute / Abstraction），
+在类图中渲染为与普通依赖完全一致的“虚线 + 目标端箭头”`..>` 边（`别名1 ..> 别名2`）。**不涉及导入。**
+
+**现状分析（已核对源码 + javap openapi.jar）：**
+- 渲染基础已具备：`PumlDependencyExporter`（src/.../PumlDependencyExporter.java）已实现“虚线（`LineStyle.DASHED`）+ 目标端箭头（`PumlEdgeEnd.ShapeKind.ARROW`）”连线，与普通依赖逻辑完全一致。特殊依赖与之唯一差异是 **shape type 不同**，渲染行为可完全复用。
+- 模型约束（关键：**不能直接强转 `IDependency`**）：
+  - `Usage / Bind / Permit / Abstraction` 各自有独立模型接口 `IUsage / IBindingDependency / IPermission / IAbstraction`，**不继承 `IDependency`**；它们共同经 `IHasRelationshipBaseSimpleRelationship → ISimpleRelationship → IRelationship → IModelElement` 继承 `getFrom()/getTo()/getName()`。
+  - `Access / Import / Merge / Instantiate / Substitute` 的 model type 即 `MODEL_TYPE_DEPENDENCY`，可强转 `IDependency`（其同样继承 `IRelationship` 的 `getFrom()/getTo()`）。
+  - 结论：统一按公共基类 `IRelationship` 读取 `getFrom()/getTo()/getName()` 即可覆盖全部 9 类，无需 per-type 强转。
+- 注册现状：`PumlElementExporterFactory`（src/.../PumlElementExporterFactory.java）按 `getShapeType()` 分发，注册表里已有 ASSOCIATION / CLASS / PACKAGE / MODEL / RELATIONSHIPS / USE_CASE / DEPENDENCY / GENERALIZATION / REALIZATION / NOTE / ANCHOR，尚未注册任一特殊依赖的 shape type；未注册会走到 `PumlUnimplementedExporter`（警告并跳过）。
+- `ViElementType`（src/.../vpmodelvisitor/ViElementType.java）目前仅有 `DEPENDENCY`（`MODEL_TYPE_DEPENDENCY`）一项——`Usage / Bind / Permit / Abstraction` 的 model type 未覆盖；`Access / Import / Merge / Instantiate / Substitute` 因 model type 同为 `MODEL_TYPE_DEPENDENCY` 已由 `DEPENDENCY` 覆盖。
+
+**设计图（特殊依赖导出相关模块）：**
+
+```plantuml
+@startuml
+class PumlElementExporter {
+  # buildEdgeLabel(name, vp: IModelElement): String
+}
+class PumlDependencyExporter extends PumlElementExporter {
+  + export(result, vp: IDiagramElement): void  // 以 IRelationship 读两端，渲染 ..>
+}
+class PumlUsageExporter extends PumlDependencyExporter {
+  + getShapeType(): String  // SHAPE_TYPE_USAGE
+}
+class PumlBindingDependencyExporter extends PumlDependencyExporter {
+  + getShapeType(): String  // SHAPE_TYPE_BINDING_DEPENDENCY
+}
+class PumlPermissionExporter extends PumlDependencyExporter {
+  + getShapeType(): String  // SHAPE_TYPE_PERMISSION
+}
+class PumlAccessExporter extends PumlDependencyExporter {
+  + getShapeType(): String  // SHAPE_TYPE_ACCESS
+}
+class PumlImportExporter extends PumlDependencyExporter {
+  + getShapeType(): String  // SHAPE_TYPE_IMPORT
+}
+class PumlMergeExporter extends PumlDependencyExporter {
+  + getShapeType(): String  // SHAPE_TYPE_MERGE
+}
+class PumlInstantiationExporter extends PumlDependencyExporter {
+  + getShapeType(): String  // SHAPE_TYPE_INSTANTIATION
+}
+class PumlSubstitutionExporter extends PumlDependencyExporter {
+  + getShapeType(): String  // SHAPE_TYPE_SUBSTITUTION
+}
+class PumlAbstractionExporter extends PumlDependencyExporter {
+  + getShapeType(): String  // SHAPE_TYPE_ABSTRACTION
+}
+class PumlElementExporterFactory {
+  + build(shapeType): PumlElementExporter
+}
+PumlElementExporterFactory ..> PumlUsageExporter : register()
+PumlElementExporterFactory ..> PumlBindingDependencyExporter : register()
+PumlElementExporterFactory ..> PumlPermissionExporter : register()
+PumlElementExporterFactory ..> PumlAccessExporter : register()
+PumlElementExporterFactory ..> PumlImportExporter : register()
+PumlElementExporterFactory ..> PumlMergeExporter : register()
+PumlElementExporterFactory ..> PumlInstantiationExporter : register()
+PumlElementExporterFactory ..> PumlSubstitutionExporter : register()
+PumlElementExporterFactory ..> PumlAbstractionExporter : register()
+@enduml
+```
+
+**实施步骤（每步可独立验证）：**
+
+1. **依赖基类放宽为 `IRelationship` 读取（`PumlDependencyExporter`）。**
+   - 方案：把 `export(...)` 中的强转由 `(IDependency)` 改为 `(IRelationship)`，经 `getFrom()/getTo()/getName()` 读取两端与名称（这些方法定义于 `IRelationship`→`IModelElement`），其余渲染逻辑（`..>`）不变。这样普通 `IDependency`（模型 type 为 `MODEL_TYPE_DEPENDENCY`）与特殊依赖共用同一读取路径。
+   - 理由：`Usage/Bind/Permit/Abstraction` 不是 `IDependency`，放宽为公共基类后才能被同一 exporter 逻辑覆盖，避免为每类复制连线代码。
+   - 验证：既有 `PumlRelationshipStereotypeTest` 中 dependency 相关用例继续通过，证明无回归。
+
+2. **九个导出器子类（输出模型层）。**
+   - 方案：`extends PumlDependencyExporter` 仅覆写 `getShapeType()` 返回对应 `IShapeTypeConstants.SHAPE_TYPE_*`（USAGE / BINDING_DEPENDENCY / PERMISSION / ACCESS / IMPORT / MERGE / INSTANTIATION / SUBSTITUTION / ABSTRACTION），不写任何其他逻辑。渲染完全继承基类的 `..>`。
+   - 理由：按【提示】“不同 shape type 实现为 PumlDependencyExporter 的不同子类，不需要写特殊逻辑”。
+   - 验证：为每个子类写单测，桩 `IDiagramElement`（`getModelElement()` 返回对应模型接口 mock，`getFrom()/getTo()` 返回两端），断言输出 `别名1 ..> 别名2`（无名，无冒号）；带名称/泛型时断言输出 `: 名称`/`<<Stereotype>>` 标签。
+
+3. **`ViElementType` 登记。**
+   - 方案：新增 `USAGE(MODEL_TYPE_USAGE, ".usage")`、`BINDING_DEPENDENCY(MODEL_TYPE_BINDING_DEPENDENCY, ".binding-dependency")`、`PERMISSION(MODEL_TYPE_PERMISSION, ".permission")`、`ABSTRACTION(MODEL_TYPE_ABSTRACTION, ".abstraction")` 四个枚举项。`Access/Import/Merge/Instantiate/Substitute` 的 model type 为 `MODEL_TYPE_DEPENDENCY`，已由现有 `DEPENDENCY` 覆盖，无需新增。
+   - 验证：单测断言 `of(MODEL_TYPE_USAGE)` 等返回对应枚举项、`vpModelTypeIs` 断言成立，且不影响 `of("Dependency")` 仍返回 `DEPENDENCY`。
+
+4. **导出器注册（输出模型工厂）。**
+   - 方案：在 `PumlElementExporterFactory` 构造器注入九个新导出器并逐一 `register(...)`，使分发表按各自 `getShapeType()` 生效。
+   - 验证：单测验证 `build(SHAPE_TYPE_USAGE)` 等能取到对应 exporter（而非回退 Unimplemented）；整体 `mvn test` 无回归。
+
+5. **集成验证。**
+   - 验证：手动在 VP 中建立若干特殊依赖关系导出，检查 `.puml` 出现 `别名1 ..> 别名2` 且方向正确；用 PlantUML 预览确认可读。
+
+**说明/边界：** 本条目不在导入流水线解析这些依赖；9 类均复用“虚线 + 目标端箭头”的 `..>` 渲染，语义与普通依赖一致。`ViElementType` 仅为导出增设对应 model type 映射；未知 shape type 仍回退到 `PumlUnimplementedExporter`（警告并跳过）。
