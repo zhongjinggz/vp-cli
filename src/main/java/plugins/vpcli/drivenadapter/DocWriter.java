@@ -2,7 +2,7 @@ package plugins.vpcli.drivenadapter;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import plugins.vpcli.domain.outputmodel.PumlDiagram;
+import plugins.vpcli.domain.outputmodel.pumldiagram.PumlDiagram;
 import plugins.vpcli.util.MyIO;
 
 import java.io.File;

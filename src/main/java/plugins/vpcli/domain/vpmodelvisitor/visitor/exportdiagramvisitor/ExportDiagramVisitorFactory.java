@@ -1,7 +1,7 @@
 package plugins.vpcli.domain.vpmodelvisitor.visitor.exportdiagramvisitor;
 
 import org.jetbrains.annotations.NotNull;
-import plugins.vpcli.domain.outputmodel.PumlDiagramFactory;
+import plugins.vpcli.domain.outputmodel.pumldiagram.PumlDiagramFactory;
 import plugins.vpcli.domain.vpmodelvisitor.visitor.ViElementVisitor;
 import plugins.vpcli.domain.vpmodelvisitor.visitor.ViElementVisitorFactory;
 import plugins.vpcli.drivenadapter.DocWriter;
