@@ -119,7 +119,7 @@ class PumlBlockExporterStereotypeTest {
         assertEquals("", exporter.buildBlockSuffix(vp));
     }
 
-    // ---- buildBlockType：抽象类 ----
+    // ---- getBlockType：抽象类 ----
 
     @Test
     void abstractClassYieldsAbstractClassKeyword() {
@@ -128,7 +128,7 @@ class PumlBlockExporterStereotypeTest {
         when(clazz.isAbstract()).thenReturn(true);
         when(clazz.stereotypeModelIterator()).thenReturn(Collections.emptyIterator());
 
-        assertEquals("abstract class", exporter.buildBlockType(clazz));
+        assertEquals("abstract class", exporter.getBlockType(clazz));
     }
 
     @Test
@@ -138,10 +138,10 @@ class PumlBlockExporterStereotypeTest {
         when(clazz.isAbstract()).thenReturn(false);
         when(clazz.stereotypeModelIterator()).thenReturn(Collections.emptyIterator());
 
-        assertEquals("class", exporter.buildBlockType(clazz));
+        assertEquals("class", exporter.getBlockType(clazz));
     }
 
-    // ---- buildBlockType：接口（#18） ----
+    // ---- getBlockType：接口（#18） ----
 
     @Test
     void interfaceClassYieldsInterfaceKeyword() {
@@ -151,7 +151,7 @@ class PumlBlockExporterStereotypeTest {
         when(clazz.isAbstract()).thenReturn(false);
         when(clazz.stereotypeModelIterator()).thenReturn(iterOf(s));
 
-        assertEquals("interface", exporter.buildBlockType(clazz));
+        assertEquals("interface", exporter.getBlockType(clazz));
     }
 
     @Test
@@ -162,10 +162,10 @@ class PumlBlockExporterStereotypeTest {
         when(clazz.isAbstract()).thenReturn(true);
         when(clazz.stereotypeModelIterator()).thenReturn(iterOf(s));
 
-        assertEquals("interface", exporter.buildBlockType(clazz));
+        assertEquals("interface", exporter.getBlockType(clazz));
     }
 
-    // ---- buildBlockType：枚举（#20） ----
+    // ---- getBlockType：枚举（#20） ----
 
     @Test
     void enumerationClassYieldsEnumKeyword() {
@@ -175,7 +175,7 @@ class PumlBlockExporterStereotypeTest {
         when(clazz.isAbstract()).thenReturn(false);
         when(clazz.stereotypeModelIterator()).thenAnswer(inv -> iterOf(s));
 
-        assertEquals("enum", exporter.buildBlockType(clazz));
+        assertEquals("enum", exporter.getBlockType(clazz));
     }
 
     @Test
@@ -187,7 +187,7 @@ class PumlBlockExporterStereotypeTest {
         when(clazz.isAbstract()).thenReturn(false);
         when(clazz.stereotypeModelIterator()).thenAnswer(inv -> iterOf(iff, en));
 
-        assertEquals("interface", exporter.buildBlockType(clazz));
+        assertEquals("interface", exporter.getBlockType(clazz));
     }
 
     @Test
@@ -195,8 +195,8 @@ class PumlBlockExporterStereotypeTest {
         PumlPackageExporter exporter = new PumlPackageExporter();
         IPackage pkg = mock(IPackage.class);
 
-        assertEquals("namespace", exporter.buildBlockType(pkg));
-        assertEquals("namespace", exporter.getBlockType());
+        assertEquals("namespace", exporter.getBlockType(pkg));
+        assertEquals("namespace", "namespace");
     }
 
     // ---- 端到端：beginBlock 输出块头 ----

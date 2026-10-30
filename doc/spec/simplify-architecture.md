@@ -146,7 +146,7 @@
        直接透传 `vpDiagram`；真正的结构层改造留待阶段 B（步 B4）统一处理。
   验证：新增入口编译通过、行为与旧签名等价；`mvn test` 通过。
 
-- **步 A3 — `PumlElementExporterFactory` 增加以 VP 形状常量为 key 的分发。（依赖 A2）**
+- **步 A3 — `PumlElementExporterRepository` 增加以 VP 形状常量为 key 的分发。（依赖 A2）**
   `PumlElementExporterFactory.java` 当前仅一张 `Map<MyElementType, PumlElementExporter>`，
   经 `@Inject` 注入 9 个 exporter 并按 `MyElementType`（ASSOCIATION/CLASS/PACKAGE/MODEL/RELATIONSHIPS/
   USE_CASE/DEPENDENCY/GENERALIZATION/UNIMPLEMENTED_ELEMENT）注册；`of(MyElementType)` 缺类型抛
@@ -164,7 +164,7 @@
     `ASSOCIATION↔SHAPE_TYPE_ASSOCIATION` 等一一对应表；
   - 新增 `PumlElementExporter of(String shapeType)`（缺类型抛 `BugException`）；过渡期
     `of(MyElementType)` 保留，并委托到形状类型版，供 MyElement 侧旧调用方继续使用。
-  验证：两套分发入口返回同一批 exporter 实例；`PumlElementExporterFactory` 相关契约测试通过；
+    验证：两套分发入口返回同一批 exporter 实例；`PumlElementExporterRepository` 相关契约测试通过；
   `mvn test`。
 
 - **步 A4 — `PumlElementExporter` 别名（alias）改读 VP 原生全限定名。**
@@ -198,14 +198,14 @@
   验证：两张导出器各自契约测试行为等价；整体 `mvn test`。
 
 - **步 A7 — `PumlBlockExporter`（抽象基类）改为直读 VP 原生模型。**
-  `PumlBlockExporter.java:20-39` 是所有块型 exporter 的**父类**，直接依赖 myuml，须最先改：
+  `PumlBlockExporter.java:20-39` 是所有块型 exporter 的 **父类**，直接依赖 myuml，须最先改：
   其 `to(...)` 中 `myElement.getName()`、`getPumlAlias(myElement)`、以及遍历
-  `myDiagramElement.getSubShapes()` 时 `pumlElementExporterFactory.of(...getElementType())`
+  `myDiagramElement.getSubShapes()` 时 `pumlElementExporterRepository.of(...getElementType())`
   的分发，全部建立在 `ProperMyDiagramElement`（myuml）之上。
   改造：改走步 A1 的 VP 入口，块名/别名/子形状分发改为读 `IModelElement`/VP 图表元素；
-  其 `writeBlockBody` 钩子签名同步调整。
+  其 `exportBlockBody` 钩子签名同步调整。
   **此步是先于其子类（`PumlClassExporter`/`PumlPackageExporter`/`PumlModelExporter`）的前置，必须最先做**，
-  否则子类覆写的 `writeBlockBody` 签名无从对齐。
+  否则子类覆写的 `exportBlockBody` 签名无从对齐。
   验证：编译通过；块型 exporter 输出与迁移前等价；`mvn test`。
 
 - **步 A8 — `PumlClassExporter` 直接读 `IClass`，并承接 #12/#13 的映射结论。**
@@ -361,7 +361,7 @@
   > ② 构造链仍在：`vpmodelvisitor`（阶段 B 未动）→ `MyElementFactoryFactory`（注册 `MyClassFactory`，`MyElementFactoryFactory.java:47`）
   > → `MyClassFactory.reallyCreate` 实例化 `MyClass` 并经 `IClass.attributeIterator()/operationIterator()` 填充成员；③ `MyPackage.getClasses()`
   > 依赖 `MyClass` 类型（`MyPackage.java:89-93`）。
-  > 但 A8 内聚目标（VP 版 `writeBlockBody` 直读 `IClass`，不再为 `MyClass` 补新成员读法）已达成——
+  > 但 A8 内聚目标（VP 版 `exportBlockBody` 直读 `IClass`，不再为 `MyClass` 补新成员读法）已达成——
   > **`MyClass/MyAttribute/MyOperation` 无需新增成员，只是删除时机未到**。
   > **可删时机 = 阶段 B 退役 `MyElementFactoryFactory`/`MyClassFactory` 构造链之后**，届时随 C2 整包删除一并处理。
   > 本步无文件改动。

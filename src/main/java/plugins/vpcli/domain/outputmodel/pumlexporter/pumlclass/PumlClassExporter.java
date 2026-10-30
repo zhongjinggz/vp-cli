@@ -1,5 +1,6 @@
 package plugins.vpcli.domain.outputmodel.pumlexporter.pumlclass;
 
+import com.vp.plugin.diagram.IDiagramElement;
 import com.vp.plugin.diagram.IShapeTypeConstants;
 import com.vp.plugin.model.IAttribute;
 import com.vp.plugin.model.IClass;
@@ -11,6 +12,7 @@ import jakarta.inject.Inject;
 import jakarta.inject.Singleton;
 import plugins.vpcli.domain.outputmodel.pumldiagram.PumlDiagram;
 import plugins.vpcli.domain.outputmodel.pumlexporter.PumlBlockExporter;
+import plugins.vpcli.util.BugException;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -26,18 +28,13 @@ public class PumlClassExporter extends PumlBlockExporter {
         return IShapeTypeConstants.SHAPE_TYPE_CLASS;
     }
 
-    @Override
-    public String getBlockType() {
-        return "class";
-    }
-
     /**
-     * 步 #18：接口关键字优先——带 <<interface>> 泛型的类声明为 interface（接口通常非抽象）；
-     * 步 #20：带 <<enumeration>> 泛型的类声明为 enum（枚举本质是带该泛型的 Class）；
-     * 步 #15：抽象类在关键字前加 abstract。
+     * 带 <<interface>> 的 class 为 interface
+     * 带 <<enumeration>> 的 class 为 enum
+     * 抽象类在关键字前加 abstract。
      */
     @Override
-    public String buildBlockType(IModelElement vpElement) {
+    public String getBlockType(IModelElement vpElement) {
         if (vpElement instanceof IClass) {
             IClass clazz = (IClass) vpElement;
             if (hasStereotype(clazz, "interface")) {
@@ -49,17 +46,18 @@ public class PumlClassExporter extends PumlBlockExporter {
             if (clazz.isAbstract()) {
                 return "abstract class";
             }
+            return "class";
+        } else {
+            throw new BugException("should be 'IClass' but is:" + vpElement.getClass());
         }
-        return getBlockType();
     }
 
-    /** 判断元素是否带指定泛型名（忽略大小写）。 */
     private boolean hasStereotype(IClass clazz, String stereotypeName) {
         var it = clazz.stereotypeModelIterator();
         while (it.hasNext()) {
             IModelElement stereo = (IModelElement) it.next();
             String name = stereo.getName();
-            if (name != null && name.equalsIgnoreCase(stereotypeName)) {
+            if (name != null && name.equals(stereotypeName)) {
                 return true;
             }
         }
@@ -72,32 +70,23 @@ public class PumlClassExporter extends PumlBlockExporter {
      * 只有单区时无 `--`，两区及以上时以 `--` 分隔（用户确认的统一分区规则）。
      */
     @Override
-    public void writeBlockBody(PumlDiagram result, IModelElement vpElement) {
+    public void exportBlockBody(PumlDiagram result, IDiagramElement vpDiagramElement) {
+        var vpElement = vpDiagramElement.getModelElement();
+        if (vpElement == null) {
+            throw new BugException("vpElement should not be null");
+        }
         if (!(vpElement instanceof IClass)) {
-            return;
+            throw new BugException("vpElement should be IClass, but is " + vpElement.getClass());
         }
+
         IClass clazz = (IClass) vpElement;
+        boolean wroteAny = exportAttributes(result, clazz);
+        wroteAny = exportOperations(result, clazz, wroteAny);
+        exportEnumLiterals(result, clazz, wroteAny);
+    }
 
-        List<String> attributeLines = collectAttributeLines(clazz);
-        List<String> operationLines = collectOperationLines(clazz);
+    private void exportEnumLiterals(PumlDiagram result, IClass clazz, boolean wroteAny) {
         List<String> enumerationLines = collectEnumerationLines(clazz);
-
-        boolean wroteAny = false;
-        if (!attributeLines.isEmpty()) {
-            for (String line : attributeLines) {
-                result.writeTerminalShape(line);
-            }
-            wroteAny = true;
-        }
-        if (!operationLines.isEmpty()) {
-            if (wroteAny) {
-                result.writeTerminalShape("--");
-            }
-            for (String line : operationLines) {
-                result.writeTerminalShape(line);
-            }
-            wroteAny = true;
-        }
         if (!enumerationLines.isEmpty()) {
             if (wroteAny) {
                 result.writeTerminalShape("--");
@@ -105,8 +94,38 @@ public class PumlClassExporter extends PumlBlockExporter {
             for (String line : enumerationLines) {
                 result.writeTerminalShape(line);
             }
-            wroteAny = true;
         }
+    }
+
+    private boolean exportOperations(PumlDiagram result, IClass clazz, boolean wroteAny) {
+        List<String> operationLines = collectOperationLines(clazz);
+        if (!operationLines.isEmpty()) {
+            if (wroteAny) {
+                result.writeTerminalShape("--");
+            }
+            for (String line : operationLines) {
+                result.writeTerminalShape(line);
+            }
+            return true;
+        }
+        return wroteAny;
+    }
+
+    private boolean exportAttributes(PumlDiagram result, IClass clazz) {
+
+        List<String> attributeLines = collectAttributeLines(clazz);
+
+
+
+
+
+        if (!attributeLines.isEmpty()) {
+            for (String line : attributeLines) {
+                result.writeTerminalShape(line);
+            }
+            return true;
+        }
+        return false;
     }
 
     private List<String> collectAttributeLines(IClass clazz) {
@@ -127,7 +146,9 @@ public class PumlClassExporter extends PumlBlockExporter {
         return lines;
     }
 
-    /** 枚举项行 = 枚举项名，无可见性符（旧架构当作“空可见性属性行”追加）。 */
+    /**
+     * 枚举项行 = 枚举项名，无可见性符（旧架构当作“空可见性属性行”追加）。
+     */
     private List<String> collectEnumerationLines(IClass clazz) {
         List<String> lines = new ArrayList<>();
         var literalIterator = clazz.enumerationLiteralIterator();
@@ -142,23 +163,23 @@ public class PumlClassExporter extends PumlBlockExporter {
 
     // 属性行：<可见性符号> <{static}?> <名称> [: 类型] [= 初值]，各段按字段有无省略
     private String formatVpAttributeLine(IAttribute attribute) {
-        StringBuilder sb = new StringBuilder();
-        appendVisibility(sb, attribute.getVisibility());
+        StringBuilder result = new StringBuilder();
+        appendVisibility(result, attribute.getVisibility());
         if (IAttribute.SCOPE_CLASSIFIER.equals(attribute.getScope())) {
-            sb.append("{static} ");
+            result.append("{static} ");
         }
         if (attribute.getName() != null) {
-            sb.append(attribute.getName());
+            result.append(attribute.getName());
         }
         String type = attribute.getTypeAsString();
         if (type != null && !type.isEmpty()) {
-            sb.append(": ").append(type);
+            result.append(": ").append(type);
         }
         String initialValue = attribute.getInitialValueAsString();
         if (initialValue != null && !initialValue.isEmpty()) {
-            sb.append(" = ").append(initialValue);
+            result.append(" = ").append(initialValue);
         }
-        return sb.toString();
+        return result.toString();
     }
 
     // VP 版操作行，与 myuml 版格式逐段对齐
@@ -213,11 +234,21 @@ public class PumlClassExporter extends PumlBlockExporter {
         String key = visibility == null ? "" : visibility;
         String symbol;
         switch (key) {
-            case "public": symbol = "+"; break;
-            case "private": symbol = "-"; break;
-            case "protected": symbol = "#"; break;
-            case "package": symbol = "~"; break;
-            default: symbol = ""; break;
+            case "public":
+                symbol = "+";
+                break;
+            case "private":
+                symbol = "-";
+                break;
+            case "protected":
+                symbol = "#";
+                break;
+            case "package":
+                symbol = "~";
+                break;
+            default:
+                symbol = "";
+                break;
         }
         if (!symbol.isEmpty()) {
             sb.append(symbol).append(' ');

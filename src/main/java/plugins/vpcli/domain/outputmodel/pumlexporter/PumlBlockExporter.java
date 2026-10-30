@@ -15,42 +15,30 @@ public abstract class PumlBlockExporter extends PumlElementExporter {
         IModelElement vpElement = vpDiagramElement.getModelElement();
 
         result.beginBlock(
-            buildBlockType(vpElement),
+            getBlockType(vpElement),
             vpElement.getName(),
             getPumlAlias(vpElement),
             buildBlockSuffix(vpElement)
         );
 
-        writeBlockBody(result, vpElement);
+        exportBlockBody(result, vpDiagramElement);
 
-        if (vpDiagramElement instanceof IShapeUIModel) {
-            IShapeUIModel shape = (IShapeUIModel) vpDiagramElement;
-            for (IDiagramElement child : shape.toChildArray()) {
-                if (child.getModelElement() == null) {
-                    continue;
-                }
-                var exporter = pumlElementExporterFactory.build(child.getShapeType());
-                exporter.export(result, child);
-            }
-        }
         result.endBlock();
     }
 
-    protected abstract String getBlockType();
-
-    // 供需要在块声明末尾追加内容（如 <<model>> 原型）的子类覆写
+    // 供需要在块声明末尾追加 keyword（如 <<model>> 原型）的子类覆写
     public String getKeyword() {
         return "";
     }
 
-    /** 步 #15：块声明类型；默认取 getBlockType()，子类（如类需区分 abstract）可覆写。 */
-    public String buildBlockType(IModelElement vpElement) {
-        return getBlockType();
-    }
+    /**
+     * 步 #15：块声明类型；默认取 getBlockType()，子类（如类需区分 abstract）可覆写。
+     */
+    public abstract String getBlockType(IModelElement vpElement);
 
     /**
-     * 步 #15：块声明后缀 = 固定原型（getKeyword()）+ 元素上施加的泛型。
-     * 组合顺序：固定原型在前，随后是每个泛型。
+     * 步 #15：块声明后缀 = keyword（getKeyword()）+ 元素上的泛型。
+     * 组合顺序：keyword ，随后是每个泛型。
      */
     public String buildBlockSuffix(IModelElement vpElement) {
         String fixed = getKeyword();
@@ -65,6 +53,15 @@ public abstract class PumlBlockExporter extends PumlElementExporter {
     }
 
     // 步 A7：VP 原生读法的成员区钩子；默认空实现，子类按需覆写
-    public void writeBlockBody(PumlDiagram result, IModelElement vpElement) {
+    public void exportBlockBody(PumlDiagram result, IDiagramElement vpDiagramElement) {
+        if (vpDiagramElement instanceof IShapeUIModel) {
+            IShapeUIModel shape = (IShapeUIModel) vpDiagramElement;
+            for (IDiagramElement child : shape.toChildArray()) {
+                if (child.getModelElement() != null) {
+                    var exporter = exporterRepository.findByShapeType(child.getShapeType());
+                    exporter.export(result, child);
+                }
+            }
+        }
     }
 }

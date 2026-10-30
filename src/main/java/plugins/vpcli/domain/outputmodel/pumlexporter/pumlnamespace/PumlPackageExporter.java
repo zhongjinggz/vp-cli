@@ -1,6 +1,7 @@
 package plugins.vpcli.domain.outputmodel.pumlexporter.pumlnamespace;
 
 import com.vp.plugin.diagram.IShapeTypeConstants;
+import com.vp.plugin.model.IModelElement;
 import jakarta.inject.Inject;
 import jakarta.inject.Singleton;
 import plugins.vpcli.domain.outputmodel.pumlexporter.PumlBlockExporter;
@@ -18,7 +19,7 @@ public class PumlPackageExporter extends PumlBlockExporter {
     }
 
     @Override
-    public String getBlockType() {
+    public String getBlockType(IModelElement vpElement) {
         return "namespace";
     }
 }

@@ -283,7 +283,7 @@ class3 <.. class4
 **目标：** 仅“导出/渲染”路径——读取 VP 中的依赖关系，在类图中渲染为带方向的虚线箭头 `..>`。**不涉及导入。**
 
 **现状分析（已核对源码）：**
-- 新输出模型（`domain/outputmodel`）目前没有“依赖”对应的模型类、`MyElementType` 或导出器；`PumlElementExporterFactory`（src/.../outputmodel/pumelementexporter/PumlElementExporterFactory.java）目前注册了 ASSOCIATION / CLASS / PACKAGE / MODEL / RELATIONSHIPS / USE_CASE / UNIMPLEMENTED_ELEMENT，未含依赖。
+- 新输出模型（`domain/outputmodel`）目前没有“依赖”对应的模型类、`MyElementType` 或导出器；`PumlElementExporterRepository`（src/.../outputmodel/pumelementexporter/PumlElementExporterFactory.java）目前注册了 ASSOCIATION / CLASS / PACKAGE / MODEL / RELATIONSHIPS / USE_CASE / UNIMPLEMENTED_ELEMENT，未含依赖。
 - 旧 `MyRelationship_old.toExportFormat()`（src/.../myuml_old/mycommon_old/MyRelationship_old.java）里有 `case "Dependency": symbol = "..>"` 分支，但它属于旧导出路径，不被新流水线消费，因此需在新架构补齐。
 - 渲染基础已具备：`PumlDiagram.writeEdge(PumlEdgeEnd, PumlEdgeEnd, LineStyle, String name, NameDirection direction)` 支持 `LineStyle.DASHED("..")` 与 `PumlEdgeEnd.ShapeKind.ARROW(">")`，组合即可生成“虚线 + 目标端箭头”的 `..>`（from 在左、to 在右，箭头贴合 to 端）。
 
@@ -346,8 +346,8 @@ PumlDependencyExporter ..> PumlDiagram : writeEdge(虚线+箭头)
    - 验证：为导出器写单元测试，断言 `别名1 ..> 别名2`（name 为空）；带名称时断言输出 `别名1 ..> "别名2": 名称` 之类含 `: name` 的行；并对 from=class4、to=class3 的依赖断言输出 `class4 ..> class3`。
 
 6. **注册与接线（输出模型工厂）。**
-   - 方案：在 `PumlElementExporterFactory`（.../PumlElementExporterFactory.java）构造器注入并 `register(MyElementType.DEPENDENCY, dependencyExporter)`。
-   - 验证：`PumlElementExporterFactory` 相关测试中验证可 `of(DEPENDENCY)` 取到导出器；整体 `mvn test` 无回归。
+   - 方案：在 `PumlElementExporterRepository`（.../PumlElementExporterFactory.java）构造器注入并 `register(MyElementType.DEPENDENCY, dependencyExporter)`。
+   - 验证：`PumlElementExporterRepository` 相关测试中验证可 `of(DEPENDENCY)` 取到导出器；整体 `mvn test` 无回归。
 
 7. **集成验证。**
    - 验证：手动在 VP 中建立若干依赖关系并导出，确认 `.puml` 渲染为 `..>` 且方向正确；用 PlantUML 预览确认可读。
@@ -373,7 +373,7 @@ class3 <|-- class4
 
 **现状分析（已核对源码）：**
 - 渲染基础已具备：`PumlDiagram.writeEdge(PumlEdgeEnd, PumlEdgeEnd, LineStyle, String name, NameDirection direction)`（src/.../outputmodel/PumlDiagram.java，#9 已完成）的 `LineStyle.SOLID("--")` 与 `PumlEdgeEnd.ShapeKind`（`TRIANGLE("|>")`、`REVERSE_TRIANGLE("<|")`）已存在（src/.../outputmodel/PumlEdgeEnd.java），二者组合即可生成空心三角连线。
-- 新输出模型中目前**没有**泛化的模型类、`MyElementType` 或导出器：`PumlElementExporterFactory`（src/.../outputmodel/pumelementexporter/PumlElementExporterFactory.java）目前注册了 ASSOCIATION / CLASS / PACKAGE / MODEL / RELATIONSHIPS / USE_CASE / UNIMPLEMENTED_ELEMENT，未含泛化。
+- 新输出模型中目前 **没有**泛化的模型类、`MyElementType` 或导出器：`PumlElementExporterRepository`（src/.../outputmodel/pumelementexporter/PumlElementExporterFactory.java）目前注册了 ASSOCIATION / CLASS / PACKAGE / MODEL / RELATIONSHIPS / USE_CASE / UNIMPLEMENTED_ELEMENT，未含泛化。
 - 旧 `MyRelationship_old.toExportFormat()`（src/.../myuml_old/mycommon_old/MyRelationship_old.java）有 `Generalization → <|--` 分支，但属于旧导出路径，不被新流水线消费，需要在新架构补齐。
 
 **设计图（泛化导出相关模块）：**
@@ -419,8 +419,8 @@ PumlGeneralizationExporter --> PumlDiagram : writeEdge(实线+三角)
    - 方案：
      - 元素工厂：在 `MyElementFactoryFactory`（.../myuml/myelement/MyElementFactoryFactory.java）构造器注入 `MyGeneralizationFactory` 并 `register(MyElementType.GENERALIZATION, myGeneralizationFactory)`。
      - 图元类型：在 `DiagramElementType`（.../mydiagram/mydiagramelement/DiagramElementType.java）新增 `GENERALIZATION(SHAPE_TYPE_GENERALIZATION, Kind.EDGE)`（`SHAPE_TYPE_GENERALIZATION` 属于 `IShapeTypeConstants`，javap 已确认存在）。
-     - 输出导出器：在 `PumlElementExporterFactory`（.../outputmodel/pumelementexporter/PumlElementExporterFactory.java）构造器注入 `PumlGeneralizationExporter` 并 `register(MyElementType.GENERALIZATION, generalizationExporter)`。
-   - 验证：`MyElementFactoryFactory`/`PumlElementExporterFactory` 相关测试验证可 `of(GENERALIZATION)` 取到工厂/导出器（而非回退 Unimplemented / 抛 BugException）；整体 `mvn test` 无回归。
+     - 输出导出器：在 `PumlElementExporterRepository`（.../outputmodel/pumelementexporter/PumlElementExporterFactory.java）构造器注入 `PumlGeneralizationExporter` 并 `register(MyElementType.GENERALIZATION, generalizationExporter)`。
+   - 验证：`MyElementFactoryFactory`/`PumlElementExporterRepository` 相关测试验证可 `of(GENERALIZATION)` 取到工厂/导出器（而非回退 Unimplemented / 抛 BugException）；整体 `mvn test` 无回归。
 
 5. **集成验证。**
    - 验证：手动在 VP 中建立若干继承关系导出，检查 `.puml` 渲染为 `--|>` / `<|--` 且三角指向父类；用 PlantUML 预览确认可读、方向正确。
@@ -716,7 +716,7 @@ PumlPackageExporter --|> PumlBlockExporter
    - 验证：为 `buildBlockSuffix`/`renderStereotypes` 写单元测试，覆盖：无泛型（返回空后缀）、单泛型、多泛型（空格分隔）、含空格/标点的泛型名（原样输出，不净化）、与 `getBlockSuffix()`（`<<model>>`）合并后的顺序。
 
 2. **类：抽象类判定与泛型渲染（PumlClassExporter）。**
-   - 方案：因 `getBlockType()` 无 `vpElement` 参数，改为在 `PumlBlockExporter.export(...)` 中调用一个可覆写、可访问 `vpElement` 的 `String buildBlockType(IModelElement vpElement)`（默认返回 `getBlockType()`），并让 export 用它替代 `getBlockType()`；`PumlClassExporter` 覆写 `buildBlockType`：若 `((IClass) vpElement).isAbstract()` 则返回 `"abstract class"`，否则 `"class"`。
+   - 方案：因 `getBlockType()` 无 `vpElement` 参数，改为在 `PumlBlockExporter.export(...)` 中调用一个可覆写、可访问 `vpElement` 的 `String buildBlockType(IModelElement vpElement)`（默认返回 `getBlockType()`），并让 export 用它替代 `getBlockType()`；`PumlClassExporter` 覆写 `getBlockType`：若 `((IClass) vpElement).isAbstract()` 则返回 `"abstract class"`，否则 `"class"`。
    - 泛型部分随步骤 1 的 `buildBlockSuffix` 自动落到类声明的块名后，输出形如 `class "class1" as class1 <<service>> {` 或 `abstract class "class2" as class2 <<repository>> {`。
    - 理由：与当前重构后的“直读 VP 原生模型”一致；abstract 判定依赖具体 vpElement，故用可访问参数的方法。
    - 验证：为 `PumlClassExporter` 补单测，桩 `IClass`（带 `isAbstract()` 与 `toStereotypeArray()`），断言：普通类→`class ... <<service>>`；抽象类→`abstract class ... <<repository>>`；无泛型的抽象类→`abstract class ...`（无后缀）；无泛型普通类→`class ...`（无后缀，行为不变）。
@@ -860,10 +860,10 @@ PumlElementExporterFactory ..> PumlRealizationExporter : register()
 1. **实现连线渲染（新增 `PumlRealizationExporter`）。** 新建 `PumlRealizationExporter extends PumlElementExporter`，`getShapeType()` 返回 `IShapeTypeConstants.SHAPE_TYPE_REALIZATION`；`export(...)` 仿 `PumlGeneralizationExporter`：取 `IRealization`，`fromAlias=getPumlAlias(getFrom())`、`toAlias=getPumlAlias(getTo())`，`result.writeEdge(PumlEdgeEnd.of(fromAlias,"","",ShapeKind.REVERSE_TRIANGLE), PumlEdgeEnd.of(toAlias,"","",ShapeKind.NONE), LineStyle.DASHED, buildEdgeLabel(getName(), realization), NameDirection.NONE)` → 输出 `实现类 <|.. 接口`（需求中 `class1 ..|> interface1` 与 `interface2 <|.. class2` 只是同一 relations 的两种阅读朝向，VP 以固定 from/to 端统一为一种输出）。
    - 验证：单测桩 `IRealization`（`getName()`、`getFrom()`/`getTo()`、`stereotypeModelIterator()`），断言输出 `class1 <|.. interface1`；带泛型时输出 `class1 <|.. interface1: label <<Stereotype>>`。
 
-2. **接口块关键字（`PumlClassExporter`）。** 在 `buildBlockType` 中优先判断类是否带 `<<interface>>` 泛型——是则返回 `"interface"`（先于 abstract，接口通常非抽象）；否则沿用现有 abstract/class 逻辑。泛型后缀仍由 `buildBlockSuffix` 原样渲染，故块头形如 `interface "interface1" as interface1 <<interface>> {`。
-   - 验证：单测桩 `IClass` 带 `<<interface>>` 泛型，断言 `buildBlockType` 返回 `"interface"`；块头端到端含 `interface ... <<interface>>`。
+2. **接口块关键字（`PumlClassExporter`）。** 在 `getBlockType` 中优先判断类是否带 `<<interface>>` 泛型——是则返回 `"interface"`（先于 abstract，接口通常非抽象）；否则沿用现有 abstract/class 逻辑。泛型后缀仍由 `buildBlockSuffix` 原样渲染，故块头形如 `interface "interface1" as interface1 <<interface>> {`。
+   - 验证：单测桩 `IClass` 带 `<<interface>>` 泛型，断言 `getBlockType` 返回 `"interface"`；块头端到端含 `interface ... <<interface>>`。
 
-3. **接线与回归。** 在 `PumlElementExporterFactory` 构造器注入 `PumlRealizationExporter` 并 `register(...)`；类型分发按 `getShapeType()` 自动生效。未改 `ViElementType`/`DiagramElementType`/`writeEdge`；整体 `mvn test` 无回归（原 51 测试保持通过）。
+3. **接线与回归。** 在 `PumlElementExporterRepository` 构造器注入 `PumlRealizationExporter` 并 `register(...)`；类型分发按 `getShapeType()` 自动生效。未改 `ViElementType`/`DiagramElementType`/`writeEdge`；整体 `mvn test` 无回归（原 51 测试保持通过）。
 
 4. **集成验证。**
    - 验证：手动在 VP 中画一个类实现接口后导出，检查 `.puml` 出现 `某实现类 <|.. 某接口` 与 `interface "某接口" as ... <<interface>> {`；用 PlantUML 预览确认虚线 + 空心三角指向接口、泛型徽标正常。
@@ -939,7 +939,7 @@ PumlElementExporterFactory ..> PumlAnchorExporter : register()
 3. **anchor 连线渲染（新增 `PumlAnchorExporter`）。** 新建 `PumlAnchorExporter extends PumlElementExporter`，`getShapeType()` 返回 `IShapeTypeConstants.SHAPE_TYPE_ANCHOR`；`export(...)` 取 `IAnchor`：`fromAlias=getPumlAlias(getFrom())`、`toAlias=getPumlAlias(getTo())`，`result.writeEdge(PumlEdgeEnd.of(fromAlias,"","",ShapeKind.NONE), PumlEdgeEnd.of(toAlias,"","",ShapeKind.NONE), LineStyle.DASHED, "", NameDirection.NONE)` → 输出 `X .. N`（anchor 无名，故 name 传空串，无冒号标签）。
    - 验证：单测桩 `IAnchor`（`getFrom()`/`getTo()`），断言输出 `class2 .. N1`。
 
-4. **接线与回归。** `PumlElementExporterFactory` 构造器注入 `PumlNoteExporter`、`PumlAnchorExporter` 并 `register(...)`；整体 `mvn test` 无回归（原 51 测试保持通过）。放开 anchor 属既有行为变更——会导致过去被静默丢弃的 anchor 全部渲染为 `..`（用户已确认可接受）。
+4. **接线与回归。** `PumlElementExporterRepository` 构造器注入 `PumlNoteExporter`、`PumlAnchorExporter` 并 `register(...)`；整体 `mvn test` 无回归（原 51 测试保持通过）。放开 anchor 属既有行为变更——会导致过去被静默丢弃的 anchor 全部渲染为 `..`（用户已确认可接受）。
 
 5. **集成验证。**
    - 验证：手动在 VP 中为类添加注释并拉虚线到类后导出，检查 `.puml` 出现 `note "UML Style" as N1`、`class2 .. N1`、`class1 .. N1`；用 PlantUML 预览确认注释框与虚线、阅读指向正常。
@@ -1008,8 +1008,8 @@ class PumlClassExporter extends PumlBlockExporter {
 
 **实施步骤（每步可独立验证）：**
 
-1. **块关键字（`PumlClassExporter.buildBlockType`）。** 在现有 `buildBlockType` 前置判断：类带 `<<enumeration>>` 泛型 → 返回 `"enum"`；否则带 `<<interface>>` → `"interface"`（与 #18 共用同一判断，接口盖过 abstract）；否则沿用现有 abstract/class。判断逻辑放一个私有方法 `hasStereotype(vp, name)`（遍历 `stereotypeModelIterator()` 比对 `getName()` 忽略大小写，枚举同时匹配 `enumeration`，兼容需求 `<<enumeration>>`）。
-   - 验证：单测桩 `IClass` 分别带 `<<enumeration>>`/无，断言 `buildBlockType` 返回 `"enum"`/`"class"`。
+1. **块关键字（`PumlClassExporter.buildBlockType`）。** 在现有 `getBlockType` 前置判断：类带 `<<enumeration>>` 泛型 → 返回 `"enum"`；否则带 `<<interface>>` → `"interface"`（与 #18 共用同一判断，接口盖过 abstract）；否则沿用现有 abstract/class。判断逻辑放一个私有方法 `hasStereotype(vp, name)`（遍历 `stereotypeModelIterator()` 比对 `getName()` 忽略大小写，枚举同时匹配 `enumeration`，兼容需求 `<<enumeration>>`）。
+   - 验证：单测桩 `IClass` 分别带 `<<enumeration>>`/无，断言 `getBlockType` 返回 `"enum"`/`"class"`。
 
 2. **分区体渲染（`PumlClassExporter.writeBlockBody` 重排）。** 读 `attributeIterator()`、`operationIterator()`、`enumerationLiteralIterator()` 各收集成三个行列表（沿用现 `formatVpAttributeLine`/`formatVpOperationLine`；枚举项行 = 枚举项名，无可见性符）。依次输出：凡该区非空才写该区；若已输出过某个非空区且又要输出另一非空区，则在两区之间先输出一行 `--`。具体：属性区非空→写属性行；随后操作区非空→（若之前已写过属性区则先 `--`）写操作行；随后枚举值区非空→（若之前已写过任一区则先 `--`）写枚举值行。这样只有单区时无 `--`，两区/三区时以 `--` 分隔，符合用户确认的统一逻辑且不破坏 PlantUML 约定。
    - 验证：单测桩 `IClass` 覆盖：仅属性（无 `--`）；属性+操作（中间 `--`）；属性+操作+枚举值（两个 `--`）；仅枚举值（无 `--`）。
@@ -1089,7 +1089,7 @@ Abstraction ..> Target: <<abstraction>>
   - `Usage / Bind / Permit / Abstraction` 各自有独立模型接口 `IUsage / IBindingDependency / IPermission / IAbstraction`，**不继承 `IDependency`**；它们共同经 `IHasRelationshipBaseSimpleRelationship → ISimpleRelationship → IRelationship → IModelElement` 继承 `getFrom()/getTo()/getName()`。
   - `Access / Import / Merge / Instantiate / Substitute` 的 model type 即 `MODEL_TYPE_DEPENDENCY`，可强转 `IDependency`（其同样继承 `IRelationship` 的 `getFrom()/getTo()`）。
   - 结论：统一按公共基类 `IRelationship` 读取 `getFrom()/getTo()/getName()` 即可覆盖全部 9 类，无需 per-type 强转。
-- 注册现状：`PumlElementExporterFactory`（src/.../PumlElementExporterFactory.java）按 `getShapeType()` 分发，注册表里已有 ASSOCIATION / CLASS / PACKAGE / MODEL / RELATIONSHIPS / USE_CASE / DEPENDENCY / GENERALIZATION / REALIZATION / NOTE / ANCHOR，尚未注册任一特殊依赖的 shape type；未注册会走到 `PumlUnimplementedExporter`（警告并跳过）。
+- 注册现状：`PumlElementExporterRepository`（src/.../PumlElementExporterFactory.java）按 `getShapeType()` 分发，注册表里已有 ASSOCIATION / CLASS / PACKAGE / MODEL / RELATIONSHIPS / USE_CASE / DEPENDENCY / GENERALIZATION / REALIZATION / NOTE / ANCHOR，尚未注册任一特殊依赖的 shape type；未注册会走到 `PumlUnimplementedExporter`（警告并跳过）。
 - `ViElementType`（src/.../vpmodelvisitor/ViElementType.java）目前仅有 `DEPENDENCY`（`MODEL_TYPE_DEPENDENCY`）一项——`Usage / Bind / Permit / Abstraction` 的 model type 未覆盖；`Access / Import / Merge / Instantiate / Substitute` 因 model type 同为 `MODEL_TYPE_DEPENDENCY` 已由 `DEPENDENCY` 覆盖。
 
 **设计图（特殊依赖导出相关模块）：**
@@ -1161,7 +1161,7 @@ PumlElementExporterFactory ..> PumlAbstractionExporter : register()
    - 验证：单测断言 `of(MODEL_TYPE_USAGE)` 等返回对应枚举项、`vpModelTypeIs` 断言成立，且不影响 `of("Dependency")` 仍返回 `DEPENDENCY`。
 
 4. **导出器注册（输出模型工厂）。**
-   - 方案：在 `PumlElementExporterFactory` 构造器注入九个新导出器并逐一 `register(...)`，使分发表按各自 `getShapeType()` 生效。
+   - 方案：在 `PumlElementExporterRepository` 构造器注入九个新导出器并逐一 `register(...)`，使分发表按各自 `getShapeType()` 生效。
    - 验证：单测验证 `build(SHAPE_TYPE_USAGE)` 等能取到对应 exporter（而非回退 Unimplemented）；整体 `mvn test` 无回归。
 
 5. **集成验证。**

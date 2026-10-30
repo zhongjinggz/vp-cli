@@ -20,13 +20,13 @@ import plugins.vpcli.domain.outputmodel.pumlnote.PumlNoteExporter;
 import plugins.vpcli.domain.outputmodel.pumlexporter.pumlusecase.PumlUseCaseExporter;
 
 @Singleton
-public class PumlElementExporterFactory {
-    Logger log = LoggerFactory.getLogger(PumlElementExporterFactory.class);
+public class PumlElementExporterRepository {
+    Logger log = LoggerFactory.getLogger(PumlElementExporterRepository.class);
     private final Map<String, PumlElementExporter> shapeTypeExporters = new HashMap<>();
     private final PumlUnimplementedExporter unimplementedExporter;
 
     @Inject
-    public PumlElementExporterFactory(
+    public PumlElementExporterRepository(
         PumlAssociationExporter associationExporter,
         PumlClassExporter classExporter,
         PumlPackageExporter packageExporter,
@@ -77,14 +77,14 @@ public class PumlElementExporterFactory {
 
     private void register(PumlElementExporter exporter) {
         shapeTypeExporters.put(exporter.getShapeType(), exporter); // 单一来源：@Override getShapeType()
-        exporter.setExporterFactory(this); // to build the bi-direction dependency
+        exporter.setExporterRepository(this); // to findByShapeType the bi-direction dependency
     }
 
 
     /**
      * （警告并跳过），与迁移前经 MyElementFactory 归一化为 UNIMPLEMENTED_ELEMENT 等价。
      */
-    public PumlElementExporter build(String shapeType) {
+    public PumlElementExporter findByShapeType(String shapeType) {
         PumlElementExporter exporter = this.shapeTypeExporters.get(shapeType);
         if (exporter != null) {
             return exporter;

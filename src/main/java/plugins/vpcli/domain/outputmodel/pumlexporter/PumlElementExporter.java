@@ -10,14 +10,14 @@ import java.util.Iterator;
 import java.util.List;
 
 public abstract class PumlElementExporter {
-    protected PumlElementExporterFactory pumlElementExporterFactory;
+    protected PumlElementExporterRepository exporterRepository;
 
     public PumlElementExporter() {
     }
 
-    // used by PumlElementExporterFactory to build the bi-direction dependency, which is necessary
-    public void setExporterFactory(PumlElementExporterFactory pumlElementExporterFactory) {
-        this.pumlElementExporterFactory = pumlElementExporterFactory;
+    // used by PumlElementExporterRepository to build the bi-direction dependency
+    public void setExporterRepository(PumlElementExporterRepository pumlElementExporterRepository) {
+        this.exporterRepository = pumlElementExporterRepository;
     }
 
     abstract public String getShapeType();

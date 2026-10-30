@@ -225,7 +225,7 @@ PumlLollipopImplementationExporter --> PumlDiagram : writeTerminalShape(circle) 
     - 验证：构造“两个类实现同一接口”的桩数据，断言只输出一行 `circle` 且两条实线分别指向同一别名。
 
 5. **注册、回归与集成验证。**
-    - 方案：在 `PumlElementExporterFactory` 注册 `IMPLEMENTATION` 导出器。
+    - 方案：在 `PumlElementExporterRepository` 注册 `IMPLEMENTATION` 导出器。
     - 验证：工厂单测验证 `of(IMPLEMENTATION)`；整体 `mvn test` 无回归；手动在 VP 中导出棒棒糖实现，确认 `.puml` 可被 PlantUML 正确渲染。
 
 **说明/边界：** 本条目仅处理“棒棒糖”呈现形态；常规的 `..|>` 实现（如 Java `implements` 拉出来一条虚线三角）属 #20，两者在 VP 中可能表现同一种“实现”关系，最终统一成一个建模并向不同导出器分发（研究项）。本条目不涉及导入。

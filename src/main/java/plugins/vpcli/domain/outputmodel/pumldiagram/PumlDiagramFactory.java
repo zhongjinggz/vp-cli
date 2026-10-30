@@ -4,15 +4,15 @@ import com.vp.plugin.diagram.IDiagramUIModel;
 
 import jakarta.inject.Inject;
 import jakarta.inject.Singleton;
-import plugins.vpcli.domain.outputmodel.pumlexporter.PumlElementExporterFactory;
+import plugins.vpcli.domain.outputmodel.pumlexporter.PumlElementExporterRepository;
 
 @Singleton
 public class PumlDiagramFactory {
-    private final PumlElementExporterFactory exporterFactory;
+    private final PumlElementExporterRepository exporterFactory;
 
     @Inject
     public PumlDiagramFactory(
-        PumlElementExporterFactory exporterFactory
+        PumlElementExporterRepository exporterFactory
     ) {
         this.exporterFactory = exporterFactory;
     }
@@ -33,14 +33,14 @@ public class PumlDiagramFactory {
                 if (aShape.getParent() != null) {
                     continue;
                 }
-                exporterFactory.build(aShape.getShapeType()).export(result, aShape);
+                exporterFactory.findByShapeType(aShape.getShapeType()).export(result, aShape);
             }
         }
 
         var connectors = vpDiagramElement.toConnectorUIModelArray();
         if (connectors != null) {
             for (var aConnector : connectors) {
-                exporterFactory.build(aConnector.getShapeType()).export(result, aConnector);
+                exporterFactory.findByShapeType(aConnector.getShapeType()).export(result, aConnector);
             }
         }
 
