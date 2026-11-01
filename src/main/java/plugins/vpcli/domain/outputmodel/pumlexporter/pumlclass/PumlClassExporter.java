@@ -113,10 +113,11 @@ public class PumlClassExporter extends PumlBlockExporter {
 
     private boolean exportAttributes(PumlDiagram result, IClass clazz) {
 
-        List<String> attributeLines = collectAttributeLines(clazz);
-
-
-
+        List<String> attributeLines = new ArrayList<>();
+        var attributeIterator = clazz.attributeIterator();
+        while (attributeIterator.hasNext()) {
+            attributeLines.add(formatVpAttributeLine((IAttribute) attributeIterator.next()));
+        }
 
 
         if (!attributeLines.isEmpty()) {
@@ -126,15 +127,6 @@ public class PumlClassExporter extends PumlBlockExporter {
             return true;
         }
         return false;
-    }
-
-    private List<String> collectAttributeLines(IClass clazz) {
-        List<String> lines = new ArrayList<>();
-        var attributeIterator = clazz.attributeIterator();
-        while (attributeIterator.hasNext()) {
-            lines.add(formatVpAttributeLine((IAttribute) attributeIterator.next()));
-        }
-        return lines;
     }
 
     private List<String> collectOperationLines(IClass clazz) {
