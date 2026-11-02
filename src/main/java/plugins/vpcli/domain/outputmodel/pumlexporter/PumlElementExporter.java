@@ -3,6 +3,7 @@ package plugins.vpcli.domain.outputmodel.pumlexporter;
 import com.vp.plugin.diagram.IDiagramElement;
 import com.vp.plugin.model.IModelElement;
 import com.vp.plugin.model.IStereotype;
+import org.jetbrains.annotations.NotNull;
 import plugins.vpcli.domain.outputmodel.pumldiagram.PumlDiagram;
 
 import java.util.ArrayList;
@@ -83,4 +84,16 @@ public abstract class PumlElementExporter {
         }
         return name + " " + stereotypes;
     }
+
+    protected static List<String> getStereotypes(@NotNull IModelElement vpElement) {
+        List<String> result = new ArrayList<>();
+        IStereotype[] stereotypes = vpElement.toStereotypeModelArray();
+        if (stereotypes != null) {
+            for (IStereotype stereotype : stereotypes) {
+                result.add(stereotype.getName());
+            }
+        }
+        return result;
+    }
+
 }

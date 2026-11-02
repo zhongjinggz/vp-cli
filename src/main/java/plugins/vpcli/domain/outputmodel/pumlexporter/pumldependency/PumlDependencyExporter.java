@@ -3,15 +3,17 @@ package plugins.vpcli.domain.outputmodel.pumlexporter.pumldependency;
 import com.vp.plugin.diagram.IDiagramElement;
 import com.vp.plugin.diagram.IShapeTypeConstants;
 import com.vp.plugin.model.IRelationship;
+import org.jetbrains.annotations.NotNull;
 import plugins.vpcli.domain.outputmodel.pumldiagram.NameDirection;
 import plugins.vpcli.domain.outputmodel.pumldiagram.PumlDiagram;
-import plugins.vpcli.domain.outputmodel.pumldiagram.PumlDiagram.LineStyle;
-import plugins.vpcli.domain.outputmodel.pumldiagram.PumlEdgeEnd;
-import plugins.vpcli.domain.outputmodel.pumldiagram.PumlEdgeEnd.ShapeKind;
 
 import jakarta.inject.Inject;
 import jakarta.inject.Singleton;
+import plugins.vpcli.domain.outputmodel.pumldiagram.PumlEdgeEnd;
 import plugins.vpcli.domain.outputmodel.pumlexporter.PumlElementExporter;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * #21：特殊的依赖 Special Dependency 共用的导出基类。
@@ -38,11 +40,24 @@ public class PumlDependencyExporter extends PumlElementExporter {
         String fromAlias = getPumlAlias(dependency.getFrom());
         String toAlias = getPumlAlias(dependency.getTo());
 
-        result.writeEdge(
-            PumlEdgeEnd.of(fromAlias, "", "", ShapeKind.NONE),
-            PumlEdgeEnd.of(toAlias, "", "", ShapeKind.ARROW),
-            LineStyle.DASHED,
-            buildEdgeLabel(dependency.getName(), dependency),
-            NameDirection.NONE);
+//        result.writeEdge(
+//            PumlEdgeEnd.of(fromAlias, "", "", PumlEdgeEnd.ShapeKind.NONE),
+//            PumlEdgeEnd.of(toAlias, "", "", PumlEdgeEnd.ShapeKind.ARROW),
+//            PumlDiagram.LineStyle.DASHED,
+//            buildEdgeLabel(dependency.getName(), dependency),
+//            NameDirection.NONE);
+        result.writeTerminalShape(
+            PumlDependency.of(
+                    fromAlias,
+                    toAlias,
+                    getStereotypes(dependency))
+                .toString()
+        );
+    }
+
+    private List<String> labels(IRelationship dependency) {
+        List<String> result = new ArrayList<>();
+        result.addAll(getStereotypes(dependency));
+        return result;
     }
 }

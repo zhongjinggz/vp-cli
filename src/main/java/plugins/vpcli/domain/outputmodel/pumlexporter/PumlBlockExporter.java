@@ -26,7 +26,7 @@ public abstract class PumlBlockExporter extends PumlElementExporter {
         result.endBlock();
     }
 
-    // 供需要在块声明末尾追加 keyword（如 <<model>> 原型）的子类覆写
+    // 供需要在块声明末尾追加 getKeyword（如 <<model>> 原型）的子类覆写
     public String getKeyword() {
         return "";
     }
@@ -37,8 +37,8 @@ public abstract class PumlBlockExporter extends PumlElementExporter {
     public abstract String getBlockType(IModelElement vpElement);
 
     /**
-     * 步 #15：块声明后缀 = keyword（getKeyword()）+ 元素上的泛型。
-     * 组合顺序：keyword ，随后是每个泛型。
+     * 步 #15：块声明后缀 = getKeyword（getKeyword()）+ 元素上的泛型。
+     * 组合顺序：getKeyword ，随后是每个泛型。
      */
     public String buildBlockSuffix(IModelElement vpElement) {
         String fixed = getKeyword();

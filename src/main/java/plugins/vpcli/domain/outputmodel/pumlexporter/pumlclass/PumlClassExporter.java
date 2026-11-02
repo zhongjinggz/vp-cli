@@ -10,6 +10,7 @@ import com.vp.plugin.model.IOperation;
 import com.vp.plugin.model.IParameter;
 import jakarta.inject.Inject;
 import jakarta.inject.Singleton;
+import org.jspecify.annotations.NonNull;
 import plugins.vpcli.domain.outputmodel.pumldiagram.PumlDiagram;
 import plugins.vpcli.domain.outputmodel.pumlexporter.PumlBlockExporter;
 import plugins.vpcli.util.BugException;
@@ -66,11 +67,20 @@ public class PumlClassExporter extends PumlBlockExporter {
 
     /**
      * 步 #20：分区渲染类体。依次读取属性区、操作区、枚举值区三个行列表；
-     * 凡该区非空才写，凡需输出一个新的非空区且前面已写过区，则先在两区之间补一行 `--`。
-     * 只有单区时无 `--`，两区及以上时以 `--` 分隔（用户确认的统一分区规则）。
+     * 凡该区非空才写
+     * 只有单区时无 `--`，两区及以上时以 `--` 分隔。
      */
     @Override
     public void exportBlockBody(PumlDiagram result, IDiagramElement vpDiagramElement) {
+        var vpElement = getVpElement(vpDiagramElement);
+        IClass clazz = (IClass) vpElement;
+
+        boolean wroteAny = exportAttributes(result, clazz);
+        wroteAny = exportOperations(result, clazz, wroteAny);
+        exportEnumLiterals(result, clazz, wroteAny);
+    }
+
+    private static @NonNull IModelElement getVpElement(IDiagramElement vpDiagramElement) {
         var vpElement = vpDiagramElement.getModelElement();
         if (vpElement == null) {
             throw new BugException("vpElement should not be null");
@@ -78,172 +88,202 @@ public class PumlClassExporter extends PumlBlockExporter {
         if (!(vpElement instanceof IClass)) {
             throw new BugException("vpElement should be IClass, but is " + vpElement.getClass());
         }
-
-        IClass clazz = (IClass) vpElement;
-        boolean wroteAny = exportAttributes(result, clazz);
-        wroteAny = exportOperations(result, clazz, wroteAny);
-        exportEnumLiterals(result, clazz, wroteAny);
+        return vpElement;
     }
 
     private void exportEnumLiterals(PumlDiagram result, IClass clazz, boolean wroteAny) {
-        List<String> enumerationLines = collectEnumerationLines(clazz);
-        if (!enumerationLines.isEmpty()) {
-            if (wroteAny) {
+        boolean wroteSeparator = false;
+        List<String> enumerationLines = new ArrayList<>();
+
+        var literals = clazz.enumerationLiteralIterator();
+
+        while (literals.hasNext()) {
+            if (wroteAny && !wroteSeparator) {
                 result.writeTerminalShape("--");
+                wroteSeparator = true;
             }
-            for (String line : enumerationLines) {
-                result.writeTerminalShape(line);
+            IEnumerationLiteral literal = (IEnumerationLiteral) literals.next();
+            if (literal.getName() != null && !literal.getName().isEmpty()) {
+                enumerationLines.add(literal.getName());
+                result.writeTerminalShape(literal.getName());
             }
         }
     }
 
-    private boolean exportOperations(PumlDiagram result, IClass clazz, boolean wroteAny) {
-        List<String> operationLines = collectOperationLines(clazz);
-        if (!operationLines.isEmpty()) {
-            if (wroteAny) {
+    private boolean exportOperations(PumlDiagram result, IClass clazz, boolean alreadyWroteAny) {
+        boolean wroteAny = alreadyWroteAny;
+        boolean wroteSeparator = false;
+
+        var operationIterator = clazz.operationIterator();
+        while (operationIterator.hasNext()) {
+            if (alreadyWroteAny && !wroteSeparator) {
                 result.writeTerminalShape("--");
+                wroteSeparator = true;
             }
-            for (String line : operationLines) {
-                result.writeTerminalShape(line);
-            }
-            return true;
+            result.writeTerminalShape(
+                formatOperation((IOperation) operationIterator.next())
+            );
+            wroteAny = true;
         }
+
         return wroteAny;
     }
 
     private boolean exportAttributes(PumlDiagram result, IClass clazz) {
+        boolean hasAttributes = false;
 
-        List<String> attributeLines = new ArrayList<>();
         var attributeIterator = clazz.attributeIterator();
         while (attributeIterator.hasNext()) {
-            attributeLines.add(formatVpAttributeLine((IAttribute) attributeIterator.next()));
+            result.writeTerminalShape(
+                formatAttribute((IAttribute) attributeIterator.next())
+            );
+            hasAttributes = true;
         }
 
-
-        if (!attributeLines.isEmpty()) {
-            for (String line : attributeLines) {
-                result.writeTerminalShape(line);
-            }
-            return true;
-        }
-        return false;
-    }
-
-    private List<String> collectOperationLines(IClass clazz) {
-        List<String> lines = new ArrayList<>();
-        var operationIterator = clazz.operationIterator();
-        while (operationIterator.hasNext()) {
-            lines.add(formatVpOperationLine((IOperation) operationIterator.next()));
-        }
-        return lines;
-    }
-
-    /**
-     * 枚举项行 = 枚举项名，无可见性符（旧架构当作“空可见性属性行”追加）。
-     */
-    private List<String> collectEnumerationLines(IClass clazz) {
-        List<String> lines = new ArrayList<>();
-        var literalIterator = clazz.enumerationLiteralIterator();
-        while (literalIterator.hasNext()) {
-            IEnumerationLiteral literal = (IEnumerationLiteral) literalIterator.next();
-            if (literal.getName() != null && !literal.getName().isEmpty()) {
-                lines.add(literal.getName());
-            }
-        }
-        return lines;
+        return hasAttributes;
     }
 
     // 属性行：<可见性符号> <{static}?> <名称> [: 类型] [= 初值]，各段按字段有无省略
-    private String formatVpAttributeLine(IAttribute attribute) {
+    private static String formatAttribute(IAttribute attribute) {
         StringBuilder result = new StringBuilder();
-        appendVisibility(result, attribute.getVisibility());
-        if (IAttribute.SCOPE_CLASSIFIER.equals(attribute.getScope())) {
-            result.append("{static} ");
-        }
-        if (attribute.getName() != null) {
-            result.append(attribute.getName());
-        }
-        String type = attribute.getTypeAsString();
-        if (type != null && !type.isEmpty()) {
-            result.append(": ").append(type);
-        }
+
+        appendAttributeVisibility(attribute, result);
+        appendAttributeStatic(attribute, result);
+        appendAttributeName(attribute, result);
+        appendAttributeType(attribute, result);
+        appendAttributeInitialValue(attribute, result);
+
+        return result.toString();
+    }
+
+    private static void appendAttributeInitialValue(IAttribute attribute, StringBuilder result) {
         String initialValue = attribute.getInitialValueAsString();
         if (initialValue != null && !initialValue.isEmpty()) {
             result.append(" = ").append(initialValue);
         }
-        return result.toString();
+    }
+
+    private static void appendAttributeType(IAttribute attribute, StringBuilder result) {
+        String type = attribute.getTypeAsString();
+        if (type != null && !type.isEmpty()) {
+            result.append(": ").append(type);
+        }
+    }
+
+    private static void appendAttributeVisibility(IAttribute attribute, StringBuilder result) {
+        appendVisibility(result, attribute.getVisibility());
+    }
+
+    private static void appendAttributeName(IAttribute attribute, StringBuilder result) {
+        if (attribute.getName() != null) {
+            result.append(attribute.getName());
+        }
+    }
+
+    private static void appendAttributeStatic(IAttribute attribute, StringBuilder result) {
+        if (IAttribute.SCOPE_CLASSIFIER.equals(attribute.getScope())) {
+            result.append("{static} ");
+        }
     }
 
     // VP 版操作行，与 myuml 版格式逐段对齐
-    private String formatVpOperationLine(IOperation operation) {
-        StringBuilder sb = new StringBuilder();
-        appendVisibility(sb, operation.getVisibility());
-        if (operation.isAbstract()) {
-            sb.append("{abstract} ");
-        }
-        if (operation.isStatic()) {
-            sb.append("{static} ");
-        }
-        if (operation.getName() != null) {
-            sb.append(operation.getName());
-        }
-        sb.append('(');
-        for (int i = 0; i < operation.parameterCount(); i++) {
-            if (i > 0) {
-                sb.append(", ");
-            }
-            sb.append(formatVpParameter(operation.getParameterByIndex(i)));
-        }
-        sb.append(')');
-        String returnType = operation.getReturnTypeAsString();
-        if (returnType != null && !returnType.isEmpty()) {
-            sb.append(": ").append(returnType);
-        }
-        return sb.toString();
+    private static String formatOperation(IOperation operation) {
+        StringBuilder result = new StringBuilder();
+
+        appendOperationVisibility(operation, result);
+        appendOperationAbstract(operation, result);
+        appendOperationStatic(operation, result);
+        appendOperationName(operation, result);
+        appendOperationParameters(operation, result);
+        appendOperationReturnType(operation, result);
+
+        return result.toString();
     }
 
-    private String formatVpParameter(IParameter param) {
-        StringBuilder sb = new StringBuilder();
+    private static void appendOperationReturnType(IOperation operation, StringBuilder result) {
+        String returnType = operation.getReturnTypeAsString();
+        if (returnType != null && !returnType.isEmpty()) {
+            result.append(": ").append(returnType);
+        }
+    }
+
+    private static void appendOperationParameters(IOperation operation, StringBuilder result) {
+        result.append('(');
+        for (int i = 0; i < operation.parameterCount(); i++) {
+            if (i > 0) {
+                result.append(", ");
+            }
+            result.append(formatVpParameter(operation.getParameterByIndex(i)));
+        }
+        result.append(')');
+    }
+
+    private static void appendOperationName(IOperation operation, StringBuilder result) {
+        if (operation.getName() != null) {
+            result.append(operation.getName());
+        }
+    }
+
+    private static void appendOperationStatic(IOperation operation, StringBuilder result) {
+        if (operation.isStatic()) {
+            result.append("{static} ");
+        }
+    }
+
+    private static void appendOperationAbstract(IOperation operation, StringBuilder result) {
+        if (operation.isAbstract()) {
+            result.append("{abstract} ");
+        }
+    }
+
+    private static void appendOperationVisibility(IOperation operation, StringBuilder sb) {
+        appendVisibility(sb, operation.getVisibility());
+    }
+
+    private static String formatVpParameter(IParameter param) {
+        StringBuilder result = new StringBuilder();
         if (param.getName() != null) {
-            sb.append(param.getName());
+            result.append(param.getName());
         }
         String type = param.getTypeAsString();
         if (type != null && !type.isEmpty()) {
-            if (sb.length() > 0) {
-                sb.append(": ");
+            if (result.length() > 0) {
+                result.append(": ");
             }
-            sb.append(type);
+            result.append(type);
         }
         String defaultValue = param.getDefaultValueAsString();
         if (defaultValue != null && !defaultValue.isEmpty()) {
-            sb.append(" = ").append(defaultValue);
+            result.append(" = ").append(defaultValue);
         }
-        return sb.toString();
+        return result.toString();
     }
 
     // 可见性映射：#14 —— public→+、private→-、protected→#、package→~，其余（含空/未知）→空
-    private void appendVisibility(StringBuilder sb, String visibility) {
+    private static void appendVisibility(StringBuilder sb, String visibility) {
         String key = visibility == null ? "" : visibility;
-        String symbol;
+        String symbol1;
         switch (key) {
             case "public":
-                symbol = "+";
+                symbol1 = "+";
                 break;
             case "private":
-                symbol = "-";
+                symbol1 = "-";
                 break;
             case "protected":
-                symbol = "#";
+                symbol1 = "#";
                 break;
             case "package":
-                symbol = "~";
+                symbol1 = "~";
                 break;
             default:
-                symbol = "";
+                symbol1 = "";
                 break;
         }
+        String symbol = symbol1;
         if (!symbol.isEmpty()) {
             sb.append(symbol).append(' ');
         }
     }
+
 }

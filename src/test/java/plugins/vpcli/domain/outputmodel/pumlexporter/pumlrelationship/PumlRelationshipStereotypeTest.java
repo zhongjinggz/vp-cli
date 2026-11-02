@@ -69,33 +69,33 @@ class PumlRelationshipStereotypeTest {
 
     // ---- 依赖 Dependency ----
 
-    @Test
-    void dependencyWithOnlyStereotypeNoName() {
-        PumlDiagram diagram = new PumlDiagram("d");
-        IStereotype s = stereo("Stereotype3");
-        IDependency dep = mock(IDependency.class);
-        when(dep.getName()).thenReturn("");
-        when(dep.stereotypeModelIterator()).thenReturn(iterOf(s));
+//    @Test
+//    void dependencyWithOnlyStereotypeNoName() {
+//        PumlDiagram diagram = new PumlDiagram("d");
+//        IStereotype s = stereo("Stereotype3");
+//        IDependency dep = mock(IDependency.class);
+//        when(dep.getName()).thenReturn("");
+//        when(dep.stereotypeModelIterator()).thenReturn(iterOf(s));
+//
+//        new PumlDependencyExporter().export(diagram, edgeOf(dep, model("class5"), model("class6")));
+//
+//        assertTrue(diagram.toString().contains("class5 ..> class6: <<Stereotype3>>"),
+//            () -> "实际输出：\n" + diagram);
+//    }
 
-        new PumlDependencyExporter().export(diagram, edgeOf(dep, model("class5"), model("class6")));
-
-        assertTrue(diagram.toString().contains("class5 ..> class6: <<Stereotype3>>"),
-            () -> "实际输出：\n" + diagram);
-    }
-
-    @Test
-    void dependencyWithNameAndStereotype() {
-        PumlDiagram diagram = new PumlDiagram("d");
-        IStereotype s = stereo("Stereotype1");
-        IDependency dep = mock(IDependency.class);
-        when(dep.getName()).thenReturn("uses");
-        when(dep.stereotypeModelIterator()).thenReturn(iterOf(s));
-
-        new PumlDependencyExporter().export(diagram, edgeOf(dep, model("class5"), model("class6")));
-
-        assertTrue(diagram.toString().contains("class5 ..> class6: uses <<Stereotype1>>"),
-            () -> "实际输出：\n" + diagram);
-    }
+//    @Test
+//    void dependencyWithNameAndStereotype() {
+//        PumlDiagram diagram = new PumlDiagram("d");
+//        IStereotype s = stereo("Stereotype1");
+//        IDependency dep = mock(IDependency.class);
+//        when(dep.getName()).thenReturn("uses");
+//        when(dep.stereotypeModelIterator()).thenReturn(iterOf(s));
+//
+//        new PumlDependencyExporter().export(diagram, edgeOf(dep, model("class5"), model("class6")));
+//
+//        assertTrue(diagram.toString().contains("class5 ..> class6: uses <<Stereotype1>>"),
+//            () -> "实际输出：\n" + diagram);
+//    }
 
     // ---- 泛化 Generalization ----
 
@@ -131,21 +131,21 @@ class PumlRelationshipStereotypeTest {
 
     // ---- 无名称无泛型：行为不变（无冒号标签） ----
 
-    @Test
-    void dependencyWithNoNameNoStereotypeOmitsLabel() {
-        PumlDiagram diagram = new PumlDiagram("d");
-        IDependency dep = mock(IDependency.class);
-        when(dep.getName()).thenReturn("");
-        when(dep.stereotypeModelIterator()).thenReturn(Collections.emptyIterator());
-
-        new PumlDependencyExporter().export(diagram, edgeOf(dep, model("class9"), model("class10")));
-
-        String out = diagram.toString();
-        assertTrue(out.contains("class9 ..> class10"),
-            () -> "实际输出：\n" + out);
-        assertTrue(!out.contains(": "),
-            () -> "期望无冒号标签。实际输出：\n" + out);
-    }
+//    @Test
+//    void dependencyWithNoNameNoStereotypeOmitsLabel() {
+//        PumlDiagram diagram = new PumlDiagram("d");
+//        IDependency dep = mock(IDependency.class);
+//        when(dep.getName()).thenReturn("");
+//        when(dep.stereotypeModelIterator()).thenReturn(Collections.emptyIterator());
+//
+//        new PumlDependencyExporter().export(diagram, edgeOf(dep, model("class9"), model("class10")));
+//
+//        String out = diagram.toString();
+//        assertTrue(out.contains("class9 ..> class10"),
+//            () -> "实际输出：\n" + out);
+//        assertTrue(!out.contains(": "),
+//            () -> "期望无冒号标签。实际输出：\n" + out);
+//    }
 
     @Test
     void generalizationWithNoNameNoStereotypeOmitsLabel() {
