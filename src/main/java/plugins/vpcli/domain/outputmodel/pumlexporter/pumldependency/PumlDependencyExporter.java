@@ -3,25 +3,15 @@ package plugins.vpcli.domain.outputmodel.pumlexporter.pumldependency;
 import com.vp.plugin.diagram.IDiagramElement;
 import com.vp.plugin.diagram.IShapeTypeConstants;
 import com.vp.plugin.model.IRelationship;
-import org.jetbrains.annotations.NotNull;
-import plugins.vpcli.domain.outputmodel.pumldiagram.NameDirection;
+import org.jspecify.annotations.NonNull;
 import plugins.vpcli.domain.outputmodel.pumldiagram.PumlDiagram;
 
 import jakarta.inject.Inject;
 import jakarta.inject.Singleton;
-import plugins.vpcli.domain.outputmodel.pumldiagram.PumlEdgeEnd;
 import plugins.vpcli.domain.outputmodel.pumlexporter.PumlElementExporter;
 
-import java.util.ArrayList;
 import java.util.List;
 
-/**
- * #21：特殊的依赖 Special Dependency 共用的导出基类。
- * 连接线的 getModelElement() 可以是 IDependency 或 9 类特殊依赖中各自独立的模型接口
- * （如 IUsage、IBindingDependency、IPermission、IAbstraction）。它们均不继承 IDependency，
- * 但都经继承链直达 IRelationship 的 getFrom()/getTo()/getName()，故统一按 IRelationship 读取
- * 即可覆盖全部类型；渲染逻辑（虚线 + 目标端箭头 `..>`）与普通依赖完全一致。
- */
 @Singleton
 public class PumlDependencyExporter extends PumlElementExporter {
     @Inject
@@ -40,24 +30,32 @@ public class PumlDependencyExporter extends PumlElementExporter {
         String fromAlias = getPumlAlias(dependency.getFrom());
         String toAlias = getPumlAlias(dependency.getTo());
 
-//        result.writeEdge(
-//            PumlEdgeEnd.of(fromAlias, "", "", PumlEdgeEnd.ShapeKind.NONE),
-//            PumlEdgeEnd.of(toAlias, "", "", PumlEdgeEnd.ShapeKind.ARROW),
-//            PumlDiagram.LineStyle.DASHED,
-//            buildEdgeLabel(dependency.getName(), dependency),
-//            NameDirection.NONE);
         result.writeTerminalShape(
-            PumlDependency.of(
-                    fromAlias,
-                    toAlias,
-                    getStereotypes(dependency))
-                .toString()
+            toText(
+                fromAlias,
+                toAlias,
+                getStereotypes(dependency)
+            )
         );
     }
 
-    private List<String> labels(IRelationship dependency) {
-        List<String> result = new ArrayList<>();
-        result.addAll(getStereotypes(dependency));
-        return result;
+    private String toText(String fromAlias, String toAlias, List<String> labels) {
+        StringBuilder result = new StringBuilder();
+        result.append(fromAlias);
+        result.append(getArrow());
+        result.append(toAlias);
+        if (!labels.isEmpty()) {
+            result.append(": ");
+        }
+        for (String label : labels) {
+            result.append("<<");
+            result.append(label);
+            result.append(">>");
+        }
+        return result.toString();
+    }
+
+    protected  @NonNull String getArrow() {
+        return " ..> ";
     }
 }

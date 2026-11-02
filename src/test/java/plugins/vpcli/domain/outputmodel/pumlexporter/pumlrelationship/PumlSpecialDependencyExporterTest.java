@@ -105,7 +105,7 @@ class PumlSpecialDependencyExporterTest {
 //        when(s.getName()).thenReturn("use");
 //        when(rel.stereotypeModelIterator()).thenReturn(List.of(s).iterator());
 //        new PumlUsageExporter().export(diagram, edgeOf(rel, "class1", "class2"));
-//        assertTrue(diagram.toString().contains("class1 ..> class2: name <<use>>"),
+//        assertTrue(diagram.toText().contains("class1 ..> class2: name <<use>>"),
 //            () -> "实际输出：\n" + diagram);
 //    }
 
