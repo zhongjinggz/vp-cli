@@ -3,6 +3,7 @@ package plugins.vpcli.domain.outputmodel.pumlexporter.pumlclass;
 import com.vp.plugin.diagram.IDiagramElement;
 import com.vp.plugin.diagram.IShapeTypeConstants;
 import com.vp.plugin.model.IGeneralization;
+import org.jetbrains.annotations.NotNull;
 import plugins.vpcli.domain.outputmodel.pumldiagram.NameDirection;
 import plugins.vpcli.domain.outputmodel.pumldiagram.PumlDiagram;
 import plugins.vpcli.domain.outputmodel.pumldiagram.PumlDiagram.LineStyle;
@@ -11,10 +12,12 @@ import plugins.vpcli.domain.outputmodel.pumldiagram.PumlEdgeEnd.ShapeKind;
 
 import jakarta.inject.Inject;
 import jakarta.inject.Singleton;
+import plugins.vpcli.domain.outputmodel.pumlexporter.PumlDirectedRelationshipExporter;
 import plugins.vpcli.domain.outputmodel.pumlexporter.PumlElementExporter;
+import plugins.vpcli.domain.outputmodel.pumlexporter.pumldependency.PumlDependencyExporter;
 
 @Singleton
-public class PumlGeneralizationExporter extends PumlElementExporter {
+public class PumlGeneralizationExporter extends PumlDirectedRelationshipExporter {
     @Inject
     public PumlGeneralizationExporter() {
     }
@@ -25,17 +28,7 @@ public class PumlGeneralizationExporter extends PumlElementExporter {
     }
 
     @Override
-    public void export(PumlDiagram result, IDiagramElement vpDiagramElement) {
-        IGeneralization generalization = (IGeneralization) vpDiagramElement.getModelElement();
-
-        String generalAlias = getPumlAlias(generalization.getFrom());
-        String specificAlias = getPumlAlias(generalization.getTo());
-
-        result.writeEdge(
-            PumlEdgeEnd.of(generalAlias, "", "", ShapeKind.REVERSE_TRIANGLE),
-            PumlEdgeEnd.of(specificAlias, "", "", ShapeKind.NONE),
-            LineStyle.SOLID,
-            buildEdgeLabel(generalization.getName(), generalization),
-            NameDirection.NONE);
+    protected @NotNull String getArrow() {
+        return " <|-- ";
     }
 }

@@ -105,7 +105,7 @@ class PumlRelationshipStereotypeTest {
         IStereotype s = stereo("Stereotype4");
         IGeneralization gen = mock(IGeneralization.class);
         when(gen.getName()).thenReturn("");
-        when(gen.stereotypeModelIterator()).thenReturn(iterOf(s));
+        when(gen.toStereotypeModelArray()).thenReturn(new IStereotype[]{s});
 
         new PumlGeneralizationExporter().export(diagram, edgeOf(gen, model("class7"), model("class8")));
 
