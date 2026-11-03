@@ -26,6 +26,7 @@ public abstract class PumlElementExporter {
     public void export(PumlDiagram result, IDiagramElement vpDiagramElement) {
     }
 
+    // TODO make it static ?
     protected String getPumlAlias(IModelElement vpElement) {
         List<String> segments = new ArrayList<>();
         collectQualifiedNameSegments(segments, vpElement);

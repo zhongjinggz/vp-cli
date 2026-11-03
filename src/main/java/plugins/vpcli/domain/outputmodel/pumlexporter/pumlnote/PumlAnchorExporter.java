@@ -25,7 +25,7 @@ public class PumlAnchorExporter extends PumlElementExporter {
     }
 
     /**
-     * 步 #19：渲染注释–元素之间的连线。anchor 恒无名，故 name 传空串（无冒号标签），
+     * 注释–元素之间的连线的类型是 IAnchor
      * 虚线 `..` 两端为 NONE（anchor 无端导航符号）：`X .. N`。
      */
     @Override
@@ -35,11 +35,10 @@ public class PumlAnchorExporter extends PumlElementExporter {
         String fromAlias = getPumlAlias(anchor.getFrom());
         String toAlias = getPumlAlias(anchor.getTo());
 
-        result.writeEdge(
-            PumlEdgeEnd.of(fromAlias, "", "", ShapeKind.NONE),
-            PumlEdgeEnd.of(toAlias, "", "", ShapeKind.NONE),
-            LineStyle.DASHED,
-            "",
-            NameDirection.NONE);
+        result.writeTerminalShape(formatAnchor(fromAlias, toAlias));
+    }
+
+    private String formatAnchor(String fromAlias, String toAlias) {
+        return fromAlias + " .. " + toAlias;
     }
 }

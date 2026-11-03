@@ -25,11 +25,6 @@ public class PumlAssociationExporter extends PumlElementExporter {
         return IShapeTypeConstants.SHAPE_TYPE_ASSOCIATION;
     }
 
-    /**
-     * 步 A5：直接读 VP 原生关联。连接线（IDiagramElement）的 getModelElement() 即 IAssociation；
-     * 两端经 getFromEnd()/getToEnd() 得 IAssociationEnd（继承 IModelElement，
-     * 自带 multiplicity/navigable/aggregation 与 role 名称），端分类器取 getModelElement()。
-     */
     @Override
     public void export(PumlDiagram result, IDiagramElement vpDiagramElement) {
         IAssociation association = (IAssociation) vpDiagramElement.getModelElement();
@@ -37,7 +32,6 @@ public class PumlAssociationExporter extends PumlElementExporter {
         IAssociationEnd fromEnd = (IAssociationEnd) association.getFromEnd();
         IAssociationEnd toEnd = (IAssociationEnd) association.getToEnd();
 
-        // 别名读端分类器（而非端点本身），与 myuml 侧 getFromEnd().getElement() 语义一致。
         String fromAlias = getPumlAlias(fromEnd.getModelElement());
         String toAlias   = getPumlAlias(toEnd.getModelElement());
 
