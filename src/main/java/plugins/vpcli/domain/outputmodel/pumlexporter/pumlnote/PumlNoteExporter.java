@@ -1,4 +1,4 @@
-package plugins.vpcli.domain.outputmodel.pumlnote;
+package plugins.vpcli.domain.outputmodel.pumlexporter.pumlnote;
 
 import com.vp.plugin.diagram.IDiagramElement;
 import com.vp.plugin.diagram.IShapeTypeConstants;

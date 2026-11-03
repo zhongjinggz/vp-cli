@@ -10,8 +10,8 @@ import com.vp.plugin.model.IModelElement;
 import com.vp.plugin.model.INOTE;
 import org.junit.jupiter.api.Test;
 import plugins.vpcli.domain.outputmodel.pumldiagram.PumlDiagram;
-import plugins.vpcli.domain.outputmodel.pumlnote.PumlAnchorExporter;
-import plugins.vpcli.domain.outputmodel.pumlnote.PumlNoteExporter;
+import plugins.vpcli.domain.outputmodel.pumlexporter.pumlnote.PumlAnchorExporter;
+import plugins.vpcli.domain.outputmodel.pumlexporter.pumlnote.PumlNoteExporter;
 
 /**
  * 步 #19：注释（Note）与注释–元素连线（Anchor）的导出渲染。

@@ -15,8 +15,8 @@ import plugins.vpcli.domain.outputmodel.pumlexporter.pumlnamespace.PumlImportExp
 import plugins.vpcli.domain.outputmodel.pumlexporter.pumlnamespace.PumlMergeExporter;
 import plugins.vpcli.domain.outputmodel.pumlexporter.pumlnamespace.PumlModelExporter;
 import plugins.vpcli.domain.outputmodel.pumlexporter.pumlnamespace.PumlPackageExporter;
-import plugins.vpcli.domain.outputmodel.pumlnote.PumlAnchorExporter;
-import plugins.vpcli.domain.outputmodel.pumlnote.PumlNoteExporter;
+import plugins.vpcli.domain.outputmodel.pumlexporter.pumlnote.PumlAnchorExporter;
+import plugins.vpcli.domain.outputmodel.pumlexporter.pumlnote.PumlNoteExporter;
 import plugins.vpcli.domain.outputmodel.pumlexporter.pumlusecase.PumlUseCaseExporter;
 
 @Singleton

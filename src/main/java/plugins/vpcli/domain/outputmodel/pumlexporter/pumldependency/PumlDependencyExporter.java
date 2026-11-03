@@ -3,7 +3,7 @@ package plugins.vpcli.domain.outputmodel.pumlexporter.pumldependency;
 import com.vp.plugin.diagram.IDiagramElement;
 import com.vp.plugin.diagram.IShapeTypeConstants;
 import com.vp.plugin.model.IRelationship;
-import org.jspecify.annotations.NonNull;
+import org.jetbrains.annotations.NotNull;
 import plugins.vpcli.domain.outputmodel.pumldiagram.PumlDiagram;
 
 import jakarta.inject.Inject;
@@ -45,17 +45,19 @@ public class PumlDependencyExporter extends PumlElementExporter {
         result.append(getArrow());
         result.append(toAlias);
         if (!labels.isEmpty()) {
-            result.append(": ");
+            result.append(":");
         }
         for (String label : labels) {
-            result.append("<<");
-            result.append(label);
-            result.append(">>");
+            result.append(" ").append(formatStereotype(label));
         }
         return result.toString();
     }
 
-    protected  @NonNull String getArrow() {
+    private static @NotNull String formatStereotype(String label) {
+        return "<<" + label + ">>";
+    }
+
+    protected  @NotNull String getArrow() {
         return " ..> ";
     }
 }
