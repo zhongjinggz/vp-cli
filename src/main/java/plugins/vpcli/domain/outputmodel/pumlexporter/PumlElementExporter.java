@@ -75,17 +75,6 @@ public abstract class PumlElementExporter {
         return sb.toString();
     }
 
-    protected String buildEdgeLabel(String name, IModelElement vpElement) {
-        String stereotypes = renderStereotypes(vpElement);
-        if (name == null || name.isEmpty()) {
-            return stereotypes;
-        }
-        if (stereotypes.isEmpty()) {
-            return name;
-        }
-        return name + " " + stereotypes;
-    }
-
     protected static List<String> getStereotypes(@NotNull IModelElement vpElement) {
         List<String> result = new ArrayList<>();
         IStereotype[] stereotypes = vpElement.toStereotypeModelArray();

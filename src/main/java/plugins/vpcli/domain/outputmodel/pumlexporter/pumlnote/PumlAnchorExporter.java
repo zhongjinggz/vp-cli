@@ -26,7 +26,6 @@ public class PumlAnchorExporter extends PumlElementExporter {
 
     /**
      * 注释–元素之间的连线的类型是 IAnchor
-     * 虚线 `..` 两端为 NONE（anchor 无端导航符号）：`X .. N`。
      */
     @Override
     public void export(PumlDiagram result, IDiagramElement vpDiagramElement) {

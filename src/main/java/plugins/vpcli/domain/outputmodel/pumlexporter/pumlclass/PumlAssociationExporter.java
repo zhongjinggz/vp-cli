@@ -7,12 +7,14 @@ import com.vp.plugin.model.IAssociationEnd;
 
 import jakarta.inject.Inject;
 import jakarta.inject.Singleton;
-import plugins.vpcli.domain.outputmodel.pumldiagram.NameDirection;
+import org.jetbrains.annotations.NotNull;
+import org.jspecify.annotations.NonNull;
 import plugins.vpcli.domain.outputmodel.pumldiagram.PumlDiagram;
-import plugins.vpcli.domain.outputmodel.pumldiagram.PumlDiagram.LineStyle;
-import plugins.vpcli.domain.outputmodel.pumldiagram.PumlEdgeEnd;
 import plugins.vpcli.domain.outputmodel.pumldiagram.PumlEdgeEnd.ShapeKind;
 import plugins.vpcli.domain.outputmodel.pumlexporter.PumlElementExporter;
+
+import static plugins.vpcli.util.StringUtil.isBlank;
+import static plugins.vpcli.util.StringUtil.isNotBlank;
 
 @Singleton
 public class PumlAssociationExporter extends PumlElementExporter {
@@ -29,48 +31,127 @@ public class PumlAssociationExporter extends PumlElementExporter {
     public void export(PumlDiagram result, IDiagramElement vpDiagramElement) {
         IAssociation association = (IAssociation) vpDiagramElement.getModelElement();
 
+        String text = formatAssociation(association);
+
+        result.writeTerminalShape(text);
+    }
+
+    // association := fromElementAlias [fromMultiplicity&role] line [toMultiplicity&role] toElementAlias [labels]
+    // labels := :[name] [<<stereotype>>]* [>]
+
+    @NonNull String formatAssociation(IAssociation association) {
         IAssociationEnd fromEnd = (IAssociationEnd) association.getFromEnd();
         IAssociationEnd toEnd = (IAssociationEnd) association.getToEnd();
 
-        String fromAlias = getPumlAlias(fromEnd.getModelElement());
-        String toAlias   = getPumlAlias(toEnd.getModelElement());
 
-        result.writeEdge(
-            PumlEdgeEnd.of(fromAlias, normalizeMultiplicity(fromEnd.getMultiplicity()), fromEnd.getName(), fromShapeForVP(fromEnd)),
-            PumlEdgeEnd.of(toAlias, normalizeMultiplicity(toEnd.getMultiplicity()), toEnd.getName(), toShapeForVP(toEnd)),
-            LineStyle.SOLID,
-            buildEdgeLabel(association.getName(), association),
-            toDirectionVP(association.getDirection()));
+        String fromMultiplicityAndRole = buildMultiplicityAndRole(fromEnd.getName(), normalizeMultiplicity(fromEnd.getMultiplicity()));
+
+        String toMultiplicityAndRole = buildMultiplicityAndRole(toEnd.getName(), normalizeMultiplicity(toEnd.getMultiplicity()));
+
+        String result = getPumlAlias(fromEnd.getModelElement());
+        if (!fromMultiplicityAndRole.isEmpty()) {
+            result += " \"" + fromMultiplicityAndRole + "\"";
+        }
+        result = result + " " + buildAssociationLine(fromEnd, toEnd) + " ";
+        if (!toMultiplicityAndRole.isEmpty()) {
+            result += "\"" + toMultiplicityAndRole + "\" ";
+        }
+        result += getPumlAlias(toEnd.getModelElement());
+
+
+        String associationLabels = getAssociationLabels(association);
+        result += associationLabels;
+
+        return result;
     }
 
-    /** 步 A5：VP 原生版本复用的形状映射，经 IAssociationEnd 读取。 */
-    private ShapeKind shapeFor(IAssociationEnd end, boolean isFromEnd) {
-        String aggregation = end.getAggregationKind();
-        if (IAssociationEnd.AGGREGATION_KIND_shared.equals(aggregation)) {
-            return ShapeKind.DIAMOND;
+    private @NonNull String getAssociationLabels(IAssociation association) {
+
+        String name = association.getName();
+        String stereotypes = renderStereotypes(association);
+
+        String result = joinNameAndStereotypes(name, stereotypes);
+
+        if (isNotBlank(name)) {
+            result = patchDirection(association, result);
         }
-        if (IAssociationEnd.AGGREGATION_KIND_composite.equals(aggregation)) {
-            return ShapeKind.SOLID_DIAMOND;
+
+        if (isNotBlank(result)) {
+            result = ": " + result;
         }
-        switch (end.getNavigable()) {
-            case IAssociationEnd.NAVIGABLE_NAVIGABLE:
-                return isFromEnd ? ShapeKind.REVERSE_ARROW : ShapeKind.ARROW;
-            case IAssociationEnd.NAVIGABLE_NON_NAVIGABLE:
-                return ShapeKind.CROSS;
+        return result;
+    }
+
+    private @NotNull String patchDirection(
+        @NotNull IAssociation association,
+        @NotNull String nameAndStereotype
+    ) {
+        String result;
+
+        switch (association.getDirection()) {
+            case IAssociation.DIRECTION_FROM_TO:
+                result = nameAndStereotype + " >";
+                break;
+            case IAssociation.DIRECTION_TO_FROM:
+                result = "< " + nameAndStereotype;
+                break;
             default:
-                return ShapeKind.NONE;
+                result = nameAndStereotype;
         }
+
+        return result;
     }
 
-    private ShapeKind fromShapeForVP(IAssociationEnd end) {
-        return shapeFor(end, true);
+    private static @NotNull String joinNameAndStereotypes(String name, String stereotypes) {
+        String result = "";
+        if (isBlank(name)) {
+            result = stereotypes;
+        } else if (isBlank(stereotypes)) {
+            result = name;
+        } else {
+            result = name + " " + stereotypes;
+        }
+        return result;
     }
 
-    private ShapeKind toShapeForVP(IAssociationEnd end) {
-        return shapeFor(end, false);
+    private @NonNull String buildAssociationLine(IAssociationEnd fromEnd, IAssociationEnd toEnd) {
+        return fromPoint(fromEnd) + "--" + toPoint(toEnd);
     }
 
-    /** 与 MyAssociationEnd.setMultiplicity 一致：null 或 "Unspecified" 归空串。 */
+    private String toPoint(IAssociationEnd toEnd) {
+        return shapeFor(toEnd, false);
+    }
+
+    private String fromPoint(IAssociationEnd fromEnd) {
+        return shapeFor(fromEnd, true);
+    }
+
+    private String shapeFor(IAssociationEnd toEnd, boolean isFromEnd) {
+        ShapeKind result;
+        String aggregation = toEnd.getAggregationKind();
+        if (IAssociationEnd.AGGREGATION_KIND_shared.equals(aggregation)) {
+            result = ShapeKind.DIAMOND;
+        } else if (IAssociationEnd.AGGREGATION_KIND_composite.equals(aggregation)) {
+            result = ShapeKind.SOLID_DIAMOND;
+        } else {
+            switch (toEnd.getNavigable()) {
+                case IAssociationEnd.NAVIGABLE_NAVIGABLE:
+                    result = isFromEnd ? ShapeKind.REVERSE_ARROW : ShapeKind.ARROW;
+                    break;
+                case IAssociationEnd.NAVIGABLE_NON_NAVIGABLE:
+                    result = ShapeKind.CROSS;
+                    break;
+                default:
+                    result = ShapeKind.NONE;
+                    break;
+            }
+        }
+        return result.getText();
+    }
+
+    /**
+     * 与 MyAssociationEnd.setMultiplicity 一致：null 或 "Unspecified" 归空串。
+     */
     private String normalizeMultiplicity(String multiplicity) {
         if (multiplicity == null || IAssociationEnd.MULTIPLICITY_UNSPECIFIED.equals(multiplicity)) {
             return "";
@@ -78,14 +159,25 @@ public class PumlAssociationExporter extends PumlElementExporter {
         return multiplicity;
     }
 
-    /** 把 VP 方向常量映射为前端枚举，两者之外归为 NONE（与 MyAssociationFactory 逻辑一致）。 */
-    private NameDirection toDirectionVP(int direction) {
-        if (direction == IAssociation.DIRECTION_FROM_TO) {
-            return NameDirection.FROM_TO;
+    /**
+     * 合并 role 与 multiplicity 为单个引号标签，空的部分省略。
+     *
+     * @param role
+     * @param multiplicity
+     */
+    public String buildMultiplicityAndRole(String role, String multiplicity) {
+        StringBuilder sb = new StringBuilder();
+        if (role != null && !role.isEmpty()) {
+            sb.append(role);
         }
-        if (direction == IAssociation.DIRECTION_TO_FROM) {
-            return NameDirection.TO_FROM;
+        if (multiplicity != null && !multiplicity.isEmpty()) {
+            if (sb.length() > 0) {
+                sb.append(' ');
+            }
+            sb.append(multiplicity);
         }
-        return NameDirection.NONE;
+
+        return sb.toString();
     }
+
 }
