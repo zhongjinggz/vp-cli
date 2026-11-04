@@ -1,79 +1,6 @@
 # 类图 Class Diagram - 进阶
 
-## 16 静态操作和静态属性 Static Operation & Static Attribute
-- 注意：在 plantuml 文档中操作(operation)称为方法（method），属性(attribute)成为字段（field）
-
-### 需求
-
-`{static}` 用于标记作为类级成员的静态操作与静态属性。
-
-```plantuml
-@startuml
-class utility {
-    {static} count: int = 0
-    {static} configPath: string
-    {static} getInstance(): utility
-    {static} reset(): void
-}
-@enduml
-```
-
-### 方案
-
-**目标：** 仅“导出”路径——①在类体中属性区把 `IAttribute` 的 classifier 作用域（static）渲染为行内前缀 `{static} `；②在操作区把 `IOperation` 的 static 标记渲染为行内前缀 `{static} `。不涉及导入。
-
-**现状分析（已核对源码）：** `PumlClassExporter`（src/.../pumlclass/PumlClassExporter.java）现在已在 `formatAttribute`/`formatOperation` 中实现：
-- 属性：`appendAttributeStatic`（:83）用 `IAttribute.SCOPE_CLASSIFIER.equals(attribute.getScope())` 判断 static，为真输出 `{static} `。
-- 操作：`appendOperationStatic`（:27）用 `operation.isStatic()` 判断，为真输出 `{static} `，紧随 `{abstract} ` 之后。
-
-**实施步骤（每步可独立验证）：**
-
-1. **属性 static 已有实现（验证）。** 无需改代码；用单测桩 `IAttribute`（`getScope()=SCOPE_CLASSIFIER`、`getName()="count"`、`getTypeAsString()="int"`、`getInitialValueAsString()="0"`）断言导出行为由 `PumlClassExporter.export...` 输出行含 `{static} count: int = 0`。确认 `getScope()!=SCOPE_CLASSIFIER` 时不输出 `{static}`。
-   - 验证：新增/已有单测 `PumlClassExporterTest` 断言静态属性的前缀渲染。
-
-2. **操作 static 已有实现（验证）。** 单测桩 `IOperation`（`isStatic()=true`、`getName()="getInstance"`、空参数、`getReturnTypeAsString()="utility"`）断言输出行含 `{static} getInstance(): utility`；`reset(): void` 同理；`isStatic()=false` 时不输出 `{static}`。
-   - 验证：单测断言操作 static 前缀，且顺序与 abstract 组合正确（`{abstract} {static} name(...)`）。
-
-3. **端到端集成验证。** 在 VP 中为类成员勾选 static 后导出 `.puml`，检查类体属性/操作出现 `{static} ` 前缀，PlantUML 预览显示下划线的类级成员。
-
-**说明/边界：** 本条目当前已完全由 `PumlClassExporter` 覆盖，无需编码改动；文档仅为确认与回归该能力。static 前缀只针对 classifier/static 语义，不处理类本身（类级由 abstract 关键字表达，见 #17）。
-
-## 17 抽象类 Abstract Class
-
-### 需求
-
-在抽象类中，`{abstract}` 用于声明没有方法体的抽象方法。
-
-```plantuml
-@startuml
-abstract class shape {
-    {abstract} draw(): void
-    {abstract} area(): double
-}
-@enduml
-```
-
-### 方案
-
-**目标：** 仅“导出”路径——①抽象类在块声明用 `abstract class` 关键字；②抽象方法在操作区渲染为行内前缀 `{abstract} `。不涉及导入。
-
-**现状分析（已核对源码）：** `PumlClassExporter` 已实现：
-- `getBlockType`（:37）在无 `<<interface>>`/`<<enumeration>>` 原型时，若 `clazz.isAbstract()` 返回 `"abstract class"`。
-- `appendOperationAbstract`（:33）用 `operation.isAbstract()`，为真输出 `{abstract} `。
-
-**实施步骤（每步可独立验证）：**
-
-1. **抽象类块声明（验证）。** 单测桩 `IClass`（`isAbstract()=true`、无 interface/enumeration 原型），断言 `PumlClassExporter.getBlockType` 返回 `"abstract class"`；`isAbstract()=false` 返回 `"class"`。
-   - 验证：`PumlClassExporterTest` 断言块类型分支。
-
-2. **抽象方法（验证）。** 单测桩 `IOperation`（`isAbstract()=true`、`getName()="draw"`、`getReturnTypeAsString()="void"`）断言输出行含 `{abstract} draw(): void`。
-   - 验证：单测断言 `{abstract}` 前缀。
-
-3. **端到端集成验证。** 在 VP 中新建抽象类并画抽象方法后导出，检查 `.puml` 块头为 `abstract class "shape" as ... {`、方法行为 `{abstract} draw(): void`；PlantUML 预览显示斜体类名与抽象方法。
-
-**说明/边界：** 抽象类关键字与抽象方法在 `PumlClassExporter` 中已完整实现；本条目为确认/回归。注意 `getBlockType` 中 interface/enumeration 优先级高于 abstract（接口通常非抽象，枚举不做抽象判断）。
-
-## 18 限定关联 Qualified Associations
+## 01 限定关联 Qualified Associations
 
 ### 需求
 
@@ -129,7 +56,7 @@ PumlAssociationExporter ..> IQualifier
 
 **说明/边界：** 本条目仅处理导出侧 qualifier 的读取与投影；限定符属性若带类型（`IAttribute.getTypeAsString()`）当前仅展示名称，不展示类型括号内内容（与需求示例一致）。多重性/角色/聚合渲染逻辑保持 #4–#8 不动。
 
-## 19 泛型类 Generic Class
+## 02 泛型类 Generic Class
 - 状态：待方案设计
 - 注：如 `class Foo<T>`
 
@@ -184,7 +111,7 @@ PumlClassExporter --|> PumlElementExporter
 
 **说明/边界：** 本条目为待方案设计，需先以 javap 确认模板参数读取 API 再落码。仅处理类的泛型声明（类级模板参数），不处理属性/参数中引用的泛型类型（如 `push(item: T)` 中 `T` 直接按类型名原样输出，无需处理）。
 
-## 20 关联类 Association Class
+## 03 关联类 Association Class
 
 ### 需求
 
@@ -245,7 +172,7 @@ PumlAssociationClassExporter --|> PumlElementExporter
 
 **说明/边界：** 本条目为待编码/研究，需先确认连线类型常量与模型接口。仅处理导出侧关联类连线；关联类的成员仍由 `PumlClassExporter` 正常导出，两者各自独立。
 
-## 21 嵌套类/内部类 Nested Class
+## 04 嵌套类/内部类 Nested Class
 
 ### 需求
 
@@ -299,7 +226,7 @@ PumlNestedClassExporter --|> PumlElementExporter
 
 **说明/边界：** 本条目为待编码/研究，需先确认 VP 对嵌套类的建模形态（父子形状 vs 关联线）。最终输出形式（`+--` 或 `*--`）随研究结论确定，与需求示例尽量对齐。
 
-## 22 接口实现 Implementation (棒棒糖方式)
+## 05 接口实现 Implementation (棒棒糖方式)
 - 状态：待编码
 ### 需求
 
@@ -365,7 +292,7 @@ PumlCircleExporter --|> PumlElementExporter
 
 **说明/边界：** 本条目为待编码，需先确认 VP 对棒棒糖接口的建模形态（独立 circle 形状 vs `<<interface>>` 类+实线）。输出朝向往 PlantUML 棒棒糖标准语法靠拢，与需求示例对齐。
 
-## 多元关联 Multiple Association
+## 06 多元关联 Multiple Association
 
 ### 需求
 

@@ -126,7 +126,7 @@ class PumlClassExporterTest {
 
     @Test
     void abstractStaticOperationWithReturnType() {
-        IOperation op = op("m").abstract_(true).static_(true).returnType("int").build();
+        IOperation op = op("m").abstract_(true).static_(true).scope_(IOperation.SCOPE_CLASSIFIER).returnType("int").build();
         IClass clazz = clazzWithOperations(op);
         assertEquals("+ {abstract} {static} m(): int", body(clazz));
     }
@@ -325,6 +325,7 @@ class PumlClassExporterTest {
         private final String name;
         private boolean abs;
         private boolean stat;
+        private String scope;
         private String returnType = null;
         private final java.util.List<IParameter> params = new java.util.ArrayList<>();
 
@@ -339,6 +340,11 @@ class PumlClassExporterTest {
 
         OpBuilder static_(boolean v) {
             this.stat = v;
+            return this;
+        }
+
+        OpBuilder scope_(String s) {
+            this.scope = s;
             return this;
         }
 
@@ -357,6 +363,7 @@ class PumlClassExporterTest {
             when(o.getName()).thenReturn(name);
             when(o.isAbstract()).thenReturn(abs);
             when(o.isStatic()).thenReturn(stat);
+            when(o.getScope()).thenReturn(scope);
             when(o.getReturnTypeAsString()).thenReturn(returnType);
             when(o.parameterCount()).thenReturn(params.size());
             for (int i = 0; i < params.size(); i++) {

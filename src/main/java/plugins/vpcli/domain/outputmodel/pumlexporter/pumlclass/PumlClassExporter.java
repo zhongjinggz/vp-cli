@@ -225,9 +225,12 @@ public class PumlClassExporter extends PumlBlockExporter {
     }
 
     private static void appendOperationStatic(IOperation operation, StringBuilder result) {
-        if (operation.isStatic()) {
+        if (IOperation.SCOPE_CLASSIFIER.equals(operation.getScope())) {
             result.append("{static} ");
         }
+//        if (operation.isStatic()) {
+//            result.append("{static} ");
+//        }
     }
 
     private static void appendOperationAbstract(IOperation operation, StringBuilder result) {
