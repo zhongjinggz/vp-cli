@@ -3,11 +3,7 @@ package plugins.vpcli.domain.outputmodel.pumlexporter.pumlnote;
 import com.vp.plugin.diagram.IDiagramElement;
 import com.vp.plugin.diagram.IShapeTypeConstants;
 import com.vp.plugin.model.IAnchor;
-import plugins.vpcli.domain.outputmodel.pumldiagram.NameDirection;
 import plugins.vpcli.domain.outputmodel.pumldiagram.PumlDiagram;
-import plugins.vpcli.domain.outputmodel.pumldiagram.PumlDiagram.LineStyle;
-import plugins.vpcli.domain.outputmodel.pumldiagram.PumlEdgeEnd;
-import plugins.vpcli.domain.outputmodel.pumldiagram.PumlEdgeEnd.ShapeKind;
 
 import jakarta.inject.Inject;
 import jakarta.inject.Singleton;

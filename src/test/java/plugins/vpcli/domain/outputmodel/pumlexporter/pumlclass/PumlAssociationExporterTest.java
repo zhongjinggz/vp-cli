@@ -27,7 +27,7 @@ class PumlAssociationExporterTest {
             end("", null, null, IAssociationEnd.NAVIGABLE_UNSPECIFIED, "A"),
             end("", null, null, IAssociationEnd.NAVIGABLE_UNSPECIFIED, "B"));
 
-        assertTrue(renders(exporter, assoc, "A -- B"));
+        assertTrue(renders(exporter, assoc, "A  --  B"));
     }
 
     @Test
@@ -45,7 +45,7 @@ class PumlAssociationExporterTest {
             end("", null, null, IAssociationEnd.NAVIGABLE_UNSPECIFIED, "A"),
             end("", null, null, IAssociationEnd.NAVIGABLE_UNSPECIFIED, "B"));
 
-        assertTrue(renders(exporter, assoc, "A -- B: contains >"));
+        assertTrue(renders(exporter, assoc, "A  --  B : contains >"));
     }
 
     @Test
@@ -54,7 +54,7 @@ class PumlAssociationExporterTest {
             end("", null, null, IAssociationEnd.NAVIGABLE_UNSPECIFIED, "A"),
             end("", null, null, IAssociationEnd.NAVIGABLE_UNSPECIFIED, "B"));
 
-        assertTrue(renders(exporter, assoc, "A -- B: < contains"));
+        assertTrue(renders(exporter, assoc, "A  --  B : < contains"));
     }
 
     @Test
@@ -63,7 +63,7 @@ class PumlAssociationExporterTest {
             end("", null, null, IAssociationEnd.NAVIGABLE_UNSPECIFIED, "A"),
             end("", null, null, IAssociationEnd.NAVIGABLE_UNSPECIFIED, "B"));
 
-        assertTrue(renders(exporter, assoc, "A -- B: link"));
+        assertTrue(renders(exporter, assoc, "A  --  B : link"));
     }
 
     @Test
@@ -82,7 +82,7 @@ class PumlAssociationExporterTest {
             end("", null, IAssociationEnd.AGGREGATION_KIND_composite, IAssociationEnd.NAVIGABLE_UNSPECIFIED, "A"),
             end("", null, null, IAssociationEnd.NAVIGABLE_UNSPECIFIED, "B"));
 
-        assertTrue(renders(exporter, assoc, "A *-- B"));
+        assertTrue(renders(exporter, assoc, "A  *--  B"));
     }
 
     @Test
@@ -92,7 +92,7 @@ class PumlAssociationExporterTest {
             end("", null, null, IAssociationEnd.NAVIGABLE_NAVIGABLE, "A"),
             end("", null, null, IAssociationEnd.NAVIGABLE_NAVIGABLE, "B"));
 
-        assertTrue(renders(exporter, assoc, "A <--> B"));
+        assertTrue(renders(exporter, assoc, "A  <-->  B"));
     }
 
     // ---------- helpers ----------

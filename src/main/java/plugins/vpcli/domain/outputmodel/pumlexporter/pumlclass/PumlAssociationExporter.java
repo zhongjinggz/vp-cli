@@ -5,6 +5,7 @@ import com.vp.plugin.diagram.IShapeTypeConstants;
 import com.vp.plugin.model.IAssociation;
 import com.vp.plugin.model.IAssociationEnd;
 
+import com.vp.plugin.model.IRelationshipEnd;
 import jakarta.inject.Inject;
 import jakarta.inject.Singleton;
 import org.jetbrains.annotations.NotNull;
@@ -37,35 +38,62 @@ public class PumlAssociationExporter extends PumlElementExporter {
     }
 
     // association := fromElementAlias [fromMultiplicity&role] line [toMultiplicity&role] toElementAlias [labels]
-    // labels := :[name] [<<stereotype>>]* [>]
+    // labels := : [<] [name] [<<stereotype>>]* [>]
 
     @NonNull String formatAssociation(IAssociation association) {
-        IAssociationEnd fromEnd = (IAssociationEnd) association.getFromEnd();
-        IAssociationEnd toEnd = (IAssociationEnd) association.getToEnd();
 
-
-        String fromMultiplicityAndRole = buildMultiplicityAndRole(fromEnd.getName(), normalizeMultiplicity(fromEnd.getMultiplicity()));
-
-        String toMultiplicityAndRole = buildMultiplicityAndRole(toEnd.getName(), normalizeMultiplicity(toEnd.getMultiplicity()));
-
-        String result = getPumlAlias(fromEnd.getModelElement());
-        if (!fromMultiplicityAndRole.isEmpty()) {
-            result += " \"" + fromMultiplicityAndRole + "\"";
-        }
-        result = result + " " + buildAssociationLine(fromEnd, toEnd) + " ";
-        if (!toMultiplicityAndRole.isEmpty()) {
-            result += "\"" + toMultiplicityAndRole + "\" ";
-        }
-        result += getPumlAlias(toEnd.getModelElement());
-
-
-        String associationLabels = getAssociationLabels(association);
-        result += associationLabels;
-
-        return result;
+        return fromAlias(association) +
+            " " + fromMultiplicityAndRole(association) +
+            " " + associationLine(association) +
+            " " + ToMultiplicityAndRole(association) +
+            " " + toAlias(association) +
+            " " + labels(association);
     }
 
-    private @NonNull String getAssociationLabels(IAssociation association) {
+    private @NonNull String ToMultiplicityAndRole(IAssociation association) {
+        return getMultiplicityAndRole(association.getToEnd());
+    }
+
+    private @NonNull String fromMultiplicityAndRole(IAssociation association) {
+        return getMultiplicityAndRole(association.getFromEnd());
+    }
+
+    private String getMultiplicityAndRole(IRelationshipEnd fromRelationshipEnd) {
+        IAssociationEnd fromAssociationEnd = (IAssociationEnd) fromRelationshipEnd;
+
+        StringBuilder result = new StringBuilder();
+
+        String role = fromAssociationEnd.getName();
+        if (isNotBlank(role)) {
+            result.append("\"").append(role);
+        }
+
+        String multiplicity = normalizeMultiplicity(fromAssociationEnd.getMultiplicity());
+        if (isNotBlank(multiplicity)) {
+            if (result.length() > 0) {
+                result.append(' ');
+            } else {
+                result.append("\"");
+            }
+            result.append(multiplicity);
+        }
+
+        if (result.length() > 0) {
+            result.append("\"");
+        }
+
+        return result.toString();
+    }
+
+    private String fromAlias(IAssociation association) {
+        return getPumlAlias(association.getFromEnd().getModelElement());
+    }
+
+    private String toAlias(IAssociation association) {
+        return getPumlAlias(association.getToEnd().getModelElement());
+    }
+
+    private @NonNull String labels(IAssociation association) {
 
         String name = association.getName();
         String stereotypes = renderStereotypes(association);
@@ -103,7 +131,7 @@ public class PumlAssociationExporter extends PumlElementExporter {
     }
 
     private static @NotNull String joinNameAndStereotypes(String name, String stereotypes) {
-        String result = "";
+        String result;
         if (isBlank(name)) {
             result = stereotypes;
         } else if (isBlank(stereotypes)) {
@@ -114,8 +142,10 @@ public class PumlAssociationExporter extends PumlElementExporter {
         return result;
     }
 
-    private @NonNull String buildAssociationLine(IAssociationEnd fromEnd, IAssociationEnd toEnd) {
-        return fromPoint(fromEnd) + "--" + toPoint(toEnd);
+    private @NonNull String associationLine(IAssociation association) {
+        return fromPoint((IAssociationEnd) association.getFromEnd()) +
+            "--" +
+            toPoint((IAssociationEnd) association.getToEnd());
     }
 
     private String toPoint(IAssociationEnd toEnd) {
@@ -157,27 +187,6 @@ public class PumlAssociationExporter extends PumlElementExporter {
             return "";
         }
         return multiplicity;
-    }
-
-    /**
-     * 合并 role 与 multiplicity 为单个引号标签，空的部分省略。
-     *
-     * @param role
-     * @param multiplicity
-     */
-    public String buildMultiplicityAndRole(String role, String multiplicity) {
-        StringBuilder sb = new StringBuilder();
-        if (role != null && !role.isEmpty()) {
-            sb.append(role);
-        }
-        if (multiplicity != null && !multiplicity.isEmpty()) {
-            if (sb.length() > 0) {
-                sb.append(' ');
-            }
-            sb.append(multiplicity);
-        }
-
-        return sb.toString();
     }
 
 }

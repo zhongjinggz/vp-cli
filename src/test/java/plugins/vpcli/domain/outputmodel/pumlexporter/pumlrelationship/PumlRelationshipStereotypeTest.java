@@ -45,7 +45,7 @@ class PumlRelationshipStereotypeTest {
 
         new PumlAssociationExporter().export(diagram, edgeOf(assoc, from, to));
 
-        assertTrue(diagram.toString().contains("class1 -- class2: name <<Stereotype1>> >"),
+        assertTrue(diagram.toString().contains("class1  --  class2 : name <<Stereotype1>> >"),
             () -> "实际输出：\n" + diagram);
     }
 
@@ -63,7 +63,7 @@ class PumlRelationshipStereotypeTest {
 
         new PumlAssociationExporter().export(diagram, edgeOf(assoc, from, to));
 
-        assertTrue(diagram.toString().contains("class3 -- class4: <<Stereotype2>>"),
+        assertTrue(diagram.toString().contains("class3  --  class4 : <<Stereotype2>>"),
             () -> "实际输出：\n" + diagram);
     }
 
