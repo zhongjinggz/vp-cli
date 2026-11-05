@@ -44,7 +44,7 @@ public class Strings {
         }
 
         private StringPatcher(String initStr) {
-            if (isBlank(initStr)) {
+            if (Strings.isBlank(initStr)) {
                 content = new StringBuilder();
             } else {
                 content = new StringBuilder(initStr);
@@ -52,7 +52,7 @@ public class Strings {
         }
 
         public StringPatcher patch(String thePatch) {
-            if (isNotBlank(thePatch)) {
+            if (Strings.isNotBlank(thePatch)) {
                 if (content.length() > 0) {
                     content.append(" ");
                 }
@@ -62,7 +62,7 @@ public class Strings {
         }
 
         public StringPatcher patchBefore(String thePatch) {
-            if (isNotBlank(thePatch)) {
+            if (Strings.isNotBlank(thePatch)) {
                 if (content.length() > 0) {
                     content.insert(0, " ").insert(0, thePatch);
                 } else {
@@ -70,6 +70,14 @@ public class Strings {
                 }
             }
             return this;
+        }
+
+        public boolean isBlank() {
+            return content.length() == 0;
+        }
+
+        public boolean isNotBlank() {
+            return !isBlank();
         }
 
         @Override

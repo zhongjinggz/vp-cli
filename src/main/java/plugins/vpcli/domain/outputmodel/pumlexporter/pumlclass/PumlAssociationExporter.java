@@ -60,30 +60,18 @@ public class PumlAssociationExporter extends PumlElementExporter {
     }
 
     private String getMultiplicityAndRole(IRelationshipEnd relationshipEnd) {
-        IAssociationEnd fromAssociationEnd = (IAssociationEnd) relationshipEnd;
+        IAssociationEnd associationEnd = (IAssociationEnd) relationshipEnd;
 
-        StringBuilder roleAndMultiplicity = new StringBuilder();
+        var result = Strings.buildStringPatcher()
+            .patch(associationEnd.getName())
+            .patch(normalizeMultiplicity(associationEnd.getMultiplicity()))
+            .toString();
 
-        String role = fromAssociationEnd.getName();
-        if (isNotBlank(role)) {
-            roleAndMultiplicity.append("\"").append(role);
+        if (isNotBlank(result)) {
+            result = "\"" + result + "\"";
         }
 
-        String multiplicity = normalizeMultiplicity(fromAssociationEnd.getMultiplicity());
-        if (isNotBlank(multiplicity)) {
-            if (roleAndMultiplicity.length() > 0) {
-                roleAndMultiplicity.append(' ');
-            } else {
-                roleAndMultiplicity.append("\"");
-            }
-            roleAndMultiplicity.append(multiplicity);
-        }
-
-        if (roleAndMultiplicity.length() > 0) {
-            roleAndMultiplicity.append("\"");
-        }
-
-        return roleAndMultiplicity.toString();
+        return result;
     }
 
     private @NotNull String fromQualifier(IAssociation association) {
@@ -95,23 +83,23 @@ public class PumlAssociationExporter extends PumlElementExporter {
     }
 
     private String getQualifier(IAssociationEnd associationEnd) {
-        StringBuilder result = new StringBuilder();
 
         IQualifier qualifier = associationEnd.getQualifier();
-        if (qualifier != null) {
-            for (IAttribute attribute : qualifier.toAttributeArray()) {
-                if (isNotBlank(attribute.getName())) {
-                    if (result.length() == 0) {
-                        result.append("[");
-                    } else {
-                        result.append("\\n");
-                    }
-                    result.append(attribute.getName());
+        if (qualifier == null) {
+            return "";
+        }
+
+        StringBuilder result = new StringBuilder();
+        for (IAttribute attribute : qualifier.toAttributeArray()) {
+            if (isNotBlank(attribute.getName())) {
+                if (result.length() > 0) {
+                    result.append("\\n");
                 }
+                result.append(attribute.getName());
             }
-            if (result.length() > 0) {
-                result.append("]");
-            }
+        }
+        if (result.length() > 0) {
+            result.insert(0, "[").append("]");
         }
 
         return result.toString();
@@ -127,39 +115,25 @@ public class PumlAssociationExporter extends PumlElementExporter {
 
     private @NonNull String labels(IAssociation association) {
 
-        var nameAndStereotype = buildStringPatcher(association.getName())
-            .patch(renderStereotypes(association))
-            .toString();
+        var result = buildStringPatcher()
+            .patch(association.getName())
+            .patch(renderStereotypes(association));
 
-        var result = patchDirection(association, nameAndStereotype);
-
-        if (isNotBlank(result)) {
-            result = ": " + result;
-        }
-        return result;
-    }
-
-    private @NotNull String patchDirection(
-        @NotNull IAssociation association,
-        @NotNull String nameAndStereotype
-    ) {
-        if (isBlank(association.getName())) {
-            return nameAndStereotype;
+        if (isNotBlank(association.getName())) {
+            switch (association.getDirection()) {
+                case IAssociation.DIRECTION_FROM_TO:
+                    result = result.patch(">");
+                    break;
+                case IAssociation.DIRECTION_TO_FROM:
+                    result = result.patchBefore("<");
+                    break;
+            }
         }
 
-        String result;
-        switch (association.getDirection()) {
-            case IAssociation.DIRECTION_FROM_TO:
-                result = nameAndStereotype + " >";
-                break;
-            case IAssociation.DIRECTION_TO_FROM:
-                result = "< " + nameAndStereotype;
-                break;
-            default:
-                result = nameAndStereotype;
+        if (result.isNotBlank()) {
+            result.patchBefore(":");
         }
-
-        return result;
+        return result.toString();
     }
 
     private @NonNull String associationLine(IAssociation association) {
