@@ -95,7 +95,7 @@ class PumlAssociationExporterTest {
             end("", "0..*", null, IAssociationEnd.NAVIGABLE_UNSPECIFIED, "lineItem",
                 new String[]{"orderNumber"}));
 
-        assertTrue(renders(exporter, assoc, "order \"1\" -- [orderNumber] \"0..*\" lineItem"));
+        assertTrue(renders(exporter, assoc, "order \"1\" -- \"0..*\" [orderNumber] lineItem"));
     }
 
     @Test
@@ -105,7 +105,7 @@ class PumlAssociationExporterTest {
             end("", null, null, IAssociationEnd.NAVIGABLE_UNSPECIFIED, "B",
                 new String[]{"orderNumber", "otherAttr"}));
 
-        assertTrue(renders(exporter, assoc, "A -- [orderNumber, otherAttr] B"));
+        assertTrue(renders(exporter, assoc, "A -- [orderNumber\\notherAttr] B"));
     }
 
     @Test

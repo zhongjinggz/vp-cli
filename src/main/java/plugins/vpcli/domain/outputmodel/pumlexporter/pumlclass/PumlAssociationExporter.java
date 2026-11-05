@@ -19,7 +19,6 @@ import org.jspecify.annotations.NonNull;
 import plugins.vpcli.domain.outputmodel.pumldiagram.PumlDiagram;
 import plugins.vpcli.domain.outputmodel.pumldiagram.PumlEdgeEnd.ShapeKind;
 import plugins.vpcli.domain.outputmodel.pumlexporter.PumlElementExporter;
-import plugins.vpcli.util.Strings;
 
 import static plugins.vpcli.util.Strings.*;
 
@@ -49,9 +48,11 @@ public class PumlAssociationExporter extends PumlElementExporter {
     @NonNull String formatAssociation(IAssociation association) {
 
         return buildStringPatcher(fromAlias(association))
+            .patch(fromQualifier(association))
             .patch(fromMultiplicityAndRole(association))
             .patch(associationLine(association))
             .patch(ToMultiplicityAndRole(association))
+            .patch(toQualifier(association))
             .patch(toAlias(association))
             .patch(labels(association))
             .toString();
@@ -65,8 +66,8 @@ public class PumlAssociationExporter extends PumlElementExporter {
         return getMultiplicityAndRole(association.getFromEnd());
     }
 
-    private String getMultiplicityAndRole(IRelationshipEnd fromRelationshipEnd) {
-        IAssociationEnd fromAssociationEnd = (IAssociationEnd) fromRelationshipEnd;
+    private String getMultiplicityAndRole(IRelationshipEnd relationshipEnd) {
+        IAssociationEnd fromAssociationEnd = (IAssociationEnd) relationshipEnd;
 
         StringBuilder roleAndMultiplicity = new StringBuilder();
 
@@ -89,18 +90,26 @@ public class PumlAssociationExporter extends PumlElementExporter {
             roleAndMultiplicity.append("\"");
         }
 
-        String qualifiers = qualifiers(fromAssociationEnd);
-        String base = roleAndMultiplicity.toString();
-        if (isNotBlank(qualifiers)) {
-            if (isBlank(base)) {
-                return qualifiers;
-            }
-            return qualifiers + " " + base;
-        }
-        return base;
+//        String getQualifier = getQualifier(fromAssociationEnd);
+//        String base = roleAndMultiplicity.toString();
+//        if (isNotBlank(getQualifier)) {
+//            if (isBlank(base)) {
+//                return getQualifier;
+//            }
+//            return getQualifier + " " + base;
+//        }
+        return roleAndMultiplicity.toString();
     }
 
-    private String qualifiers(IAssociationEnd associationEnd) {
+    private @NotNull String fromQualifier(IAssociation association) {
+        return getQualifier((IAssociationEnd) association.getFromEnd());
+    }
+
+    private @NotNull String toQualifier(IAssociation association) {
+        return getQualifier((IAssociationEnd) association.getToEnd());
+    }
+
+    private String getQualifier(IAssociationEnd associationEnd) {
         List<String> names = new ArrayList<>();
         IQualifier qualifier = associationEnd.getQualifier();
         if (qualifier != null) {
@@ -113,7 +122,7 @@ public class PumlAssociationExporter extends PumlElementExporter {
         if (names.isEmpty()) {
             return "";
         }
-        return "[" + String.join(", ", names) + "]";
+        return "[" + String.join("\\n", names) + "]";
     }
 
     private String fromAlias(IAssociation association) {
