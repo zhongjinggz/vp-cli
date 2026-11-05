@@ -8,6 +8,7 @@ import com.vp.plugin.model.IEnumerationLiteral;
 import com.vp.plugin.model.IModelElement;
 import com.vp.plugin.model.IOperation;
 import com.vp.plugin.model.IParameter;
+import com.vp.plugin.model.ITemplateParameter;
 import jakarta.inject.Inject;
 import jakarta.inject.Singleton;
 import org.jspecify.annotations.NonNull;
@@ -58,6 +59,49 @@ public class PumlClassExporter extends PumlBlockExporter {
 
     private boolean hasStereotype(IClass clazz, String stereotypeName) {
         return getStereotypeNames(clazz).contains(stereotypeName);
+    }
+
+    /**
+     * 步 #22：泛型类。在块声明尾部追加模板参数后缀 `<T, U>`。
+     * beginBlock 顺序为 `blockType "name" as alias suffix {`，
+     * 故把泛型拼进 suffix 首部，紧跟 alias 之后。
+     */
+    @Override
+    public String keywordAndStereotypes(IModelElement vpElement) {
+        String templateParams = templateParams(vpElement);
+        String stereotypes = getStereotypesText(vpElement);
+        String suffix = stereotypes;
+        if (!templateParams.isEmpty()) {
+            suffix = templateParams + (suffix.isEmpty() ? "" : " " + suffix);
+        }
+        return suffix;
+    }
+
+    private String templateParams(IModelElement vpElement) {
+        if (!(vpElement instanceof IClass)) {
+            return "";
+        }
+        StringBuilder result = new StringBuilder();
+        IClass clazz = (IClass) vpElement;
+        ITemplateParameter[] params = clazz.toTemplateParameterArray();
+        if (params == null) {
+            return "";
+        }
+        StringBuilder names = new StringBuilder();
+        for (ITemplateParameter param : params) {
+            String name = param.getName();
+            if (name == null || name.isEmpty()) {
+                continue;
+            }
+            if (names.length() > 0) {
+                names.append(", ");
+            }
+            names.append(name);
+        }
+        if (names.length() > 0) {
+            result.append('<').append(names).append('>');
+        }
+        return result.toString();
     }
 
     /**

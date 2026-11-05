@@ -10,6 +10,7 @@ import com.vp.plugin.model.IClass;
 import com.vp.plugin.model.IModelElement;
 import com.vp.plugin.model.IPackage;
 import com.vp.plugin.model.IStereotype;
+import com.vp.plugin.model.ITemplateParameter;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Iterator;
@@ -122,6 +123,89 @@ class PumlBlockExporterStereotypeTest {
         when(vp.stereotypeModelIterator()).thenReturn(Collections.emptyIterator());
 
         assertEquals("", exporter.keywordAndStereotypes(vp));
+    }
+
+    // ---- 步 #22：泛型类 templateParams / keywordAndStereotypes ----
+
+    @Test
+    void classWithSingleTemplateParam() {
+        PumlClassExporter exporter = new PumlClassExporter();
+        IClass clazz = templateClass("Stack", "T");
+        assertEquals("<T>", exporter.keywordAndStereotypes(clazz));
+    }
+
+    @Test
+    void classWithMultipleTemplateParams() {
+        PumlClassExporter exporter = new PumlClassExporter();
+        IClass clazz = templateClass("Map", "K", "V");
+        assertEquals("<K, V>", exporter.keywordAndStereotypes(clazz));
+    }
+
+    @Test
+    void classWithoutTemplateParamsYieldsEmptySuffix() {
+        PumlClassExporter exporter = new PumlClassExporter();
+        IClass clazz = mock(IClass.class);
+        when(clazz.toTemplateParameterArray()).thenReturn(new ITemplateParameter[0]);
+        when(clazz.stereotypeModelIterator()).thenReturn(Collections.emptyIterator());
+
+        assertEquals("", exporter.keywordAndStereotypes(clazz));
+    }
+
+    @Test
+    void nullTemplateParamNamesAreSkipped() {
+        PumlClassExporter exporter = new PumlClassExporter();
+        ITemplateParameter p = mock(ITemplateParameter.class);
+        when(p.getName()).thenReturn(null);
+        IClass clazz = mock(IClass.class);
+        when(clazz.toTemplateParameterArray()).thenReturn(new ITemplateParameter[]{p});
+        when(clazz.stereotypeModelIterator()).thenReturn(Collections.emptyIterator());
+
+        assertEquals("", exporter.keywordAndStereotypes(clazz));
+    }
+
+    @Test
+    void nullTemplateParameterArrayYieldsEmptySuffix() {
+        PumlClassExporter exporter = new PumlClassExporter();
+        IClass clazz = mock(IClass.class);
+        when(clazz.toTemplateParameterArray()).thenReturn(null);
+        when(clazz.stereotypeModelIterator()).thenReturn(Collections.emptyIterator());
+
+        assertEquals("", exporter.keywordAndStereotypes(clazz));
+    }
+
+    @Test
+    void genericClassAddsTemplateParamsBeforeStereotypes() {
+        PumlDiagram diagram = new PumlDiagram("d");
+        IStereotype s = stereo("service");
+        ITemplateParameter t = tp("T");
+        IClass clazz = model(IClass.class, "clazz", null);
+        when(clazz.isAbstract()).thenReturn(false);
+        when(clazz.stereotypeModelIterator()).thenAnswer(inv -> iterOf(s));
+        when(clazz.toStereotypeModelArray()).thenReturn(new IStereotype[]{s});
+        when(clazz.toTemplateParameterArray()).thenReturn(new ITemplateParameter[]{t});
+
+        new PumlClassExporter().export(diagram, elementOf(clazz, false));
+
+        String out = diagram.toString();
+        assertTrue(out.contains("class \"clazz\" as clazz <T> <<service>> {"),
+            () -> "实际输出：\n" + out);
+    }
+
+    @Test
+    void genericClassWithMultipleParamsNoStereotype() {
+        PumlDiagram diagram = new PumlDiagram("d");
+        ITemplateParameter k = tp("K");
+        ITemplateParameter v = tp("V");
+        IClass clazz = model(IClass.class, "clazz", null);
+        when(clazz.isAbstract()).thenReturn(false);
+        when(clazz.stereotypeModelIterator()).thenReturn(Collections.emptyIterator());
+        when(clazz.toTemplateParameterArray()).thenReturn(new ITemplateParameter[]{k, v});
+
+        new PumlClassExporter().export(diagram, elementOf(clazz, false));
+
+        String out = diagram.toString();
+        assertTrue(out.contains("class \"clazz\" as clazz <K, V> {"),
+            () -> "实际输出：\n" + out);
     }
 
     // ---- getBlockType：抽象类 ----
@@ -279,6 +363,23 @@ class PumlBlockExporterStereotypeTest {
         IStereotype s = mock(IStereotype.class);
         when(s.getName()).thenReturn(name);
         return s;
+    }
+
+    private static ITemplateParameter tp(String name) {
+        ITemplateParameter p = mock(ITemplateParameter.class);
+        when(p.getName()).thenReturn(name);
+        return p;
+    }
+
+    private static IClass templateClass(String className, String... paramNames) {
+        ITemplateParameter[] params = new ITemplateParameter[paramNames.length];
+        for (int i = 0; i < paramNames.length; i++) {
+            params[i] = tp(paramNames[i]);
+        }
+        IClass clazz = mock(IClass.class);
+        when(clazz.toTemplateParameterArray()).thenReturn(params);
+        when(clazz.stereotypeModelIterator()).thenReturn(Collections.emptyIterator());
+        return clazz;
     }
 
     private static Iterator<?> iterOf(IStereotype... stereotypes) {
