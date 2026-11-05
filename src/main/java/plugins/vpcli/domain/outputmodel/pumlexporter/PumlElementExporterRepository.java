@@ -7,6 +7,7 @@ import jakarta.inject.Inject;
 import jakarta.inject.Singleton;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import plugins.vpcli.domain.outputmodel.pumlexporter.pumlclass.PumlAssociationClassExporter;
 import plugins.vpcli.domain.outputmodel.pumlexporter.pumlclass.PumlAssociationExporter;
 import plugins.vpcli.domain.outputmodel.pumlexporter.pumlclass.PumlClassExporter;
 import plugins.vpcli.domain.outputmodel.pumlexporter.pumlclass.PumlGeneralizationExporter;
@@ -29,6 +30,7 @@ public class PumlElementExporterRepository {
     public PumlElementExporterRepository(
         PumlUnimplementedExporter unimplementedExporter,
         PumlAssociationExporter associationExporter,
+        PumlAssociationClassExporter associationClassExporter,
         PumlClassExporter classExporter,
         PumlContainmentExporter containmentExporter,
         PumlPackageExporter packageExporter,
@@ -65,6 +67,7 @@ public class PumlElementExporterRepository {
         // class
         register(classExporter);
         register(associationExporter);
+        register(associationClassExporter);
         register(generalizationExporter);
         register(containmentExporter);
 
