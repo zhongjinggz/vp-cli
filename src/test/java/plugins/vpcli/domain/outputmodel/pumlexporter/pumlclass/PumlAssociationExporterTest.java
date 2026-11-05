@@ -7,7 +7,9 @@ import static org.mockito.Mockito.when;
 import com.vp.plugin.diagram.IDiagramElement;
 import com.vp.plugin.model.IAssociation;
 import com.vp.plugin.model.IAssociationEnd;
+import com.vp.plugin.model.IAttribute;
 import com.vp.plugin.model.IModelElement;
+import com.vp.plugin.model.IQualifier;
 import java.util.Collections;
 import org.junit.jupiter.api.Test;
 import plugins.vpcli.domain.outputmodel.pumldiagram.PumlDiagram;
@@ -27,7 +29,7 @@ class PumlAssociationExporterTest {
             end("", null, null, IAssociationEnd.NAVIGABLE_UNSPECIFIED, "A"),
             end("", null, null, IAssociationEnd.NAVIGABLE_UNSPECIFIED, "B"));
 
-        assertTrue(renders(exporter, assoc, "A  --  B"));
+        assertTrue(renders(exporter, assoc, "A -- B"));
     }
 
     @Test
@@ -45,7 +47,7 @@ class PumlAssociationExporterTest {
             end("", null, null, IAssociationEnd.NAVIGABLE_UNSPECIFIED, "A"),
             end("", null, null, IAssociationEnd.NAVIGABLE_UNSPECIFIED, "B"));
 
-        assertTrue(renders(exporter, assoc, "A  --  B : contains >"));
+        assertTrue(renders(exporter, assoc, "A -- B : contains >"));
     }
 
     @Test
@@ -54,7 +56,7 @@ class PumlAssociationExporterTest {
             end("", null, null, IAssociationEnd.NAVIGABLE_UNSPECIFIED, "A"),
             end("", null, null, IAssociationEnd.NAVIGABLE_UNSPECIFIED, "B"));
 
-        assertTrue(renders(exporter, assoc, "A  --  B : < contains"));
+        assertTrue(renders(exporter, assoc, "A -- B : < contains"));
     }
 
     @Test
@@ -63,7 +65,7 @@ class PumlAssociationExporterTest {
             end("", null, null, IAssociationEnd.NAVIGABLE_UNSPECIFIED, "A"),
             end("", null, null, IAssociationEnd.NAVIGABLE_UNSPECIFIED, "B"));
 
-        assertTrue(renders(exporter, assoc, "A  --  B : link"));
+        assertTrue(renders(exporter, assoc, "A -- B : link"));
     }
 
     @Test
@@ -82,7 +84,38 @@ class PumlAssociationExporterTest {
             end("", null, IAssociationEnd.AGGREGATION_KIND_composite, IAssociationEnd.NAVIGABLE_UNSPECIFIED, "A"),
             end("", null, null, IAssociationEnd.NAVIGABLE_UNSPECIFIED, "B"));
 
-        assertTrue(renders(exporter, assoc, "A  *--  B"));
+        assertTrue(renders(exporter, assoc, "A *-- B"));
+    }
+
+    @Test
+    void qualifiedToEndPrefixesQualifierBeforeMultiplicity() {
+        // to 端带 qualifier orderNumber，端点应渲染为 [orderNumber] "0..*"。
+        IAssociation assoc = association("", IAssociation.DIRECTION_FROM_TO,
+            end("", "1", null, IAssociationEnd.NAVIGABLE_UNSPECIFIED, "order", (String[]) null),
+            end("", "0..*", null, IAssociationEnd.NAVIGABLE_UNSPECIFIED, "lineItem",
+                new String[]{"orderNumber"}));
+
+        assertTrue(renders(exporter, assoc, "order \"1\" -- [orderNumber] \"0..*\" lineItem"));
+    }
+
+    @Test
+    void qualifiedEndWithMultipleQualifiersListsThemCommaSeparated() {
+        IAssociation assoc = association("", IAssociation.DIRECTION_FROM_TO,
+            end("", null, null, IAssociationEnd.NAVIGABLE_UNSPECIFIED, "A", (String[]) null),
+            end("", null, null, IAssociationEnd.NAVIGABLE_UNSPECIFIED, "B",
+                new String[]{"orderNumber", "otherAttr"}));
+
+        assertTrue(renders(exporter, assoc, "A -- [orderNumber, otherAttr] B"));
+    }
+
+    @Test
+    void blankQualifierNamesAreIgnored() {
+        IAssociation assoc = association("", IAssociation.DIRECTION_FROM_TO,
+            end("", null, null, IAssociationEnd.NAVIGABLE_UNSPECIFIED, "A", (String[]) null),
+            end("", null, null, IAssociationEnd.NAVIGABLE_UNSPECIFIED, "B",
+                new String[]{"", null}));
+
+        assertTrue(renders(exporter, assoc, "A -- B"));
     }
 
     @Test
@@ -92,7 +125,7 @@ class PumlAssociationExporterTest {
             end("", null, null, IAssociationEnd.NAVIGABLE_NAVIGABLE, "A"),
             end("", null, null, IAssociationEnd.NAVIGABLE_NAVIGABLE, "B"));
 
-        assertTrue(renders(exporter, assoc, "A  <-->  B"));
+        assertTrue(renders(exporter, assoc, "A <--> B"));
     }
 
     // ---------- helpers ----------
@@ -123,6 +156,11 @@ class PumlAssociationExporterTest {
 
     private static IAssociationEnd end(String role, String multiplicity,
         String aggregation, int navigable, String alias) {
+        return end(role, multiplicity, aggregation, navigable, alias, null);
+    }
+
+    private static IAssociationEnd end(String role, String multiplicity,
+        String aggregation, int navigable, String alias, String[] qualifierNames) {
         IAssociationEnd e = mock(IAssociationEnd.class);
         when(e.getName()).thenReturn(role);
         when(e.getMultiplicity()).thenReturn(multiplicity);
@@ -132,6 +170,19 @@ class PumlAssociationExporterTest {
         when(m.getName()).thenReturn(alias);
         when(m.getParent()).thenReturn(null);
         when(e.getModelElement()).thenReturn(m);
+        if (qualifierNames == null) {
+            when(e.getQualifier()).thenReturn(null);
+        } else {
+            IQualifier q = mock(IQualifier.class);
+            IAttribute[] attributes = new IAttribute[qualifierNames.length];
+            for (int i = 0; i < qualifierNames.length; i++) {
+                IAttribute attribute = mock(IAttribute.class);
+                when(attribute.getName()).thenReturn(qualifierNames[i]);
+                attributes[i] = attribute;
+            }
+            when(q.toAttributeArray()).thenReturn(attributes);
+            when(e.getQualifier()).thenReturn(q);
+        }
         return e;
     }
 }

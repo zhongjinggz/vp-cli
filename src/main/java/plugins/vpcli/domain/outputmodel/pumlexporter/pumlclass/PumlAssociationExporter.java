@@ -4,8 +4,14 @@ import com.vp.plugin.diagram.IDiagramElement;
 import com.vp.plugin.diagram.IShapeTypeConstants;
 import com.vp.plugin.model.IAssociation;
 import com.vp.plugin.model.IAssociationEnd;
+import com.vp.plugin.model.IAttribute;
+import com.vp.plugin.model.IQualifier;
 
 import com.vp.plugin.model.IRelationshipEnd;
+
+import java.util.ArrayList;
+import java.util.List;
+
 import jakarta.inject.Inject;
 import jakarta.inject.Singleton;
 import org.jetbrains.annotations.NotNull;
@@ -13,9 +19,9 @@ import org.jspecify.annotations.NonNull;
 import plugins.vpcli.domain.outputmodel.pumldiagram.PumlDiagram;
 import plugins.vpcli.domain.outputmodel.pumldiagram.PumlEdgeEnd.ShapeKind;
 import plugins.vpcli.domain.outputmodel.pumlexporter.PumlElementExporter;
+import plugins.vpcli.util.Strings;
 
-import static plugins.vpcli.util.StringUtil.isBlank;
-import static plugins.vpcli.util.StringUtil.isNotBlank;
+import static plugins.vpcli.util.Strings.*;
 
 @Singleton
 public class PumlAssociationExporter extends PumlElementExporter {
@@ -42,12 +48,13 @@ public class PumlAssociationExporter extends PumlElementExporter {
 
     @NonNull String formatAssociation(IAssociation association) {
 
-        return fromAlias(association) +
-            " " + fromMultiplicityAndRole(association) +
-            " " + associationLine(association) +
-            " " + ToMultiplicityAndRole(association) +
-            " " + toAlias(association) +
-            " " + labels(association);
+        return buildStringPatcher(fromAlias(association))
+            .patch(fromMultiplicityAndRole(association))
+            .patch(associationLine(association))
+            .patch(ToMultiplicityAndRole(association))
+            .patch(toAlias(association))
+            .patch(labels(association))
+            .toString();
     }
 
     private @NonNull String ToMultiplicityAndRole(IAssociation association) {
@@ -61,28 +68,52 @@ public class PumlAssociationExporter extends PumlElementExporter {
     private String getMultiplicityAndRole(IRelationshipEnd fromRelationshipEnd) {
         IAssociationEnd fromAssociationEnd = (IAssociationEnd) fromRelationshipEnd;
 
-        StringBuilder result = new StringBuilder();
+        StringBuilder roleAndMultiplicity = new StringBuilder();
 
         String role = fromAssociationEnd.getName();
         if (isNotBlank(role)) {
-            result.append("\"").append(role);
+            roleAndMultiplicity.append("\"").append(role);
         }
 
         String multiplicity = normalizeMultiplicity(fromAssociationEnd.getMultiplicity());
         if (isNotBlank(multiplicity)) {
-            if (result.length() > 0) {
-                result.append(' ');
+            if (roleAndMultiplicity.length() > 0) {
+                roleAndMultiplicity.append(' ');
             } else {
-                result.append("\"");
+                roleAndMultiplicity.append("\"");
             }
-            result.append(multiplicity);
+            roleAndMultiplicity.append(multiplicity);
         }
 
-        if (result.length() > 0) {
-            result.append("\"");
+        if (roleAndMultiplicity.length() > 0) {
+            roleAndMultiplicity.append("\"");
         }
 
-        return result.toString();
+        String qualifiers = qualifiers(fromAssociationEnd);
+        String base = roleAndMultiplicity.toString();
+        if (isNotBlank(qualifiers)) {
+            if (isBlank(base)) {
+                return qualifiers;
+            }
+            return qualifiers + " " + base;
+        }
+        return base;
+    }
+
+    private String qualifiers(IAssociationEnd associationEnd) {
+        List<String> names = new ArrayList<>();
+        IQualifier qualifier = associationEnd.getQualifier();
+        if (qualifier != null) {
+            for (IAttribute attribute : qualifier.toAttributeArray()) {
+                if (attribute != null && isNotBlank(attribute.getName())) {
+                    names.add(attribute.getName());
+                }
+            }
+        }
+        if (names.isEmpty()) {
+            return "";
+        }
+        return "[" + String.join(", ", names) + "]";
     }
 
     private String fromAlias(IAssociation association) {

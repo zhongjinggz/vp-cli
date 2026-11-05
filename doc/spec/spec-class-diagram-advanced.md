@@ -14,7 +14,7 @@ class "Order" as order {
 class "LineItem" as lineItem {
 }
 
-order [orderNumber] "1" -- "0..*" lineItem
+order [orderNumber\notherAttr] "1" -- "0..*" lineItem
 @enduml
 ```
 

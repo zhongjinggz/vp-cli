@@ -7,6 +7,9 @@ import jakarta.inject.Singleton;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import plugins.vpcli.domain.outputmodel.pumldiagram.PumlDiagram;
+import plugins.vpcli.util.Strings;
+
+import static plugins.vpcli.util.Strings.normalizeNull;
 
 @Singleton
 public class PumlUnimplementedExporter extends PumlElementExporter {
@@ -30,10 +33,14 @@ public class PumlUnimplementedExporter extends PumlElementExporter {
     @Override
     public void export(PumlDiagram result, IDiagramElement vpDiagramElement) {
         IModelElement vpElement = vpDiagramElement.getModelElement();
+
+
         log.warn(
-            "Unimplemented element will not be exported, name={} model-type ={}",
-            vpElement.getName(),
-            vpElement.getModelType()
+            "Unimplemented diagram element will not be exported, {} shape-type={}  model-type ={} model-name={}",
+            vpElement == null ? "model-element-is-null" : "",
+            normalizeNull(vpDiagramElement.getShapeType()),
+            vpElement == null ? "null" : normalizeNull(vpElement.getModelType()),
+            vpElement == null ? "null" : normalizeNull(vpElement.getName())
         );
     }
 }
