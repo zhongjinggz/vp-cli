@@ -21,12 +21,13 @@ import plugins.vpcli.domain.outputmodel.pumlexporter.pumlusecase.PumlUseCaseExpo
 
 @Singleton
 public class PumlElementExporterRepository {
-    Logger log = LoggerFactory.getLogger(PumlElementExporterRepository.class);
+    private static Logger log = LoggerFactory.getLogger(PumlElementExporterRepository.class);
     private final Map<String, PumlElementExporter> shapeTypeExporters = new HashMap<>();
     private final PumlUnimplementedExporter unimplementedExporter;
 
     @Inject
     public PumlElementExporterRepository(
+        PumlUnimplementedExporter unimplementedExporter,
         PumlAssociationExporter associationExporter,
         PumlClassExporter classExporter,
         PumlPackageExporter packageExporter,
@@ -49,22 +50,32 @@ public class PumlElementExporterRepository {
         PumlAbstractionExporter abstractionExporter,
         PumlDeriveExporter deriveExporter,
         PumlRefineExporter refineExporter,
-        PumlTraceExporter traceExporter,
-        PumlUnimplementedExporter unimplementedExporter
+        PumlTraceExporter traceExporter
     ) {
+        // special
         this.unimplementedExporter = unimplementedExporter;
-        register(associationExporter);
-        register(classExporter);
-        register(packageExporter);
-        register(modelExporter);
+        register(unimplementedExporter);
         register(modelRelationshipContainerExporter);
-        register(useCaseExporter);
-        register(dependencyExporter);
-        register(generalizationExporter);
-        register(realizationExporter);
+
+        // note
         register(noteExporter);
         register(anchorExporter);
-        /* #21：注册 9 类特殊依赖导出器。 */
+
+        // class
+        register(classExporter);
+        register(associationExporter);
+        register(generalizationExporter);
+
+        // package
+        register(packageExporter);
+        register(modelExporter);
+
+        // usecase
+        register(useCaseExporter);
+
+        // dependency
+        register(dependencyExporter);
+        register(realizationExporter);
         register(usageExporter);
         register(bindingDependencyExporter);
         register(permissionExporter);
@@ -78,7 +89,6 @@ public class PumlElementExporterRepository {
         register(refineExporter);
         register(traceExporter);
 
-        register(unimplementedExporter);
     }
 
 
