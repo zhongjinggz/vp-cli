@@ -22,21 +22,26 @@ public class PumlDiagram {
         indentLevel--;
     }
 
-    public void beginBlock(
-        @NotNull String blockType,
-        @NotNull String name,
-        @NotNull String pumlAlias,
-        @NotNull String blockSuffix
-    ) {
-        String text = blockType + " \"" + name + "\" as " + pumlAlias;
-        if (!blockSuffix.isEmpty()) {
-            text += " " + blockSuffix;
-        }
-        text += " {";
+//    public void beginBlock(
+//        @NotNull String blockType,
+//        @NotNull String name,
+//        @NotNull String pumlAlias,
+//        @NotNull String blockSuffix
+//    ) {
+//        String text = blockType + " \"" + name + "\" as " + pumlAlias;
+//        if (!blockSuffix.isEmpty()) {
+//            text += " " + blockSuffix;
+//        }
+//        text += " {";
+//
+//        addStatement(text);
+//        indent();
+//
+//    }
 
-        addStatement(text);
+    public void beginBlock(@NotNull String header) {
+        addStatement(header + " {");
         indent();
-
     }
 
     public void endBlock() {

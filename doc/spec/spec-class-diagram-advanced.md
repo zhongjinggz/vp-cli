@@ -80,7 +80,7 @@ class Stack<T> {
 - `IClass` 的模板参数接口：SDK 属 `IModelElement`，模板/泛型参数通常经 `ITemplateParameter` 或 tagged value 表达。需确认 VP 具体读取 API（见研究 1）。
 - `PumlBlockExporter.buildBlockSuffix`（:43）已支持在块声明尾追加“关键字 + 原型”后缀——泛型 `<T>` 是类名内嵌项，PlantUML 中 `class Stack<T>` 需把 `<T>` 放在块类型关键字与原型的组合处。当前 `beginBlock`（PumlDiagram:26）用 `blockType "name" as alias suffix {`，泛型应进入 name 之后或作为 suffix 的一部分。
 
-**设计图（`PumlClassExporter` 覆写 `buildBlockSuffix`）：**
+**设计图（`PumlClassExporter` 覆写 `keywordAndStereotypes`）：**
 
 ```plantuml
 @startuml
@@ -104,7 +104,7 @@ PumlClassExporter --|> PumlElementExporter
 2. **读取泛型参数（`PumlClassExporter` 新增帮助方法 `templateParams(vp)`）。** 依研究结果从 `IClass` 读非空模板参数名列表，形如 `T`、`U`。
    - 验证：单测桩 `IClass` 返回模板参数 `["T"]`，断言列表正确；空类返回空串。
 
-3. **拼接泛型后缀（覆写 `buildBlockSuffix`）。** 在 `PumlClassExporter` 中覆写 `buildBlockSuffix`：把模板参数渲染为 `<T, U>` 并置于原型/关键字之后（PlantUML `class Stack<T>` 语法，`<T>` 紧跟类名、在 `as alias` 前）。若实现上 `beginBlock` 的顺序不允许在 name 后插入，则改为把 `<T>` 拼进 suffix 首部。
+3. **拼接泛型后缀（覆写 `keywordAndStereotypes`）。** 在 `PumlClassExporter` 中覆写 `keywordAndStereotypes`：把模板参数渲染为 `<T, U>` 并置于原型/关键字之后（PlantUML `class Stack<T>` 语法，`<T>` 紧跟类名、在 `as alias` 前）。若实现上 `beginBlock` 的顺序不允许在 name 后插入，则改为把 `<T>` 拼进 suffix 首部。
    - 验证：单测桩 `IClass("Stack", [T])`，断言块头端到端为 `class "Stack" as Stack <T> ...`（依最终确定语法）。
 
 4. **端到端集成验证。** 在 VP 中创建带模板参数的类后导出，检查 `.puml` 类声明显式含 `<T>`；PlantUML 预览在类名后显示泛型参数。

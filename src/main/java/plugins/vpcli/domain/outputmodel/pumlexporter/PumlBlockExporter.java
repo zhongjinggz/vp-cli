@@ -4,6 +4,9 @@ import com.vp.plugin.diagram.IDiagramElement;
 import com.vp.plugin.diagram.IShapeUIModel;
 import com.vp.plugin.model.IModelElement;
 import plugins.vpcli.domain.outputmodel.pumldiagram.PumlDiagram;
+import plugins.vpcli.util.Strings;
+
+import static plugins.vpcli.util.Strings.buildStringPatcher;
 
 public abstract class PumlBlockExporter extends PumlElementExporter {
 
@@ -14,11 +17,14 @@ public abstract class PumlBlockExporter extends PumlElementExporter {
     public void export(PumlDiagram result, IDiagramElement vpDiagramElement) {
         IModelElement vpElement = vpDiagramElement.getModelElement();
 
+        // example: class "abc" as package1_abc <<stereotype1>> <<stereotype2>>
         result.beginBlock(
-            getBlockType(vpElement),
-            vpElement.getName(),
-            getPumlAlias(vpElement),
-            buildBlockSuffix(vpElement)
+            buildStringPatcher(getBlockType(vpElement))
+                .patch("\"" + vpElement.getName() + "\"")
+                .patch("as")
+                .patch(getPumlAlias(vpElement))
+                .patch(keywordAndStereotypes(vpElement))
+                .toString()
         );
 
         exportBlockBody(result, vpDiagramElement);
@@ -26,7 +32,7 @@ public abstract class PumlBlockExporter extends PumlElementExporter {
         result.endBlock();
     }
 
-    // 供需要在块声明末尾追加 getKeyword（如 <<model>> 原型）的子类覆写
+    // 供需要在块声明末尾追加 keyword（如 <<model>> ）的子类覆写
     public String getKeyword() {
         return "";
     }
@@ -37,19 +43,14 @@ public abstract class PumlBlockExporter extends PumlElementExporter {
     public abstract String getBlockType(IModelElement vpElement);
 
     /**
-     * 步 #15：块声明后缀 = getKeyword（getKeyword()）+ 元素上的泛型。
-     * 组合顺序：getKeyword ，随后是每个泛型。
+     * 组合顺序：Keyword ，随后是每个泛型。
      */
-    public String buildBlockSuffix(IModelElement vpElement) {
-        String fixed = getKeyword();
-        String stereotypes = getStereotypes(vpElement);
-        if (fixed.isEmpty()) {
-            return stereotypes;
-        }
-        if (stereotypes.isEmpty()) {
-            return fixed;
-        }
-        return fixed + " " + stereotypes;
+    public String keywordAndStereotypes(IModelElement vpElement) {
+        return buildStringPatcher(getKeyword())
+            .patch(getStereotypes(vpElement))
+            .toString();
+
+
     }
 
     // 步 A7：VP 原生读法的成员区钩子；默认空实现，子类按需覆写

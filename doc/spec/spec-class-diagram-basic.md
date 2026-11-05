@@ -713,17 +713,17 @@ PumlPackageExporter --|> PumlBlockExporter
    - 方案：在 `PumlBlockExporter` 增加一个受保护方法 `String buildBlockSuffix(IModelElement vpElement)`（默认把 `getBlockSuffix()` 与 `renderStereotypes(vpElement)` 拼接），并在 `export(...)` 中把 `getBlockSuffix()` 的实参改为 `buildBlockSuffix(vpElement)`。
    - `renderStereotypes(vpElement)` 的实现：调用 `vpElement.toStereotypeArray()`，若 `null`/长度为 0 则返回空串；否则对每个泛型名**原样**输出 `<<"泛型名">>`（无需净化），多项之间以单个空格连接，最后整体拼在 `getBlockSuffix()`（固定原型，如 model 的 `<<model>>`）之后——保证既输出元素自有泛型，又保留子类硬编码的原型。
    - 理由：复用现有 `beginBlock` 的 `blockSuffix` 参数，一处接入即对 class/package/model 全生效；子类既有 `getBlockSuffix()` 覆写不受影响。
-   - 验证：为 `buildBlockSuffix`/`getStereotypes` 写单元测试，覆盖：无泛型（返回空后缀）、单泛型、多泛型（空格分隔）、含空格/标点的泛型名（原样输出，不净化）、与 `getBlockSuffix()`（`<<model>>`）合并后的顺序。
+   - 验证：为 `keywordAndStereotypes`/`getStereotypes` 写单元测试，覆盖：无泛型（返回空后缀）、单泛型、多泛型（空格分隔）、含空格/标点的泛型名（原样输出，不净化）、与 `getBlockSuffix()`（`<<model>>`）合并后的顺序。
 
 2. **类：抽象类判定与泛型渲染（PumlClassExporter）。**
    - 方案：因 `getBlockType()` 无 `vpElement` 参数，改为在 `PumlBlockExporter.export(...)` 中调用一个可覆写、可访问 `vpElement` 的 `String buildBlockType(IModelElement vpElement)`（默认返回 `getBlockType()`），并让 export 用它替代 `getBlockType()`；`PumlClassExporter` 覆写 `getBlockType`：若 `((IClass) vpElement).isAbstract()` 则返回 `"abstract class"`，否则 `"class"`。
-   - 泛型部分随步骤 1 的 `buildBlockSuffix` 自动落到类声明的块名后，输出形如 `class "class1" as class1 <<service>> {` 或 `abstract class "class2" as class2 <<repository>> {`。
+   - 泛型部分随步骤 1 的 `keywordAndStereotypes` 自动落到类声明的块名后，输出形如 `class "class1" as class1 <<service>> {` 或 `abstract class "class2" as class2 <<repository>> {`。
    - 理由：与当前重构后的“直读 VP 原生模型”一致；abstract 判定依赖具体 vpElement，故用可访问参数的方法。
    - 验证：为 `PumlClassExporter` 补单测，桩 `IClass`（带 `isAbstract()` 与 `toStereotypeArray()`），断言：普通类→`class ... <<service>>`；抽象类→`abstract class ... <<repository>>`；无泛型的抽象类→`abstract class ...`（无后缀）；无泛型普通类→`class ...`（无后缀，行为不变）。
 
 3. **包与模型：泛型渲染（PumlPackageExporter / PumlModelExporter）。**
-   - 方案：无需改 `getBlockType()`（保持 namespace）。泛型经步骤 1 的 `buildBlockSuffix` 自动叠加：`PumlPackageExporter` 渲染 `namespace "package1" as package1 <<framework>> {`；`PumlModelExporter` 渲染 `<固定 <<model>>>` 与模型自有泛型合并（如模型带自有泛型时输出 `namespace ... <<model>> <<自有泛型>>`）。
-   - 理由：统一走 `buildBlockSuffix`，两处无需各自写逻辑。
+   - 方案：无需改 `getBlockType()`（保持 namespace）。泛型经步骤 1 的 `keywordAndStereotypes` 自动叠加：`PumlPackageExporter` 渲染 `namespace "package1" as package1 <<framework>> {`；`PumlModelExporter` 渲染 `<固定 <<model>>>` 与模型自有泛型合并（如模型带自有泛型时输出 `namespace ... <<model>> <<自有泛型>>`）。
+   - 理由：统一走 `keywordAndStereotypes`，两处无需各自写逻辑。
    - 验证：为 `PumlPackageExporter`/`PumlModelExporter` 补单测，断言包/模型带泛型时块头正确、无泛型时无后缀、`<<model>>` 固定原型仍保留。
 
 4. **接线与回归。** 本条不新增 `ViElementType`/`DiagramElementType`/新导出器类（CLASS/PACKAGE/MODEL 类型早已登记、仍按 `getShapeType()` 分发），仅 `PumlBlockExporter`/`PumlClassExporter` 的钩子与 `PumlPackageExporter`/`PumlModelExporter` 校验；整体 `mvn test` 无回归。
@@ -787,8 +787,8 @@ PumlGeneralizationExporter --|> PumlElementExporter
 
 **实施步骤（每步可独立验证）：**
 
-1. **泛型渲染工具上移（输出模型层）。** 把 `renderStereotypes(IModelElement vpElement)` 从 `PumlBlockExporter` 移到公共基类 `PumlElementExporter`（方法体不变：`stereotypeModelIterator()` 遍历 `IStereotype`、`getName()` 原样输出 `<</名/>>`、空格分隔、空名跳过、无泛型返回空串）。`PumlBlockExporter` 继承它即可，`buildBlockSuffix` 逻辑不变。此步为纯重构，不改变 #15 行为。
-   - 验证：既有的 `PumlBlockExporterStereotypeTest` 全部通过（`getStereotypes`/`buildBlockSuffix` 断言不变），证明行为未回归。
+1. **泛型渲染工具上移（输出模型层）。** 把 `renderStereotypes(IModelElement vpElement)` 从 `PumlBlockExporter` 移到公共基类 `PumlElementExporter`（方法体不变：`stereotypeModelIterator()` 遍历 `IStereotype`、`getName()` 原样输出 `<</名/>>`、空格分隔、空名跳过、无泛型返回空串）。`PumlBlockExporter` 继承它即可，`keywordAndStereotypes` 逻辑不变。此步为纯重构，不改变 #15 行为。
+   - 验证：既有的 `PumlBlockExporterStereotypeTest` 全部通过（`getStereotypes`/`keywordAndStereotypes` 断言不变），证明行为未回归。
 
 2. **关系标签合并（各关系 exporter）。** 在三个关系 exporter 中各加一个私有小方法，把“关系名称 + 泛型后缀”合并为单个标签串：若 `getName()` 非空且 `getStereotypes` 非空则拼 `name <<...>>`；仅泛型则只有 `<<...>>`；都为空则空串。随后将 `export()` 里 `writeEdge(...)` 的 `name` 实参从 `xxx.getName()` 改为该合并串。`lineStyle`/`ShapeKind`/`direction` 保持各自现状（关联 SOLID `--`、依赖 DASHED `..>` + ARROW、泛化 SOLID `<|--` + REVERSE_TRIANGLE）。
    - 理由：`writeEdge` 已按 name 非空逻辑覆盖“名称+泛型+三角”与“仅泛型”两形态，关系侧只需负责组装标签串。
@@ -860,7 +860,7 @@ PumlElementExporterFactory ..> PumlRealizationExporter : register()
 1. **实现连线渲染（新增 `PumlRealizationExporter`）。** 新建 `PumlRealizationExporter extends PumlElementExporter`，`getShapeType()` 返回 `IShapeTypeConstants.SHAPE_TYPE_REALIZATION`；`export(...)` 仿 `PumlGeneralizationExporter`：取 `IRealization`，`fromAlias=getPumlAlias(getFrom())`、`toAlias=getPumlAlias(getTo())`，`result.writeEdge(PumlEdgeEnd.of(fromAlias,"","",ShapeKind.REVERSE_TRIANGLE), PumlEdgeEnd.of(toAlias,"","",ShapeKind.NONE), LineStyle.DASHED, buildEdgeLabel(getName(), realization), NameDirection.NONE)` → 输出 `实现类 <|.. 接口`（需求中 `class1 ..|> interface1` 与 `interface2 <|.. class2` 只是同一 relations 的两种阅读朝向，VP 以固定 from/to 端统一为一种输出）。
    - 验证：单测桩 `IRealization`（`getName()`、`getFrom()`/`getTo()`、`stereotypeModelIterator()`），断言输出 `class1 <|.. interface1`；带泛型时输出 `class1 <|.. interface1: label <<Stereotype>>`。
 
-2. **接口块关键字（`PumlClassExporter`）。** 在 `getBlockType` 中优先判断类是否带 `<<interface>>` 泛型——是则返回 `"interface"`（先于 abstract，接口通常非抽象）；否则沿用现有 abstract/class 逻辑。泛型后缀仍由 `buildBlockSuffix` 原样渲染，故块头形如 `interface "interface1" as interface1 <<interface>> {`。
+2. **接口块关键字（`PumlClassExporter`）。** 在 `getBlockType` 中优先判断类是否带 `<<interface>>` 泛型——是则返回 `"interface"`（先于 abstract，接口通常非抽象）；否则沿用现有 abstract/class 逻辑。泛型后缀仍由 `keywordAndStereotypes` 原样渲染，故块头形如 `interface "interface1" as interface1 <<interface>> {`。
    - 验证：单测桩 `IClass` 带 `<<interface>>` 泛型，断言 `getBlockType` 返回 `"interface"`；块头端到端含 `interface ... <<interface>>`。
 
 3. **接线与回归。** 在 `PumlElementExporterRepository` 构造器注入 `PumlRealizationExporter` 并 `register(...)`；类型分发按 `getShapeType()` 自动生效。未改 `ViElementType`/`DiagramElementType`/`writeEdge`；整体 `mvn test` 无回归（原 51 测试保持通过）。

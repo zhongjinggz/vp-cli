@@ -82,7 +82,7 @@ class PumlBlockExporterStereotypeTest {
         assertEquals("", exporter.getStereotypes(vp));
     }
 
-    // ---- buildBlockSuffix：固定原型在前 + 泛型在后 ----
+    // ---- keywordAndStereotypes：固定原型在前 + 泛型在后 ----
 
     @Test
     void classSuffixOnlyFromStereotypes() {
@@ -92,7 +92,7 @@ class PumlBlockExporterStereotypeTest {
         when(vp.stereotypeModelIterator()).thenReturn(iterOf(s));
         when(vp.toStereotypeModelArray()).thenReturn(new IStereotype[]{s});
 
-        assertEquals("<<service>>", exporter.buildBlockSuffix(vp));
+        assertEquals("<<service>>", exporter.keywordAndStereotypes(vp));
     }
 
     @Test
@@ -103,7 +103,7 @@ class PumlBlockExporterStereotypeTest {
         when(vp.stereotypeModelIterator()).thenReturn(iterOf(s));
         when(vp.toStereotypeModelArray()).thenReturn(new IStereotype[]{s});
 
-        assertEquals("<<model>> <<framework>>", exporter.buildBlockSuffix(vp));
+        assertEquals("<<model>> <<framework>>", exporter.keywordAndStereotypes(vp));
     }
 
     @Test
@@ -112,7 +112,7 @@ class PumlBlockExporterStereotypeTest {
         IModelElement vp = mock(IModelElement.class);
         when(vp.stereotypeModelIterator()).thenReturn(Collections.emptyIterator());
 
-        assertEquals("<<model>>", exporter.buildBlockSuffix(vp));
+        assertEquals("<<model>>", exporter.keywordAndStereotypes(vp));
     }
 
     @Test
@@ -121,7 +121,7 @@ class PumlBlockExporterStereotypeTest {
         IModelElement vp = mock(IModelElement.class);
         when(vp.stereotypeModelIterator()).thenReturn(Collections.emptyIterator());
 
-        assertEquals("", exporter.buildBlockSuffix(vp));
+        assertEquals("", exporter.keywordAndStereotypes(vp));
     }
 
     // ---- getBlockType：抽象类 ----
