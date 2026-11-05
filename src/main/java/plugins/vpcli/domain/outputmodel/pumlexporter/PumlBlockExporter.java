@@ -42,7 +42,7 @@ public abstract class PumlBlockExporter extends PumlElementExporter {
      */
     public String buildBlockSuffix(IModelElement vpElement) {
         String fixed = getKeyword();
-        String stereotypes = renderStereotypes(vpElement);
+        String stereotypes = getStereotypes(vpElement);
         if (fixed.isEmpty()) {
             return stereotypes;
         }

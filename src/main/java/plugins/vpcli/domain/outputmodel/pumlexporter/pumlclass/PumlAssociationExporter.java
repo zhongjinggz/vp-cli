@@ -115,25 +115,30 @@ public class PumlAssociationExporter extends PumlElementExporter {
 
     private @NonNull String labels(IAssociation association) {
 
-        var result = buildStringPatcher()
+        var nameAndStereotypes = buildStringPatcher()
             .patch(association.getName())
-            .patch(renderStereotypes(association));
+            .patch(getStereotypes(association));
 
-        if (isNotBlank(association.getName())) {
-            switch (association.getDirection()) {
-                case IAssociation.DIRECTION_FROM_TO:
-                    result = result.patch(">");
-                    break;
-                case IAssociation.DIRECTION_TO_FROM:
-                    result = result.patchBefore("<");
-                    break;
-            }
-        }
+        var result = patchDirection(association, nameAndStereotypes);
 
         if (result.isNotBlank()) {
             result.patchBefore(":");
         }
         return result.toString();
+    }
+
+    private static StringPatcher patchDirection(IAssociation association, StringPatcher nameAndStereotypes) {
+        if (isNotBlank(association.getName())) {
+            switch (association.getDirection()) {
+                case IAssociation.DIRECTION_FROM_TO:
+                    nameAndStereotypes = nameAndStereotypes.patch(">");
+                    break;
+                case IAssociation.DIRECTION_TO_FROM:
+                    nameAndStereotypes = nameAndStereotypes.patchBefore("<");
+                    break;
+            }
+        }
+        return nameAndStereotypes;
     }
 
     private @NonNull String associationLine(IAssociation association) {

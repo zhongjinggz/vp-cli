@@ -2,15 +2,11 @@ package plugins.vpcli.domain.outputmodel.pumlexporter;
 
 import com.vp.plugin.diagram.IDiagramElement;
 import com.vp.plugin.model.IRelationship;
-import org.jetbrains.annotations.NotNull;
 import plugins.vpcli.domain.outputmodel.pumldiagram.PumlDiagram;
 
-import java.util.List;
+import static plugins.vpcli.util.Strings.isNotBlank;
 
 public abstract class PumlDirectedRelationshipExporter extends PumlElementExporter {
-    private static @NotNull String formatStereotype(String label) {
-        return "<<" + label + ">>";
-    }
 
     @Override
     public String getShapeType() {
@@ -28,22 +24,19 @@ public abstract class PumlDirectedRelationshipExporter extends PumlElementExport
             toText(
                 fromAlias,
                 toAlias,
-                getStereotypes(dependency)
-            )
+                getStereotypes(dependency))
         );
     }
 
-    private String toText(String fromAlias, String toAlias, List<String> labels) {
+    private String toText(String fromAlias, String toAlias, String stereotypes) {
         StringBuilder result = new StringBuilder();
         result.append(fromAlias);
         result.append(getArrow());
         result.append(toAlias);
-        if (!labels.isEmpty()) {
-            result.append(":");
+        if (isNotBlank(stereotypes))  {
+           result.append(": ").append(stereotypes);
         }
-        for (String label : labels) {
-            result.append(" ").append(PumlDirectedRelationshipExporter.formatStereotype(label));
-        }
+
         return result.toString();
     }
 

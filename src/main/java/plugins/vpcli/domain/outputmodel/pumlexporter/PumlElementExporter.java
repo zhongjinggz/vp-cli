@@ -3,11 +3,10 @@ package plugins.vpcli.domain.outputmodel.pumlexporter;
 import com.vp.plugin.diagram.IDiagramElement;
 import com.vp.plugin.model.IModelElement;
 import com.vp.plugin.model.IStereotype;
-import org.jetbrains.annotations.NotNull;
 import plugins.vpcli.domain.outputmodel.pumldiagram.PumlDiagram;
+import plugins.vpcli.util.Strings;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
 public abstract class PumlElementExporter {
@@ -58,32 +57,16 @@ public abstract class PumlElementExporter {
         return sb.toString();
     }
 
-    public String renderStereotypes(IModelElement vpElement) {
-        StringBuilder sb = new StringBuilder();
-        Iterator<?> it = vpElement.stereotypeModelIterator();
-        while (it.hasNext()) {
-            IStereotype stereotype = (IStereotype) it.next();
-            String name = stereotype.getName();
-            if (name == null || name.isEmpty()) {
-                continue;
-            }
-            if (sb.length() > 0) {
-                sb.append(' ');
-            }
-            sb.append("<<").append(name).append(">>");
-        }
-        return sb.toString();
-    }
+    public String getStereotypes(IModelElement vpElement) {
+        Strings.StringPatcher result = Strings.buildStringPatcher();
 
-    protected static List<String> getStereotypes(@NotNull IModelElement vpElement) {
-        List<String> result = new ArrayList<>();
         IStereotype[] stereotypes = vpElement.toStereotypeModelArray();
         if (stereotypes != null) {
             for (IStereotype stereotype : stereotypes) {
-                result.add(stereotype.getName());
+                result.patch("<<" + stereotype.getName() + ">>");
             }
         }
-        return result;
+        return result.toString();
     }
 
 }

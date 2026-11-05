@@ -39,6 +39,7 @@ class PumlRelationshipStereotypeTest {
         when(assoc.getName()).thenReturn("name");
         when(assoc.getDirection()).thenReturn(IAssociation.DIRECTION_FROM_TO);
         when(assoc.stereotypeModelIterator()).thenReturn(iterOf(s));
+        when(assoc.toStereotypeModelArray()).thenReturn(new IStereotype[] {s});
 
         IAssociationEnd from = end(model("class1"));
         IAssociationEnd to = end(model("class2"));
@@ -57,6 +58,7 @@ class PumlRelationshipStereotypeTest {
         when(assoc.getName()).thenReturn("");
         when(assoc.getDirection()).thenReturn(IAssociation.DIRECTION_FROM_TO);
         when(assoc.stereotypeModelIterator()).thenReturn(iterOf(s));
+        when(assoc.toStereotypeModelArray()).thenReturn(new IStereotype[] {s});
 
         IAssociationEnd from = end(model("class3"));
         IAssociationEnd to = end(model("class4"));

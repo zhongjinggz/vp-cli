@@ -26,7 +26,7 @@ import plugins.vpcli.domain.outputmodel.pumlexporter.pumlnamespace.PumlPackageEx
  */
 class PumlBlockExporterStereotypeTest {
 
-    // ---- renderStereotypes：泛型名原样输出、不净化 ----
+    // ---- getStereotypes：泛型名原样输出、不净化 ----
 
     @Test
     void noStereotypeYieldsEmpty() {
@@ -34,7 +34,7 @@ class PumlBlockExporterStereotypeTest {
         IModelElement vp = mock(IModelElement.class);
         when(vp.stereotypeModelIterator()).thenReturn(Collections.emptyIterator());
 
-        assertEquals("", exporter.renderStereotypes(vp));
+        assertEquals("", exporter.getStereotypes(vp));
     }
 
     @Test
@@ -43,8 +43,9 @@ class PumlBlockExporterStereotypeTest {
         IStereotype s = stereo("service");
         IModelElement vp = mock(IModelElement.class);
         when(vp.stereotypeModelIterator()).thenReturn(iterOf(s));
+        when(vp.toStereotypeModelArray()).thenReturn(new IStereotype[]{s});
 
-        assertEquals("<<service>>", exporter.renderStereotypes(vp));
+        assertEquals("<<service>>", exporter.getStereotypes(vp));
     }
 
     @Test
@@ -53,9 +54,10 @@ class PumlBlockExporterStereotypeTest {
         IStereotype a = stereo("service");
         IStereotype b = stereo("repository");
         IModelElement vp = mock(IModelElement.class);
-        when(vp.stereotypeModelIterator()).thenReturn(iterOf(a, b));
+//        when(vp.stereotypeModelIterator()).thenReturn(iterOf(a, b));
+        when(vp.toStereotypeModelArray()).thenReturn(new IStereotype[]{a, b});
 
-        assertEquals("<<service>> <<repository>>", exporter.renderStereotypes(vp));
+        assertEquals("<<service>> <<repository>>", exporter.getStereotypes(vp));
     }
 
     @Test
@@ -64,8 +66,9 @@ class PumlBlockExporterStereotypeTest {
         IStereotype s = stereo("my service");
         IModelElement vp = mock(IModelElement.class);
         when(vp.stereotypeModelIterator()).thenReturn(iterOf(s));
+        when(vp.toStereotypeModelArray()).thenReturn(new IStereotype[]{s});
 
-        assertEquals("<<my service>>", exporter.renderStereotypes(vp));
+        assertEquals("<<my service>>", exporter.getStereotypes(vp));
     }
 
     @Test
@@ -76,7 +79,7 @@ class PumlBlockExporterStereotypeTest {
         IModelElement vp = mock(IModelElement.class);
         when(vp.stereotypeModelIterator()).thenReturn(iterOf(empty));
 
-        assertEquals("", exporter.renderStereotypes(vp));
+        assertEquals("", exporter.getStereotypes(vp));
     }
 
     // ---- buildBlockSuffix：固定原型在前 + 泛型在后 ----
@@ -87,6 +90,7 @@ class PumlBlockExporterStereotypeTest {
         IStereotype s = stereo("service");
         IModelElement vp = mock(IModelElement.class);
         when(vp.stereotypeModelIterator()).thenReturn(iterOf(s));
+        when(vp.toStereotypeModelArray()).thenReturn(new IStereotype[]{s});
 
         assertEquals("<<service>>", exporter.buildBlockSuffix(vp));
     }
@@ -97,6 +101,7 @@ class PumlBlockExporterStereotypeTest {
         IStereotype s = stereo("framework");
         IModelElement vp = mock(IModelElement.class);
         when(vp.stereotypeModelIterator()).thenReturn(iterOf(s));
+        when(vp.toStereotypeModelArray()).thenReturn(new IStereotype[]{s});
 
         assertEquals("<<model>> <<framework>>", exporter.buildBlockSuffix(vp));
     }
@@ -208,6 +213,7 @@ class PumlBlockExporterStereotypeTest {
         IClass clazz = model(IClass.class, "class1", null);
         when(clazz.isAbstract()).thenReturn(false);
         when(clazz.stereotypeModelIterator()).thenAnswer(inv -> iterOf(s));
+        when(clazz.toStereotypeModelArray()).thenReturn(new IStereotype[]{s});
 
         new PumlClassExporter().export(diagram, elementOf(clazz, false));
 
@@ -223,6 +229,7 @@ class PumlBlockExporterStereotypeTest {
         IClass clazz = model(IClass.class, "class2", null);
         when(clazz.isAbstract()).thenReturn(true);
         when(clazz.stereotypeModelIterator()).thenAnswer(inv -> iterOf(s));
+        when(clazz.toStereotypeModelArray()).thenReturn(new IStereotype[]{s});
 
         new PumlClassExporter().export(diagram, elementOf(clazz, false));
 
@@ -237,6 +244,7 @@ class PumlBlockExporterStereotypeTest {
         IStereotype s = stereo("framework");
         IPackage pkg = model(IPackage.class, "package1", null);
         when(pkg.stereotypeModelIterator()).thenReturn(iterOf(s));
+        when(pkg.toStereotypeModelArray()).thenReturn(new IStereotype[]{s});
 
         new PumlPackageExporter().export(diagram, elementOf(pkg, false));
 
