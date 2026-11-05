@@ -713,7 +713,7 @@ PumlPackageExporter --|> PumlBlockExporter
    - 方案：在 `PumlBlockExporter` 增加一个受保护方法 `String buildBlockSuffix(IModelElement vpElement)`（默认把 `getBlockSuffix()` 与 `renderStereotypes(vpElement)` 拼接），并在 `export(...)` 中把 `getBlockSuffix()` 的实参改为 `buildBlockSuffix(vpElement)`。
    - `renderStereotypes(vpElement)` 的实现：调用 `vpElement.toStereotypeArray()`，若 `null`/长度为 0 则返回空串；否则对每个泛型名**原样**输出 `<<"泛型名">>`（无需净化），多项之间以单个空格连接，最后整体拼在 `getBlockSuffix()`（固定原型，如 model 的 `<<model>>`）之后——保证既输出元素自有泛型，又保留子类硬编码的原型。
    - 理由：复用现有 `beginBlock` 的 `blockSuffix` 参数，一处接入即对 class/package/model 全生效；子类既有 `getBlockSuffix()` 覆写不受影响。
-   - 验证：为 `keywordAndStereotypes`/`getStereotypes` 写单元测试，覆盖：无泛型（返回空后缀）、单泛型、多泛型（空格分隔）、含空格/标点的泛型名（原样输出，不净化）、与 `getBlockSuffix()`（`<<model>>`）合并后的顺序。
+   - 验证：为 `keywordAndStereotypes`/`getStereotypesText` 写单元测试，覆盖：无泛型（返回空后缀）、单泛型、多泛型（空格分隔）、含空格/标点的泛型名（原样输出，不净化）、与 `getBlockSuffix()`（`<<model>>`）合并后的顺序。
 
 2. **类：抽象类判定与泛型渲染（PumlClassExporter）。**
    - 方案：因 `getBlockType()` 无 `vpElement` 参数，改为在 `PumlBlockExporter.export(...)` 中调用一个可覆写、可访问 `vpElement` 的 `String buildBlockType(IModelElement vpElement)`（默认返回 `getBlockType()`），并让 export 用它替代 `getBlockType()`；`PumlClassExporter` 覆写 `getBlockType`：若 `((IClass) vpElement).isAbstract()` 则返回 `"abstract class"`，否则 `"class"`。
@@ -788,9 +788,9 @@ PumlGeneralizationExporter --|> PumlElementExporter
 **实施步骤（每步可独立验证）：**
 
 1. **泛型渲染工具上移（输出模型层）。** 把 `renderStereotypes(IModelElement vpElement)` 从 `PumlBlockExporter` 移到公共基类 `PumlElementExporter`（方法体不变：`stereotypeModelIterator()` 遍历 `IStereotype`、`getName()` 原样输出 `<</名/>>`、空格分隔、空名跳过、无泛型返回空串）。`PumlBlockExporter` 继承它即可，`keywordAndStereotypes` 逻辑不变。此步为纯重构，不改变 #15 行为。
-   - 验证：既有的 `PumlBlockExporterStereotypeTest` 全部通过（`getStereotypes`/`keywordAndStereotypes` 断言不变），证明行为未回归。
+   - 验证：既有的 `PumlBlockExporterStereotypeTest` 全部通过（`getStereotypesText`/`keywordAndStereotypes` 断言不变），证明行为未回归。
 
-2. **关系标签合并（各关系 exporter）。** 在三个关系 exporter 中各加一个私有小方法，把“关系名称 + 泛型后缀”合并为单个标签串：若 `getName()` 非空且 `getStereotypes` 非空则拼 `name <<...>>`；仅泛型则只有 `<<...>>`；都为空则空串。随后将 `export()` 里 `writeEdge(...)` 的 `name` 实参从 `xxx.getName()` 改为该合并串。`lineStyle`/`ShapeKind`/`direction` 保持各自现状（关联 SOLID `--`、依赖 DASHED `..>` + ARROW、泛化 SOLID `<|--` + REVERSE_TRIANGLE）。
+2. **关系标签合并（各关系 exporter）。** 在三个关系 exporter 中各加一个私有小方法，把“关系名称 + 泛型后缀”合并为单个标签串：若 `getName()` 非空且 `getStereotypesText` 非空则拼 `name <<...>>`；仅泛型则只有 `<<...>>`；都为空则空串。随后将 `export()` 里 `writeEdge(...)` 的 `name` 实参从 `xxx.getName()` 改为该合并串。`lineStyle`/`ShapeKind`/`direction` 保持各自现状（关联 SOLID `--`、依赖 DASHED `..>` + ARROW、泛化 SOLID `<|--` + REVERSE_TRIANGLE）。
    - 理由：`writeEdge` 已按 name 非空逻辑覆盖“名称+泛型+三角”与“仅泛型”两形态，关系侧只需负责组装标签串。
    - 验证：为三个关系 exporter 各写单测，桩关系（含 `getName()`、`getFrom()`/`getTo()`/`getFromEnd()`/`getToEnd()`、`stereotypeModelIterator()`），断言输出行：
      - 关联带名称+泛型+方向 → `class1 -- class2: name <<Stereotype1>> >`
@@ -830,7 +830,7 @@ interface2 <|.. class2
 **目标：** 仅“导出”路径——①把带 `<<interface>>` 泛型的类块声明为 `interface` 关键字；②把实现接口的连线（VP 中 Element Type = `Realization`）渲染为虚线的 `*<|..` 边，实现类指向接口。不涉及导入。
 
 **现状分析（已核对源码 + javap openapi.jar）：**
-- `IClass.stereotypeModelIterator()` 可读类上泛型（见 `PumlClassExporter` 现有 `getStereotypes` 基类实现）。
+- `IClass.stereotypeModelIterator()` 可读类上泛型（见 `PumlClassExporter` 现有 `getStereotypesText` 基类实现）。
 - SDK 已确认：`MODEL_TYPE_REALIZATION="Realization"`、`SHAPE_TYPE_REALIZATION="Realization"`（`com.vp.plugin.diagram.IShapeTypeConstants.SHAPE_TYPE_REALIZATION`）；`IRealization extends IHasRelationshipBaseSimpleRelationship`（→`ISimpleRelationship`→`IRelationship`→`IModelElement`），带 `getFrom()/getTo()` 与 `stereotypeModelIterator()`。
 - 旧架构 `MyRelationship_old.toExportFormat()`：`case "Realization": symbol = "<|.."`，即 from=getFrom、三角在 from 端、虚线。泛化（#16 已实现）正是同一结构且已实证可用（`class7 <|-- class8`），实现仅需把 SOLID 换成 DASHED。
 

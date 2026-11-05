@@ -24,7 +24,7 @@ public abstract class PumlDirectedRelationshipExporter extends PumlElementExport
             toText(
                 fromAlias,
                 toAlias,
-                getStereotypes(dependency))
+                getStereotypesText(dependency))
         );
     }
 

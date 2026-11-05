@@ -14,9 +14,12 @@ import org.jspecify.annotations.NonNull;
 import plugins.vpcli.domain.outputmodel.pumldiagram.PumlDiagram;
 import plugins.vpcli.domain.outputmodel.pumlexporter.PumlBlockExporter;
 import plugins.vpcli.util.BugException;
+import plugins.vpcli.util.Strings;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import static plugins.vpcli.util.Strings.isNotBlank;
 
 @Singleton
 public class PumlClassExporter extends PumlBlockExporter {
@@ -54,15 +57,7 @@ public class PumlClassExporter extends PumlBlockExporter {
     }
 
     private boolean hasStereotype(IClass clazz, String stereotypeName) {
-        var it = clazz.stereotypeModelIterator();
-        while (it.hasNext()) {
-            IModelElement stereo = (IModelElement) it.next();
-            String name = stereo.getName();
-            if (name != null && name.equals(stereotypeName)) {
-                return true;
-            }
-        }
-        return false;
+        return getStereotypeNames(clazz).contains(stereotypeName);
     }
 
     /**
@@ -103,7 +98,7 @@ public class PumlClassExporter extends PumlBlockExporter {
                 wroteSeparator = true;
             }
             IEnumerationLiteral literal = (IEnumerationLiteral) literals.next();
-            if (literal.getName() != null && !literal.getName().isEmpty()) {
+            if (isNotBlank(literal.getName())) {
                 enumerationLines.add(literal.getName());
                 result.writeText(literal.getName());
             }

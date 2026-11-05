@@ -26,7 +26,7 @@ import plugins.vpcli.domain.outputmodel.pumlexporter.pumlnamespace.PumlPackageEx
  */
 class PumlBlockExporterStereotypeTest {
 
-    // ---- getStereotypes：泛型名原样输出、不净化 ----
+    // ---- getStereotypesText：泛型名原样输出、不净化 ----
 
     @Test
     void noStereotypeYieldsEmpty() {
@@ -34,7 +34,7 @@ class PumlBlockExporterStereotypeTest {
         IModelElement vp = mock(IModelElement.class);
         when(vp.stereotypeModelIterator()).thenReturn(Collections.emptyIterator());
 
-        assertEquals("", exporter.getStereotypes(vp));
+        assertEquals("", exporter.getStereotypesText(vp));
     }
 
     @Test
@@ -45,7 +45,7 @@ class PumlBlockExporterStereotypeTest {
         when(vp.stereotypeModelIterator()).thenReturn(iterOf(s));
         when(vp.toStereotypeModelArray()).thenReturn(new IStereotype[]{s});
 
-        assertEquals("<<service>>", exporter.getStereotypes(vp));
+        assertEquals("<<service>>", exporter.getStereotypesText(vp));
     }
 
     @Test
@@ -57,7 +57,7 @@ class PumlBlockExporterStereotypeTest {
 //        when(vp.stereotypeModelIterator()).thenReturn(iterOf(a, b));
         when(vp.toStereotypeModelArray()).thenReturn(new IStereotype[]{a, b});
 
-        assertEquals("<<service>> <<repository>>", exporter.getStereotypes(vp));
+        assertEquals("<<service>> <<repository>>", exporter.getStereotypesText(vp));
     }
 
     @Test
@@ -68,7 +68,7 @@ class PumlBlockExporterStereotypeTest {
         when(vp.stereotypeModelIterator()).thenReturn(iterOf(s));
         when(vp.toStereotypeModelArray()).thenReturn(new IStereotype[]{s});
 
-        assertEquals("<<my service>>", exporter.getStereotypes(vp));
+        assertEquals("<<my service>>", exporter.getStereotypesText(vp));
     }
 
     @Test
@@ -79,7 +79,7 @@ class PumlBlockExporterStereotypeTest {
         IModelElement vp = mock(IModelElement.class);
         when(vp.stereotypeModelIterator()).thenReturn(iterOf(empty));
 
-        assertEquals("", exporter.getStereotypes(vp));
+        assertEquals("", exporter.getStereotypesText(vp));
     }
 
     // ---- keywordAndStereotypes：固定原型在前 + 泛型在后 ----
@@ -155,6 +155,7 @@ class PumlBlockExporterStereotypeTest {
         IClass clazz = mock(IClass.class);
         when(clazz.isAbstract()).thenReturn(false);
         when(clazz.stereotypeModelIterator()).thenReturn(iterOf(s));
+        when(clazz.toStereotypeModelArray()).thenReturn(new IStereotype[]{s});
 
         assertEquals("interface", exporter.getBlockType(clazz));
     }
@@ -166,6 +167,7 @@ class PumlBlockExporterStereotypeTest {
         IClass clazz = mock(IClass.class);
         when(clazz.isAbstract()).thenReturn(true);
         when(clazz.stereotypeModelIterator()).thenReturn(iterOf(s));
+        when(clazz.toStereotypeModelArray()).thenReturn(new IStereotype[]{s});
 
         assertEquals("interface", exporter.getBlockType(clazz));
     }
@@ -179,6 +181,7 @@ class PumlBlockExporterStereotypeTest {
         IClass clazz = mock(IClass.class);
         when(clazz.isAbstract()).thenReturn(false);
         when(clazz.stereotypeModelIterator()).thenAnswer(inv -> iterOf(s));
+        when(clazz.toStereotypeModelArray()).thenReturn(new IStereotype[]{s});
 
         assertEquals("enum", exporter.getBlockType(clazz));
     }
@@ -191,6 +194,9 @@ class PumlBlockExporterStereotypeTest {
         IClass clazz = mock(IClass.class);
         when(clazz.isAbstract()).thenReturn(false);
         when(clazz.stereotypeModelIterator()).thenAnswer(inv -> iterOf(iff, en));
+        when(clazz.toStereotypeModelArray()).thenReturn(new IStereotype[] {iff, en});
+
+
 
         assertEquals("interface", exporter.getBlockType(clazz));
     }

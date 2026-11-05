@@ -117,7 +117,7 @@ public class PumlAssociationExporter extends PumlElementExporter {
 
         var nameAndStereotypes = buildStringPatcher()
             .patch(association.getName())
-            .patch(getStereotypes(association));
+            .patch(getStereotypesText(association));
 
         var result = patchDirection(association, nameAndStereotypes);
 

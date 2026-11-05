@@ -4,7 +4,6 @@ import com.vp.plugin.diagram.IDiagramElement;
 import com.vp.plugin.diagram.IShapeUIModel;
 import com.vp.plugin.model.IModelElement;
 import plugins.vpcli.domain.outputmodel.pumldiagram.PumlDiagram;
-import plugins.vpcli.util.Strings;
 
 import static plugins.vpcli.util.Strings.buildStringPatcher;
 
@@ -47,10 +46,8 @@ public abstract class PumlBlockExporter extends PumlElementExporter {
      */
     public String keywordAndStereotypes(IModelElement vpElement) {
         return buildStringPatcher(getKeyword())
-            .patch(getStereotypes(vpElement))
+            .patch(getStereotypesText(vpElement))
             .toString();
-
-
     }
 
     // 步 A7：VP 原生读法的成员区钩子；默认空实现，子类按需覆写

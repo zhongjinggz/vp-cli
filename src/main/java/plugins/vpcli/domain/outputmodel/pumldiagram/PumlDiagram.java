@@ -22,23 +22,6 @@ public class PumlDiagram {
         indentLevel--;
     }
 
-//    public void beginBlock(
-//        @NotNull String blockType,
-//        @NotNull String name,
-//        @NotNull String pumlAlias,
-//        @NotNull String blockSuffix
-//    ) {
-//        String text = blockType + " \"" + name + "\" as " + pumlAlias;
-//        if (!blockSuffix.isEmpty()) {
-//            text += " " + blockSuffix;
-//        }
-//        text += " {";
-//
-//        addStatement(text);
-//        indent();
-//
-//    }
-
     public void beginBlock(@NotNull String header) {
         addStatement(header + " {");
         indent();
@@ -64,15 +47,15 @@ public class PumlDiagram {
 
     @Override
     public String toString() {
-        StringBuilder sb = new StringBuilder("@startuml\nallowmixing\n\n");
+        StringBuilder result = new StringBuilder("@startuml\nallowmixing\n\n");
 
         for (PumlStatement statement : this.statements) {
-            sb.append(statement.toString()).append("\n");
+            result.append(statement.toString()).append("\n");
         }
 
-        sb.append("@enduml\n");
+        result.append("@enduml\n");
 
-        return sb.toString();
+        return result.toString();
     }
 
 }

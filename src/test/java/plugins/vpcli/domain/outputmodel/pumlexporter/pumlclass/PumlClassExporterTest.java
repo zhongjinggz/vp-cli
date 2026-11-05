@@ -8,12 +8,8 @@ import static org.mockito.Mockito.when;
 import com.vp.plugin.diagram.IDiagramElement;
 import com.vp.plugin.diagram.IShapeTypeConstants;
 import com.vp.plugin.diagram.IShapeUIModel;
-import com.vp.plugin.model.IAttribute;
-import com.vp.plugin.model.IClass;
-import com.vp.plugin.model.IEnumerationLiteral;
-import com.vp.plugin.model.IModelElement;
-import com.vp.plugin.model.IOperation;
-import com.vp.plugin.model.IParameter;
+import com.vp.plugin.model.*;
+
 import java.util.Collections;
 import java.util.List;
 import org.junit.jupiter.api.Test;
@@ -225,13 +221,14 @@ class PumlClassExporterTest {
 
     private static IClass clazzWithStereotypes(String... names) {
         IClass clazz = mock(IClass.class);
-        List<IModelElement> stereos = new java.util.ArrayList<>();
+        List<IStereotype> stereos = new java.util.ArrayList<>();
         for (String n : names) {
-            IModelElement s = mock(IModelElement.class);
+            IStereotype s = mock(IStereotype.class);
             when(s.getName()).thenReturn(n);
             stereos.add(s);
         }
         when(clazz.stereotypeModelIterator()).thenAnswer(inv -> stereos.iterator());
+        when(clazz.toStereotypeModelArray()).thenReturn(stereos.toArray(new IStereotype[stereos.size()]));
         return clazz;
     }
 
