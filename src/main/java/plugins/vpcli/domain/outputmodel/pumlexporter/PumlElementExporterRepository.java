@@ -48,6 +48,8 @@ public class PumlElementExporterRepository {
         PumlSubstitutionExporter substitutionExporter,
         PumlAbstractionExporter abstractionExporter,
         PumlDeriveExporter deriveExporter,
+        PumlRefineExporter refineExporter,
+        PumlTraceExporter traceExporter,
         PumlUnimplementedExporter unimplementedExporter
     ) {
         this.unimplementedExporter = unimplementedExporter;
@@ -73,6 +75,8 @@ public class PumlElementExporterRepository {
         register(substitutionExporter);
         register(abstractionExporter);
         register(deriveExporter);
+        register(refineExporter);
+        register(traceExporter);
 
         register(unimplementedExporter);
     }
