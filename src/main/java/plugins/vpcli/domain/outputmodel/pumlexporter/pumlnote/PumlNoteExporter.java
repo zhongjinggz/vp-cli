@@ -37,6 +37,6 @@ public class PumlNoteExporter extends PumlElementExporter {
         String body = description.replace("\n", "\\n");
         String alias = getPumlAlias(note);
 
-        result.writeTerminalShape("note \"" + body + "\" as " + alias);
+        result.writeText("note \"" + body + "\" as " + alias);
     }
 }

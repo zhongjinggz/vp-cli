@@ -99,13 +99,13 @@ public class PumlClassExporter extends PumlBlockExporter {
 
         while (literals.hasNext()) {
             if (wroteAny && !wroteSeparator) {
-                result.writeTerminalShape("--");
+                result.writeText("--");
                 wroteSeparator = true;
             }
             IEnumerationLiteral literal = (IEnumerationLiteral) literals.next();
             if (literal.getName() != null && !literal.getName().isEmpty()) {
                 enumerationLines.add(literal.getName());
-                result.writeTerminalShape(literal.getName());
+                result.writeText(literal.getName());
             }
         }
     }
@@ -117,10 +117,10 @@ public class PumlClassExporter extends PumlBlockExporter {
         var operationIterator = clazz.operationIterator();
         while (operationIterator.hasNext()) {
             if (alreadyWroteAny && !wroteSeparator) {
-                result.writeTerminalShape("--");
+                result.writeText("--");
                 wroteSeparator = true;
             }
-            result.writeTerminalShape(
+            result.writeText(
                 formatOperation((IOperation) operationIterator.next())
             );
             wroteAny = true;
@@ -134,7 +134,7 @@ public class PumlClassExporter extends PumlBlockExporter {
 
         var attributeIterator = clazz.attributeIterator();
         while (attributeIterator.hasNext()) {
-            result.writeTerminalShape(
+            result.writeText(
                 formatAttribute((IAttribute) attributeIterator.next())
             );
             hasAttributes = true;

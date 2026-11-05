@@ -9,9 +9,6 @@ import com.vp.plugin.model.IQualifier;
 
 import com.vp.plugin.model.IRelationshipEnd;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import jakarta.inject.Inject;
 import jakarta.inject.Singleton;
 import org.jetbrains.annotations.NotNull;
@@ -19,6 +16,7 @@ import org.jspecify.annotations.NonNull;
 import plugins.vpcli.domain.outputmodel.pumldiagram.PumlDiagram;
 import plugins.vpcli.domain.outputmodel.pumldiagram.PumlEdgeEnd.ShapeKind;
 import plugins.vpcli.domain.outputmodel.pumlexporter.PumlElementExporter;
+import plugins.vpcli.util.Strings;
 
 import static plugins.vpcli.util.Strings.*;
 
@@ -35,27 +33,22 @@ public class PumlAssociationExporter extends PumlElementExporter {
 
     @Override
     public void export(PumlDiagram result, IDiagramElement vpDiagramElement) {
+        // association := fromElementAlias [fromMultiplicity&role] line [toMultiplicity&role] toElementAlias [labels]
+        // labels := : [<] [name] [<<stereotype>>]* [>]
+
         IAssociation association = (IAssociation) vpDiagramElement.getModelElement();
 
-        String text = formatAssociation(association);
-
-        result.writeTerminalShape(text);
-    }
-
-    // association := fromElementAlias [fromMultiplicity&role] line [toMultiplicity&role] toElementAlias [labels]
-    // labels := : [<] [name] [<<stereotype>>]* [>]
-
-    @NonNull String formatAssociation(IAssociation association) {
-
-        return buildStringPatcher(fromAlias(association))
-            .patch(fromQualifier(association))
-            .patch(fromMultiplicityAndRole(association))
-            .patch(associationLine(association))
-            .patch(ToMultiplicityAndRole(association))
-            .patch(toQualifier(association))
-            .patch(toAlias(association))
-            .patch(labels(association))
-            .toString();
+        result.writeText(
+            Strings.buildStringPatcher(fromAlias(association))
+                .patch(fromQualifier(association))
+                .patch(fromMultiplicityAndRole(association))
+                .patch(associationLine(association))
+                .patch(ToMultiplicityAndRole(association))
+                .patch(toQualifier(association))
+                .patch(toAlias(association))
+                .patch(labels(association))
+                .toString()
+        );
     }
 
     private @NonNull String ToMultiplicityAndRole(IAssociation association) {
@@ -90,14 +83,6 @@ public class PumlAssociationExporter extends PumlElementExporter {
             roleAndMultiplicity.append("\"");
         }
 
-//        String getQualifier = getQualifier(fromAssociationEnd);
-//        String base = roleAndMultiplicity.toString();
-//        if (isNotBlank(getQualifier)) {
-//            if (isBlank(base)) {
-//                return getQualifier;
-//            }
-//            return getQualifier + " " + base;
-//        }
         return roleAndMultiplicity.toString();
     }
 
@@ -110,19 +95,26 @@ public class PumlAssociationExporter extends PumlElementExporter {
     }
 
     private String getQualifier(IAssociationEnd associationEnd) {
-        List<String> names = new ArrayList<>();
+        StringBuilder result = new StringBuilder();
+
         IQualifier qualifier = associationEnd.getQualifier();
         if (qualifier != null) {
             for (IAttribute attribute : qualifier.toAttributeArray()) {
-                if (attribute != null && isNotBlank(attribute.getName())) {
-                    names.add(attribute.getName());
+                if (isNotBlank(attribute.getName())) {
+                    if (result.length() == 0) {
+                        result.append("[");
+                    } else {
+                        result.append("\\n");
+                    }
+                    result.append(attribute.getName());
                 }
             }
+            if (result.length() > 0) {
+                result.append("]");
+            }
         }
-        if (names.isEmpty()) {
-            return "";
-        }
-        return "[" + String.join("\\n", names) + "]";
+
+        return result.toString();
     }
 
     private String fromAlias(IAssociation association) {
@@ -135,14 +127,11 @@ public class PumlAssociationExporter extends PumlElementExporter {
 
     private @NonNull String labels(IAssociation association) {
 
-        String name = association.getName();
-        String stereotypes = renderStereotypes(association);
+        var nameAndStereotype = buildStringPatcher(association.getName())
+            .patch(renderStereotypes(association))
+            .toString();
 
-        String result = joinNameAndStereotypes(name, stereotypes);
-
-        if (isNotBlank(name)) {
-            result = patchDirection(association, result);
-        }
+        var result = patchDirection(association, nameAndStereotype);
 
         if (isNotBlank(result)) {
             result = ": " + result;
@@ -154,8 +143,11 @@ public class PumlAssociationExporter extends PumlElementExporter {
         @NotNull IAssociation association,
         @NotNull String nameAndStereotype
     ) {
-        String result;
+        if (isBlank(association.getName())) {
+            return nameAndStereotype;
+        }
 
+        String result;
         switch (association.getDirection()) {
             case IAssociation.DIRECTION_FROM_TO:
                 result = nameAndStereotype + " >";
@@ -167,18 +159,6 @@ public class PumlAssociationExporter extends PumlElementExporter {
                 result = nameAndStereotype;
         }
 
-        return result;
-    }
-
-    private static @NotNull String joinNameAndStereotypes(String name, String stereotypes) {
-        String result;
-        if (isBlank(name)) {
-            result = stereotypes;
-        } else if (isBlank(stereotypes)) {
-            result = name;
-        } else {
-            result = name + " " + stereotypes;
-        }
         return result;
     }
 

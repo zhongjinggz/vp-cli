@@ -24,7 +24,7 @@ public abstract class PumlDirectedRelationshipExporter extends PumlElementExport
         String fromAlias = getPumlAlias(dependency.getFrom());
         String toAlias = getPumlAlias(dependency.getTo());
 
-        result.writeTerminalShape(
+        result.writeText(
             toText(
                 fromAlias,
                 toAlias,

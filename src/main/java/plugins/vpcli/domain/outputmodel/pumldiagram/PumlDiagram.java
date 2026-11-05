@@ -1,7 +1,6 @@
 package plugins.vpcli.domain.outputmodel.pumldiagram;
 
 import org.jetbrains.annotations.NotNull;
-import plugins.vpcli.domain.outputmodel.pumlexporter.pumlclass.PumlAssociationExporter;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -46,7 +45,7 @@ public class PumlDiagram {
 
     }
 
-    public void writeTerminalShape(String elementText) {
+    public void writeText(String elementText) {
         addStatement(elementText);
     }
 
@@ -71,18 +70,4 @@ public class PumlDiagram {
         return sb.toString();
     }
 
-    public enum LineStyle {
-        SOLID("--"),
-        DASHED("..");
-
-        private final String text;
-
-        LineStyle(String text) {
-            this.text = text;
-        }
-
-        public String getText() {
-            return text;
-        }
-    }
 }

@@ -29,7 +29,7 @@ public class PumlContainmentExporter extends PumlElementExporter {
         String fromAlias = getPumlAlias(containment.getFromShape().getModelElement());
         String toAlias = getPumlAlias(containment.getToShape().getModelElement());
 
-        result.writeTerminalShape(fromAlias + " +-- " + toAlias);
+        result.writeText(fromAlias + " +-- " + toAlias);
     }
 
 }

@@ -30,7 +30,7 @@ public class PumlAnchorExporter extends PumlElementExporter {
         String fromAlias = getPumlAlias(anchor.getFrom());
         String toAlias = getPumlAlias(anchor.getTo());
 
-        result.writeTerminalShape(formatAnchor(fromAlias, toAlias));
+        result.writeText(formatAnchor(fromAlias, toAlias));
     }
 
     private String formatAnchor(String fromAlias, String toAlias) {

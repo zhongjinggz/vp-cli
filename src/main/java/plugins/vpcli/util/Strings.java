@@ -40,16 +40,34 @@ public class Strings {
         private StringBuilder content;
 
         private StringPatcher() {
-            content = new StringBuilder();
+            this("");
         }
 
         private StringPatcher(String initStr) {
-            content = new StringBuilder(initStr);
+            if (isBlank(initStr)) {
+                content = new StringBuilder();
+            } else {
+                content = new StringBuilder(initStr);
+            }
         }
 
         public StringPatcher patch(String thePatch) {
             if (isNotBlank(thePatch)) {
-                content.append(" ").append(thePatch);
+                if (content.length() > 0) {
+                    content.append(" ");
+                }
+                content.append(thePatch);
+            }
+            return this;
+        }
+
+        public StringPatcher patchBefore(String thePatch) {
+            if (isNotBlank(thePatch)) {
+                if (content.length() > 0) {
+                    content.insert(0, " ").insert(0, thePatch);
+                } else {
+                    content.append(thePatch);
+                }
             }
             return this;
         }
