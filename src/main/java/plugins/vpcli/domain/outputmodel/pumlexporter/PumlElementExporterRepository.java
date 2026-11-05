@@ -30,6 +30,7 @@ public class PumlElementExporterRepository {
         PumlUnimplementedExporter unimplementedExporter,
         PumlAssociationExporter associationExporter,
         PumlClassExporter classExporter,
+        PumlContainmentExporter containmentExporter,
         PumlPackageExporter packageExporter,
         PumlModelExporter modelExporter,
         PumlModelRelationshipContainerExporter modelRelationshipContainerExporter,
@@ -65,6 +66,7 @@ public class PumlElementExporterRepository {
         register(classExporter);
         register(associationExporter);
         register(generalizationExporter);
+        register(containmentExporter);
 
         // package
         register(packageExporter);

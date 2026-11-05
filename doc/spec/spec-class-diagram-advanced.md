@@ -174,6 +174,8 @@ PumlAssociationClassExporter --|> PumlElementExporter
 
 ## 04 嵌套类/内部类 Nested Class
 
+- 状态：已完成
+
 ### 需求
 
 ```plantuml
