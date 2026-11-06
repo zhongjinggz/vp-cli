@@ -27,8 +27,8 @@ public class PumlAnchorExporter extends PumlElementExporter {
     public void export(PumlDiagram result, IDiagramElement vpDiagramElement) {
         IAnchor anchor = (IAnchor) vpDiagramElement.getModelElement();
 
-        String fromAlias = getPumlAlias(anchor.getFrom());
-        String toAlias = getPumlAlias(anchor.getTo());
+        String fromAlias = pumlAlias(anchor.getFrom());
+        String toAlias = pumlAlias(anchor.getTo());
 
         result.writeText(formatAnchor(fromAlias, toAlias));
     }

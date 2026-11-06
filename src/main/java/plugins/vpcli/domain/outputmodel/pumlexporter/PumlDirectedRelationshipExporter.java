@@ -17,8 +17,8 @@ public abstract class PumlDirectedRelationshipExporter extends PumlElementExport
     public void export(PumlDiagram result, IDiagramElement vpDiagramElement) {
         IRelationship dependency = (IRelationship) vpDiagramElement.getModelElement();
 
-        String fromAlias = getPumlAlias(dependency.getFrom());
-        String toAlias = getPumlAlias(dependency.getTo());
+        String fromAlias = pumlAlias(dependency.getFrom());
+        String toAlias = pumlAlias(dependency.getTo());
 
         result.writeText(
             toText(

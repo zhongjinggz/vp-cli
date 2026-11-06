@@ -17,18 +17,21 @@ public abstract class PumlBlockExporter extends PumlElementExporter {
         IModelElement vpElement = vpDiagramElement.getModelElement();
 
         // example: class "abc" as package1_abc <<stereotype1>> <<stereotype2>>
-        result.beginBlock(
-            buildStringPatcher(getBlockType(vpElement))
-                .patch("\"" + vpElement.getName() + "\"")
-                .patch("as")
-                .patch(getPumlAlias(vpElement))
-                .patch(keywordAndStereotypes(vpElement))
-                .toString()
-        );
+        result.beginBlock(buildHeader(vpElement));
 
         exportBlockBody(result, vpDiagramElement);
 
         result.endBlock();
+    }
+
+    protected String buildHeader(IModelElement vpElement) {
+        return buildStringPatcher(getBlockType(vpElement))
+            .patch("\"" + vpElement.getName() + "\"")
+            .patch("as")
+            .patch(pumlAlias(vpElement))
+            .patch(templateParams(vpElement))
+            .patch(keywordAndStereotypes(vpElement))
+            .toString();
     }
 
     // 供需要在块声明末尾追加 keyword（如 <<model>> ）的子类覆写
@@ -36,13 +39,10 @@ public abstract class PumlBlockExporter extends PumlElementExporter {
         return "";
     }
 
-    /**
-     * 步 #15：块声明类型；默认取 getBlockType()，子类（如类需区分 abstract）可覆写。
-     */
     public abstract String getBlockType(IModelElement vpElement);
 
     /**
-     * 组合顺序：Keyword ，随后是每个泛型。
+     * 组合顺序：<<keyword>> <<stereotype1>> <<stereotype2>>
      */
     public String keywordAndStereotypes(IModelElement vpElement) {
         return buildStringPatcher(getKeyword())
@@ -50,7 +50,10 @@ public abstract class PumlBlockExporter extends PumlElementExporter {
             .toString();
     }
 
-    // 步 A7：VP 原生读法的成员区钩子；默认空实现，子类按需覆写
+    protected String templateParams(IModelElement vpElement){
+        return "";
+    }
+
     public void exportBlockBody(PumlDiagram result, IDiagramElement vpDiagramElement) {
         if (vpDiagramElement instanceof IShapeUIModel) {
             IShapeUIModel shape = (IShapeUIModel) vpDiagramElement;

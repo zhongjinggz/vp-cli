@@ -106,11 +106,11 @@ public class PumlAssociationExporter extends PumlElementExporter {
     }
 
     private String fromAlias(IAssociation association) {
-        return getPumlAlias(association.getFromEnd().getModelElement());
+        return pumlAlias(association.getFromEnd().getModelElement());
     }
 
     private String toAlias(IAssociation association) {
-        return getPumlAlias(association.getToEnd().getModelElement());
+        return pumlAlias(association.getToEnd().getModelElement());
     }
 
     private @NonNull String labels(IAssociation association) {

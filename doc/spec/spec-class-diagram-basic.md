@@ -944,7 +944,7 @@ PumlElementExporterFactory ..> PumlAnchorExporter : register()
 5. **集成验证。**
    - 验证：手动在 VP 中为类添加注释并拉虚线到类后导出，检查 `.puml` 出现 `note "UML Style" as N1`、`class2 .. N1`、`class1 .. N1`；用 PlantUML 预览确认注释框与虚线、阅读指向正常。
 
-**说明/边界：** 本条目仅处理注释本身（NOTE 形状）与注释–元素连线（ANCHOR）的导出，不涉及导入路径对 `note` 的解析。泛型/别名净化沿用现成工具：块名与别名经 `getPumlAlias`（拉丁/希腊字母与数字保留下划线），注释别名另按旧规则处理。anchor 无名无冒号标签。
+**说明/边界：** 本条目仅处理注释本身（NOTE 形状）与注释–元素连线（ANCHOR）的导出，不涉及导入路径对 `note` 的解析。泛型/别名净化沿用现成工具：块名与别名经 `pumlAlias`（拉丁/希腊字母与数字保留下划线），注释别名另按旧规则处理。anchor 无名无冒号标签。
 
 ## 20 枚举 Enumeration
 

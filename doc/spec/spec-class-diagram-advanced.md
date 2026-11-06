@@ -395,16 +395,72 @@ A2 "0..*" -- D
 上图中，同一个 class "A" 出现了两次，用别名区分。
 
 ### 方案
+
 #### 思路
-- 修改别名算法： 别名 := <模型元素类型>_<模型元素名称>_<模型元素ID>_<图元素ID>
+- 修改别名算法： 别名 := <模型元素类型>__<模型元素名称>__<模型元素ID>__<图元素ID>
 - 当同一个元素在同一张图表上显示多次时，虽然<模型元素ID>相同，但<图元素ID>不同，从而可以区分。
 - 例如：名称为 “A” 的类在同一张图上出现了两次，<模型元素ID>为“12345”, <图元素ID>分别为“abcde”和“fghij”。则 PlantUML 为：
 
 ```plantuml
 @startuml
- class "A" as class_A_12345_abcde
- class "A" as class_A_12345_fghij
+ class "A" as class__A__12345__abcde
+ class "A" as class__A__12345__fghij
  
 @enduml
 ```
 上图在显示时，都显示为“A”，从人的感官上是同一个类，但别名不同，因此在图中显示两次
+
+- 若元素没有名称，则忽略名称段。例如 NARY 无名称，模型ID为“Ia_N9YWD_AAAAQn2”，图ID为“1234”，则别名为 `NARY__Ia_N9YWD_AAAAQn2__1234`（类型后直接跟模型ID）
+
+
+#### 具体设计
+
+**目标：** 全局替换别名算法为 `别名 := <模型元素类型>__<模型元素名称>__<模型元素ID>__<图元素ID>`，各段以两个下划线 `__` 分隔；使同一模型元素在同一张图的多次出现通过“图元素ID”区分。所有元素（含仅出现一次的）统一用新格式；导出和引用的别名保持一致，保证连接线能精确连到正确的出现。不涉及导入（导入路径不生成别名）。
+
+**现状分析（已核对源码 + javap openapi.jar）：**
+- 别名目前由单一入口 `PumlElementExporter.getPumlAlias(IModelElement)`（src/.../pumlexporter/PumlElementExporter.java:30）生成，只基于**模型元素**的全限定名段与 ID（无名时以 ID 兜底）。
+- 图元素 ID 来自 `IDiagramElement.getId()`（由 `IBaseDiagramElement` 提供，已 javap 确认）。块/形状级导出器手中已有 `IDiagramElement`，可直接取。
+- 关系线/连线端点目前走**模型元素**：`PumlDirectedRelationshipExporter` 用 `dependency.getFrom()/getTo()`；`PumlAssociationExporter` 用 `fromEnd/getToEnd().getModelElement()`；`PumlAnchorExporter` 用 `anchor.getFrom()/getTo()`。这些只能得到“哪个模型”，得不到“图上哪个出现”。
+- 连接线端点对应的**视图**可以取到：`IConnectorUIModel.getFromShape()/getToShape()` 返回 `IShapeUIModel`（连续类也可通过关联自身的连接线 shape 取），`PumlContainmentExporter`（:29-30）已示范 `getFromShape().getModelElement()` 的用法；连线端点 shape 的 `getId()` 即该端点的图元素ID。
+
+**别名算法（新核心方法）：**
+- 新增静态帮助方法 `buildAlias(IModelElement model, String diagramElementId)`，输出 `<类型>__<名称>__<模型ID>__<清洗后图ID>`，各段以两个下划线 `__` 分隔。
+  - `<类型>`：用小写的 ViElementType 枚举名（class/usecase/package/model/NARY/...），可加 `ViElementType.of(model.getModelType()).name().toLowerCase()` 兜底映射。
+  - `<名称>`：沿用现 `collectQualifiedNameSegments` 逻辑 — 全限定名段拼接（段间 `__`）。**若元素没有名称，则忽略名称段**（不是以模型ID替代名称），即类型后直接跟模型ID。
+  - `<模型元素ID>`：`model.getId()`。
+  - `<图元素ID>`：`diagramElementId`，经清洗（沿用 `formatName` 类的拉丁字母/数字清洗规则）。
+- 具体输出：
+  - 有名称元素：`<类型>__<名称>__<模型ID>__<图ID>`，例 `class__A__12345__abcde`。
+  - 无名元素：`<类型>__<模型ID>__<图ID>`，例无名的 NARY（模型ID=`Ia_N9YWD_AAAAQn2`、图ID=`1234`）→ `NARY__Ia_N9YWD_AAAAQn2__1234`。
+- 该格式保证：同一模型出现多次 → 名称段与模型ID相同、末段（图ID）不同 ⇒ 别名不同，可区分；同一模型仅出现一次时格式同样成立（图ID唯一），即全局统一。
+- 兼容处理：图元素ID可能为 null/空（少数模型无视图的情况，如不含 model 的 containment），此时退回省略图ID段（保留 `<类型>__<名称>__<模型ID>` 或无名时 `<类型>__<模型ID>`），保持别名仍可引用。
+
+**接入点（封装两个入口，内部都调 buildAlias）：**
+- `getPumlAlias(IDiagramElement)`：从 `vpDiagramElement.getModelElement()` + `vpDiagramElement.getId()` 调 `buildAlias`。用于各类块状声明导出器。
+- `getPumlAlias(IModelElement, String diagramElementId)`：关系端专用，由调用方从 shape 传入两者。
+
+**逐一处改造：**
+1. `PumlElementExporter`（:30）：把现有 `getPumlAlias(IModelElement)` 改造/拆分为上述两入口与 `buildAlias`。
+2. 块/形状级（自动获得新格式，无需额外改端点）：`PumlBlockExporter`（含其子类 `PumlClassExporter`、`PumlPackageExporter`、`PumlModelExporter` 等，:24）、`PumlUseCaseExporter`（:29）、`PumlNoteExporter`（:38）、`PumlInterfaceBallExporter`（:36）——统一改调 `getPumlAlias(vpDiagramElement)`。
+3. 遍历关系线类改为从视图端点取模型+图ID：
+   - `PumlDirectedRelationshipExporter`（:20-21，其子类含 `PumlDependencyExporter` 及各 dependency 类、`PumlRealizationExporter` 等）：`dependency instanceof IConnectorUIModel` 时用 `getFromShape()/getToShape()` 的 `getModelElement()`+`getId()`。
+   - `PumlAssociationExporter`（:109,113）：改为从 `association 所在 connector` 的 `getFromShape()/getToShape()` 取两端（而非 end 模型元素）。
+   - `PumlAnchorExporter`（:30-31）：改为从 connector 的 `getFromShape()/getToShape()` 取两端。
+   - `PumlContainmentExporter`（:29-30）：已用 `getFromShape()/getToShape()`，仅需改为同时传 `getId()`。
+4. **连线端点从模型→视图的取法**：每个关系 exporter 的 `export(PumlDiagram, IDiagramElement vpDiagramElement)` 已持有该连接线 `IConnectorUIModel`，端点视图即 `getFromShape()/getToShape()`；若端点本身是嵌套形状（member），取其 `getModelElement()` 定位模型，图ID用该 shape 的 `getId()`。区块声明的 shape 与其被引用的 shape 为**同一个 IShapeUIModel 实例**（同图内同一出现），故别名字符串完全一致。
+
+**实施步骤（每步可独立验证）：**
+1. 新增 `buildAlias(model, diagramId)` 并改为 `getPumlAlias(IDiagramElement)` / `getPumlAlias(model, diagramId)`，先只让块级导出器切换（步骤 2 的类），跑通单测确认格式。
+   - 验证：新单测桩 `IDiagramElement`（getModelElement()=class A，getId()=abcde，parent 链给全限定名），断言 `class__A__12345__abcde` 形式（模型ID、图ID与桩一致）；另配一个无名 NARY 桩（model.getId()=Ia_N9YWD_AAAAQn2，getId()=1234），断言 `NARY__Ia_N9YWD_AAAAQn2__1234`（无名称段）。
+2. 块级导出器全部切新入口；更新受影响单测中断言（`PumlClassExporterTest`、`PumlClassExporterEnumTest`、`PumlBlockExporterStereotypeTest`、usecase/note/interfaceBall 相关测试，把旧 `as xxx` 断言更新为新格式）。
+   - 验证：`mvn test -Dtest=*Exporter*` 通过。
+3. 改关系线导出器端点从视图取；重点 `PumlDirectedRelationshipExporter`、`PumlAssociationExporter`、`PumlAnchorExporter`、`PumlContainmentExporter`。
+   - 验证：更新 `PumlAssociationExporterTest` 等，桩上加 `getFromShape()/getToShape()` 返回带 `getId()` 的 shape，断言连线两端别名=对应声明别名。
+4. 边界：`PumlAssociationClassExporter`（:51-57）参与者取自 `association.getFromEnd()/getToEnd()` 模型元素——为精确到出现，改为从该关联所在的 shape（connector 的 from/to 之一是 IAssociation）取其端 shape 的模型+图ID；因 `(company, person)` 两个别名须与各自 class 声明一致。
+5. 回归。`mvn test` 无回归；`mvn package` 成功。未改 `PumlDiagram`/`writeEdge`/分发机制（findBy 仍按 shapeType 分发）。
+
+**说明/边界：**
+- 本条目为全局替换，会改变导出 `.puml` 中所有别名格式，属预期行为（用户已确认）；受影响的既有别名断言需同步更新，不改动连接线画法与语义（仅别名来源变化）。
+- 同一模型在**不同**图上各出现一次时，各图的图元素ID不同 ⇒ 别名也不同；若跨图需引用同一出现，仅依赖同图内的声明与引用保持一致即可（当前导出按图独立进行）。
+- 无名模型元素：沿用“以模型ID替代名称”既有逻辑，模型ID与图ID都取自 VP 原生值，清洗后仍保证唯一。
+- 只改导出侧别名来源，不触碰导入路径；不改 finder/分发、不改 `PumlDiagram` 的写语句逻辑。

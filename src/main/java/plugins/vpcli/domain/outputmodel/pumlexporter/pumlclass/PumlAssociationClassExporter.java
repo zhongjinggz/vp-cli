@@ -52,9 +52,9 @@ public class PumlAssociationClassExporter extends PumlElementExporter {
         IModelElement participant2 = association.getToEnd().getModelElement();
 
         result.writeText(
-            "(" + getPumlAlias(participant1)
-                + ", " + getPumlAlias(participant2)
-                + ") .. " + getPumlAlias(clazz)
+            "(" + pumlAlias(participant1)
+                + ", " + pumlAlias(participant2)
+                + ") .. " + pumlAlias(clazz)
         );
     }
 

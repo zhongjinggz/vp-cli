@@ -27,7 +27,7 @@ public abstract class PumlElementExporter {
     }
 
     // TODO make it static ?
-    protected String getPumlAlias(IModelElement vpElement) {
+    protected String pumlAlias(IModelElement vpElement) {
         List<String> segments = new ArrayList<>();
         collectQualifiedNameSegments(segments, vpElement);
         return buildAliasFromSegments(segments.toArray(new String[0]));

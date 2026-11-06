@@ -61,23 +61,9 @@ public class PumlClassExporter extends PumlBlockExporter {
         return getStereotypeNames(clazz).contains(stereotypeName);
     }
 
-    /**
-     * 步 #22：泛型类。在块声明尾部追加模板参数后缀 `<T, U>`。
-     * beginBlock 顺序为 `blockType "name" as alias suffix {`，
-     * 故把泛型拼进 suffix 首部，紧跟 alias 之后。
-     */
+    // 泛型类追加模板参数后缀 `<T, U>`。
     @Override
-    public String keywordAndStereotypes(IModelElement vpElement) {
-        String templateParams = templateParams(vpElement);
-        String stereotypes = getStereotypesText(vpElement);
-        String suffix = stereotypes;
-        if (!templateParams.isEmpty()) {
-            suffix = templateParams + (suffix.isEmpty() ? "" : " " + suffix);
-        }
-        return suffix;
-    }
-
-    private String templateParams(IModelElement vpElement) {
+    protected String templateParams(IModelElement vpElement) {
         if (!(vpElement instanceof IClass)) {
             return "";
         }

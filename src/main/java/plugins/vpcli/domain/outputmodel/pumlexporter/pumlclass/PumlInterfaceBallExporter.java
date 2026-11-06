@@ -1,7 +1,6 @@
 package plugins.vpcli.domain.outputmodel.pumlexporter.pumlclass;
 
 import com.vp.plugin.diagram.IDiagramElement;
-import com.vp.plugin.diagram.IShapeTypeConstants;
 import com.vp.plugin.model.IModelElement;
 
 import jakarta.inject.Inject;
@@ -33,7 +32,7 @@ public class PumlInterfaceBallExporter extends PumlElementExporter {
             "circle " +
                 Strings.doubleQuote(vpElement.getName()) +
                 " as " +
-                getPumlAlias(vpElement)
+                pumlAlias(vpElement)
         );
     }
 }

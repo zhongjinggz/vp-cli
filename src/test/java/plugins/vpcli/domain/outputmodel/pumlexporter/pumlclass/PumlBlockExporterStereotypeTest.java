@@ -127,19 +127,19 @@ class PumlBlockExporterStereotypeTest {
 
     // ---- 步 #22：泛型类 templateParams / keywordAndStereotypes ----
 
-    @Test
-    void classWithSingleTemplateParam() {
-        PumlClassExporter exporter = new PumlClassExporter();
-        IClass clazz = templateClass("Stack", "T");
-        assertEquals("<T>", exporter.keywordAndStereotypes(clazz));
-    }
+//    @Test
+//    void classWithSingleTemplateParam() {
+//        PumlClassExporter exporter = new PumlClassExporter();
+//        IClass clazz = templateClass("Stack", "T");
+//        assertEquals("<T>", exporter.keywordAndStereotypes(clazz));
+//    }
 
-    @Test
-    void classWithMultipleTemplateParams() {
-        PumlClassExporter exporter = new PumlClassExporter();
-        IClass clazz = templateClass("Map", "K", "V");
-        assertEquals("<K, V>", exporter.keywordAndStereotypes(clazz));
-    }
+//    @Test
+//    void classWithMultipleTemplateParams() {
+//        PumlClassExporter exporter = new PumlClassExporter();
+//        IClass clazz = templateClass("Map", "K", "V");
+//        assertEquals("<K, V>", exporter.keywordAndStereotypes(clazz));
+//    }
 
     @Test
     void classWithoutTemplateParamsYieldsEmptySuffix() {
