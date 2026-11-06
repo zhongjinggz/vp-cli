@@ -2,15 +2,16 @@ package plugins.vpcli.domain.outputmodel.pumlexporter;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 
+import com.vp.plugin.diagram.IDiagramElement;
+import com.vp.plugin.diagram.IShapeTypeConstants;
+import com.vp.plugin.diagram.shape.IClassUIModel;
 import jakarta.inject.Inject;
 import jakarta.inject.Singleton;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import plugins.vpcli.domain.outputmodel.pumlexporter.pumlclass.PumlAssociationClassExporter;
-import plugins.vpcli.domain.outputmodel.pumlexporter.pumlclass.PumlAssociationExporter;
-import plugins.vpcli.domain.outputmodel.pumlexporter.pumlclass.PumlClassExporter;
-import plugins.vpcli.domain.outputmodel.pumlexporter.pumlclass.PumlGeneralizationExporter;
+import plugins.vpcli.domain.outputmodel.pumlexporter.pumlclass.*;
 import plugins.vpcli.domain.outputmodel.pumlexporter.pumldependency.*;
 import plugins.vpcli.domain.outputmodel.pumlexporter.pumlnamespace.PumlImportExporter;
 import plugins.vpcli.domain.outputmodel.pumlexporter.pumlnamespace.PumlMergeExporter;
@@ -19,29 +20,45 @@ import plugins.vpcli.domain.outputmodel.pumlexporter.pumlnamespace.PumlPackageEx
 import plugins.vpcli.domain.outputmodel.pumlexporter.pumlnote.PumlAnchorExporter;
 import plugins.vpcli.domain.outputmodel.pumlexporter.pumlnote.PumlNoteExporter;
 import plugins.vpcli.domain.outputmodel.pumlexporter.pumlusecase.PumlUseCaseExporter;
+import plugins.vpcli.domain.vpmodel.DiagramElements;
+import plugins.vpcli.util.Strings;
+
+import static plugins.vpcli.domain.vpmodel.DiagramElements.isInterfaceBall;
 
 @Singleton
 public class PumlElementExporterRepository {
-    private static Logger log = LoggerFactory.getLogger(PumlElementExporterRepository.class);
-    private final Map<String, PumlElementExporter> shapeTypeExporters = new HashMap<>();
+    private static final Logger log = LoggerFactory.getLogger(PumlElementExporterRepository.class);
+    private final Map<String, PumlElementExporter> exporters = new HashMap<>();
     private final PumlUnimplementedExporter unimplementedExporter;
 
     @Inject
     public PumlElementExporterRepository(
+        // special
         PumlUnimplementedExporter unimplementedExporter,
-        PumlAssociationExporter associationExporter,
-        PumlAssociationClassExporter associationClassExporter,
-        PumlClassExporter classExporter,
-        PumlContainmentExporter containmentExporter,
-        PumlPackageExporter packageExporter,
-        PumlModelExporter modelExporter,
         PumlModelRelationshipContainerExporter modelRelationshipContainerExporter,
-        PumlUseCaseExporter useCaseExporter,
-        PumlDependencyExporter dependencyExporter,
-        PumlGeneralizationExporter generalizationExporter,
-        PumlRealizationExporter realizationExporter,
+
+        // note
         PumlNoteExporter noteExporter,
         PumlAnchorExporter anchorExporter,
+
+        // class
+        PumlClassExporter classExporter,
+        PumlAssociationExporter associationExporter,
+        PumlAssociationClassExporter associationClassExporter,
+        PumlGeneralizationExporter generalizationExporter,
+        PumlContainmentExporter containmentExporter,
+        PumlInterfaceBallExporter interfaceBallExporter,
+
+        // package
+        PumlPackageExporter packageExporter,
+        PumlModelExporter modelExporter,
+
+        // usecase
+        PumlUseCaseExporter useCaseExporter,
+
+        // dependency
+        PumlDependencyExporter dependencyExporter,
+        PumlRealizationExporter realizationExporter,
         PumlUsageExporter usageExporter,
         PumlBindingDependencyExporter bindingDependencyExporter,
         PumlPermissionExporter permissionExporter,
@@ -70,6 +87,7 @@ public class PumlElementExporterRepository {
         register(associationClassExporter);
         register(generalizationExporter);
         register(containmentExporter);
+        register(interfaceBallExporter); // Visual Paradigm use SHAPE_TYPE_CLASS also for interface ball, so, use pseudo shape type here.
 
         // package
         register(packageExporter);
@@ -98,21 +116,28 @@ public class PumlElementExporterRepository {
 
 
     private void register(PumlElementExporter exporter) {
-        shapeTypeExporters.put(exporter.getShapeType(), exporter); // 单一来源：@Override getShapeType()
-        exporter.setExporterRepository(this); // to findByShapeType the bi-direction dependency
+        exporters.put(exporter.getShapeType(), exporter); // 单一来源：@Override getShapeType()
+        exporter.setExporterRepository(this); // to findBy the bi-direction dependency
     }
 
 
     /**
      * （警告并跳过），与迁移前经 MyElementFactory 归一化为 UNIMPLEMENTED_ELEMENT 等价。
      */
-    public PumlElementExporter findByShapeType(String shapeType) {
-        PumlElementExporter exporter = this.shapeTypeExporters.get(shapeType);
+    public PumlElementExporter findBy(IDiagramElement vpDiagramElement) {
+        if (isInterfaceBall(vpDiagramElement)) {
+            return this.exporters.get(PumlInterfaceBallExporter.SHAPE_TYPE);
+        }
+
+        var theShapeType = vpDiagramElement.getShapeType();
+
+        PumlElementExporter exporter = this.exporters.get(theShapeType);
         if (exporter != null) {
             return exporter;
         }
 
-        log.warn("Unimplemented shape type: {}", shapeType);
+        log.warn("Unimplemented shape type: {}", theShapeType);
         return unimplementedExporter;
     }
+
 }

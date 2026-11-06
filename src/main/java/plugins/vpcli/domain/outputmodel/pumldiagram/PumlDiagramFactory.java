@@ -33,14 +33,14 @@ public class PumlDiagramFactory {
                 if (aShape.getParent() != null) {
                     continue;
                 }
-                exporterFactory.findByShapeType(aShape.getShapeType()).export(result, aShape);
+                exporterFactory.findBy(aShape).export(result, aShape);
             }
         }
 
         var connectors = vpDiagramElement.toConnectorUIModelArray();
         if (connectors != null) {
             for (var aConnector : connectors) {
-                exporterFactory.findByShapeType(aConnector.getShapeType()).export(result, aConnector);
+                exporterFactory.findBy(aConnector).export(result, aConnector);
             }
         }
 

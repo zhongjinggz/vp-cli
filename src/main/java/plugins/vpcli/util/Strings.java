@@ -12,11 +12,8 @@ public class Strings {
         return !isNotBlank(str);
     }
 
-    public static String patch(String origin, String thePatch) {
-
-        var result = origin == null ? "" : origin;
-
-        return isBlank(thePatch) ? result : result + " " + thePatch;
+    public static String doubleQuote(String str) {
+        return "\"" + normalizeEmpty(str) + "\"";
     }
 
     public static StringPatcher buildStringPatcher(String initStr) {

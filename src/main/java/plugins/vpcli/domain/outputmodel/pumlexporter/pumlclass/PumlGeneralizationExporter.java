@@ -1,5 +1,6 @@
 package plugins.vpcli.domain.outputmodel.pumlexporter.pumlclass;
 
+import com.vp.plugin.diagram.IDiagramElement;
 import com.vp.plugin.diagram.IShapeTypeConstants;
 import org.jetbrains.annotations.NotNull;
 
@@ -19,7 +20,7 @@ public class PumlGeneralizationExporter extends PumlDirectedRelationshipExporter
     }
 
     @Override
-    protected @NotNull String getArrow() {
+    protected @NotNull String getArrow(IDiagramElement vpDiagramElement) {
         return " <|-- ";
     }
 }

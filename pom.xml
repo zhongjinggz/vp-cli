@@ -149,9 +149,9 @@
         <plugins>
             <plugin>
                 <!--
-                  Pin the findByShapeType to a fixed JDK (Java 21) via Maven Toolchains.
+                  Pin the findBy to a fixed JDK (Java 21) via Maven Toolchains.
                   Mockito 5.12 / Byte Buddy 1.14 do not support Java 24+ when
-                  mocking concrete classes or using mockStatic, so the findByShapeType
+                  mocking concrete classes or using mockStatic, so the findBy
                   must not fall back to whichever JDK is on PATH by default.
                   The matching <toolchain> is declared in ~/.m2/toolchains.xml.
                 -->

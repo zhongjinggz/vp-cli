@@ -24,21 +24,28 @@ public abstract class PumlDirectedRelationshipExporter extends PumlElementExport
             toText(
                 fromAlias,
                 toAlias,
-                getStereotypesText(dependency))
+                getArrow(vpDiagramElement),
+                getStereotypesText(dependency)
+            )
         );
     }
 
-    private String toText(String fromAlias, String toAlias, String stereotypes) {
+    private String toText(
+        String fromAlias,
+        String toAlias,
+        String arrow,
+        String stereotypes
+    ) {
         StringBuilder result = new StringBuilder();
         result.append(fromAlias);
-        result.append(getArrow());
+        result.append(arrow);
         result.append(toAlias);
-        if (isNotBlank(stereotypes))  {
-           result.append(": ").append(stereotypes);
+        if (isNotBlank(stereotypes)) {
+            result.append(": ").append(stereotypes);
         }
 
         return result.toString();
     }
 
-    protected abstract String getArrow();
+    protected abstract String getArrow(IDiagramElement vpDiagramElement);
 }

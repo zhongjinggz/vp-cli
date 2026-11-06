@@ -1,6 +1,7 @@
 # 类图 Class Diagram - 进阶
 
 ## 01 限定关联 Qualified Associations
+状态：已完成
 
 ### 需求
 
@@ -57,7 +58,7 @@ PumlAssociationExporter ..> IQualifier
 **说明/边界：** 本条目仅处理导出侧 qualifier 的读取与投影；限定符属性若带类型（`IAttribute.getTypeAsString()`）当前仅展示名称，不展示类型括号内内容（与需求示例一致）。多重性/角色/聚合渲染逻辑保持 #4–#8 不动。
 
 ## 02 泛型类 Generic Class
-- 状态：待方案设计
+- 状态：已完成
 - 注：如 `class Foo<T>`
 
 ### 需求
@@ -112,6 +113,7 @@ PumlClassExporter --|> PumlElementExporter
 **说明/边界：** 本条目为待方案设计，需先以 javap 确认模板参数读取 API 再落码。仅处理类的泛型声明（类级模板参数），不处理属性/参数中引用的泛型类型（如 `push(item: T)` 中 `T` 直接按类型名原样输出，无需处理）。
 
 ## 03 关联类 Association Class
+- 状态：已完成
 
 ### 需求
 
@@ -229,7 +231,7 @@ PumlNestedClassExporter --|> PumlElementExporter
 **说明/边界：** 本条目为待编码/研究，需先确认 VP 对嵌套类的建模形态（父子形状 vs 关联线）。最终输出形式（`+--` 或 `*--`）随研究结论确定，与需求示例尽量对齐。
 
 ## 05 接口实现 Implementation (棒棒糖方式)
-- 状态：待编码
+- 状态：已完成
 ### 需求
 
 ```plantuml
@@ -242,6 +244,7 @@ circle interface2
 
 class1 -- interface1
 interface2 -- class2
+class1 --( interface2
 
 @enduml
 ```
@@ -295,6 +298,7 @@ PumlCircleExporter --|> PumlElementExporter
 **说明/边界：** 本条目为待编码，需先确认 VP 对棒棒糖接口的建模形态（独立 circle 形状 vs `<<interface>>` 类+实线）。输出朝向往 PlantUML 棒棒糖标准语法靠拢，与需求示例对齐。
 
 ## 06 多元关联 Multiple Association
+- 状态：待方案设计
 
 ### 需求
 
@@ -357,3 +361,50 @@ PumlNaryAssociationExporter --|> PumlElementExporter
 5. **集成验证。** 在 VP 中创建三元关联后导出，检查 `.puml` 出现 `diamond nary1` 与各 `X "0..*" -- nary1`；PlantUML 预览显示菱形 n-ary 关联三条实线。
 
 **说明/边界：** 本条目现无“### 方案”编号（需求紧接 #22 后），方案以“多元关联”主题编写。需先确认 VP 对 n-ary 关联的形状类型与模型接口；仅处理导出侧，导入不在本条目范围。
+
+
+## 07 同一个元素在同一张图上的多次表示
+- 状态：待方案设计
+
+### 需求
+
+```plantuml
+@startuml
+class "A" as A1 {
+   
+}
+
+class "A" as A2 {
+}
+
+class C {
+}
+
+class D {
+}
+
+A1 "0..*" -- C
+A2 "0..*" -- D
+
+
+
+
+@enduml
+```
+
+上图中，同一个 class "A" 出现了两次，用别名区分。
+
+### 方案
+#### 思路
+- 修改别名算法： 别名 := <模型元素类型>_<模型元素名称>_<模型元素ID>_<图元素ID>
+- 当同一个元素在同一张图表上显示多次时，虽然<模型元素ID>相同，但<图元素ID>不同，从而可以区分。
+- 例如：名称为 “A” 的类在同一张图上出现了两次，<模型元素ID>为“12345”, <图元素ID>分别为“abcde”和“fghij”。则 PlantUML 为：
+
+```plantuml
+@startuml
+ class "A" as class_A_12345_abcde
+ class "A" as class_A_12345_fghij
+ 
+@enduml
+```
+上图在显示时，都显示为“A”，从人的感官上是同一个类，但别名不同，因此在图中显示两次

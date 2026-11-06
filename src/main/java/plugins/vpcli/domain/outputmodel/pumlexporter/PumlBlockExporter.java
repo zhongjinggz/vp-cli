@@ -56,7 +56,7 @@ public abstract class PumlBlockExporter extends PumlElementExporter {
             IShapeUIModel shape = (IShapeUIModel) vpDiagramElement;
             for (IDiagramElement child : shape.toChildArray()) {
                 if (child.getModelElement() != null) {
-                    var exporter = exporterRepository.findByShapeType(child.getShapeType());
+                    var exporter = exporterRepository.findBy(child);
                     exporter.export(result, child);
                 }
             }

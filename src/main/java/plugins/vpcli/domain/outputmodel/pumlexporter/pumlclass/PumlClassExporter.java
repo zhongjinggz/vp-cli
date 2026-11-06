@@ -267,9 +267,6 @@ public class PumlClassExporter extends PumlBlockExporter {
         if (IOperation.SCOPE_CLASSIFIER.equals(operation.getScope())) {
             result.append("{static} ");
         }
-//        if (operation.isStatic()) {
-//            result.append("{static} ");
-//        }
     }
 
     private static void appendOperationAbstract(IOperation operation, StringBuilder result) {
@@ -302,30 +299,26 @@ public class PumlClassExporter extends PumlBlockExporter {
     }
 
     // 可见性映射：#14 —— public→+、private→-、protected→#、package→~，其余（含空/未知）→空
-    private static void appendVisibility(StringBuilder sb, String visibility) {
-        String key = visibility == null ? "" : visibility;
-        String symbol1;
-        switch (key) {
+    private static void appendVisibility(StringBuilder sb, String vpVisibility) {
+        String pumlVisibility;
+        switch (Strings.normalizeEmpty(vpVisibility)) {
             case "public":
-                symbol1 = "+";
+                pumlVisibility = "+";
                 break;
             case "private":
-                symbol1 = "-";
+                pumlVisibility = "-";
                 break;
             case "protected":
-                symbol1 = "#";
+                pumlVisibility = "#";
                 break;
             case "package":
-                symbol1 = "~";
+                pumlVisibility = "~";
                 break;
             default:
-                symbol1 = "";
+                pumlVisibility = "";
                 break;
         }
-        String symbol = symbol1;
-        if (!symbol.isEmpty()) {
-            sb.append(symbol).append(' ');
-        }
+        sb.append(pumlVisibility).append(' ');
     }
 
 }
