@@ -2,11 +2,8 @@ package plugins.vpcli.domain.outputmodel.pumlexporter;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Objects;
 
 import com.vp.plugin.diagram.IDiagramElement;
-import com.vp.plugin.diagram.IShapeTypeConstants;
-import com.vp.plugin.diagram.shape.IClassUIModel;
 import jakarta.inject.Inject;
 import jakarta.inject.Singleton;
 import org.slf4j.Logger;
@@ -20,8 +17,6 @@ import plugins.vpcli.domain.outputmodel.pumlexporter.pumlnamespace.PumlPackageEx
 import plugins.vpcli.domain.outputmodel.pumlexporter.pumlnote.PumlAnchorExporter;
 import plugins.vpcli.domain.outputmodel.pumlexporter.pumlnote.PumlNoteExporter;
 import plugins.vpcli.domain.outputmodel.pumlexporter.pumlusecase.PumlUseCaseExporter;
-import plugins.vpcli.domain.vpmodel.DiagramElements;
-import plugins.vpcli.util.Strings;
 
 import static plugins.vpcli.domain.vpmodel.DiagramElements.isInterfaceBall;
 
@@ -45,6 +40,7 @@ public class PumlElementExporterRepository {
         PumlClassExporter classExporter,
         PumlAssociationExporter associationExporter,
         PumlAssociationClassExporter associationClassExporter,
+        PumlNAryExporter naryAssociationExporter,
         PumlGeneralizationExporter generalizationExporter,
         PumlContainmentExporter containmentExporter,
         PumlInterfaceBallExporter interfaceBallExporter,
@@ -85,6 +81,7 @@ public class PumlElementExporterRepository {
         register(classExporter);
         register(associationExporter);
         register(associationClassExporter);
+        register(naryAssociationExporter);
         register(generalizationExporter);
         register(containmentExporter);
         register(interfaceBallExporter); // Visual Paradigm use SHAPE_TYPE_CLASS also for interface ball, so, use pseudo shape type here.

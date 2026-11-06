@@ -298,7 +298,7 @@ PumlCircleExporter --|> PumlElementExporter
 **说明/边界：** 本条目为待编码，需先确认 VP 对棒棒糖接口的建模形态（独立 circle 形状 vs `<<interface>>` 类+实线）。输出朝向往 PlantUML 棒棒糖标准语法靠拢，与需求示例对齐。
 
 ## 06 多元关联 Multiple Association
-- 状态：待方案设计
+- 状态：已完成
 
 ### 需求
 
@@ -350,7 +350,7 @@ PumlNaryAssociationExporter --|> PumlElementExporter
 1. **研究：确认 n-ary 关联形状类型与接口。** javap 检查 `IShapeTypeConstants` 是否有 `SHAPE_TYPE_NARY_ASSOCIATION`（或等价）；确认模型接口（`INaryAssociation`）的 from/to 读取方式（中心与各端）。
    - 验证：javap 输出确认常量与方法签名。
 
-2. **渲染菱形（新增 `PumlNaryAssociationExporter`）。** `getShapeType()` 返回对应常量；`export` 输出 `diamond <别名>`。
+2. **渲染菱形（新增 `PumlNAryExporter`）。** `getShapeType()` 返回对应常量；`export` 输出 `diamond <别名>`。
    - 验证：单测桩，断言输出 `diamond nary1`。
 
 3. **渲染连线（关联端到菱形）。** 复用/扩展 `PumlAssociationExporter` 使每个参与类 `A "0..*" -- nary1`。需把 n-ary 关联的各参与端渲染为带多重性的实线连到菱形别名。
