@@ -13,6 +13,7 @@ import javax.swing.*;
 // - export：将图表放入 markdown
 // - 翻译和修改 README
 
+// - 重构：抽取静态方法进入 DiagramElements / ModelElements
 // - 清理测试
 // - ViElementFactory : use Abstract Factory pattern
 
