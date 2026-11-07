@@ -192,9 +192,98 @@ class PumlClassExporterTest {
     }
 
     @Test
+    void enumLiteralsWithSeparatorAfterAttributes() {
+        // 属性区已写 → 枚举区前补 `--` 分隔（L144 走 true）
+        IClass clazz = clazzWithLists(
+            java.util.Arrays.asList(attr("a", "public", null).build()),
+            Collections.emptyList(),
+            java.util.Arrays.asList(literal("A")));
+        assertEquals("+ a\n--\nA", body(clazz));
+    }
+
+    @Test
+    void operationsWithSeparatorAfterAttributesSkipOnSubsequentOps() {
+        // 覆盖 L144 的 !wroteSeparator false 分支：首个操作写分隔符后，
+        // 第二个操作不再重复写 `--`。
+        IClass clazz = clazzWithLists(
+            java.util.Arrays.asList(attr("a", "public", null).build()),
+            java.util.Arrays.asList(op("m1").build(), op("m2").build()),
+            Collections.emptyList());
+        assertEquals("+ a\n--\n+ m1()\n+ m2()", body(clazz));
+    }
+
+    @Test
+    void exportBlockBodyThrowsWhenModelIsNull() {
+        // L110-111：vpElement == null → BugException
+        IDiagramElement e = mock(IDiagramElement.class);
+        when(e.getModelElement()).thenReturn(null);
+        PumlDiagram diagram = new PumlDiagram("d");
+        assertThrows(Exception.class,
+            () -> exporter.exportBlockBody(diagram, e));
+    }
+
+    @Test
+    void exportBlockBodyThrowsWhenModelIsNotAClass() {
+        // L113-114：非 IClass → BugException
+        IModelElement m = mock(IModelElement.class);
+        IDiagramElement e = mock(IDiagramElement.class);
+        when(e.getModelElement()).thenReturn(m);
+        PumlDiagram diagram = new PumlDiagram("d");
+        assertThrows(Exception.class,
+            () -> exporter.exportBlockBody(diagram, e));
+    }
+
+    @Test
+    void parameterWithEmptyTypeAndEmptyDefaultValue() {
+        // L274/L281 的 isEmpty 分支：type="" 与 defaultValue="" 不追加
+        IOperation op = op("m").param(prm("a", "").defaultValue("").build()).build();
+        IClass clazz = clazzWithOperations(op);
+        assertEquals("+ m(a)", body(clazz));
+    }
+
+    @Test
     void nullOrEmptyEnumLiteralNamesAreSkipped() {
         IClass clazz = clazzWithEnumLiterals(literal("A"), literal(null), literal(""));
         assertEquals("A", body(clazz));
+    }
+
+    // ---------- templateParams branches (L67-91) ----------
+
+    @Test
+    void templateParamsReturnsEmptyForNonClassElement() {
+        IModelElement m = mock(IModelElement.class);
+        assertEquals("", exporter.templateParams(m));
+    }
+
+    @Test
+    void templateParamsNullParamNameIsSkippedInHeader() {
+        // 模板参数 name 空/null → continue 分支（L79-80）
+        ITemplateParameter empty = mock(ITemplateParameter.class);
+        when(empty.getName()).thenReturn("");
+        ITemplateParameter named = mock(ITemplateParameter.class);
+        when(named.getName()).thenReturn("T");
+        IClass clazz = clazzWithStereotypes();
+        when(clazz.toTemplateParameterArray()).thenReturn(new ITemplateParameter[]{empty, named});
+        assertEquals("<T>", exporter.templateParams(clazz));
+    }
+
+    @Test
+    void templateParamsReturnsEmptyForAllEmptyNames() {
+        // names 空 → 不追加 <…>（L87 false 分支，并有前置 return 已覆盖 branches）
+        ITemplateParameter empty = mock(ITemplateParameter.class);
+        when(empty.getName()).thenReturn("");
+        ITemplateParameter empty2 = mock(ITemplateParameter.class);
+        when(empty2.getName()).thenReturn(null);
+        IClass clazz = clazzWithStereotypes();
+        when(clazz.toTemplateParameterArray()).thenReturn(new ITemplateParameter[]{empty, empty2});
+        assertEquals("", exporter.templateParams(clazz));
+    }
+
+    @Test
+    void templateParamsReturnsEmptyForNullParamArray() {
+        IClass clazz = clazzWithStereotypes();
+        when(clazz.toTemplateParameterArray()).thenReturn(null);
+        assertEquals("", exporter.templateParams(clazz));
     }
 
     // ---------- helpers ----------

@@ -7,7 +7,6 @@ import com.vp.plugin.action.VPActionController;
 import javax.swing.*;
 
 // DOING
-// - export: 重写生成图表的程序 - Class Diagram
 
 // TODO
 // - 翻译和修改 README
@@ -30,6 +29,7 @@ import javax.swing.*;
 // - 补充建立目录时的各种异常情况
 
 // DONE
+// - export: 重写生成图表的程序 - Class Diagram
 // - export: 重写生成图表的程序 - Class 属性和操作
 // - export: 重写生成图表的程序 - Association
 // - export: 重写生成图表的程序 - Dependency(various kinds of dependency)

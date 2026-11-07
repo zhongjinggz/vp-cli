@@ -103,4 +103,29 @@ class PumlElementAliasTest {
         assertEquals("Class__a_b_c_d__x_y",
             PumlElementExporter.pumlAlias(element(m, null)));
     }
+
+    @Test
+    void nullModelElementOmitsAllModelSegments() {
+        // modelElement == null → type/name/modelId 三段都走 null 分支；仅保留图ID段
+        IDiagramElement e = mock(IDiagramElement.class);
+        when(e.getModelElement()).thenReturn(null);
+        when(e.getId()).thenReturn("diag");
+        assertEquals("diag", PumlElementExporter.pumlAlias(e));
+    }
+
+    @Test
+    void nullModelElementAndNullDiagramIdYieldEmptyAlias() {
+        IDiagramElement e = mock(IDiagramElement.class);
+        when(e.getModelElement()).thenReturn(null);
+        when(e.getId()).thenReturn(null);
+        assertEquals("", PumlElementExporter.pumlAlias(e));
+    }
+
+    @Test
+    void emptyDiagramElementIdOmitsDiagramSegment() {
+        // L50 的 !isEmpty() false 分支：图ID为空串 → 省略图ID段
+        IModelElement clazz = namedElement("Class", "A", "12345");
+        assertEquals("Class__A__12345",
+            PumlElementExporter.pumlAlias(element(clazz, "")));
+    }
 }

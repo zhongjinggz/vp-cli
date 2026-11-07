@@ -78,6 +78,21 @@ class PumlNoteAnchorExporterTest {
             () -> "空正文注释不应输出。实际输出：\n" + diagram);
     }
 
+    @Test
+    void nullNoteDescriptionIsSkipped() {
+        // 覆盖 description == null 分支
+        PumlDiagram diagram = new PumlDiagram("d");
+        INOTE note = mock(INOTE.class);
+        when(note.getName()).thenReturn("N4");
+        when(note.getId()).thenReturn("note-id");
+        when(note.getDescription()).thenReturn(null);
+
+        new PumlNoteExporter().export(diagram, elem(note));
+
+        assertTrue(!diagram.toString().contains("note "),
+            () -> "null 正文注释不应输出。实际输出：\n" + diagram);
+    }
+
     // ---- 注释连线 Anchor ----
 
     @Test
