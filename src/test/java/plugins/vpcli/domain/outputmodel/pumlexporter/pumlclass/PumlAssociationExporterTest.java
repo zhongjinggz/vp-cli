@@ -4,7 +4,11 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
+import com.vp.plugin.diagram.IConnectorUIModel;
 import com.vp.plugin.diagram.IDiagramElement;
+import com.vp.plugin.diagram.IShapeTypeConstants;
+import com.vp.plugin.diagram.IShapeUIModel;
+import com.vp.plugin.diagram.shape.IQualifierUIModel;
 import com.vp.plugin.model.IAssociation;
 import com.vp.plugin.model.IAssociationEnd;
 import com.vp.plugin.model.IAttribute;
@@ -128,6 +132,101 @@ class PumlAssociationExporterTest {
         assertTrue(renders(exporter, assoc, "A <--> B"));
     }
 
+    @Test
+    void connectorEndpointsTakeAliasFromShapes() {
+        // 连接线视图端点存在且非 qualifier：别名使用 shape 的模型元素 + 图元素ID。
+        IAssociation assoc = association("", IAssociation.DIRECTION_FROM_TO,
+            end("", null, null, IAssociationEnd.NAVIGABLE_UNSPECIFIED, "A"),
+            end("", null, null, IAssociationEnd.NAVIGABLE_UNSPECIFIED, "B"));
+        IShapeUIModel fromShape = shape(model("Class", "A", "m1"), "s1",
+            IShapeTypeConstants.SHAPE_TYPE_CLASS);
+        IShapeUIModel toShape = shape(model("Class", "B", "m2"), "s2",
+            IShapeTypeConstants.SHAPE_TYPE_CLASS);
+
+        assertTrue(rendersWithConnector(exporter, assoc, fromShape, toShape,
+            "Class__A__m1__s1 -- Class__B__m2__s2"));
+    }
+
+    @Test
+    void connectorQualifierEndpointsUnwrapToParent() {
+        // qualifier shape 应上溯取其 parent 作为端点。
+        IAssociation assoc = association("", IAssociation.DIRECTION_FROM_TO,
+            end("", null, null, IAssociationEnd.NAVIGABLE_UNSPECIFIED, "A"),
+            end("", null, null, IAssociationEnd.NAVIGABLE_UNSPECIFIED, "B"));
+        IShapeUIModel fromParent = shape(model("Class", "A", "m1"), "s1",
+            IShapeTypeConstants.SHAPE_TYPE_CLASS);
+        IShapeUIModel toParent = shape(model("Class", "B", "m2"), "s2",
+            IShapeTypeConstants.SHAPE_TYPE_CLASS);
+        IQualifierUIModel fromQualifierUi = qualifierShape(fromParent);
+        IQualifierUIModel toQualifierUi = qualifierShape(toParent);
+
+        assertTrue(rendersWithConnector(exporter, assoc, fromQualifierUi, toQualifierUi,
+            "Class__A__m1__s1 -- Class__B__m2__s2"));
+    }
+
+    @Test
+    void inlineSharedAggregationRendersHollowDiamond() {
+        // shared 聚合（from 端）→ o。
+        IAssociation assoc = association("", IAssociation.DIRECTION_FROM_TO,
+            end("", null, IAssociationEnd.AGGREGATION_KIND_shared, IAssociationEnd.NAVIGABLE_UNSPECIFIED, "A"),
+            end("", null, null, IAssociationEnd.NAVIGABLE_UNSPECIFIED, "B"));
+
+        assertTrue(renders(exporter, assoc, "A o-- B"));
+    }
+
+    @Test
+    void nonNavigableEndRendersCross() {
+        // 非导航端（from 端）→ x。
+        IAssociation assoc = association("", IAssociation.DIRECTION_FROM_TO,
+            end("", null, null, IAssociationEnd.NAVIGABLE_NON_NAVIGABLE, "A"),
+            end("", null, null, IAssociationEnd.NAVIGABLE_UNSPECIFIED, "B"));
+
+        assertTrue(renders(exporter, assoc, "A x-- B"));
+    }
+
+    @Test
+    void connectorWithNullFromShapeFallsBackToModelAlias() {
+        // from 端连接线存在但视图缺 shape：别名退回按模型定位（模型仅名称 → "A"）。
+        IAssociation assoc = association("", IAssociation.DIRECTION_FROM_TO,
+            end("", null, null, IAssociationEnd.NAVIGABLE_UNSPECIFIED, "A"),
+            end("", null, null, IAssociationEnd.NAVIGABLE_UNSPECIFIED, "B"));
+        IShapeUIModel toShape = shape(model("Class", "B", "m2"), "s2");
+        IConnectorUIModel connector = connectorWithShapes(assoc, null, toShape);
+
+        PumlDiagram diagram = new PumlDiagram("d");
+        exporter.export(diagram, connector);
+        assertTrue(diagram.toString().contains("A -- Class__B__m2__s2"));
+    }
+
+    @Test
+    void connectorWithNullToShapeFallsBackToModelAlias() {
+        // to 端连接线存在但视图缺 shape：别名退回按模型定位（模型仅名称 → "B"）。
+        IAssociation assoc = association("", IAssociation.DIRECTION_FROM_TO,
+            end("", null, null, IAssociationEnd.NAVIGABLE_UNSPECIFIED, "A"),
+            end("", null, null, IAssociationEnd.NAVIGABLE_UNSPECIFIED, "B"));
+        IShapeUIModel fromShape = shape(model("Class", "A", "m1"), "s1");
+        IConnectorUIModel connector = connectorWithShapes(assoc, fromShape, null);
+
+        PumlDiagram diagram = new PumlDiagram("d");
+        exporter.export(diagram, connector);
+        assertTrue(diagram.toString().contains("Class__A__m1__s1 -- B"));
+    }
+
+    @Test
+    void connectorWithNullShapeModelFallsBackToModelAlias() {
+        // from 端 shape 存在但其模型元素为 null：退回按模型定位（模型仅名称 → "A"）。
+        IAssociation assoc = association("", IAssociation.DIRECTION_FROM_TO,
+            end("", null, null, IAssociationEnd.NAVIGABLE_UNSPECIFIED, "A"),
+            end("", null, null, IAssociationEnd.NAVIGABLE_UNSPECIFIED, "B"));
+        IShapeUIModel fromShape = shape(null, "s1");
+        IShapeUIModel toShape = shape(model("Class", "B", "m2"), "s2");
+        IConnectorUIModel connector = connectorWithShapes(assoc, fromShape, toShape);
+
+        PumlDiagram diagram = new PumlDiagram("d");
+        exporter.export(diagram, connector);
+        assertTrue(diagram.toString().contains("A -- Class__B__m2__s2"));
+    }
+
     // ---------- helpers ----------
 
     private static boolean renders(PumlAssociationExporter exporter, IAssociation assoc,
@@ -135,6 +234,60 @@ class PumlAssociationExporterTest {
         PumlDiagram diagram = new PumlDiagram("d");
         exporter.export(diagram, elementOf(assoc));
         return diagram.toString().contains(expectedEdge);
+    }
+
+    private static boolean rendersWithConnector(PumlAssociationExporter exporter, IAssociation assoc,
+        IShapeUIModel fromShape, IShapeUIModel toShape, String expectedEdge) {
+        PumlDiagram diagram = new PumlDiagram("d");
+        exporter.export(diagram, connectorElementOf(assoc, fromShape, toShape));
+        return diagram.toString().contains(expectedEdge);
+    }
+
+    private static IConnectorUIModel connectorElementOf(IAssociation assoc,
+        IShapeUIModel fromShape, IShapeUIModel toShape) {
+        IConnectorUIModel e = mock(IConnectorUIModel.class);
+        when(e.getModelElement()).thenReturn(assoc);
+        when(e.getFromShape()).thenReturn(fromShape);
+        when(e.getToShape()).thenReturn(toShape);
+        return e;
+    }
+
+    private static IConnectorUIModel connectorWithShapes(IAssociation assoc,
+        IShapeUIModel fromShape, IShapeUIModel toShape) {
+        IConnectorUIModel e = mock(IConnectorUIModel.class);
+        when(e.getModelElement()).thenReturn(assoc);
+        when(e.getFromShape()).thenReturn(fromShape);
+        when(e.getToShape()).thenReturn(toShape);
+        return e;
+    }
+
+    private static IShapeUIModel shape(IModelElement model, String id, String shapeType) {
+        IShapeUIModel s = mock(IShapeUIModel.class);
+        when(s.getModelElement()).thenReturn(model);
+        when(s.getId()).thenReturn(id);
+        when(s.getShapeType()).thenReturn(shapeType);
+        return s;
+    }
+
+    private static IShapeUIModel shape(IModelElement model, String id) {
+        return shape(model, id, IShapeTypeConstants.SHAPE_TYPE_CLASS);
+    }
+
+    private static IQualifierUIModel qualifierShape(IShapeUIModel parent) {
+        IQualifierUIModel q = mock(IQualifierUIModel.class);
+        when(q.getShapeType()).thenReturn(IShapeTypeConstants.SHAPE_TYPE_QUALIFIER);
+        // 外层守卫要求 shape 的模型元素非空；其 parent 提供真实端点。
+        when(q.getModelElement()).thenReturn(mock(IModelElement.class));
+        when(q.getParent()).thenReturn(parent);
+        return q;
+    }
+
+    private static IModelElement model(String type, String name, String id) {
+        IModelElement m = mock(IModelElement.class);
+        when(m.getModelType()).thenReturn(type);
+        when(m.getName()).thenReturn(name);
+        when(m.getId()).thenReturn(id);
+        return m;
     }
 
     private static IDiagramElement elementOf(IAssociation assoc) {
