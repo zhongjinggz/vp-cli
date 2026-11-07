@@ -1,13 +1,13 @@
 <plugin
-	id="plugins.vpcli"
+	id="vpcli"
 	name="VP CLI"
 	description="CLI for Visual Paradigm"
 	provider="Zhong Jing"
-	class="plugins.vpcli.VPCLI"
+	class="vpcli.plugin.VPCLI"
 	version="1.0.0">
         
 	<actionSets>
-		<actionSet id="plugins.vpcli.actionset">
+		<actionSet id="vpcli.actionset">
 			<action
 					id="VPCLI-Help"
 					actionType="generalAction"
@@ -17,7 +17,7 @@
 					icon="icons/vp_cli.png"
 					ribbonPath="Help/Update">
 				<actionController
-						class="plugins.vpcli.drivingadapter.HelpController"/>
+						class="vpcli.plugin.drivingadapter.HelpController"/>
 			</action>
 		</actionSet>
 	</actionSets>

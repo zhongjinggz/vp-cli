@@ -117,7 +117,7 @@ def run_vp_plugin(params: CLIParams):
         "-Dvpcli.log.profile=prod",
         "-cp", ".:{0}/lib/*:{0}/ormlib/*".format(VP_APP),
         "com.vp.cmd.Plugin",
-        "-pluginid", "plugins.vpcli",
+        "-pluginid", "vpcli",
         "-project", project,
         "-pluginargs",
         "-action", params.action,

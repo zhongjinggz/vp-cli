@@ -400,7 +400,7 @@
   验证：`rg`/`grep` 确认 `src` 下无 `import plugins.vpcli.application.writers_old` 残留；`mvn test`。
 
 - **步 D2 — 清理 `MyComponent` 的 3 个 `myuml_old` import。**
-  `src/main/java/plugins/vpcli/domain/myuml/mycomponent/MyComponent.java` 第 4-6 行引用了
+  `../../src/main/java/vpcli` 第 4-6 行引用了
   `MyAttribute_old`、`MyOperation_old`、`MyArtifact_old`（已在 myuml_old 包内）。
   需看其字段实际类型：若这些字段本就意在持 VP 侧模型的新类型，则改为 `myuml` 对应新类型
   （`MyAttribute`/`MyOperation`/`MyArtifact`）。
