@@ -26,7 +26,7 @@ public class PumlNAryExporter extends PumlElementExporter {
     public void export(PumlDiagram result, IDiagramElement vpDiagramElement) {
 
         result.writeText(
-            "diamond " + pumlAlias(vpDiagramElement.getModelElement())
+            "diamond " + pumlAlias(vpDiagramElement)
         );
     }
 

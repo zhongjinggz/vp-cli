@@ -1,5 +1,6 @@
 package plugins.vpcli.domain.outputmodel.pumlexporter.pumlnote;
 
+import com.vp.plugin.diagram.IConnectorUIModel;
 import com.vp.plugin.diagram.IDiagramElement;
 import com.vp.plugin.diagram.IShapeTypeConstants;
 import com.vp.plugin.model.IAnchor;
@@ -27,8 +28,22 @@ public class PumlAnchorExporter extends PumlElementExporter {
     public void export(PumlDiagram result, IDiagramElement vpDiagramElement) {
         IAnchor anchor = (IAnchor) vpDiagramElement.getModelElement();
 
-        String fromAlias = pumlAlias(anchor.getFrom());
-        String toAlias = pumlAlias(anchor.getTo());
+        String fromAlias;
+        String toAlias;
+        if (vpDiagramElement instanceof IConnectorUIModel) {
+            IConnectorUIModel connector = (IConnectorUIModel) vpDiagramElement;
+            fromAlias = pumlAlias(
+                connector.getFromShape().getModelElement(),
+                connector.getFromShape().getId()
+            );
+            toAlias = pumlAlias(
+                connector.getToShape().getModelElement(),
+                connector.getToShape().getId()
+            );
+        } else {
+            fromAlias = pumlAlias(anchor.getFrom(), null);
+            toAlias = pumlAlias(anchor.getTo(), null);
+        }
 
         result.writeText(formatAnchor(fromAlias, toAlias));
     }

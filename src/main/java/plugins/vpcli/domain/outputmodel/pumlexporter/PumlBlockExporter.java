@@ -14,21 +14,20 @@ public abstract class PumlBlockExporter extends PumlElementExporter {
 
     @Override
     public void export(PumlDiagram result, IDiagramElement vpDiagramElement) {
-        IModelElement vpElement = vpDiagramElement.getModelElement();
-
         // example: class "abc" as package1_abc <<stereotype1>> <<stereotype2>>
-        result.beginBlock(buildHeader(vpElement));
+        result.beginBlock(buildHeader(vpDiagramElement));
 
         exportBlockBody(result, vpDiagramElement);
 
         result.endBlock();
     }
 
-    protected String buildHeader(IModelElement vpElement) {
+    protected String buildHeader(IDiagramElement vpDiagramElement) {
+        IModelElement vpElement = vpDiagramElement.getModelElement();
         return buildStringPatcher(getBlockType(vpElement))
             .patch("\"" + vpElement.getName() + "\"")
             .patch("as")
-            .patch(pumlAlias(vpElement))
+            .patch(pumlAlias(vpDiagramElement))
             .patch(templateParams(vpElement))
             .patch(keywordAndStereotypes(vpElement))
             .toString();

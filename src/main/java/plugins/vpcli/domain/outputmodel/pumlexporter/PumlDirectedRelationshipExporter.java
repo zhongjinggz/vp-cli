@@ -1,5 +1,6 @@
 package plugins.vpcli.domain.outputmodel.pumlexporter;
 
+import com.vp.plugin.diagram.IConnectorUIModel;
 import com.vp.plugin.diagram.IDiagramElement;
 import com.vp.plugin.model.IRelationship;
 import plugins.vpcli.domain.outputmodel.pumldiagram.PumlDiagram;
@@ -17,8 +18,22 @@ public abstract class PumlDirectedRelationshipExporter extends PumlElementExport
     public void export(PumlDiagram result, IDiagramElement vpDiagramElement) {
         IRelationship dependency = (IRelationship) vpDiagramElement.getModelElement();
 
-        String fromAlias = pumlAlias(dependency.getFrom());
-        String toAlias = pumlAlias(dependency.getTo());
+        String fromAlias;
+        String toAlias;
+        if (vpDiagramElement instanceof IConnectorUIModel) {
+            IConnectorUIModel connector = (IConnectorUIModel) vpDiagramElement;
+            fromAlias = pumlAlias(
+                connector.getFromShape().getModelElement(),
+                connector.getFromShape().getId()
+            );
+            toAlias = pumlAlias(
+                connector.getToShape().getModelElement(),
+                connector.getToShape().getId()
+            );
+        } else {
+            fromAlias = pumlAlias(dependency.getFrom(), null);
+            toAlias = pumlAlias(dependency.getTo(), null);
+        }
 
         result.writeText(
             toText(

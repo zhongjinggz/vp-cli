@@ -3,12 +3,16 @@ package plugins.vpcli.domain.outputmodel.pumlexporter.pumlclass;
 import com.vp.plugin.diagram.IConnectorUIModel;
 import com.vp.plugin.diagram.IDiagramElement;
 import com.vp.plugin.diagram.IShapeTypeConstants;
+import com.vp.plugin.diagram.IShapeUIModel;
+import com.vp.plugin.diagram.connector.IAssociationClassUIModel;
 import com.vp.plugin.model.IAssociation;
 import com.vp.plugin.model.IAssociationClass;
 import com.vp.plugin.model.IClass;
 import com.vp.plugin.model.IModelElement;
 import jakarta.inject.Inject;
 import jakarta.inject.Singleton;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import plugins.vpcli.domain.outputmodel.pumldiagram.PumlDiagram;
 import plugins.vpcli.domain.outputmodel.pumlexporter.PumlElementExporter;
 
@@ -16,6 +20,7 @@ import plugins.vpcli.domain.outputmodel.pumlexporter.PumlElementExporter;
 // 其两端分别是「关联 IAssociation（含两个被关联类）」与「关联类 IClass」。
 @Singleton
 public class PumlAssociationClassExporter extends PumlElementExporter {
+    private static final Logger log = LoggerFactory.getLogger(PumlAssociationClassExporter.class);
 
     @Inject
     public PumlAssociationClassExporter() {
@@ -28,33 +33,15 @@ public class PumlAssociationClassExporter extends PumlElementExporter {
 
     @Override
     public void export(PumlDiagram result, IDiagramElement vpDiagramElement) {
-        IConnectorUIModel connector = (IConnectorUIModel) vpDiagramElement;
-        IModelElement model = connector.getModelElement();
-        if (!(model instanceof IAssociationClass)) {
-            return;
-        }
+        var associationClassConnector = (IAssociationClassUIModel) vpDiagramElement;
+        var associationConnector = associationClassConnector.getFromConnector();
+        var associationClassShape = associationClassConnector.getToShape();
+        var associationFromShape = associationConnector.getFromShape();
+        var associationToShape = associationConnector.getToShape();
 
-        IAssociationClass associationClass = (IAssociationClass) model;
-        IModelElement from = associationClass.getFrom();
-        IModelElement to = associationClass.getTo();
-
-        IAssociation association;
-        IClass clazz;
-        if (from instanceof IAssociation) {
-            association = (IAssociation) from;
-            clazz = (IClass) to;
-        } else {
-            association = (IAssociation) to;
-            clazz = (IClass) from;
-        }
-
-        IModelElement participant1 = association.getFromEnd().getModelElement();
-        IModelElement participant2 = association.getToEnd().getModelElement();
-
-        result.writeText(
-            "(" + pumlAlias(participant1)
-                + ", " + pumlAlias(participant2)
-                + ") .. " + pumlAlias(clazz)
+        result.writeText("(" + pumlAlias(associationFromShape) + ", " + pumlAlias(associationToShape) + ")"
+            + " .. "
+            + pumlAlias(associationClassShape)
         );
     }
 

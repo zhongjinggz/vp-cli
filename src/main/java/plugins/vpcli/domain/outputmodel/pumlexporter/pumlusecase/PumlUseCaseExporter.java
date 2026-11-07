@@ -26,6 +26,6 @@ public class PumlUseCaseExporter extends PumlElementExporter {
     @Override
     public void export(PumlDiagram result, IDiagramElement vpDiagramElement) {
         IModelElement vpElement = vpDiagramElement.getModelElement();
-        result.writeText("usecase \"" + vpElement.getName() + "\" as " + pumlAlias(vpElement));
+        result.writeText("usecase \"" + vpElement.getName() + "\" as " + pumlAlias(vpDiagramElement));
     }
 }

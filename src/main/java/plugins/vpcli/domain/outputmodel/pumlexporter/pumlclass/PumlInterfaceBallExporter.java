@@ -32,7 +32,7 @@ public class PumlInterfaceBallExporter extends PumlElementExporter {
             "circle " +
                 Strings.doubleQuote(vpElement.getName()) +
                 " as " +
-                pumlAlias(vpElement)
+                pumlAlias(vpDiagramElement)
         );
     }
 }

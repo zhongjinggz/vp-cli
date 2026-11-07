@@ -26,25 +26,36 @@ public abstract class PumlElementExporter {
     public void export(PumlDiagram result, IDiagramElement vpDiagramElement) {
     }
 
-    // TODO make it static ?
-    protected String pumlAlias(IModelElement vpElement) {
-        List<String> segments = new ArrayList<>();
-        collectQualifiedNameSegments(segments, vpElement);
-        return buildAliasFromSegments(segments.toArray(new String[0]));
+    // 块状声明入口：模型 + 图元素 ID。
+    protected String pumlAlias(IDiagramElement vpDiagramElement) {
+        return buildAlias(vpDiagramElement.getModelElement(), vpDiagramElement.getId());
     }
 
-    private static void collectQualifiedNameSegments(List<String> segments, IModelElement element) {
-        if (element == null) {
-            return;
+    // 关系端入口：由调用方从 shape 传入模型与图元素 ID。
+    protected String pumlAlias(IModelElement modelElement, String diagramElementId) {
+        return buildAlias(modelElement, diagramElementId);
+    }
+
+    // 别名 := <类型>__<名称>__<模型ID>__<图ID>，各段以 __ 分隔。
+    // 无名元素忽略名称段；图元素 ID 为 null 时省略图ID段。
+    public static String buildAlias(IModelElement model, String diagramElementId) {
+        List<String> segments = new ArrayList<>();
+        String type = model == null ? null : model.getModelType();
+        if (type != null && !type.isEmpty()) {
+            segments.add(type);
         }
-        collectQualifiedNameSegments(segments, element.getParent());
-        String name = element.getName();
-        if (name == null || name.isEmpty()) {
-            name = element.getId();
-        }
+        String name = model == null ? null : model.getName();
         if (name != null && !name.isEmpty()) {
             segments.add(name);
         }
+        String modelId = model == null ? null : model.getId();
+        if (modelId != null && !modelId.isEmpty()) {
+            segments.add(modelId);
+        }
+        if (diagramElementId != null && !diagramElementId.isEmpty()) {
+            segments.add(diagramElementId);
+        }
+        return buildAliasFromSegments(segments.toArray(new String[0]));
     }
 
     private static String buildAliasFromSegments(String[] segments) {
