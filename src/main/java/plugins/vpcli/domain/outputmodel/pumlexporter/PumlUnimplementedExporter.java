@@ -7,7 +7,6 @@ import jakarta.inject.Singleton;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import plugins.vpcli.domain.outputmodel.pumldiagram.PumlDiagram;
-import plugins.vpcli.util.Strings;
 
 import static plugins.vpcli.util.Strings.normalizeNull;
 

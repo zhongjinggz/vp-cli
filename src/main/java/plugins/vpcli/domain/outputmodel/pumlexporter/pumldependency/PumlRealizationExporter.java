@@ -33,9 +33,7 @@ public class PumlRealizationExporter extends PumlDependencyExporter {
     private static boolean isRealizingInterfaceBall(IDiagramElement vpDiagramElement) {
         if (vpDiagramElement instanceof IConnectorUIModel) {
             var connector = (IConnectorUIModel) vpDiagramElement;
-            if (DiagramElements.isInterfaceBall(connector.getFromShape())) {
-                return true;
-            }
+            return DiagramElements.isInterfaceBall(connector.getFromShape());
         }
         return false;
     }

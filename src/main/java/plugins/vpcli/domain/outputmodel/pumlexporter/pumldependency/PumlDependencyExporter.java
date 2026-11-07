@@ -6,6 +6,7 @@ import org.jetbrains.annotations.NotNull;
 
 import jakarta.inject.Inject;
 import jakarta.inject.Singleton;
+import org.jspecify.annotations.NonNull;
 import plugins.vpcli.domain.outputmodel.pumlexporter.PumlDirectedRelationshipExporter;
 
 @Singleton
@@ -19,7 +20,8 @@ public class PumlDependencyExporter extends PumlDirectedRelationshipExporter {
         return IShapeTypeConstants.SHAPE_TYPE_DEPENDENCY;
     }
 
-    protected  @NotNull String getArrow(IDiagramElement vpDiagramElement) {
+    @Override
+    protected  @NonNull String getArrow(IDiagramElement vpDiagramElement) {
         return " ..> ";
     }
 }

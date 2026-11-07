@@ -34,7 +34,7 @@ public class Strings {
 
 
     public static class StringPatcher {
-        private StringBuilder content;
+        private final StringBuilder content;
 
         private StringPatcher() {
             this("");

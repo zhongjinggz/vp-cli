@@ -23,7 +23,7 @@ import static plugins.vpcli.util.Strings.*;
 
 @Singleton
 public class PumlAssociationExporter extends PumlElementExporter {
-    Logger log = LoggerFactory.getLogger(PumlAssociationExporter.class);
+    private static final Logger log = LoggerFactory.getLogger(PumlAssociationExporter.class);
 
     @Inject
     public PumlAssociationExporter() {

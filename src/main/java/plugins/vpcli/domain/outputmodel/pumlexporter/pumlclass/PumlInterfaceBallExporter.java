@@ -19,7 +19,7 @@ public class PumlInterfaceBallExporter extends PumlElementExporter {
 
     @Override
     public String getShapeType() {
-        return this.SHAPE_TYPE;
+        return SHAPE_TYPE;
     }
 
     /**

@@ -118,7 +118,6 @@ public class PumlClassExporter extends PumlBlockExporter {
 
     private void exportEnumLiterals(PumlDiagram result, IClass clazz, boolean wroteAny) {
         boolean wroteSeparator = false;
-        List<String> enumerationLines = new ArrayList<>();
 
         var literals = clazz.enumerationLiteralIterator();
 
@@ -129,7 +128,6 @@ public class PumlClassExporter extends PumlBlockExporter {
             }
             IEnumerationLiteral literal = (IEnumerationLiteral) literals.next();
             if (isNotBlank(literal.getName())) {
-                enumerationLines.add(literal.getName());
                 result.writeText(literal.getName());
             }
         }

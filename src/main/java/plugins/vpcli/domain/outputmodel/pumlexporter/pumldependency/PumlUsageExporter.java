@@ -3,9 +3,9 @@ package plugins.vpcli.domain.outputmodel.pumlexporter.pumldependency;
 import com.vp.plugin.diagram.IConnectorUIModel;
 import com.vp.plugin.diagram.IDiagramElement;
 import com.vp.plugin.diagram.IShapeTypeConstants;
-import com.vp.plugin.diagram.shape.IClassUIModel;
 import jakarta.inject.Inject;
 import jakarta.inject.Singleton;
+import org.jspecify.annotations.NonNull;
 import plugins.vpcli.domain.vpmodel.DiagramElements;
 
 /**
@@ -23,7 +23,7 @@ public class PumlUsageExporter extends PumlDependencyExporter {
     }
 
     @Override
-    protected String getArrow(IDiagramElement vpDiagramElement) {
+    protected @NonNull String getArrow(IDiagramElement vpDiagramElement) {
         if (isUseInterfaceBall(vpDiagramElement)) {
             return " --( ";
         } else {
