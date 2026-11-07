@@ -10,9 +10,9 @@ import javax.swing.*;
 // - export: 重写生成图表的程序 - Class Diagram
 
 // TODO
-// - export：将图表放入 markdown
 // - 翻译和修改 README
 
+// - export：将图表放入 markdown
 // - replace logback with tinylog
 // - introduce JSpecify and NullAway
 // - 重构：抽取静态方法进入 DiagramElements / ModelElements
