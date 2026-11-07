@@ -3,7 +3,6 @@ package plugins.vpcli.domain.outputmodel.pumlexporter.pumlclass;
 import com.vp.plugin.diagram.IConnectorUIModel;
 import com.vp.plugin.diagram.IDiagramElement;
 import com.vp.plugin.diagram.IShapeTypeConstants;
-import com.vp.plugin.diagram.IShapeUIModel;
 import com.vp.plugin.diagram.shape.IQualifierUIModel;
 import com.vp.plugin.model.*;
 
@@ -16,7 +15,6 @@ import org.slf4j.LoggerFactory;
 import plugins.vpcli.domain.outputmodel.pumldiagram.PumlDiagram;
 import plugins.vpcli.domain.outputmodel.pumldiagram.PumlEdgeEnd.ShapeKind;
 import plugins.vpcli.domain.outputmodel.pumlexporter.PumlElementExporter;
-import plugins.vpcli.util.Strings;
 
 import java.util.Objects;
 
@@ -44,13 +42,13 @@ public class PumlAssociationExporter extends PumlElementExporter {
         IAssociation association = (IAssociation) vpDiagramElement.getModelElement();
 
         result.writeText(
-            Strings.buildStringPatcher(fromAlias(vpDiagramElement, association))
+            buildStringPatcher(fromAlias(vpDiagramElement))
                 .patch(fromQualifier(association))
                 .patch(fromMultiplicityAndRole(association))
                 .patch(associationLine(association))
                 .patch(ToMultiplicityAndRole(association))
                 .patch(toQualifier(association))
-                .patch(toAlias(vpDiagramElement, association))
+                .patch(toAlias(vpDiagramElement))
                 .patch(labels(association))
                 .toString()
         );
@@ -67,7 +65,7 @@ public class PumlAssociationExporter extends PumlElementExporter {
     private String getMultiplicityAndRole(IRelationshipEnd relationshipEnd) {
         IAssociationEnd associationEnd = (IAssociationEnd) relationshipEnd;
 
-        var result = Strings.buildStringPatcher()
+        var result = buildStringPatcher()
             .patch(associationEnd.getName())
             .patch(normalizeMultiplicity(associationEnd.getMultiplicity()))
             .toString();
@@ -110,12 +108,19 @@ public class PumlAssociationExporter extends PumlElementExporter {
         return result.toString();
     }
 
-    private String fromAlias(IDiagramElement vpDiagramElement, IAssociation association) {
-        IConnectorUIModel connector = vpDiagramElement instanceof IConnectorUIModel
-            ? (IConnectorUIModel) vpDiagramElement
-            : null;
-        if (connector != null && connector.getFromShape() != null
-            && connector.getFromShape().getModelElement() != null) {
+    private String fromAlias(@NotNull IDiagramElement vpDiagramElement) {
+
+
+
+//        var association = (IAssociation) vpDiagramElement.getModelElement();
+
+        IConnectorUIModel connector =  (IConnectorUIModel) vpDiagramElement;
+
+//        IConnectorUIModel connector = vpDiagramElement instanceof IConnectorUIModel
+//            ? (IConnectorUIModel) vpDiagramElement
+//            : null;
+//        if (connector != null && connector.getFromShape() != null
+//            && connector.getFromShape().getModelElement() != null) {
 
 //            debugQualifier(connector.getFromShape());
 
@@ -127,8 +132,8 @@ public class PumlAssociationExporter extends PumlElementExporter {
 
 
             return pumlAlias(fromShape.getModelElement(), fromShape.getId());
-        }
-        return pumlAlias(association.getFromEnd().getModelElement(), null);
+//        }
+//        return pumlAlias(association.getFromEnd().getModelElement(), null);
     }
 
 //    private void debugQualifier(IShapeUIModel theQualifier) {
@@ -170,12 +175,17 @@ public class PumlAssociationExporter extends PumlElementExporter {
 //        }
 //    }
 
-    private String toAlias(IDiagramElement vpDiagramElement, IAssociation association) {
-        IConnectorUIModel connector = vpDiagramElement instanceof IConnectorUIModel
-            ? (IConnectorUIModel) vpDiagramElement
-            : null;
-        if (connector != null && connector.getToShape() != null
-            && connector.getToShape().getModelElement() != null) {
+    private String toAlias(IDiagramElement vpDiagramElement) {
+        var association2 = (IAssociation) vpDiagramElement.getModelElement();
+
+
+        IConnectorUIModel connector = (IConnectorUIModel) vpDiagramElement;
+
+//        IConnectorUIModel connector = vpDiagramElement instanceof IConnectorUIModel
+//            ? (IConnectorUIModel) vpDiagramElement
+//            : null;
+//        if (connector != null && connector.getToShape() != null
+//            && connector.getToShape().getModelElement() != null) {
 
 //            debugQualifier(connector.getToShape());
 
@@ -186,8 +196,8 @@ public class PumlAssociationExporter extends PumlElementExporter {
 
 
             return pumlAlias(toShape.getModelElement(), toShape.getId());
-        }
-        return pumlAlias(association.getToEnd().getModelElement(), null);
+//        }
+//        return pumlAlias(association2.getToEnd().getModelElement(), null);
     }
 
     private @NonNull String labels(IAssociation association) {

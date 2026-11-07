@@ -5,7 +5,6 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 import com.vp.plugin.diagram.IConnectorUIModel;
-import com.vp.plugin.diagram.IDiagramElement;
 import com.vp.plugin.diagram.IShapeTypeConstants;
 import com.vp.plugin.diagram.IShapeUIModel;
 import com.vp.plugin.diagram.shape.IQualifierUIModel;
@@ -181,58 +180,15 @@ class PumlAssociationExporterTest {
             end("", null, null, IAssociationEnd.NAVIGABLE_NON_NAVIGABLE, "A"),
             end("", null, null, IAssociationEnd.NAVIGABLE_UNSPECIFIED, "B"));
 
-        assertTrue(renders(exporter, assoc, "A x-- B"));
-    }
-
-    @Test
-    void connectorWithNullFromShapeFallsBackToModelAlias() {
-        // from 端连接线存在但视图缺 shape：别名退回按模型定位（模型仅名称 → "A"）。
-        IAssociation assoc = association("", IAssociation.DIRECTION_FROM_TO,
-            end("", null, null, IAssociationEnd.NAVIGABLE_UNSPECIFIED, "A"),
-            end("", null, null, IAssociationEnd.NAVIGABLE_UNSPECIFIED, "B"));
-        IShapeUIModel toShape = shape(model("Class", "B", "m2"), "s2");
-        IConnectorUIModel connector = connectorWithShapes(assoc, null, toShape);
-
         PumlDiagram diagram = new PumlDiagram("d");
-        exporter.export(diagram, connector);
-        assertTrue(diagram.toString().contains("A -- Class__B__m2__s2"));
+        exporter.export(diagram, connectorOf(assoc));
+        assertTrue(diagram.toString().contains("A x-- B"), "Actual diagram string is: " + diagram);
     }
-
-    @Test
-    void connectorWithNullToShapeFallsBackToModelAlias() {
-        // to 端连接线存在但视图缺 shape：别名退回按模型定位（模型仅名称 → "B"）。
-        IAssociation assoc = association("", IAssociation.DIRECTION_FROM_TO,
-            end("", null, null, IAssociationEnd.NAVIGABLE_UNSPECIFIED, "A"),
-            end("", null, null, IAssociationEnd.NAVIGABLE_UNSPECIFIED, "B"));
-        IShapeUIModel fromShape = shape(model("Class", "A", "m1"), "s1");
-        IConnectorUIModel connector = connectorWithShapes(assoc, fromShape, null);
-
-        PumlDiagram diagram = new PumlDiagram("d");
-        exporter.export(diagram, connector);
-        assertTrue(diagram.toString().contains("Class__A__m1__s1 -- B"));
-    }
-
-    @Test
-    void connectorWithNullShapeModelFallsBackToModelAlias() {
-        // from 端 shape 存在但其模型元素为 null：退回按模型定位（模型仅名称 → "A"）。
-        IAssociation assoc = association("", IAssociation.DIRECTION_FROM_TO,
-            end("", null, null, IAssociationEnd.NAVIGABLE_UNSPECIFIED, "A"),
-            end("", null, null, IAssociationEnd.NAVIGABLE_UNSPECIFIED, "B"));
-        IShapeUIModel fromShape = shape(null, "s1");
-        IShapeUIModel toShape = shape(model("Class", "B", "m2"), "s2");
-        IConnectorUIModel connector = connectorWithShapes(assoc, fromShape, toShape);
-
-        PumlDiagram diagram = new PumlDiagram("d");
-        exporter.export(diagram, connector);
-        assertTrue(diagram.toString().contains("A -- Class__B__m2__s2"));
-    }
-
-    // ---------- helpers ----------
 
     private static boolean renders(PumlAssociationExporter exporter, IAssociation assoc,
         String expectedEdge) {
         PumlDiagram diagram = new PumlDiagram("d");
-        exporter.export(diagram, elementOf(assoc));
+        exporter.export(diagram, connectorOf(assoc));
         return diagram.toString().contains(expectedEdge);
     }
 
@@ -252,25 +208,12 @@ class PumlAssociationExporterTest {
         return e;
     }
 
-    private static IConnectorUIModel connectorWithShapes(IAssociation assoc,
-        IShapeUIModel fromShape, IShapeUIModel toShape) {
-        IConnectorUIModel e = mock(IConnectorUIModel.class);
-        when(e.getModelElement()).thenReturn(assoc);
-        when(e.getFromShape()).thenReturn(fromShape);
-        when(e.getToShape()).thenReturn(toShape);
-        return e;
-    }
-
     private static IShapeUIModel shape(IModelElement model, String id, String shapeType) {
         IShapeUIModel s = mock(IShapeUIModel.class);
         when(s.getModelElement()).thenReturn(model);
         when(s.getId()).thenReturn(id);
         when(s.getShapeType()).thenReturn(shapeType);
         return s;
-    }
-
-    private static IShapeUIModel shape(IModelElement model, String id) {
-        return shape(model, id, IShapeTypeConstants.SHAPE_TYPE_CLASS);
     }
 
     private static IQualifierUIModel qualifierShape(IShapeUIModel parent) {
@@ -290,10 +233,23 @@ class PumlAssociationExporterTest {
         return m;
     }
 
-    private static IDiagramElement elementOf(IAssociation assoc) {
-        IDiagramElement e = mock(IDiagramElement.class);
-        when(e.getModelElement()).thenReturn(assoc);
-        return e;
+    private static IConnectorUIModel connectorOf(IAssociation assoc) {
+        IModelElement fromModel = assoc.getFromEnd().getModelElement();
+        IModelElement toModel = assoc.getToEnd().getModelElement();
+
+        IShapeUIModel fromShape = mock(IShapeUIModel.class);
+        when(fromShape.getModelElement()).thenReturn(fromModel);
+
+        IShapeUIModel toShape = mock(IShapeUIModel.class);
+        when(toShape.getModelElement()).thenReturn(toModel);
+
+
+        IConnectorUIModel connector = mock(IConnectorUIModel.class);
+        when(connector.getModelElement()).thenReturn(assoc);
+        when(connector.getFromShape()).thenReturn(fromShape);
+        when(connector.getToShape()).thenReturn(toShape);
+
+        return connector;
     }
 
     private static IAssociation association(String name, int direction,

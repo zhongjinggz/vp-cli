@@ -4,7 +4,9 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
+import com.vp.plugin.diagram.IConnectorUIModel;
 import com.vp.plugin.diagram.IDiagramElement;
+import com.vp.plugin.diagram.IShapeUIModel;
 import com.vp.plugin.model.IAssociation;
 import com.vp.plugin.model.IAssociationEnd;
 import com.vp.plugin.model.IDependency;
@@ -215,8 +217,18 @@ class PumlRelationshipStereotypeTest {
                                           IAssociationEnd to) {
         when(model.getFromEnd()).thenReturn(from);
         when(model.getToEnd()).thenReturn(to);
-        IDiagramElement e = mock(IDiagramElement.class);
+        IModelElement fromModel = from.getModelElement();
+        IModelElement toModel = to.getModelElement();
+
+        IShapeUIModel fromShape = mock(IShapeUIModel.class);
+        when(fromShape.getModelElement()).thenReturn(fromModel);
+        IShapeUIModel toShape = mock(IShapeUIModel.class);
+        when(toShape.getModelElement()).thenReturn(toModel);
+
+        IConnectorUIModel e = mock(IConnectorUIModel.class);
         when(e.getModelElement()).thenReturn(model);
+        when(e.getFromShape()).thenReturn(fromShape);
+        when(e.getToShape()).thenReturn(toShape);
         return e;
     }
 }
