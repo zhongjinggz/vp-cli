@@ -4,7 +4,9 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
+import com.vp.plugin.diagram.IConnectorUIModel;
 import com.vp.plugin.diagram.IDiagramElement;
+import com.vp.plugin.diagram.IShapeUIModel;
 import com.vp.plugin.model.IAnchor;
 import com.vp.plugin.model.IModelElement;
 import com.vp.plugin.model.INOTE;
@@ -87,7 +89,7 @@ class PumlNoteAnchorExporterTest {
         when(anchor.getFrom()).thenReturn(from);
         when(anchor.getTo()).thenReturn(to);
 
-        new PumlAnchorExporter().export(diagram, elem(anchor));
+        new PumlAnchorExporter().export(diagram, connectorOf(anchor, from, to));
 
         String out = diagram.toString();
         assertTrue(out.contains("class2 .. N1"),
@@ -108,5 +110,22 @@ class PumlNoteAnchorExporterTest {
         IDiagramElement e = mock(IDiagramElement.class);
         when(e.getModelElement()).thenReturn(modelElement);
         return e;
+    }
+
+    private static IDiagramElement connectorOf(IModelElement model, IModelElement from,
+                                               IModelElement to) {
+        IShapeUIModel fromShape = shapeOf(from);
+        IShapeUIModel toShape = shapeOf(to);
+        IConnectorUIModel e = mock(IConnectorUIModel.class);
+        when(e.getModelElement()).thenReturn(model);
+        when(e.getFromShape()).thenReturn(fromShape);
+        when(e.getToShape()).thenReturn(toShape);
+        return e;
+    }
+
+    private static IShapeUIModel shapeOf(IModelElement model) {
+        IShapeUIModel s = mock(IShapeUIModel.class);
+        when(s.getModelElement()).thenReturn(model);
+        return s;
     }
 }

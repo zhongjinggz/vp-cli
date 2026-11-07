@@ -13,11 +13,13 @@ import javax.swing.*;
 // - export：将图表放入 markdown
 // - 翻译和修改 README
 
+// - replace logback with tinylog
+// - introduce JSpecify and NullAway
 // - 重构：抽取静态方法进入 DiagramElements / ModelElements
 // - 清理测试
 // - ViElementFactory : use Abstract Factory pattern
+// - migrate to Kotlin?
 
-// - replace logback with tinylog
 // - Tree: 根据参数控制 Tree 的类型和深度
 // - export: 根据模型内容生成 markdown
 // - export: 图表 markdown 中放入交叉引用

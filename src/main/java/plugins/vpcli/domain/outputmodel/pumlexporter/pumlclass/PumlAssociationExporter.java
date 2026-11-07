@@ -109,85 +109,19 @@ public class PumlAssociationExporter extends PumlElementExporter {
     }
 
     private String fromAlias(@NotNull IDiagramElement vpDiagramElement) {
-
-
-
-//        var association = (IAssociation) vpDiagramElement.getModelElement();
-
         IConnectorUIModel connector =  (IConnectorUIModel) vpDiagramElement;
-
-//        IConnectorUIModel connector = vpDiagramElement instanceof IConnectorUIModel
-//            ? (IConnectorUIModel) vpDiagramElement
-//            : null;
-//        if (connector != null && connector.getFromShape() != null
-//            && connector.getFromShape().getModelElement() != null) {
-
-//            debugQualifier(connector.getFromShape());
-
 
             IDiagramElement fromShape = connector.getFromShape();
             if (Objects.equals(fromShape.getShapeType(), SHAPE_TYPE_QUALIFIER)) {
                 fromShape = ((IQualifierUIModel) fromShape).getParent();
             }
 
-
-            return pumlAlias(fromShape.getModelElement(), fromShape.getId());
-//        }
-//        return pumlAlias(association.getFromEnd().getModelElement(), null);
+        return pumlAlias(fromShape);
     }
 
-//    private void debugQualifier(IShapeUIModel theQualifier) {
-//        if (theQualifier instanceof IQualifierUIModel) {
-//            var qualifierModelElement = theQualifier.getModelElement();
-//            log.debug("Debug Qualifier: qualifierShapeId={}; qualifierModelId={};", theQualifier.getId(), qualifierModelElement.getId());
-//
-//            var parent = theQualifier.getParent();
-//            if (parent != null) {
-//                var parentModelElement = parent.getModelElement();
-//                String parentModelType;
-//                String parentModelId;
-//                if (parentModelElement != null) {
-//                    parentModelType = parentModelElement.getModelType();
-//                    parentModelId = parentModelElement.getId();
-//                } else {
-//                    parentModelType = "no-parent-model";
-//                    parentModelId = "no-parent-model";
-//                }
-//                log.debug("Debug Qualifier: parentShapeType={}; parentId={}; parentModelType={}; parentModelId={}",
-//                    parent.getShapeType(), parent.getId(), parentModelType, parentModelId);
-//            }
-//
-//            var groupParent = theQualifier.getGroupParent();
-//            if (groupParent != null) {
-//                var groupParentModelElement = groupParent.getModelElement();
-//                String groupParentModelType;
-//                String groupParentModelId;
-//                if (groupParentModelElement != null) {
-//                    groupParentModelType = groupParentModelElement.getModelType();
-//                    groupParentModelId = groupParentModelElement.getId();
-//                } else {
-//                    groupParentModelType = "no-group-parent-model";
-//                    groupParentModelId = "no-group-parent-model";
-//                }
-//                log.debug("Debug Qualifier: groupParentShapeType={}; groupParentId={}; groupParentModelType={}; groupParentModelId={}",
-//                    groupParent.getShapeType(), groupParent.getId(), groupParentModelType, groupParentModelId);
-//            }
-//        }
-//    }
-
     private String toAlias(IDiagramElement vpDiagramElement) {
-        var association2 = (IAssociation) vpDiagramElement.getModelElement();
-
 
         IConnectorUIModel connector = (IConnectorUIModel) vpDiagramElement;
-
-//        IConnectorUIModel connector = vpDiagramElement instanceof IConnectorUIModel
-//            ? (IConnectorUIModel) vpDiagramElement
-//            : null;
-//        if (connector != null && connector.getToShape() != null
-//            && connector.getToShape().getModelElement() != null) {
-
-//            debugQualifier(connector.getToShape());
 
             IDiagramElement toShape = connector.getToShape();
             if (Objects.equals(toShape.getShapeType(), SHAPE_TYPE_QUALIFIER)) {
@@ -195,9 +129,7 @@ public class PumlAssociationExporter extends PumlElementExporter {
             }
 
 
-            return pumlAlias(toShape.getModelElement(), toShape.getId());
-//        }
-//        return pumlAlias(association2.getToEnd().getModelElement(), null);
+        return pumlAlias(toShape);
     }
 
     private @NonNull String labels(IAssociation association) {

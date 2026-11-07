@@ -436,11 +436,11 @@ A2 "0..*" -- D
 - 兼容处理：图元素ID可能为 null，此时省略图ID段（保留 `<类型>__<名称>__<模型ID>` 或无名时 `<类型>__<模型ID>`），保持别名仍可引用。
 
 **接入点（封装两个入口，内部都调 buildAlias）：**
-- `pumlAlias(IDiagramElement)`：从 `vpDiagramElement.getModelElement()` + `vpDiagramElement.getId()` 调 `buildAlias`。用于各类块状声明导出器。
+- `pumlAlias(IDiagramElement)`：从 `vpDiagramElement.getModelElement()` + `vpDiagramElement.getId()` 调 `pumlAlias`。用于各类块状声明导出器。
 - `pumlAlias(IModelElement, String diagramElementId)`：关系端专用，由调用方从 shape 传入两者。
 
 **逐一处改造：**
-1. `PumlElementExporter`（:30）：把现有 `pumlAlias(IModelElement)` 改造/拆分为上述两入口与 `buildAlias`。
+1. `PumlElementExporter`（:30）：把现有 `pumlAlias(IModelElement)` 改造/拆分为上述两入口与 `pumlAlias`。
 2. 块/形状级（自动获得新格式，无需额外改端点）：`PumlBlockExporter`（含其子类 `PumlClassExporter`、`PumlPackageExporter`、`PumlModelExporter` 等，:24）、`PumlUseCaseExporter`（:29）、`PumlNoteExporter`（:38）、`PumlInterfaceBallExporter`（:36）——统一改调 `getPumlAlias(vpDiagramElement)`。
 3. 遍历关系线类改为从视图端点取模型+图ID：
    - `PumlDirectedRelationshipExporter`（:20-21，其子类含 `PumlDependencyExporter` 及各 dependency 类、`PumlRealizationExporter` 等）：`dependency instanceof IConnectorUIModel` 时用 `getFromShape()/getToShape()` 的 `getModelElement()`+`getId()`。

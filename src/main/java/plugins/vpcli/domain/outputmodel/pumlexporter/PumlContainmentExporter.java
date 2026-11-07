@@ -26,14 +26,8 @@ public class PumlContainmentExporter extends PumlElementExporter {
     public void export(PumlDiagram result, IDiagramElement vpDiagramElement) {
         IConnectorUIModel containment = (IConnectorUIModel) vpDiagramElement;
 
-        String fromAlias = pumlAlias(
-            containment.getFromShape().getModelElement(),
-            containment.getFromShape().getId()
-        );
-        String toAlias = pumlAlias(
-            containment.getToShape().getModelElement(),
-            containment.getToShape().getId()
-        );
+        String fromAlias = pumlAlias(containment.getFromShape());
+        String toAlias = pumlAlias(containment.getToShape());
 
         result.writeText(fromAlias + " +-- " + toAlias);
     }

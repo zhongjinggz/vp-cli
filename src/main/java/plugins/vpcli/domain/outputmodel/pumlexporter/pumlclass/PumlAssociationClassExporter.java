@@ -1,14 +1,8 @@
 package plugins.vpcli.domain.outputmodel.pumlexporter.pumlclass;
 
-import com.vp.plugin.diagram.IConnectorUIModel;
 import com.vp.plugin.diagram.IDiagramElement;
 import com.vp.plugin.diagram.IShapeTypeConstants;
-import com.vp.plugin.diagram.IShapeUIModel;
 import com.vp.plugin.diagram.connector.IAssociationClassUIModel;
-import com.vp.plugin.model.IAssociation;
-import com.vp.plugin.model.IAssociationClass;
-import com.vp.plugin.model.IClass;
-import com.vp.plugin.model.IModelElement;
 import jakarta.inject.Inject;
 import jakarta.inject.Singleton;
 import org.slf4j.Logger;

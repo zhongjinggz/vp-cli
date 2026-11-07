@@ -22,7 +22,7 @@ public class PumlNoteExporter extends PumlElementExporter {
 
     /**
      * 步 #19：渲染注释块 `note "<正文>" as <别名>`。
-     * 别名规则沿用 pumlAlias：无名时以 ID 代替 Name（与 Anchor 连线引用一致）。
+     * 别名规则沿用 pumlAlias2：无名时以 ID 代替 Name（与 Anchor 连线引用一致）。
      * 正文为空时跳过输出（与旧版行为一致）。
      */
     @Override

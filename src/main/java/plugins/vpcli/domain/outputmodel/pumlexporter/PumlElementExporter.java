@@ -26,29 +26,24 @@ public abstract class PumlElementExporter {
     public void export(PumlDiagram result, IDiagramElement vpDiagramElement) {
     }
 
-    // 块状声明入口：模型 + 图元素 ID。
-    protected String pumlAlias(IDiagramElement vpDiagramElement) {
-        return buildAlias(vpDiagramElement.getModelElement(), vpDiagramElement.getId());
-    }
-
-    // 关系端入口：由调用方从 shape 传入模型与图元素 ID。
-    protected String pumlAlias(IModelElement modelElement, String diagramElementId) {
-        return buildAlias(modelElement, diagramElementId);
-    }
-
     // 别名 := <类型>__<名称>__<模型ID>__<图ID>，各段以 __ 分隔。
     // 无名元素忽略名称段；图元素 ID 为 null 时省略图ID段。
-    public static String buildAlias(IModelElement model, String diagramElementId) {
+    public static String pumlAlias(IDiagramElement vpDiagramElement) {
+
         List<String> segments = new ArrayList<>();
-        String type = model == null ? null : model.getModelType();
+
+        var modelElement = vpDiagramElement.getModelElement();
+        var diagramElementId = vpDiagramElement.getId();
+
+        String type = modelElement == null ? null : modelElement.getModelType();
         if (type != null && !type.isEmpty()) {
             segments.add(type);
         }
-        String name = model == null ? null : model.getName();
+        String name = modelElement == null ? null : modelElement.getName();
         if (name != null && !name.isEmpty()) {
             segments.add(name);
         }
-        String modelId = model == null ? null : model.getId();
+        String modelId = modelElement == null ? null : modelElement.getId();
         if (modelId != null && !modelId.isEmpty()) {
             segments.add(modelId);
         }

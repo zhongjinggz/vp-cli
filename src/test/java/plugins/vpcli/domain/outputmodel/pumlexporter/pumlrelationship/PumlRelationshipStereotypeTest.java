@@ -208,9 +208,19 @@ class PumlRelationshipStereotypeTest {
             when(((IRealization) model).getFrom()).thenReturn(from);
             when(((IRealization) model).getTo()).thenReturn(to);
         }
-        IDiagramElement e = mock(IDiagramElement.class);
+        IShapeUIModel fromShape = shapeOf(from);
+        IShapeUIModel toShape = shapeOf(to);
+        IConnectorUIModel e = mock(IConnectorUIModel.class);
         when(e.getModelElement()).thenReturn(model);
+        when(e.getFromShape()).thenReturn(fromShape);
+        when(e.getToShape()).thenReturn(toShape);
         return e;
+    }
+
+    private static IShapeUIModel shapeOf(IModelElement model) {
+        IShapeUIModel s = mock(IShapeUIModel.class);
+        when(s.getModelElement()).thenReturn(model);
+        return s;
     }
 
     private static IDiagramElement edgeOf(IAssociation model, IAssociationEnd from,

@@ -16,31 +16,20 @@ public abstract class PumlDirectedRelationshipExporter extends PumlElementExport
 
     @Override
     public void export(PumlDiagram result, IDiagramElement vpDiagramElement) {
-        IRelationship dependency = (IRelationship) vpDiagramElement.getModelElement();
+        IRelationship relationship = (IRelationship) vpDiagramElement.getModelElement();
 
         String fromAlias;
         String toAlias;
-        if (vpDiagramElement instanceof IConnectorUIModel) {
-            IConnectorUIModel connector = (IConnectorUIModel) vpDiagramElement;
-            fromAlias = pumlAlias(
-                connector.getFromShape().getModelElement(),
-                connector.getFromShape().getId()
-            );
-            toAlias = pumlAlias(
-                connector.getToShape().getModelElement(),
-                connector.getToShape().getId()
-            );
-        } else {
-            fromAlias = pumlAlias(dependency.getFrom(), null);
-            toAlias = pumlAlias(dependency.getTo(), null);
-        }
+        IConnectorUIModel connector = (IConnectorUIModel) vpDiagramElement;
+        fromAlias = pumlAlias(connector.getFromShape());
+        toAlias = pumlAlias(connector.getToShape());
 
         result.writeText(
             toText(
                 fromAlias,
                 toAlias,
                 getArrow(vpDiagramElement),
-                getStereotypesText(dependency)
+                getStereotypesText(relationship)
             )
         );
     }

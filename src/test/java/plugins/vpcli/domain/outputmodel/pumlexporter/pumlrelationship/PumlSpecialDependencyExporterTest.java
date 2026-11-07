@@ -5,7 +5,9 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
+import com.vp.plugin.diagram.IConnectorUIModel;
 import com.vp.plugin.diagram.IDiagramElement;
+import com.vp.plugin.diagram.IShapeUIModel;
 import com.vp.plugin.model.IModelElement;
 import com.vp.plugin.model.IRelationship;
 import com.vp.plugin.model.IStereotype;
@@ -162,8 +164,18 @@ class PumlSpecialDependencyExporterTest {
         IModelElement toModel = model(to);
         when(rel.getFrom()).thenReturn(fromModel);
         when(rel.getTo()).thenReturn(toModel);
-        IDiagramElement e = mock(IDiagramElement.class);
+        IShapeUIModel fromShape = shapeOf(fromModel);
+        IShapeUIModel toShape = shapeOf(toModel);
+        IConnectorUIModel e = mock(IConnectorUIModel.class);
         when(e.getModelElement()).thenReturn(rel);
+        when(e.getFromShape()).thenReturn(fromShape);
+        when(e.getToShape()).thenReturn(toShape);
         return e;
+    }
+
+    private static IShapeUIModel shapeOf(IModelElement model) {
+        IShapeUIModel s = mock(IShapeUIModel.class);
+        when(s.getModelElement()).thenReturn(model);
+        return s;
     }
 }
