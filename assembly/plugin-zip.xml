@@ -31,6 +31,7 @@
             <includes>
                 <include>vpcli/**</include>
                 <include>logback.xml</include>
+                <include>vpcli.properties</include>
             </includes>
         </fileSet>
 
@@ -41,6 +42,17 @@
             <includes>
                 <include>plugin.xml</include>
                 <include>icons/**</include>
+            </includes>
+        </fileSet>
+
+        <!-- Shell scripts go into script/ -->
+        <fileSet>
+            <directory>${project.basedir}/src/main/script</directory>
+            <outputDirectory>script</outputDirectory>
+            <includes>
+                <include>vp-export</include>
+                <include>vp-list-diagrams</include>
+                <include>vp-tree</include>
             </includes>
         </fileSet>
     </fileSets>

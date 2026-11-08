@@ -1,0 +1,5 @@
+#!/bin/bash
+/Users/zhongjing/Projects/mine/vp-cli/src/main/python/vp-tree \
+    -project ./vp-cli-sample.vpp
+
+

@@ -1,0 +1,2 @@
+#!/bin/bash
+java -cp "$(dirname "${BASH_SOURCE[0]}")/../classes" vpcli.shell.VpExport "$@"

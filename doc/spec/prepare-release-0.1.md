@@ -17,15 +17,13 @@
 具体方案和步骤如下：
 
 - 改变目录结构
-  - src/main/java/vpcli/plugin/ : the vp plugin 
-- 创建多 maven/idea 模块系统
-    - module: src/main/java/vpcli/plugin/ : the vp plugin
-    - module: src/main/java/vpcli/shell/  : java shell to call the plugin with command line
-    - script: src/main/script/            : .sh or .bat to call the java shell
+  - src/main/java/vpcli/plugin/ : the vp plugin
+  - src/main/java/vpcli/shell/  : java shell to call the plugin with command line
+  - src/main/script/            : .sh or .bat to call the java shell
 - 将 Python 转化为 java
   - 同步修改 script
 - 脚本统一打包到 zip 中
-
+- 将visual paradigm 的路径放入 .properties
 
 
 ## 步骤3: 编写 README.md (中文)
