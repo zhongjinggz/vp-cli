@@ -126,3 +126,15 @@
     - 
 ## 致谢
 开始时，我不知道怎么写 Visual Paradigm 插件，尤其是，官方文档中并没有公布命令行的插件的写法。后来找到了这个项目：https://github.com/nbourdi/PlantUML-VP-Plugin 。本项目是以这个项目为起点开发的。感谢这个项目的作者！
+
+## 参考
+
+https://knowhow.visual-paradigm.com/category/openapi/
+
+https://www.visual-paradigm.com/support/documents/vpuserguide/124/255/84449_runningplug-.html
+
+https://www.visual-paradigm.com/support/documents/pluginuserguide.jsp
+
+https://www.visual-paradigm.com/support/documents/pluginapi.jsp
+
+https://www.visual-paradigm.com/support/documents/pluginsample.jsp
