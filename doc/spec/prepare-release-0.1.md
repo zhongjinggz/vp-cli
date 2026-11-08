@@ -14,7 +14,7 @@
 - 状态：已完成
  
 ## 步骤1: 用 Java 代替目前的 Python，统一打包到最终的 zip 中
-具体方案和步骤如下：
+- 状态：已完成
 
 - 改变目录结构
   - src/main/java/vpcli/plugin/ : the vp plugin
@@ -24,7 +24,6 @@
   - 同步修改 script
 - 脚本统一打包到 zip 中
 - 将visual paradigm 的路径放入 .properties
-
 
 ## 步骤3: 编写 README.md (中文)
 

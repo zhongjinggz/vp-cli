@@ -3,13 +3,12 @@
   Assembly descriptor for the Visual Paradigm plugin zip.
 
   Produces the VP-plugin zip structure (per VP docs):
-      vpcli/plugin/
-      ├── classes/            compiled .class files
-      ├── plugin.xml          plugin descriptor
-      ├── icons/              icons referenced by plugin.xml
-      └── lib/                external jars (openapi.jar must NOT be here)
-
-  The final zip is named plugins.vpcli.zip.
+      com.github.zhonjinggz.vpcli
+        ├── classes/            compiled .class files
+        ├── plugin.xml          plugin descriptor
+        ├── icons/              icons referenced by plugin.xml
+        ├── script/             .sh or .bat to call the Java programs and to be used by user directly
+        └── lib/                external jars (openapi.jar must NOT be here)
 -->
 <assembly xmlns="http://maven.apache.org/ASSEMBLY/2.2.0"
           xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
@@ -20,7 +19,7 @@
     </formats>
 
     <!-- The top-level folder inside the zip is named after the plugin id -->
-    <baseDirectory>vpcli</baseDirectory>
+    <baseDirectory>com.github.zhongjinggz.vpcli</baseDirectory>
     <includeBaseDirectory>true</includeBaseDirectory>
 
     <fileSets>

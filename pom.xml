@@ -85,7 +85,7 @@
     </dependencies>
 
     <build>
-        <finalName>plugins.vpcli</finalName>
+        <finalName>com.github.zhongjinggz.vpcli</finalName>
         <plugins>
             <plugin>
                 <!--
@@ -150,7 +150,7 @@
                     <descriptors>
                         <descriptor>assembly/plugin-zip.xml</descriptor>
                     </descriptors>
-                    <finalName>plugins.vpcli</finalName>
+                    <finalName>com.github.zhongjinggz.vpcli</finalName>
                     <appendAssemblyId>false</appendAssemblyId>
                 </configuration>
                 <executions>

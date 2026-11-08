@@ -76,7 +76,7 @@ public final class VpCliCommon {
         command.add(".:" + VP_APP + "/lib/*:" + VP_APP + "/ormlib/*");
         command.add("com.vp.cmd.Plugin");
         command.add("-pluginid");
-        command.add("vpcli");
+        command.add("com.github.zhongjinggz.vpcli");
         command.add("-project");
         command.add(project);
         command.add("-pluginargs");

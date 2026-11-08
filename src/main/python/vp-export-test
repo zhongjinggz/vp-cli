@@ -1,7 +1,0 @@
-#!/bin/bash
-rm -rf ../output/*
-/Users/zhongjing/Projects/mine/vp-cli/src/main/python/vp-export \
-    -project ./vp-cli-sample.vpp \
-    -path ../output/
-
-

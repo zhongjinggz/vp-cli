@@ -1,5 +1,5 @@
 <plugin
-	id="vpcli"
+	id="com.github.zhongjinggz.vpcli"
 	name="VP CLI"
 	description="CLI for Visual Paradigm"
 	provider="Zhong Jing"

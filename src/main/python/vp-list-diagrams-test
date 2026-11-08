@@ -1,5 +1,0 @@
-#!/bin/bash
-/Users/zhongjing/Projects/mine/vp-cli/src/main/python/vp-list-diagrams \
-    -project ./vp-cli-sample.vpp
-
-

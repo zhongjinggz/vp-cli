@@ -1,4 +1,0 @@
-#!/bin/bash
-python3 /Users/zhongjing/Projects/mine/vp-cli/src/main/python/vp_tree.py "$@"
-
-
