@@ -2,7 +2,7 @@
 
 [English](README.md)
 
-当前版本：**天字一号甲**（1.1.1）
+当前版本：**天一甲子**（1.1.1）
 
 
 ## 是什么
@@ -29,7 +29,6 @@
 5. 浏览并选中下载好的 `.zip` 文件。
 6. **重启 Visual Paradigm**，完成安装。
 7. 安装成功后，在 **Help** 选项卡的**About**按钮前会显示图标为 <img src="src/main/resources/icons/vp_cli.png" alt="CLI" width="25"> 的按钮
-
 
 
 ### 配置
