@@ -1,132 +1,121 @@
 # Visual Paradigm CLI
-A Visual Paradigm Plugin to provide CLI for AI
 
-（origin: https://github.com/nbourdi/PlantUML-VP-Plugin)
-
-## 用户指南
+[中文版](README-zh.md)
 
 
-### 路线图 
+Current version: **Sky-First-Jia** (1.1.1)
 
+## What
+A set of command-line interfaces (CLI) for Visual Paradigm.  Currently, the core feature is to export models to PlantUML.
 
-#### TODO
-- 中英文README
-- vp-export 2 - 导出每个包下的图 Markdown
-- vp-export 3 - 导出每个包下的模型 Markdown
-- vp-mount - 把模型文件绑定到目录，不用每次都提供模型文件参数
-- vp-cd
-- vp-cat
-- vp-pwd
+## Why
 
-#### DOING
-- vp-export 1 - 导出每个包下的图 plantuml
+- To ask AI help to program, we need to explain business concepts or design logic to AI clearly.
+- For complex systems, we need UML models for it.
+- Visual Paradigm is one of the good UML modeling tools available for free.
+- AI cannot easily read Visual Paradigm model directly.
+- AI can easily understand PlantUML.
+- PlantUML is essentially a drawing tool, not a modeling tool, and has significant limitations for complex modeling.
+- Therefore, we can combine the strengths of both: first model in Visual Paradigm, then use the command line to export to PlantUML as input for AI programming.
+- It is easy to teach AI the CLI, and then build a model-based AI development workflow.
 
-#### DONE
-- vp-tree - 显示模型的树形结构
+## How
 
-
-
-
-## 开发指南
-
-### 设计思路
-
-
-- 关于创建图表和模型文件，有不同的策略：
-  - 1）先遍历VP一遍，创建图表（创建包目录，写图标文件），在此过程中创建必要的模型（只缓存在内存中）；然后再遍历 VP 一遍，补充遗漏的模型并写模型文件（复用之前缓存的内存模型）
-  - 2）先遍历VP一遍，创建模型（写文件，同时缓存）；然后再补图（不必树形遍历，用API一次性读出所有的图，利用已缓存的模型）
-  - 第二中策略较通顺，但为了快些看到成效，先用第一种策略，之后再改成第二种。
-
-
-- 三种模型
-  
-  - 1）Visual Paradigm 模型
-    - 简述：Visual Paradigm 的插件机制所公开的模型
-    - 参考：https://www.visual-paradigm.com/support/documents/pluginjavadoc/index.html
-    - 类名：即 Visual Paradigm 中的类名。例如 IProject, IClass, IDiagramUIModel
-    - 属性/变量名：vpXxx (vp 是 Visual Paradigm 的简称），例如 vpProject, vpClass, vpDiagram
-  
-  - 2）Visitor 模型
-    - 简述：为了使用 Visitor 模式遍历 Visual Paradigm 中的模型，对其中的元素进行的简单包装
-    - 类名：ViXxx （Vi 是 Visitor 的简称），例如 ViProject, ViClass, ViDiagram
-    - 属性/变量名： viXxx，例如 viProject, viClass, viDiagram
-    
-  - 3）内部UML元模型
-    - 简述：本项目的核心元模型。由 Visual Paradigm 模型转换为内部UML模型，再基于此实现导入导出等逻辑
-    - 类名：MyXxx，例如 MyProject, MyClass, MyDiagram
-    - 变量名：myXxx，例如 myProject, myClass, myDiagram
-    
-    
-- Factory vs Creator
-  - Factory 有逻辑，没有 new, 动词可用 'build'
-  - Creator 单纯的 new，没有逻辑，动词可用 'create'
-
-   
-
-
-## **Supported Diagram Types**
-
-The plugin currently supports conversion to and from:
-
-- Class Diagram
-- Use Case Diagram
-- Sequence Diagram
-- Component Diagram
-- Deployment Diagram
-- State (Machine) Diagram
-- Activity Diagram (new syntax)
-
----
-
-## **Installation Guide**
-
-
-### **Automatic Installation**
-1. **Download the `.zip` release** of the plugin.
-2. **Open Visual Paradigm** and navigate to the **Help** tab.
+### Installation
+1. **Download the `.zip` file** from GitHub Releases.
+2. **Open Visual Paradigm** and switch to the **Help** tab.
 3. Select **Install Plugin**.
-4. Choose **Install from a zip of plugin** and click **Next**.
-5. Browse to the downloaded `.zip` file and select it.
+4. Select **Install from a zip of plugin** and click **Next**.
+5. Browse and select the downloaded `.zip` file.
 6. **Restart Visual Paradigm** to complete the installation.
+7. After successful installation, a button with icon <img src="src/main/resources/icons/vp_cli.png" alt="CLI" width="25"> will appear before the **About** button in the **Help** tab.
 
-### **Manual Installation**
-1. Extract the plugin folder from the `.zip` file.
-2. Copy the folder into the `/plugins` directory specified by the **Installation Plugin** dialog.
-3. **Restart Visual Paradigm**.
+### Configuration
 
----
+1. Open a terminal.
+2. Add executable permissions to the scripts.
+    1. Navigate to the script directory under the installed plugin. For example, on Mac, use the following command:
+        ```bash
+        cd ~/Library/Application\ Support/VisualParadigm/plugins/com.github.zhongjinggz.vpcli/script
+        ```
+    2. Use the following command to grant permissions to the scripts:
+        ```bash
+        chmod +x vp-*
+        ```
+    3. Add the script directory to the environment variable.
+        - For example, if using zsh, add the following to `.zshrc`, and then restart the terminal:
+            ```
+            export PATH="<your-home-dir>/Library/Application Support/VisualParadigm/plugins/com.github.zhongjinggz.vpcli/script:$PATH"
+            ```
+    4. Set the Visual Paradigm installation directory.
+        - Open `vpcli.properties in the `class/` directory under the plugin installation directory:
+            ``` 
+            ~/Library/Application Support/VisualParadigm/plugins/com.github.zhongjinggz.vpcli/classes/vpcli.properties
+            ```
+        - Edit the `vp.app` key in the file to the Visual Paradigm installation directory. For example, the following is the default installation directory on Mac:
+            ```
+            vp.app=/Applications/Visual Paradigm.app/Contents/Resources/app
+            ```
 
-## **PlantUML Plugin CLI**
-
-
-The CLI is packaged with the plugin and does not require a separate installation.
-
-### To allow usage:
-1. Locate the script file (`Plugin.bat` / `Plugin.sh`) in:
+### Usage
+- **vp-tree** 
+  - Purpose: List the packages/diagrams and elements in the model with a tree structure.
+  - Usage:
+    ```bash
+    vp-tree -project <your-visual-paradigm-project>.vpp 
     ```
-    VP_installation_dir/scripts
-    ```
-2. Copy the file to the binaries' folder:
-    ```
-    VP_installation_dir/bin
-    ```
 
-### **Example 1: Exporting diagrams**
-Export all diagrams under project:
-```bash
-Plugin.bat -project "C:/Demo/demo_project.vpp" -pluginid "plugins.vpcli" -pluginargs -action "export" -path "C:/Demo/output" -target "all"
-```
+- **vp-export** 
+   - Purpose: Export a Visual Paradigm model to a directory structure and PlantUML.
+   - Usage:
+     ```bash
+     vp-export -project <your-visual-paradigm-project>.vpp -path <output-folder>
+     ```
 
-List all diagrams and ids and export specific target:
-```bash
-Plugin.bat -project "C:/Demo/demo_project.vpp" -pluginid "plugins.vpcli" -pluginargs -action "export" -list
-```
+## Roadmap
 
-```bash
-Plugin.bat -project "C:/Demo/demo_project.vpp" -pluginid "plugins.vpcli" -pluginargs -action "export" -path "C:/Demo/output" -target "lAJWSCmGAqACKRNG"
-```
+### Current
 
-### **Example 2: Importing a folder of diagrams**
-```bash
-Plugin.bat -project "C:/Demo/demo_project.vpp" -pluginid "plugins.vpcli" -pluginargs -action "import" -path "C:/Demo/plant_diagrams"
-```
+- **vp-tree** 
+  - Displays all packages, diagrams and elements.
+  
+- **vp-export** 
+  - Only supports package diagrams and class diagrams.
+  - Outputs `*.puml` files.
+
+### Goals
+
+- **vp-tree** 
+  - Displays only packages by default.
+  - Choose whether to display diagrams and elements via arguments.
+
+- **vp-export** 
+    - Support the following diagram types:
+      - Use Case Diagram
+      - Sequence Diagram
+      - Component Diagram
+      - State Machine Diagram
+      - Activity Diagram
+      - Deployment Diagram
+      
+    - Wrap PlantUML in Markdown.
+    - Each UML element has its own Markdown file.
+    - Establish hyperlinks between the files representing diagrams and elements, and between the files representing elements.
+
+- **vp-mount** 
+  - Analogous to the `mount` command, binds a model file to a directory so you don't need to provide the -project argument every time.
+   
+- **vp-cd** 
+    - Analogous to the `cd` command, switches between packages.
+
+- **vp-pwd** 
+    - Analogous to the `pwd` command, displays the current package.
+
+- **vp-ls** 
+    - Analogous to the `ls` command, displays the packages, diagrams and elements under the current package.
+
+- **vp-cat** 
+    - Analogous to the `cat` command, displays the text of a specified diagram or element in the terminal.
+    
+## Acknowledgments
+I didn't know how to write Visual Paradigm plugins at the beginning, especially since the official documentation do not publish how to write command-line plugins. Then, I found this project: https://github.com/nbourdi/PlantUML-VP-Plugin ,which is teh starting point of my project. Thanks to the author of it!
