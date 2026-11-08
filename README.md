@@ -3,7 +3,7 @@
 [中文版](README-zh.md)
 
 
-Current version: **Sky-First-Jia** (1.1.1)
+Current version: **Sky-First-JiaZi** (1.1.1)
 
 ## What
 A set of command-line interfaces (CLI) for Visual Paradigm.  Currently, the core feature is to export models to PlantUML.
