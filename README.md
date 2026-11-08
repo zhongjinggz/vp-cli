@@ -118,4 +118,4 @@ A set of command-line interfaces (CLI) for Visual Paradigm.  Currently, the core
     - Analogous to the `cat` command, displays the text of a specified diagram or element in the terminal.
     
 ## Acknowledgments
-I didn't know how to write Visual Paradigm plugins at the beginning, especially since the official documentation do not publish how to write command-line plugins. Then, I found this project: https://github.com/nbourdi/PlantUML-VP-Plugin ,which is teh starting point of my project. Thanks to the author of it!
+I didn't know how to write Visual Paradigm plugins at the beginning, especially since the official documentation do not publish how to write command-line plugins. Then, I found this project: https://github.com/nbourdi/PlantUML-VP-Plugin ,which is the starting point of my project. Thanks to the author very much!
