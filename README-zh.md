@@ -45,36 +45,35 @@
         ```bash
         chmod +x vp-*
         ```
-    3. 将脚本目录添加到环境变量
-        - 例如，如果使用 zsh, 则在 .zshrc 中添加
-            ```
-            export PATH="<your-home-dir>/Library/Application Support/VisualParadigm/plugins/com.github.zhongjinggz.vpcli/script:$PATH"
-            ```
-        - 重启终端
+3. 将脚本目录添加到环境变量
+    - 例如，如果使用 zsh, 则在 .zshrc 中添加以下语句（替换掉<your-home-dir>），然后重启终端
+        ```
+        export PATH="<your-home-dir>/Library/Application Support/VisualParadigm/plugins/com.github.zhongjinggz.vpcli/script:$PATH"
+        ```
 
-    4. 设置 visual paradigm 安装目录
-        - 打开插件安装目录下的 class 目录下的以下文件
-            ``` 
-            ~/Library/Application Support/VisualParadigm/plugins/com.github.zhongjinggz.vpcli/classes/vpcli.properties
-            ```
-        - 在文件中编辑以下设置，将其设置为正确的 visual paradigm 安装目录，例如下面是 mac 上的默认安装目录 
-            ```
-            vp.app=/Applications/Visual Paradigm.app/Contents/Resources/app
-            ```
+4. 设置 visual paradigm 安装目录
+    - 打开插件安装目录下的 class 目录下的`vpcli.properties`文件
+        ``` 
+        ~/Library/Application Support/VisualParadigm/plugins/com.github.zhongjinggz.vpcli/classes/vpcli.properties
+        ```
+    - 在文件中将以下条目设置为的 visual paradigm 安装目录，例如下面是 mac 上的默认安装目录 
+        ```
+        vp.app=/Applications/Visual Paradigm.app/Contents/Resources/app
+        ```
 
 ### 使用
 - **vp-tree** 命令
   - 用途：用树形结构列出模型中的包/图和元素
   - 用法：
     ```bash
-    vp-tree -projeject <your-visual-paradigm-project>.vpp 
+    vp-tree -projeject <path-of-your-visual-paradigm-project>.vpp 
     ```
 
 - **vp-export** 命令
    - 用途：将 visual paradigm 模型导出成目录结构及 PlantUML
    - 用法：
      ```bash
-     vp-export -projeject <your-visual-paradigm-project>.vpp -path <output-folder>
+     vp-export -projeject <path-of-your-visual-paradigm-project>.vpp -path <output-folder>
      ```
 
 
@@ -91,41 +90,75 @@
 
 ### 目标
 
-- **vp-tree** 命令
-  - 默认只显示包
-  - 根据参数选择是否显示图和元素
+#### 版本：天二
 
-- **vp-export** 命令
-    - 支持以下图表
-      - 用例图
-      - 序列图
-      - 组件图
-      - 状态机图
-      - 活动图
-      - 部署图
-      
-    - 将 PlantUML 包装到 markdown
-    - 每个UML元素有独立的 markdown 文件
-    - 表示图表的文件和表示元素的文件，以及表示元素的文件之间，建立超链接
-
-
-- **vp-mount** 命令
-  - 类比 mount 命令，把模型文件绑定到目录，不用每次都提供 -project 参数
+- 技术演进
+  - 改用 Tinylog
+  - 引入 JSpecify
+  - 可以静态化的方法抽取成静态工具
+  - 引入 picocli
    
-- **vp-cd** 命令
-    - 类比 cd 命令，在包之间切换
+- 功能演进
+    - **vp-export** 命令
+        - 用 Markdown 包裹 PlantUML    
+    - **vp-mount** 命令
+        - 类比 mount 命令，把模型文件绑定到目录，不用每次都提供 -project 参数
 
-- **vp-pwd** 命令
-    - 类比 pwd 命令，显示当前包
+    - **vp-cd** 命令
+        - 类比 cd 命令，在包之间切换
 
-- **vp-ls** 命令
-    - 类比 ls 命令，显示当前包下的包、图和元素
+    - **vp-pwd** 命令
+        - 类比 pwd 命令，显示当前包
 
-- **vp-cat** 命令
-    - 类比 cat 命令，在终端显示指定的图和元素文本
-    - 
+    - **vp-ls** 命令
+        - 类比 ls 命令，显示当前包下的包、图和元素
+
+#### 版本：天三
+
+- 功能演进
+    - **vp-tree** 
+        - 默认只显示包
+        - 根据参数选择是否显示图和元素
+    - **vp-export** 
+        - 将UML元素导出成 Markdown
+        - 在 Markdown 之间建立超链接
+
+#### 版本：天四
+- 功能演进
+    - **vp-export** 
+        - 用例图
+        - 序列图
+        - 组件图
+
+#### 版本：天五
+- 功能演进
+    - **vp-export** 
+        - 状态机图
+        - 活动图
+        - 部署图
+
+#### 版本：天六
+- 功能演进
+    - **vp-cat** 
+        - 类比 cat 命令，在终端显示指定的图和元素文本
+
+    - **vp-grep** 
+        - 类比 grep 命令，在模型中用正则表达式搜索
+
+
+#### 版本：天七
+- 建立 PlantUML + Markdown 表达领域模型的严谨规范？
+
+
+#### 版本：地
+- 功能演进
+    - 导入/导出 XMI for MOF?
+    - 导入 PlantUML？
+
+
+
 ## 致谢
-开始时，我不知道怎么写 Visual Paradigm 插件，尤其是，官方文档中并没有公布命令行的插件的写法。后来找到了这个项目：https://github.com/nbourdi/PlantUML-VP-Plugin 。本项目是以这个项目为起点开发的。感谢这个项目的作者！
+我最初不知道怎么写 Visual Paradigm 插件，尤其是，官方文档中并没有公布命令行的插件的写法。后来找到了这个项目：https://github.com/nbourdi/PlantUML-VP-Plugin 。本项目是以这个项目为起点开发的。非常感谢作者！
 
 ## 参考
 

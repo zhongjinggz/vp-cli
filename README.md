@@ -42,20 +42,20 @@ A set of command-line interfaces (CLI) for Visual Paradigm.  Currently, the core
         ```bash
         chmod +x vp-*
         ```
-    3. Add the script directory to the environment variable.
-        - For example, if using zsh, add the following to `.zshrc`, and then restart the terminal:
-            ```
-            export PATH="<your-home-dir>/Library/Application Support/VisualParadigm/plugins/com.github.zhongjinggz.vpcli/script:$PATH"
-            ```
-    4. Set the Visual Paradigm installation directory.
-        - Open `vpcli.properties in the `class/` directory under the plugin installation directory:
-            ``` 
-            ~/Library/Application Support/VisualParadigm/plugins/com.github.zhongjinggz.vpcli/classes/vpcli.properties
-            ```
-        - Edit the `vp.app` key in the file to the Visual Paradigm installation directory. For example, the following is the default installation directory on Mac:
-            ```
-            vp.app=/Applications/Visual Paradigm.app/Contents/Resources/app
-            ```
+3. Add the script directory to the environment variable.
+    - For example, if using zsh, add the following to `.zshrc`(replace `<your-home-dir>`), and then restart the terminal:
+        ```
+        export PATH="<your-home-dir>/Library/Application Support/VisualParadigm/plugins/com.github.zhongjinggz.vpcli/script:$PATH"
+        ```
+4. Set the Visual Paradigm installation directory.
+    - Open `vpcli.properties` in the `class/` directory under the plugin installation directory:
+        ``` 
+        ~/Library/Application Support/VisualParadigm/plugins/com.github.zhongjinggz.vpcli/classes/vpcli.properties
+        ```
+    - Edit the `vp.app` key as the Visual Paradigm installation directory. For example, the following is the default installation directory on Mac:
+        ```
+        vp.app=/Applications/Visual Paradigm.app/Contents/Resources/app
+        ```
 
 ### Usage
 - **vp-tree** 
@@ -85,37 +85,82 @@ A set of command-line interfaces (CLI) for Visual Paradigm.  Currently, the core
 
 ### Goals
 
-- **vp-tree** 
-  - Displays only packages by default.
-  - Choose whether to display diagrams and elements via arguments.
+#### Version: Sky-Second
 
-- **vp-export** 
-    - Support the following diagram types:
-      - Use Case Diagram
-      - Sequence Diagram
-      - Component Diagram
-      - State Machine Diagram
-      - Activity Diagram
-      - Deployment Diagram
-      
-    - Wrap PlantUML in Markdown.
-    - Each UML element has its own Markdown file.
-    - Establish hyperlinks between the files representing diagrams and elements, and between the files representing elements.
+- Technical 
+    - Switch to Tinylog
+    - Introduce JSpecify
+    - Extract methods that can be staticized into static utilities
+    - Introduce picocli
 
-- **vp-mount** 
-  - Analogous to the `mount` command, binds a model file to a directory so you don't need to provide the -project argument every time.
-   
-- **vp-cd** 
-    - Analogous to the `cd` command, switches between packages.
+- Feature 
+    - **vp-export** command
+        - Wrap PlantUML in Markdown
+    - **vp-mount** command
+        - Like `mount` command, binds a model file to a directory so you don't need to provide the `-project` argument every time.
 
-- **vp-pwd** 
-    - Analogous to the `pwd` command, displays the current package.
+    - **vp-cd** command
+        - Like `cd` command, switches between packages.
 
-- **vp-ls** 
-    - Analogous to the `ls` command, displays the packages, diagrams and elements under the current package.
+    - **vp-pwd** command
+        - Like `pwd` command, displays the current package path.
 
-- **vp-cat** 
-    - Analogous to the `cat` command, displays the text of a specified diagram or element in the terminal.
-    
+    - **vp-ls** command
+        - Like `ls` command, displays the packages, diagrams and elements under the current package.
+
+#### Version: Sky-Third
+
+- Feature 
+    - **vp-tree**
+        - Displays only packages by default
+        - Choose whether to display diagrams and elements via arguments
+    - **vp-export**
+        - Export UML elements to Markdown
+        - Establish hyperlinks between Markdown files
+
+#### Version: Sky-Fourth
+- Feature 
+    - **vp-export**
+        - Use Case Diagram
+        - Sequence Diagram
+        - Component Diagram
+
+#### Version: Sky-Fifth
+- Feature 
+    - **vp-export**
+        - State Machine Diagram
+        - Activity Diagram
+        - Deployment Diagram
+
+#### Version: Sky-Sixth
+- Feature 
+    - **vp-cat**
+        - Analogous to the `cat` command, displays the text of a specified diagram or element in the terminal.
+
+    - **vp-grep**
+        - Analogous to the `grep` command, searches the model using regular expressions.
+
+
+#### Version: Sky-Seventh
+- Establish a specification for expressing domain models with PlantUML + Markdown?
+
+
+#### Version: Earth
+- Feature evolution
+    - Import/Export XMI for MOF?
+    - Import PlantUML?
+
 ## Acknowledgments
 I didn't know how to write Visual Paradigm plugins at the beginning, especially since the official documentation do not publish how to write command-line plugins. Then, I found this project: https://github.com/nbourdi/PlantUML-VP-Plugin ,which is the starting point of my project. Thanks to the author very much!
+
+## Reference
+
+https://knowhow.visual-paradigm.com/category/openapi/
+
+https://www.visual-paradigm.com/support/documents/vpuserguide/124/255/84449_runningplug-.html
+
+https://www.visual-paradigm.com/support/documents/pluginuserguide.jsp
+
+https://www.visual-paradigm.com/support/documents/pluginapi.jsp
+
+https://www.visual-paradigm.com/support/documents/pluginsample.jsp
