@@ -24,7 +24,7 @@
 依据在于：
 
 - **VP 原生模型已具备输出所需的一切读取能力。** 已用 `javap` 反编译 VP SDK
-  `openapi.jar`（`pom.xml` 的 `vp.sdk.dir` 指向
+  `openapi.jar`（`../../../pom.xml` 的 `vp.sdk.dir` 指向
   `/Applications/Visual Paradigm.app/Contents/Resources/app/lib`）逐接口核对：
   - `IModelElement`：`getId()/getModelType()/getName()/getDocumentation()/getParent()/getQualifiedName()`
     （VP 原生自带 `getQualifiedName()`，可直接替代面积最大的 `MyElement.getQualifiedName()` 别名来源）；
@@ -219,7 +219,7 @@
     `PumlClassExporter` 直接读 VP 的 `IClass` 成员。若 #12/#13 需保留其"读取映射"结论
     （如何从 `IClass` 取可见性/类型/初值等），仅取其映射逻辑到 `PumlClassExporter` 内部，
     不引入新的 `MyAttribute/MyOperation` 消费。
-  验证：`PumlClassExporterTest`（#12/#13/#14 相关）行为等价通过；整体 `mvn test`。
+    验证：`PumlClassExporterTest`（#12/#13/#14 相关）行为等价通过；整体 `mvn test`。
 
 - **步 A9 — `PumlUseCaseExporter` 改为直读 VP 原生模型。**
   `PumlUseCaseExporter.java` 直接依赖 myuml：`myElement.getName()` + `getPumlAlias(myElement)`。
@@ -372,7 +372,7 @@
   `mystereotype`、`myunknownelement`、`myusecase` 及其顶层 `MyElement_old2`/`MyElementType`/`MyProject` 等。
 
 - **步 C3 — 迁移/删除 `myuml` 包内契约测试。**
-  将 `src/test` 中那些仍依赖 `myuml` 的测试改为对 VP 原生模型桩
+  将 `../../../src/test` 中那些仍依赖 `myuml` 的测试改为对 VP 原生模型桩
   （`IAssociation`/`IClass`/`IDependency`/`IGeneralization`）的等价断言；
   若某测试已无可测对象则删除。
 
@@ -400,7 +400,7 @@
   验证：`rg`/`grep` 确认 `src` 下无 `import plugins.vpcli.application.writers_old` 残留；`mvn test`。
 
 - **步 D2 — 清理 `MyComponent` 的 3 个 `myuml_old` import。**
-  `../../src/main/java/vpcli` 第 4-6 行引用了
+  `../../../src/main/java/vpcli` 第 4-6 行引用了
   `MyAttribute_old`、`MyOperation_old`、`MyArtifact_old`（已在 myuml_old 包内）。
   需看其字段实际类型：若这些字段本就意在持 VP 侧模型的新类型，则改为 `myuml` 对应新类型
   （`MyAttribute`/`MyOperation`/`MyArtifact`）。
@@ -426,7 +426,7 @@
 ## 里程碑与风险
 
 - **里程碑：** 阶段 A（输出层改造，核心、行为冻结点）→ 阶段 B（结构层改造）→ 阶段 C（删除 `myuml`）→ 阶段 D（退役死代码、收尾）。
-- **行为基准：** 各阶段以 `src/test` 中 `outputmodel`/`pumelementexporter` 测试及 `myuml` 契约测试为回归基准，
+- **行为基准：** 各阶段以 `../../../src/test` 中 `outputmodel`/`pumelementexporter` 测试及 `myuml` 契约测试为回归基准，
   逐步把桩从 `MyElement_old2` 家族切换为 VP 原生模型接口。
 - **主要风险一：VP 原生 `getQualifiedName()` 的段序/分隔归一。** 别名是导出一致性的关键，
   需在步 A4 用现有 `PumlAliasTest` 用例锁定输出；若 VP 原生全限定名与现 `MyElement.getQualifiedName()`
