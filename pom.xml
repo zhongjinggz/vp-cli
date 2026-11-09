@@ -19,7 +19,7 @@
         <plantuml.version>1.2026.0</plantuml.version>
 
         <slf4j.version>2.0.13</slf4j.version>
-        <logback.version>1.6.3</logback.version>
+        <tinylog.version>2.8.1</tinylog.version>
 
         <junit.version>5.12.0</junit.version>
         <mockito.version>5.12.0</mockito.version>
@@ -51,10 +51,25 @@
             <artifactId>slf4j-api</artifactId>
             <version>${slf4j.version}</version>
         </dependency>
+        <!-- Tinylog (as the logging backend) + SLF4J bridging.
+             Existing code keeps calling org.slf4j.LoggerFactory; slf4j-tinylog
+             routes those calls to org.tinylog.Logger behind the scenes. -->
         <dependency>
-            <groupId>ch.qos.logback</groupId>
-            <artifactId>logback-classic</artifactId>
-            <version>${logback.version}</version>
+            <groupId>org.tinylog</groupId>
+            <artifactId>tinylog-api</artifactId>
+            <version>${tinylog.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.tinylog</groupId>
+            <artifactId>tinylog-impl</artifactId>
+            <version>${tinylog.version}</version>
+            <scope>runtime</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.tinylog</groupId>
+            <artifactId>slf4j-tinylog</artifactId>
+            <version>${tinylog.version}</version>
+            <scope>runtime</scope>
         </dependency>
 
         <!-- Test dependencies -->

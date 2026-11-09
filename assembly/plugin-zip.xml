@@ -29,7 +29,7 @@
             <outputDirectory>classes</outputDirectory>
             <includes>
                 <include>vpcli/**</include>
-                <include>logback.xml</include>
+                <include>tinylog.properties</include>
                 <include>vpcli.properties</include>
             </includes>
         </fileSet>

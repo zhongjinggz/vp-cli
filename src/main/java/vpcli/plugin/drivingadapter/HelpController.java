@@ -77,15 +77,16 @@ public class HelpController implements VPActionController {
     @Override
     public void performAction(VPAction action) {
         String usage = "Usage:\n" +
-            "    vp-tree -project <project name.vpp>\n";
+            "    vp-tree -project <project name.vpp>\n" +
+            "    vp-export -project <project name.vpp>\n";
 
         String changeLog = "Change Log:\n" +
-            " change package structure 2 - 21:21";
+            " replace logback to tinylog  - 14:21";
 
         ApplicationManager.instance().getViewManager().showMessageDialog(
             ApplicationManager.instance()
                 .getViewManager()
-                .getRootFrame() ,
+                .getRootFrame(),
             usage + changeLog,
             "VP CLI Help",
             JOptionPane.INFORMATION_MESSAGE
