@@ -88,7 +88,7 @@
   - 只支持包图和类图
   - 输出 *.puml 文件
 
-### 目标
+### 规划
 
 #### 版本：天二
 
@@ -155,7 +155,19 @@
     - 导入/导出 XMI for MOF?
     - 导入 PlantUML？
 
+## 备注
+### 使用方面
 
+- 同名元素
+- 同一个元素在同一张图表中多次出现
+- PlantUML **namespace** vs **package**
+- 图表中的元素，先声明，后使用
+- 使用唯一的方式表示元素
+
+### 开发方面
+
+- 用访问者模式遍历模型树
+  - 用 ViXxx 包装 Visual Paradigm 模型元素，以便遍历，例如，用 ViPackage 包装 IPackage
 
 ## 致谢
 我最初不知道怎么写 Visual Paradigm 插件，尤其是，官方文档中并没有公布命令行的插件的写法。后来找到了这个项目：https://github.com/nbourdi/PlantUML-VP-Plugin 。本项目是以这个项目为起点开发的。非常感谢作者！

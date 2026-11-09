@@ -83,7 +83,7 @@ A set of command-line interfaces (CLI) for Visual Paradigm.  Currently, the core
   - Only supports package diagrams and class diagrams.
   - Outputs `*.puml` files.
 
-### Goals
+### Plan
 
 #### Version: Sky-Second
 
@@ -150,6 +150,19 @@ A set of command-line interfaces (CLI) for Visual Paradigm.  Currently, the core
     - Import/Export XMI for MOF?
     - Import PlantUML?
 
+## Notes
+
+### About Usage
+- Elements with the same name
+- The same element appears multiple times in the same diagram
+- PlantUML **namespace** vs **package**
+- In a diagram, elements are declared first, then used
+- Use a unique way to represent elements
+
+### About Development
+- Use the visitor pattern to traverse the model tree
+    - Use ViXxx to wrap Visual Paradigm model elements for traversal. For example, use ViPackage to wrap IPackage
+     
 ## Acknowledgments
 I didn't know how to write Visual Paradigm plugins at the beginning, especially since the official documentation do not publish how to write command-line plugins. Then, I found this project: https://github.com/nbourdi/PlantUML-VP-Plugin ,which is the starting point of my project. Thanks to the author very much!
 
