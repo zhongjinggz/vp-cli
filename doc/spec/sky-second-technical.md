@@ -421,24 +421,40 @@ public class VPCLIShell implements Runnable {
 - **`VpCliLauncher`**（新建，替代旧 `VpCliCommon`）：负责“读 `vpcli.properties` 取 `vp.app` → 拼 java 启动命令（`java --add-exports java.desktop/com.apple.eawt=ALL-UNNAMED -Xms256m -Xmx768m -Djava.awt.headless=true -Dvpcli.log.profile=prod -cp ... com.vp.cmd.Plugin -pluginid com.github.zhongjinggz.vpcli -project <project> -pluginargs <action对应参数>`）→ `new ProcessBuilder(command).directory(appBin).inheritIO().start()` → `waitFor()` → 返回插件退出码”。启动器不引用旧 `VpCliCommon`/`CLIParams`。
 - `main` 的退出码交给 `CommandLine.execute` 的返回值；`Callable.call()` 返回插件退出码，`System.exit(exitCode)` 透传，与旧脚本行为一致。
 
-#### 步骤 3：修改三个脚本（.sh 与 .bat）
+#### 步骤 3：修改脚本前先备份原脚本（.sh 与 .bat）
 
+先备份 `src/main/script/` 下原来 6 个脚本（3 个 `.sh` + 3 个 `.bat`）为 `.bak`，便于测试后回滚对比：
+
+```bash
+cd src/main/script
+for f in vp-export vp-tree vp-list-diagrams vp-export.bat vp-tree.bat vp-list-diagrams.bat; do
+    cp "$f" "$f.bak"
+done
+```
+
+然后修改 6 个脚本的入口类和子命令：
 - `src/main/script/vp-export`、`vp-tree`、`vp-list-diagrams`：
   - `vp-export` → `java -cp "..." vpcli.shell.VPCLIShell export "$@"`
   - `vp-tree` → `... VPCLIShell tree "$@"`
   - `vp-list-diagrams` → `... VPCLIShell list-diagrams "$@"`
 - 三处 `.bat` 同理改为 `vpcli.shell.VPCLIShell export %*` 等。
 
-#### 步骤 4：删除旧的 shell 源文件
+> `.bak` 备份仅用于本步骤/测试期回滚对比；最终是否删除 `.bak`、何时删除，由用户决定。
 
-删除 `VpExport.java`、`VpTree.java`、`VpListDiagrams.java`、`CLIParams.java`、`VpCliCommon.java`（`vpcli/shell` 内仅保留新 `VPCLIShell` 与启动器文件）。删除前跑一遍单测确认无其它引用。
-
-#### 步骤 5：测试
+#### 步骤 4：测试
 
 - `mvn clean package` 成功，且 `target/plugins.vpcli.zip` 的 `script/` 中三个脚本内容正确指向 `VPCLIShell`。
 - 新增 JUnit 测试锁定 `commandArgs`（或等价拼参方法）对三个子命令生成的插件参数序列，及启动命令中 `-Dvpcli.log.profile=prod`、`com.vp.cmd.Plugin`、`-pluginid` 等关键片段。
-- 手动验证：`./vp-export -project x.vpp -path out`、`./vp-tree -project x.vpp`、`./vp-list-diagrams -project x.vpp` 三者行为与改造前一致。
+- 手动验证：`./vp-export -project x.vpp -path out`、`./vp-tree -project x.vpp`、`./vp-list-diagrams -project x.vpp` 三者行为与改造前一致（可用步骤 3 的 `.bak` 脚本做对照回归）。
 - 现有 `VPCLIExecutableTest`（vp-* 脚本可执行位）应保持全绿。
+
+#### 步骤 5：删除旧的 shell 源文件（由用户执行）
+
+> 这一步**不在本方案的自动实施范围内，由你（用户）亲自执行**。
+
+确认第 4 步测试全部通过后，手动删除 `vpcli/shell` 下旧源码：`VpExport.java`、`VpTree.java`、`VpListDiagrams.java`、`CLIParams.java`、`VpCliCommon.java`，并删除步骤 3 产生的 `.bak` 备份（如不再需要）。删除后 `vpcli/shell` 内仅保留新 `VPCLIShell` 与 `VpCliLauncher`。
+
+> 如需我（方案执行者）代为删除，请另行明确授权；默认此步由你完成。
 
 ### 涉及文件清单
 
@@ -447,7 +463,8 @@ public class VPCLIShell implements Runnable {
 - `src/main/java/vpcli/shell/VpCliLauncher.java`（新增：插件启动逻辑，替代旧 `VpCliCommon`）
 - `src/main/script/vp-export`、`vp-tree`、`vp-list-diagrams`（入口类改 `VPCLIShell` + 子命令名）
 - `src/main/script/*.bat`（三份，同步）
-- `src/main/java/vpcli/shell/{VpExport,VpTree,VpListDiagrams,CLIParams,VpCliCommon}.java`（删除）
+- `src/main/script/*.bak`（步骤 3 备份，测试后由用户决定保留或删除）
+- `src/main/java/vpcli/shell/{VpExport,VpTree,VpListDiagrams,CLIParams,VpCliCommon}.java`（步骤 5 由**用户**删除）
 - `src/test/java/vpcli/shell/...Test.java`（新增：子命令拼参与启动命令断言）
 
 > `vpcli/plugin/drivingadapter/{CLIParams,CLIController}.java` **不改**——插件侧 `-action` 分发保持现状，新 shell 只是把子命令映射回同样的 `-action` 参数。
