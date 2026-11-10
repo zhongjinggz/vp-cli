@@ -17,7 +17,6 @@ import java.util.Iterator;
 import java.util.List;
 import org.junit.jupiter.api.Test;
 import vpcli.plugin.domain.outputmodel.pumldiagram.PumlDiagram;
-import vpcli.plugin.domain.outputmodel.pumlexporter.pumlclass.PumlClassExporter;
 import vpcli.plugin.domain.outputmodel.pumlexporter.pumlnamespace.PumlModelExporter;
 import vpcli.plugin.domain.outputmodel.pumlexporter.pumlnamespace.PumlPackageExporter;
 
@@ -370,17 +369,6 @@ class PumlBlockExporterStereotypeTest {
         ITemplateParameter p = mock(ITemplateParameter.class);
         when(p.getName()).thenReturn(name);
         return p;
-    }
-
-    private static IClass templateClass(String className, String... paramNames) {
-        ITemplateParameter[] params = new ITemplateParameter[paramNames.length];
-        for (int i = 0; i < paramNames.length; i++) {
-            params[i] = tp(paramNames[i]);
-        }
-        IClass clazz = mock(IClass.class);
-        when(clazz.toTemplateParameterArray()).thenReturn(params);
-        when(clazz.stereotypeModelIterator()).thenReturn(Collections.emptyIterator());
-        return clazz;
     }
 
     private static Iterator<?> iterOf(IStereotype... stereotypes) {

@@ -11,6 +11,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
  * 锁定 {@link VpCliLauncher#pluginArgTokens} 行为：把子命令的参数
  * 按旧实现固定顺序 {@code -action -> -path -> -target} 展开为插件命令行参数。
  */
+@SuppressWarnings("UnicodeInCode")
 public class VpCliLauncherTest {
 
     @Test

@@ -1,5 +1,6 @@
 package vpcli.plugin.drivingadapter;
 
+import static java.nio.charset.StandardCharsets.UTF_8;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.contains;
@@ -36,6 +37,7 @@ import vpcli.plugin.util.MyIO;
  * <p>用户面向的消息输出通过注入的 {@link MyIO} 完成，测试用 mock 验证交互，
  * 不再依赖对 {@code System.out} 的重定向捕获。
  */
+@SuppressWarnings("UnicodeInCode")
 class CLIControllerTest {
 
     @TempDir
@@ -153,12 +155,12 @@ class CLIControllerTest {
     private static String captureOut(Executable executable) throws Throwable {
         ByteArrayOutputStream buffer = new ByteArrayOutputStream();
         PrintStream originalOut = System.out;
-        try (PrintStream ps = new PrintStream(buffer, true, StandardCharsets.UTF_8)) {
+        try (PrintStream ps = new PrintStream(buffer, true, UTF_8)) {
             System.setOut(ps);
             executable.execute();
         } finally {
             System.setOut(originalOut);
         }
-        return buffer.toString();
+        return buffer.toString(UTF_8);
     }
 }

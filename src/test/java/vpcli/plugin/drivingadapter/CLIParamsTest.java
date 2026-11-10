@@ -17,6 +17,7 @@ import vpcli.plugin.drivingadapter.CLIParams;
  * 2) {@code set(String,String)} 与 {@code set(String)} 中不属于对应 Map 的 throw 分支。
  * 为达到 100% 分支覆盖，测试通过反射注入私有字段 / 调用私有方法以触达这些分支。
  */
+@SuppressWarnings("UnicodeInCode")
 class CLIParamsTest {
 
     // ---------- 正常/合法参数 ----------
