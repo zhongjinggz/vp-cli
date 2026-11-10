@@ -23,6 +23,7 @@ public abstract class ViModelElement extends ViElement {
         return vpElement.getName();
     }
 
+    @Override
     public ViElementType getType() {
         return ViElementType.of(
             vpElement.getModelType());

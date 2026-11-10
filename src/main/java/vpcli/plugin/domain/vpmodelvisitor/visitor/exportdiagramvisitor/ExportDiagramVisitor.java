@@ -1,5 +1,6 @@
 package vpcli.plugin.domain.vpmodelvisitor.visitor.exportdiagramvisitor;
 
+import org.jspecify.annotations.Nullable;
 import vpcli.plugin.domain.outputmodel.pumldiagram.PumlDiagramFactory;
 import vpcli.plugin.domain.vpmodelvisitor.element.*;
 import vpcli.plugin.domain.vpmodelvisitor.visitor.ViElementVisitor;
@@ -11,7 +12,7 @@ import java.io.IOException;
 
 public class ExportDiagramVisitor extends ViElementVisitor {
     private final PumlDiagramFactory pumlDiagramFactory ;
-    protected File path;
+    @Nullable protected File path;
     private final DocWriter write;
     private final MyIO myIO;
 
@@ -29,6 +30,7 @@ public class ExportDiagramVisitor extends ViElementVisitor {
     }
 
     // used by RootExportDiagramVisitor only
+    @SuppressWarnings("NullAway")
     ExportDiagramVisitor(File path) {
         super(null);
         this.write = null;

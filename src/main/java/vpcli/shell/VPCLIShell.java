@@ -85,15 +85,15 @@ public final class VPCLIShell implements Runnable {
     static final class ExportCommand implements Callable<Integer> {
         @Option(names = "-project", required = true,
                 description = "Visual Paradigm 工程文件路径 (.vpp)")
-        String project;
+        String project ="";
 
         @Option(names = "-target", defaultValue = "all",
                 description = "要导出的图表名；缺省导出全部 (all)")
-        String target;
+        String target = "all";
 
         @Option(names = "-path", required = true,
                 description = "输出目录")
-        String path;
+        String path = "";
 
         @Override
         public Integer call() throws IOException {
@@ -115,7 +115,7 @@ public final class VPCLIShell implements Runnable {
     static final class TreeCommand implements Callable<Integer> {
         @Option(names = "-project", required = true,
                 description = "Visual Paradigm 工程文件路径 (.vpp)")
-        String project;
+        String project = "";
 
         @Override
         public Integer call() {
@@ -135,7 +135,7 @@ public final class VPCLIShell implements Runnable {
     static final class ListDiagramsCommand implements Callable<Integer> {
         @Option(names = "-project", required = true,
                 description = "Visual Paradigm 工程文件路径 (.vpp)")
-        String project;
+        String project = "";
 
         @Override
         public Integer call() {

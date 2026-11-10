@@ -14,6 +14,7 @@ import vpcli.plugin.domain.outputmodel.pumlexporter.PumlElementExporter;
 // 其两端分别是「关联 IAssociation（含两个被关联类）」与「关联类 IClass」。
 @Singleton
 public class PumlAssociationClassExporter extends PumlElementExporter {
+    @SuppressWarnings("unused")
     private static final Logger log = LoggerFactory.getLogger(PumlAssociationClassExporter.class);
 
     @Inject
