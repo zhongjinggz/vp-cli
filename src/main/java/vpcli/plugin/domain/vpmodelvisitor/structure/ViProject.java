@@ -1,7 +1,7 @@
 package vpcli.plugin.domain.vpmodelvisitor.structure;
 
 import com.vp.plugin.model.IProject;
-import org.jetbrains.annotations.NotNull;
+//import org.jetbrains.annotations.NotNull;
 import vpcli.plugin.domain.vpmodelvisitor.ViElementType;
 import vpcli.plugin.domain.vpmodelvisitor.element.ViElement;
 import vpcli.plugin.domain.vpmodelvisitor.element.ViElementFactory;
@@ -36,7 +36,7 @@ public class ViProject {
         elementsAccept(elements, rootVisitor);
     }
 
-    private @NotNull List<ViElement> createTopLevelElements() {
+    private List<ViElement> createTopLevelElements() {
         String[] vpModelTypes = getVpModelTypeArray();
         var vpElements = project.toModelElementArray(vpModelTypes);
 
@@ -47,7 +47,7 @@ public class ViProject {
         return result;
     }
 
-    private String @NotNull [] getVpModelTypeArray() {
+    private String [] getVpModelTypeArray() {
         return myElementTypes.stream()
             .filter(ViElementType::isModelElement)
             .map( ViElementType::getVPModelType)

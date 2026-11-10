@@ -1,6 +1,6 @@
 package vpcli.plugin.domain.outputmodel.pumldiagram;
 
-import org.jetbrains.annotations.NotNull;
+//import org.jetbrains.annotations.NotNull;
 
 public class PumlEdgeEnd {
     private final String name;
@@ -9,10 +9,10 @@ public class PumlEdgeEnd {
     private final ShapeKind shapeKind;
 
     PumlEdgeEnd(
-        @NotNull String name,
-        @NotNull String multiplicity,
-        @NotNull String role,
-        @NotNull ShapeKind shapeKind
+        String name,
+        String multiplicity,
+        String role,
+        ShapeKind shapeKind
     ) {
         this.name = name;
         this.multiplicity = multiplicity;

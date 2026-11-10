@@ -1,6 +1,6 @@
 package vpcli.plugin.domain.vpmodelvisitor.visitor.exportdiagramvisitor;
 
-import org.jetbrains.annotations.NotNull;
+//import org.jetbrains.annotations.NotNull;
 import vpcli.plugin.domain.outputmodel.pumldiagram.PumlDiagramFactory;
 import vpcli.plugin.domain.vpmodelvisitor.visitor.ViElementVisitor;
 import vpcli.plugin.domain.vpmodelvisitor.visitor.ViElementVisitorFactory;
@@ -32,7 +32,7 @@ public class ExportDiagramVisitorFactory implements ViElementVisitorFactory {
     }
 
     @Override
-    public ViElementVisitor under(@NotNull ViElementVisitor higherVisitor) {
+    public ViElementVisitor under(ViElementVisitor higherVisitor) {
         return new ExportDiagramVisitor(
             (ExportDiagramVisitor) higherVisitor,
             pumlDiagramFactory,

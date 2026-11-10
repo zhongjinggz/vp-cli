@@ -8,7 +8,7 @@ import com.vp.plugin.model.*;
 
 import jakarta.inject.Inject;
 import jakarta.inject.Singleton;
-import org.jetbrains.annotations.NotNull;
+//import org.jetbrains.annotations.NotNull;
 import org.jspecify.annotations.NonNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -77,11 +77,11 @@ public class PumlAssociationExporter extends PumlElementExporter {
         return result;
     }
 
-    private @NotNull String fromQualifier(IAssociation association) {
+    private String fromQualifier(IAssociation association) {
         return getQualifier((IAssociationEnd) association.getFromEnd());
     }
 
-    private @NotNull String toQualifier(IAssociation association) {
+    private String toQualifier(IAssociation association) {
         return getQualifier((IAssociationEnd) association.getToEnd());
     }
 
@@ -108,7 +108,7 @@ public class PumlAssociationExporter extends PumlElementExporter {
         return result.toString();
     }
 
-    private String fromAlias(@NotNull IDiagramElement vpDiagramElement) {
+    private String fromAlias(IDiagramElement vpDiagramElement) {
         IConnectorUIModel connector =  (IConnectorUIModel) vpDiagramElement;
 
             IDiagramElement fromShape = connector.getFromShape();

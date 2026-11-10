@@ -1,6 +1,6 @@
 package vpcli.plugin.domain.outputmodel.pumldiagram;
 
-import org.jetbrains.annotations.NotNull;
+//import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -22,7 +22,7 @@ public class PumlDiagram {
         indentLevel--;
     }
 
-    public void beginBlock(@NotNull String header) {
+    public void beginBlock(String header) {
         addStatement(header + " {");
         indent();
     }

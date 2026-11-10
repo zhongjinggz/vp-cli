@@ -1,6 +1,6 @@
 package vpcli.plugin.drivingadapter;
 
-import org.jetbrains.annotations.NotNull;
+//import org.jetbrains.annotations.NotNull;
 
 import java.util.Arrays;
 import java.util.HashMap;
@@ -44,7 +44,6 @@ public class CLIParams {
     }
 
     // 封装命令行参数
-    @NotNull
     static CLIParams valueOf(String[] args) {
         CLIParams params = new CLIParams(args);
         params.parse();

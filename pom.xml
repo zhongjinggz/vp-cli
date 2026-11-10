@@ -23,7 +23,7 @@
         <junit.version>5.12.0</junit.version>
         <mockito.version>5.12.0</mockito.version>
 
-        <jetbrains.annotations.version>26.1.0</jetbrains.annotations.version>
+<!--        <jetbrains.annotations.version>26.1.0</jetbrains.annotations.version>-->
 
         <picocli.version>4.7.6</picocli.version>
 
@@ -87,12 +87,12 @@
             <version>${mockito.version}</version>
             <scope>test</scope>
         </dependency>
-        <dependency>
-            <groupId>org.jetbrains</groupId>
-            <artifactId>annotations</artifactId>
-            <version>${jetbrains.annotations.version}</version>
-            <scope>compile</scope>
-        </dependency>
+<!--        <dependency>-->
+<!--            <groupId>org.jetbrains</groupId>-->
+<!--            <artifactId>annotations</artifactId>-->
+<!--            <version>${jetbrains.annotations.version}</version>-->
+<!--            <scope>compile</scope>-->
+<!--        </dependency>-->
 
         <dependency>
             <groupId>info.picocli</groupId>
