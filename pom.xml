@@ -159,7 +159,7 @@
                                 <arg>--should-stop=ifError=FLOW</arg>
                                 <!--                    <arg>-Xplugin:ErrorProne -Xep:NullAway:ERROR -XepOpt:NullAway:AnnotatedPackages=my.tmp -XepOpt:NullAway:JSpecifyMode=true</arg>-->
                                 <!--                    remove -Xep:NullAway:ERROR -XepOpt:NullAway:JSpecifyMode=true temporatily-->
-                                <arg>-Xplugin:ErrorProne -XepOpt:NullAway:AnnotatedPackages=vpcli</arg>
+                                <arg>-Xplugin:ErrorProne -XepOpt:NullAway:AnnotatedPackages=vpcli  -XepExcludedPaths:.*/target/generated-sources/.*</arg>
 
                                 <!-- necessary only if building with JDK21: https://github.com/google/error-prone/issues/5426 -->
                                 <arg>-XDaddTypeAnnotationsToSymbol=true</arg>

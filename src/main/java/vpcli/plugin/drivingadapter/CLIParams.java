@@ -2,7 +2,7 @@ package vpcli.plugin.drivingadapter;
 
 //import org.jetbrains.annotations.NotNull;
 
-import java.util.Arrays;
+import vpcli.plugin.util.BugException;import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -28,6 +28,7 @@ public class CLIParams {
 
     private final String[] args;
 
+    // TODO use fields directly instead of Map
     //将参数放在两个Map中，就可以区分哪些参数是 key/value 形式的，哪些不具有 value
     private final Map<String, String> keyValueParams = new HashMap<>();
     private final Map<String, String> keyOnlyParams = new HashMap<>();
@@ -162,15 +163,28 @@ public class CLIParams {
     }
 
     ParamValue action() {
-        return new ParamValue(keyValueParams.get(KEY_ACTION));
+
+        String actionValue = keyValueParams.get(KEY_ACTION);
+        if (actionValue == null) {
+            throw new BugException("default -action should be set in constructor");
+        }
+        return new ParamValue(actionValue);
     }
 
     ParamValue path() {
-        return new ParamValue(keyValueParams.get(KEY_PATH));
+        String pathValue = keyValueParams.get(KEY_PATH);
+        if (pathValue == null ){
+            throw new BugException("default -path should be set in constructor");
+        }
+        return new ParamValue(pathValue);
     }
 
     public ParamValue target() {
-        return new ParamValue(keyValueParams.get(KEY_TARGET));
+        String targetValue = keyValueParams.get(KEY_TARGET);
+        if (targetValue == null ) {
+            throw new BugException("default -target should be set in constructor");
+        }
+        return new ParamValue(targetValue);
     }
 
     // 这个类的目的是为了构建流畅的 DSL

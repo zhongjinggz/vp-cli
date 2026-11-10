@@ -18,6 +18,7 @@ public abstract class ViModelElement extends ViElement {
         this.createElement = elementFactory;
     }
 
+    @Override
     public String getName() {
         return vpElement.getName();
     }

@@ -13,6 +13,7 @@ import jakarta.inject.Singleton;
 
 @Singleton
 public class DocWriter {
+    @SuppressWarnings("unused")
     private static final Logger log = LoggerFactory.getLogger(DocWriter.class);
     private final MyIO io;
 

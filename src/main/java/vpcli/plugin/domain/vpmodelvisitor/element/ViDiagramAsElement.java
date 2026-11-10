@@ -19,10 +19,12 @@ public class ViDiagramAsElement extends ViElement {
         visitor.visit(this);
     }
 
+    @Override
     public String getName() {
         return diagram.getName();
     }
-    
+
+    @Override
     public ViElementType getType() {
         return ViElementType.DIAGRAM;
     }
