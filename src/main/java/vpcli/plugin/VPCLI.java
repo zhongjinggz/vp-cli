@@ -7,11 +7,11 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.LinkedHashMap;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Properties;
 
 import org.tinylog.configuration.Configuration;
-
 
 public class VPCLI implements VPPlugin, VPPluginCommandLineSupport {
     // Dagger component 惰性持有者：仅在首次真正使用（在 loaded() 完成 configureLogging
@@ -19,6 +19,7 @@ public class VPCLI implements VPPlugin, VPPluginCommandLineSupport {
     private static final class ComponentHolder {
         private static final VPCliComponent INSTANCE = DaggerVPCliComponent.create();
     }
+
     private static VPCliComponent component() {
         return ComponentHolder.INSTANCE;
     }
@@ -60,7 +61,7 @@ public class VPCLI implements VPPlugin, VPPluginCommandLineSupport {
     }
 
     private static boolean isWindows() {
-        return System.getProperty("os.name", "").toLowerCase().contains("win");
+        return System.getProperty("os.name", "").toLowerCase(Locale.ROOT).contains("win");
     }
 
     // 在插件加载阶段按 profile 选择日志输出目标，程序化配置 Tinylog。
@@ -70,8 +71,14 @@ public class VPCLI implements VPPlugin, VPPluginCommandLineSupport {
     void configureLogging(VPPluginInfo pluginInfo) {
         String profile = System.getProperty("vpcli.log.profile", "dev");
         boolean prod = "prod".equalsIgnoreCase(profile);
-        File logDir = prod ? resolvePluginLogDir(pluginInfo) : null;
-        Configuration.replace(buildLoggingConfig(loadLoggingProperties(), prod, logDir));
+        if (prod) {
+
+            File logDir = resolvePluginLogDir(pluginInfo);
+            Configuration.replace(buildLoggingConfigForPrd(loadLoggingProperties(), logDir));
+        } else {
+            Configuration.replace(buildLoggingConfigForDev(loadLoggingProperties()));
+        }
+
     }
 
     // 加载 classpath 根下的 tinylog.properties（与 Tinylog 自动发现的资源同名，
@@ -90,18 +97,23 @@ public class VPCLI implements VPPlugin, VPPluginCommandLineSupport {
 
     // 从配置文件构造传给 Tinylog 的 writer.* 映射（纯函数，便于单测锁定映射内容；
     // prod 时将动态解析出的插件日志目录拼入 writer.file）。
-    Map<String, String> buildLoggingConfig(Properties props, boolean prod, File logDir) {
-        String prefix = prod ? "prod." : "dev.";
+    Map<String, String> buildLoggingConfigForPrd(Properties props, File logDir) {
         Map<String, String> cfg = new LinkedHashMap<>();
-        cfg.put("writer", props.getProperty(prefix + "writer"));
+        cfg.put("writer", props.getProperty("prod." + "writer"));
         cfg.put("writer.level", props.getProperty("writer.level"));
         cfg.put("writer.format", props.getProperty("writer.format"));
-        if (prod) {
-            String pattern = props.getProperty(prefix + "writer.file.pattern");
-            cfg.put("writer.file", new File(logDir, pattern).getAbsolutePath());
-            cfg.put("writer.policies", props.getProperty(prefix + "writer.policies"));
-            cfg.put("writer.backups", props.getProperty(prefix + "writer.backups"));
-        }
+        String pattern = props.getProperty("prod." + "writer.file.pattern");
+        cfg.put("writer.file", new File(logDir, pattern).getAbsolutePath());
+        cfg.put("writer.policies", props.getProperty("prod." + "writer.policies"));
+        cfg.put("writer.backups", props.getProperty("prod." + "writer.backups"));
+        return cfg;
+    }
+
+    Map<String, String> buildLoggingConfigForDev(Properties props) {
+        Map<String, String> cfg = new LinkedHashMap<>();
+        cfg.put("writer", props.getProperty("dev." + "writer"));
+        cfg.put("writer.level", props.getProperty("writer.level"));
+        cfg.put("writer.format", props.getProperty("writer.format"));
         return cfg;
     }
 

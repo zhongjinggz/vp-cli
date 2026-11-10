@@ -20,7 +20,7 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 /**
- * 锁定 {@link VPCLI#buildLoggingConfig} 产出的配置映射与 {@link VPCLI#resolvePluginLogDir}
+ * 锁定 {@link VPCLI#buildLoggingConfigForPrd} 产出的配置映射与 {@link VPCLI#resolvePluginLogDir}
  * 行为，保证从 logback 迁移到 Tinylog 时的输出格式、级别、滚动策略与原配置等价。
  * 所有可改参数均从配置文件（tinylog.properties，dev./prod. 前缀）读取，而非硬编码。
  */
@@ -47,7 +47,7 @@ public class VPCLIConfigurationTest {
 
     @Test
     void devConfig_isConsoleOnly() throws Exception {
-        Map<String, String> cfg = plugin.buildLoggingConfig(realLoggingProperties(), false, null);
+        Map<String, String> cfg = plugin.buildLoggingConfigForDev(realLoggingProperties());
 
         assertEquals("console", cfg.get("writer"));
         assertEquals("trace", cfg.get("writer.level"));
@@ -65,7 +65,7 @@ public class VPCLIConfigurationTest {
     @Test
     void prodConfig_usesRollingFileInLogDir() throws Exception {
         File logDir = new File(tempDir.toFile(), "log");
-        Map<String, String> cfg = plugin.buildLoggingConfig(realLoggingProperties(), true, logDir);
+        Map<String, String> cfg = plugin.buildLoggingConfigForPrd(realLoggingProperties(), logDir);
 
         assertEquals("rolling file", cfg.get("writer"));
         assertEquals("trace", cfg.get("writer.level"));
@@ -88,7 +88,7 @@ public class VPCLIConfigurationTest {
         props.setProperty("writer.level", "info");
         props.setProperty("writer.format", "{message}");
 
-        Map<String, String> cfg = plugin.buildLoggingConfig(props, false, null);
+        Map<String, String> cfg = plugin.buildLoggingConfigForDev(props);
 
         assertEquals("file", cfg.get("writer"));
         assertEquals("info", cfg.get("writer.level"));
@@ -104,7 +104,7 @@ public class VPCLIConfigurationTest {
         props.setProperty("prod.writer.policies", "daily: 03:00, size: 20mb");
         props.setProperty("prod.writer.backups", "7");
 
-        Map<String, String> cfg = plugin.buildLoggingConfig(props, true, logDir);
+        Map<String, String> cfg = plugin.buildLoggingConfigForPrd(props, logDir);
 
         assertEquals("rolling file", cfg.get("writer"));
         assertEquals(new File(logDir, "app.{pid}.log").getAbsolutePath(), cfg.get("writer.file"));
@@ -147,7 +147,7 @@ public class VPCLIConfigurationTest {
     @Test
     void defaultProfileIsDev() throws Exception {
         System.clearProperty("vpcli.log.profile");
-        Map<String, String> cfg = plugin.buildLoggingConfig(realLoggingProperties(), false, null);
+        Map<String, String> cfg = plugin.buildLoggingConfigForDev(realLoggingProperties());
         assertEquals("console", cfg.get("writer"));
     }
 }
