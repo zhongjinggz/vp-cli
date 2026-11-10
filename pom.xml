@@ -146,6 +146,7 @@
                 <artifactId>maven-compiler-plugin</artifactId>
                 <version>3.16.0</version>
                 <configuration>
+                    <fork>true</fork>
                     <annotationProcessorPaths>
                         <path>
                             <groupId>com.google.dagger</groupId>
