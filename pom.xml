@@ -15,6 +15,7 @@
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+
         <maven.compiler.release>11</maven.compiler.release>
 
         <slf4j.version>2.0.13</slf4j.version>
@@ -23,11 +24,13 @@
         <junit.version>5.12.0</junit.version>
         <mockito.version>5.12.0</mockito.version>
 
-<!--        <jetbrains.annotations.version>26.1.0</jetbrains.annotations.version>-->
-
         <picocli.version>4.7.6</picocli.version>
 
         <dagger.version>2.60.1</dagger.version>
+
+        <errorprone.version>2.50.0</errorprone.version>
+        <nullaway.version>0.13.8</nullaway.version>
+        <jspecify.version>1.0.0</jspecify.version>
 
         <!-- update below dir according to your visual paradigm installation -->
         <vp.sdk.dir>/Applications/Visual Paradigm.app/Contents/Resources/app/lib</vp.sdk.dir>
@@ -87,12 +90,6 @@
             <version>${mockito.version}</version>
             <scope>test</scope>
         </dependency>
-<!--        <dependency>-->
-<!--            <groupId>org.jetbrains</groupId>-->
-<!--            <artifactId>annotations</artifactId>-->
-<!--            <version>${jetbrains.annotations.version}</version>-->
-<!--            <scope>compile</scope>-->
-<!--        </dependency>-->
 
         <dependency>
             <groupId>info.picocli</groupId>
@@ -104,6 +101,13 @@
             <groupId>com.google.dagger</groupId>
             <artifactId>dagger</artifactId>
             <version>${dagger.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.jspecify</groupId>
+            <artifactId>jspecify</artifactId>
+            <version>${jspecify.version}</version>
+            <scope>provided</scope>
         </dependency>
     </dependencies>
 
@@ -140,7 +144,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
-                <version>3.13.0</version>
+                <version>3.16.0</version>
                 <configuration>
                     <release>11</release>
                     <annotationProcessorPaths>
@@ -213,25 +217,6 @@
                 </executions>
             </plugin>
 
-<!--            <plugin>-->
-<!--                &lt;!&ndash; 将运行时依赖复制到 target/lib，供仓库内的 script/vp-* 直接运行 &ndash;&gt;-->
-<!--                <groupId>org.apache.maven.plugins</groupId>-->
-<!--                <artifactId>maven-dependency-plugin</artifactId>-->
-<!--                <version>3.6.1</version>-->
-<!--                <executions>-->
-<!--                    <execution>-->
-<!--                        <id>copy-dependencies</id>-->
-<!--                        <phase>package</phase>-->
-<!--                        <goals>-->
-<!--                            <goal>copy-dependencies</goal>-->
-<!--                        </goals>-->
-<!--                        <configuration>-->
-<!--                            <outputDirectory>${project.build.directory}/lib</outputDirectory>-->
-<!--                            <includeScope>runtime</includeScope>-->
-<!--                        </configuration>-->
-<!--                    </execution>-->
-<!--                </executions>-->
-<!--            </plugin>-->
         </plugins>
     </build>
 </project>
