@@ -9,14 +9,13 @@
     <version>1.0.0</version>
     <packaging>jar</packaging>
 
-    <name>PlantUML Support for Visual Paradigm</name>
-    <description>Import from / Export to PlantUML as a Visual Paradigm plugin</description>
+    <name>Visual Paradigm CLI</name>
+    <description>A Visual Paradigm plugin as CLI</description>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <maven.compiler.release>11</maven.compiler.release>
-
-        <plantuml.version>1.2026.0</plantuml.version>
 
         <slf4j.version>2.0.13</slf4j.version>
         <tinylog.version>2.8.1</tinylog.version>
@@ -30,6 +29,7 @@
 
         <dagger.version>2.60.1</dagger.version>
 
+        <!-- update below dir according to your visual paradigm installation -->
         <vp.sdk.dir>/Applications/Visual Paradigm.app/Contents/Resources/app/lib</vp.sdk.dir>
         <vp.sdk.version>1.0</vp.sdk.version>
     </properties>
