@@ -8,13 +8,8 @@ import java.util.Map;
 
 public class CLIParams {
     static final String KEY_ACTION = "-action";
-    static final String VALUE_IMPORT = "import";
     static final String VALUE_EXPORT = "export";
     static final String VALUE_TREE = "tree";
-    static final String VALUE_LIST_DIAGRAMS = "list-diagrams";
-
-    static final String KEY_TARGET = "-target";
-    static final String VALUE_ALL = "all";
 
     static final String KEY_PATH = "-path";
 
@@ -40,7 +35,6 @@ public class CLIParams {
         this.args = (args == null ? new String[0] : Arrays.copyOf(args, args.length));
 
         keyValueParams.put(KEY_ACTION, VALUE_UNSET);
-        keyValueParams.put(KEY_TARGET, VALUE_UNSET);
         keyValueParams.put(KEY_PATH, VALUE_UNSET);
     }
 
@@ -62,24 +56,16 @@ public class CLIParams {
             setErrorMessage("Error: Missing required argument -action.");
         } else {
             switch (action().text()) {
-                case VALUE_IMPORT:
-                    if (path().isUnset() || path().isNonValue()) {
-                        setErrorMessage("Error: Missing required argument -path for import.");
-                    }
-                    break;
                 case VALUE_EXPORT:
-                    // 需要同时指定目标图表与输出路径
-                    // TODO 潜在Bug：为什么不设置 target 也没有报错？
-                    if (target().isUnset() || target().isNonValue()
-                        || path().isUnset() || path().isNonValue()) {
-                        setErrorMessage("Error: Missing required arguments for export. Use -target and -path.");
+                    if (path().isUnset() || path().isNonValue()) {
+                        System.out.println("Debug1 path():" + path().text());
+                        setErrorMessage("Error: Missing -path for export.");
                     }
                     break;
-                case VALUE_LIST_DIAGRAMS:
                 case VALUE_TREE:
                     break;
                 default:
-                    setErrorMessage("Error: Invalid action specified. Use 'import' or 'export'.");
+                    setErrorMessage("Error: Invalid action specified. Use 'tree' or 'export'.");
             }
         }
 
@@ -177,14 +163,6 @@ public class CLIParams {
             throw new BugException("default -path should be set in constructor");
         }
         return new ParamValue(pathValue);
-    }
-
-    public ParamValue target() {
-        String targetValue = keyValueParams.get(KEY_TARGET);
-        if (targetValue == null ) {
-            throw new BugException("default -target should be set in constructor");
-        }
-        return new ParamValue(targetValue);
     }
 
     // 这个类的目的是为了构建流畅的 DSL

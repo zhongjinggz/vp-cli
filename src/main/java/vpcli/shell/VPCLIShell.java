@@ -20,7 +20,7 @@ import java.util.concurrent.Callable;
  *   <li>{@code list-diagrams} 列出工程中可用的图表</li>
  * </ul>
  *
- * <p>各子命令负责把用户输入拼成兼容旧插件侧 {@code -action/-path/-target}
+ * <p>各子命令负责把用户输入拼成兼容旧插件侧 {@code -action/-path}
  * 的参数（经 {@link PluginArgs} 分层），并交给 {@link VpCliLauncher} 启动
  * VP 插件进程、透传其退出码。
  */
@@ -73,9 +73,8 @@ public final class VPCLIShell implements Runnable {
     }
 
     /**
-     * {@code vpcli export -project <prj> [-target <n>] -path <out>}
-     * <p>缺省 {@code -target=all}（对齐旧插件宽松语义）。对应插件参数
-     * {@code -action export -target <n> -path <out>}。
+     * {@code vpcli export -project <prj> -path <out>}
+     * {@code -action export -path <out>}。
      */
     @Command(
         name = "export",
@@ -87,10 +86,6 @@ public final class VPCLIShell implements Runnable {
                 description = "Visual Paradigm 工程文件路径 (.vpp)")
         String project ="";
 
-        @Option(names = "-target", defaultValue = "all",
-                description = "要导出的图表名；缺省导出全部 (all)")
-        String target = "all";
-
         @Option(names = "-path", required = true,
                 description = "输出目录")
         String path = "";
@@ -99,7 +94,7 @@ public final class VPCLIShell implements Runnable {
         public Integer call() throws IOException {
             String canonicalPath = new File(path).getCanonicalPath();
             return runSafe(() -> VpCliLauncher.launch(PluginArgs.of(
-                project, List.of("export", target, canonicalPath))));
+                project, List.of("export", canonicalPath))));
         }
     }
 

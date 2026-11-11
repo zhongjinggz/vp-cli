@@ -1,7 +1,6 @@
 package vpcli.plugin.drivingadapter;
 
 import vpcli.plugin.application.ExportService;
-import vpcli.plugin.application.ListDiagramsService;
 import vpcli.plugin.application.TreeService;
 import vpcli.plugin.util.MyIO;
 
@@ -20,20 +19,17 @@ public class CLIController {
 
     private final ExportService exportService;
     private final TreeService treeService;
-    private final ListDiagramsService listDiagramsService;
     private final MyIO myIO;
 
     @Inject
     public CLIController(
         ExportService exportService,
         TreeService treeService,
-        ListDiagramsService listDiagramsService,
         MyIO myIO
     ) {
 
         this.exportService = exportService;
         this.treeService = treeService;
-        this.listDiagramsService = listDiagramsService;
         this.myIO = myIO;
     }
 
@@ -46,22 +42,16 @@ public class CLIController {
         }
 
         switch (params.action().text()) {
-            case VALUE_IMPORT:
-                performImport();
-                break;
             case VALUE_EXPORT:
-                performExport(params.target().text(), params.path().text());
+                performExport(params.path().text());
                 break;
             case VALUE_TREE:
                 this.treeService.tree();
                 break;
-            case VALUE_LIST_DIAGRAMS:
-                this.listAvailableDiagrams();
-                break;
         }
     }
 
-    void performExport(String target, String path) throws IOException {
+    void performExport(String path) throws IOException {
         File exportLocation = new File(path);
 
         // Check if the given path exists and is a directory
@@ -77,22 +67,9 @@ public class CLIController {
             return;
         }
 
-        logger.info("Exporting diagram(s): {} to path: {}", target, path);
+        logger.info("Exporting diagram(s) to path: {}", path);
 
-        if (target.equalsIgnoreCase(CLIParams.VALUE_ALL)) {
-            this.exportService.exportAll(exportLocation);
-        } else {
-            exportService.exportSpecificDiagram(target, exportLocation);
-        }
-    }
-
-    void performImport() {
-        CLIController.logger.info("TO Be DEV: Importing functions");
-    }
-
-    void listAvailableDiagrams() {
-        logger.info("Listing available diagrams in the project:");
-        listDiagramsService.listDiagrams();
+        this.exportService.exportAll(exportLocation);
     }
 
 }

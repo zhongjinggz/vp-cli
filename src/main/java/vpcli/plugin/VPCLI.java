@@ -6,16 +6,17 @@ import vpcli.plugin.drivingadapter.CLIController;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.LinkedHashMap;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.Locale;
-import java.util.Map;
 import java.util.Properties;
 
 import org.tinylog.configuration.Configuration;
 
 public class VPCLI implements VPPlugin, VPPluginCommandLineSupport {
-    // Dagger component 惰性持有者：仅在首次真正使用（在 loaded() 完成 configureLogging
-    // 之后）才初始化，从而保证依赖树各 bean 的静态 logger 创建晚于 Tinylog 配置。
+    // Dagger component 惰性持有者：仅在首次真正使用时才初始化，
+    // 保证各 bean 的静态 logger 在 configLogWriterFile 完成配置后才创建。
     private static final class ComponentHolder {
         private static final VPCliComponent INSTANCE = DaggerVPCliComponent.create();
     }
@@ -29,8 +30,51 @@ public class VPCLI implements VPPlugin, VPPluginCommandLineSupport {
 
     @Override
     public void loaded(VPPluginInfo pluginInfo) {
-        configureLogging(pluginInfo);
+        configLogWriterFile(pluginInfo);
         makeScriptsExecutable(pluginInfo);
+    }
+
+    // 在插件加载阶段把日志落点指到“插件安装目录下 log/”，其余参数（级别、格式、
+    // 滚动策略、备份数、文件名模式）全部来自 tinylog.properties，代码不硬编码。
+    // 必须在首次创建/获取 logger 之前调用（Tinylog 配置一经触碰即冻结，之后 set 会抛异常）。
+    void configLogWriterFile(VPPluginInfo pluginInfo) {
+        Path logDir = resolvePluginLogDir(pluginInfo);
+        String pattern = readWriterFilePattern();
+        String file = logDir.resolve(pattern).toAbsolutePath().toString();
+        Configuration.set("writer.file", file);
+    }
+
+    // 解析日志输出目录：优先插件安装目录下 log/；否则系统临时目录；兜底当前工作目录。
+    Path resolvePluginLogDir(VPPluginInfo pluginInfo) {
+        if (pluginInfo != null) {
+            File pluginDirFile = pluginInfo.getPluginDir();
+            if (pluginDirFile != null) {
+                Path logDir = pluginDirFile.toPath().resolve("log");
+                try {
+                    Files.createDirectories(logDir);
+                    return logDir;
+                } catch (IOException e) {
+                    // 目录已存在（此时 createDirectories 视为成功）则仍使用插件下的 log；否则回退临时目录
+                    if (Files.isDirectory(logDir)) {
+                        return logDir;
+                    }
+                }
+            }
+        }
+        return Paths.get(System.getProperty("java.io.tmpdir"));
+    }
+
+    // 从 tinylog.properties 读取文件名模式（pattern 需含 placeholders）
+    String readWriterFilePattern() {
+        Properties props = new Properties();
+        try (InputStream in = VPCLI.class.getResourceAsStream("/tinylog.properties")) {
+            if (in != null) {
+                props.load(in);
+            }
+        } catch (IOException e) {
+            throw new IllegalStateException("无法加载日志配置文件 tinylog.properties", e);
+        }
+        return props.getProperty("writer.file.pattern", "vpcli.{date:yyyy-MM-dd}.{count}.log");
     }
 
     // 在安装/加载插件时，给插件 script/ 目录下的 vp-* 脚本赋可执行权限，
@@ -62,77 +106,6 @@ public class VPCLI implements VPPlugin, VPPluginCommandLineSupport {
 
     private static boolean isWindows() {
         return System.getProperty("os.name", "").toLowerCase(Locale.ROOT).contains("win");
-    }
-
-    // 在插件加载阶段按 profile 选择日志输出目标，程序化配置 Tinylog。
-    // 未指定 -Dvpcli.log.profile 时默认 dev（输出到控制台）。
-    // 所有可改参数（级别、格式、writer 类型、滚动策略、文件名模式）均来自
-    // tinylog.properties，按 dev./prod. 前缀区分，便于通过配置文件调整。
-    void configureLogging(VPPluginInfo pluginInfo) {
-        String profile = System.getProperty("vpcli.log.profile", "dev");
-        boolean prod = "prod".equalsIgnoreCase(profile);
-        if (prod) {
-
-            File logDir = resolvePluginLogDir(pluginInfo);
-            Configuration.replace(buildLoggingConfigForPrd(loadLoggingProperties(), logDir));
-        } else {
-            Configuration.replace(buildLoggingConfigForDev(loadLoggingProperties()));
-        }
-
-    }
-
-    // 加载 classpath 根下的 tinylog.properties（与 Tinylog 自动发现的资源同名，
-    // 作为唯一配置源）。
-    Properties loadLoggingProperties() {
-        Properties props = new Properties();
-        try (InputStream in = VPCLI.class.getResourceAsStream("/tinylog.properties")) {
-            if (in != null) {
-                props.load(in);
-            }
-        } catch (IOException e) {
-            throw new IllegalStateException("无法加载日志配置文件 tinylog.properties", e);
-        }
-        return props;
-    }
-
-    // 从配置文件构造传给 Tinylog 的 writer.* 映射（纯函数，便于单测锁定映射内容；
-    // prod 时将动态解析出的插件日志目录拼入 writer.file）。
-    Map<String, String> buildLoggingConfigForPrd(Properties props, File logDir) {
-        Map<String, String> cfg = new LinkedHashMap<>();
-        cfg.put("writer", props.getProperty("prod." + "writer"));
-        cfg.put("writer.level", props.getProperty("writer.level"));
-        cfg.put("writer.format", props.getProperty("writer.format"));
-        String pattern = props.getProperty("prod." + "writer.file.pattern");
-        cfg.put("writer.file", new File(logDir, pattern).getAbsolutePath());
-        cfg.put("writer.policies", props.getProperty("prod." + "writer.policies"));
-        cfg.put("writer.backups", props.getProperty("prod." + "writer.backups"));
-        return cfg;
-    }
-
-    Map<String, String> buildLoggingConfigForDev(Properties props) {
-        Map<String, String> cfg = new LinkedHashMap<>();
-        cfg.put("writer", props.getProperty("dev." + "writer"));
-        cfg.put("writer.level", props.getProperty("writer.level"));
-        cfg.put("writer.format", props.getProperty("writer.format"));
-        return cfg;
-    }
-
-    // 解析 prod 日志输出目录（仅用于滚动文件 writer 的文件路径）。
-    File resolvePluginLogDir(VPPluginInfo pluginInfo) {
-        if (pluginInfo != null) {
-            File pluginDir = pluginInfo.getPluginDir();
-            if (pluginDir != null) {
-                File logDir = new File(pluginDir, "log");
-                if (logDir.mkdirs() || logDir.isDirectory()) {
-                    return logDir;
-                }
-            }
-        }
-        String dirProp = System.getProperty("vpcli.log.dir");
-        if (dirProp != null && !dirProp.isEmpty()) {
-            return new File(dirProp);
-        }
-        return new File(System.getProperty("user.dir"), "log");
     }
 
     @Override

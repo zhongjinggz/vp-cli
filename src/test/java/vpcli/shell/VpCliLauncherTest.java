@@ -15,13 +15,6 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 public class VpCliLauncherTest {
 
     @Test
-    void export显式target时生成target参数() throws IOException {
-        List<String> tokens = VpCliLauncher.pluginArgTokens(
-            List.of("export", "DiagramA", "/tmp/out"));
-        assertEquals(List.of("-action", "export", "-target", "DiagramA", "-path", "/tmp/out"), tokens);
-    }
-
-    @Test
     void tree只展开action参数() throws IOException {
         List<String> tokens = VpCliLauncher.pluginArgTokens(List.of("tree"));
         assertEquals(List.of("-action", "tree"), tokens);

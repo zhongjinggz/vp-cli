@@ -52,7 +52,6 @@ final class VpCliLauncher {
         command.add("-Xms256m");
         command.add("-Xmx768m");
         command.add("-Djava.awt.headless=true");
-        command.add("-Dvpcli.log.profile=prod");
         command.add("-cp");
         command.add(".:" + vpApp + "/lib/*:" + vpApp + "/ormlib/*");
         command.add("com.vp.cmd.Plugin");
@@ -70,23 +69,16 @@ final class VpCliLauncher {
         return process.waitFor();
     }
 
-    // 按旧实现固定顺序 -action -> -path -> -target 展开插件参数（纯函数，便于单测）
+    // 按旧实现固定顺序 -action -> -path  展开插件参数（纯函数，便于单测）
     static List<String> pluginArgTokens(List<String> pluginArgs) {
         List<String> tokens = new ArrayList<>();
         String action = pluginArgs.get(0);
         tokens.add("-action");
         tokens.add(action);
 
-        if (pluginArgs.size() >= 3 && "export".equals(action)) {
-            String target = pluginArgs.get(1);
-            String path = pluginArgs.get(2);
-//            String path = new File(pluginArgs.get(2)).getCanonicalPath();
+        if (pluginArgs.size() >= 2 && "export".equals(action)) {
+            String path = pluginArgs.get(1);
 
-
-//            if (!"all".equalsIgnoreCase(target)) {
-            tokens.add("-target");
-            tokens.add(target);
-//            }
             tokens.add("-path");
             tokens.add(path);
         }

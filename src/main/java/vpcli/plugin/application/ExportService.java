@@ -51,8 +51,4 @@ public class ExportService {
         return createViProject.of(vpProject);
     }
 
-    public void exportSpecificDiagram(String target, File exportLocation) {
-        // TO BE DEV
-    }
-
 }

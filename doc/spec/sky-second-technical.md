@@ -469,3 +469,108 @@ done
 
 > `vpcli/plugin/drivingadapter/{CLIParams,CLIController}.java` **不改**——插件侧 `-action` 分发保持现状，新 shell 只是把子命令映射回同样的 `-action` 参数。
 
+
+
+## 简化 TinyLog
+### 需求和思路
+- 不再区分开发态和生产态，只用一种配置，都输出到文件
+- 由于 TinyLog 可以自动读取 tinylog.properties，因此 VPCLI.java 中关于 tinylog 的代码可以大幅度简化。Configuration.replace() 很可能不在需要。
+
+
+### 目标与约束
+
+在上一版（双 profile + 程序化 `Configuration.replace`）基础上**再次精简**，只留一种配置：
+
+- 日志后端仍为 Tinylog 2（`tinylog-api` + `tinylog-impl` + `slf4j-tinylog`，三者统一 2.8.1）。
+- **不再区分开发态/生产态**：删除 `-Dvpcli.log.profile`，删除 `dev.*`/`prod.*` 前缀的分组配置。
+- **所有日志一律输出到文件**（wing 意图：dev 也从控制台改为文件）。
+- **尽量移除 `VPCLI.java` 里的 Tinylog 程序化配置**：目标是让 `Configuration.replace()` 及其配套纯函数**全部删除**，改用 Tinylog 的“classpath 自动发现 `tinylog.properties`”机制。
+- 保留行格式**语义**：时间戳 + 级别 + 简单类名 + 消息，级别仍为 `trace`，滚动策略与备份数对齐原 prod 配置。
+
+### 关键设计决策
+
+1. **单 writer = rolling file，纯静态配置文件，零代码配置。**
+   Tinylog 2 会在进程启动时、首次初始化 provider 时自动从 classpath 根读取 `tinylog.properties`（官方机制，见 Configuration 文档 “located directly in the resource directory under the name tinylog.properties”）。因此只要把配置文件写对，**`VPCLI` 无需任何代码去触发/重载配置**，`Configuration.replace()` 自然不需要了。
+
+   改后的 `src/main/resources/tinylog.properties`（单一 writer，无 `dev.*`/`prod.*` 前缀）：
+
+   ```properties
+   # 单一日志配置：所有日志只输出到文件。Tinylog 启动时自动从 classpath 根读取本文件，无需代码介入。
+   writer          = rolling file
+   writer.level    = trace
+   writer.format   = {date:HH:mm:ss.SSS} {level:min-size=5} {class-name} - {message}
+   # 日志写到操作系统系统级临时目录（java.io.tmpdir，如 mac /var/folders/...、Windows %TEMP%）。
+   # 不带 writer.latest，只产物带占位符的滚动文件。
+   writer.file     = #{java.io.tmpdir}/vpcli.{date:yyyy-MM-dd}.{count}.log
+   writer.policies = size: 5mb, daily
+   writer.backups  = 30
+   ```
+
+   - `#{java.io.tmpdir}` 是 Tinylog 2.1+ 的**系统属性占位符**语法：运行时把值替换成系统属性 `java.io.tmpdir` 的内容——这正是 OS 的系统级临时目录（macOS `/var/folders/.../T/`、Linux `/tmp`、Windows `%TEMP%`），完全符合“取得系统级 tmp 目录，输出到 `tmp/vpcli.xxx.log`”的需求。
+   - 由于 `java.io.tmpdir` 自带，**既不需要 `vpcli.log.dir` 系统属性，也不需要在启动命令里拼日志目录**；GUI（VP 内）与 CLI（独立进程）天然都落到同一个系统临时目录，无需任何代码/启动参数参与。
+
+2. **`VPCLI.java` 大幅瘦身：删除全部 Tinylog 程序化代码。**
+   以下方法与 `import org.tinylog.configuration.Configuration` **一并删除**：
+   - `configureLogging(VPPluginInfo)`
+   - `loadLoggingProperties()`
+   - `buildLoggingConfigForPrd(...)`、`buildLoggingConfigForDev(...)`
+   - `resolvePluginLogDir(...)`（以及因此不再需要的 `IOException`/`InputStream`/`LinkedHashMap`/`Map`/`Properties` 导入）
+   `loaded()` 不再负责配置日志，只保留 `makeScriptsExecutable(pluginInfo)`：
+
+   ```java
+   @Override
+   public void loaded(VPPluginInfo pluginInfo) {
+       makeScriptsExecutable(pluginInfo);
+   }
+   ```
+
+3. **惰性 Holder 的顺序约束随之消失，但保留不改（减少爆破面）。**
+   `LogHolder`/`ComponentHolder` 当初引入是为了保证“先 `Configuration.replace`、后首次创建 logger”的顺序。改静态自动配置后，Tinylog 在首次触碰 provider 时**自行**从 classpath 读取配置文件，顺序约束不再需要代码保证；两个惰性持有者继续保留无副作用，可避免额外改动 Dagger/`invoke()`。
+
+4. **有意的行为变化（符合需求）**：dev（GUI，VP 内）不再输出到控制台，而是与 CLI 一样写文件——统一写到系统临时目录（`#{java.io.tmpdir}`）。
+
+### 实施步骤
+
+#### 步骤 1：重写 `tinylog.properties`（单配置、单 writer）
+
+按“关键设计决策 1”的内容整体替换 `src/main/resources/tinylog.properties`，去掉 `dev.writer`/`prod.writer` 等所有前缀项，合并为一份 rolling file 配置，日志目录用 `#{java.io.tmpdir}`。
+
+#### 步骤 2：精简 `VPCLI.java`
+
+按“关键设计决策 2”删除 `configureLogging`/`loadLoggingProperties`/`buildLoggingConfigForPrd`/`buildLoggingConfigForDev`/`resolvePluginLogDir` 及 `import org.tinylog.configuration.Configuration`，删除不再使用的 import（`IOException`、`InputStream`、`LinkedHashMap`、`Map`、`Properties`），`loaded()` 改为只调 `makeScriptsExecutable(pluginInfo)`。`invoke()`/`unloaded()`/`ComponentHolder` 保持现状。
+
+#### 步骤 3：调整 `VpCliLauncher` 的 JVM 参数
+
+`src/main/java/vpcli/shell/VpCliLauncher.java` 此前固定追加 `-Dvpcli.log.profile=prod`（55 行）。因 profile 已废除、且日志目录直接由 `#{java.io.tmpdir}` 决定：
+
+- **删除**`-Dvpcli.log.profile=prod` 该参数（已废弃）。
+- **无需再传任何日志目录相关系统属性**——GUI 与 CLI 在配置层面已统一指向系统临时目录。
+- 该进程参数与 `-pluginargs` 之后插件参数的分层、退出码透传逻辑**不变**。
+
+#### 步骤 4：更新测试
+
+- **删除** `src/test/java/vpcli/plugin/VPCLIConfigurationTest.java`——它断言的是已删除的 `buildLoggingConfigFor*`/`resolvePluginLogDir`，随之失效。
+- **新增/改写**一个针对“静态配置文件”的轻量测试（可沿用同一文件名或改名），加载 classpath 根 `/tinylog.properties` 并断言关键键，锁定这份静态配置：
+  - `writer == "rolling file"`
+  - `writer.level == "trace"`
+  - `writer.format` 含 `{date:HH:mm:ss.SSS}`、`{class-name}`
+  - `writer.file` 以 `#{java.io.tmpdir}/vpcli.{date:yyyy-MM-dd}.{count}.log` 结尾（即写入系统临时目录），且无 `writer.latest` 键
+  - `writer.policies == "size: 5mb, daily"`、`writer.backups == "30"`
+- **`VPCLITest`** 保持（`unloaded()` 无操作）；如加用例可补充 `loaded(null)` 仅触发 `makeScriptsExecutable` 且静默成功（该分支对 null/in 均安全返回）。
+
+#### 步骤 5：真实环境验证（手动）
+
+1. `mvn clean package` 成功；`target/plugins.vpcli.zip` 的 `classes/` 含 `tinylog.properties`（不含 `dev.*`/`prod.*` 残留），`lib/` 含 `tinylog-api`/`tinylog-impl`/`slf4j-tinylog`，不再依赖 `logback`。
+2. dev（GUI）：安装插件后触发若干日志（如导出操作的 `info`、`MyIO.writeFile` 的 `debug`、`PumlElementExporterRepository.findBy` 的 `warn`），确认不再打印到控制台，而是在**系统临时目录**（macOS `/var/folders/.../T/`、Linux `/tmp`、Windows `%TEMP%`）下的滚动文件出现 `vpcli.{yyyy-MM-dd}.{count}.log`，行格式为“时间戳 + 级别 + 简单类名 + 消息”。
+3. CLI：执行一次导出，确认日志文件名与 dev 一致，落在同一系统临时目录，且 TRACE 级确实被记录。
+4. 回归：既有其他单测（含 shell 拼参、按钮可执行等）`mvn test` 全绿。
+
+### 涉及文件清单
+
+- `src/main/resources/tinylog.properties`（重写为单一 rolling file 配置，去掉 dev/prod 前缀，日志目录用 `#{java.io.tmpdir}`）
+- `src/main/java/vpcli/plugin/VPCLI.java`（删除 Tinylog 程序化配置方法/import，`loaded()` 仅调 `makeScriptsExecutable`）
+- `src/main/java/vpcli/shell/VpCliLauncher.java`（删除 `-Dvpcli.log.profile=prod`）
+- `src/test/java/vpcli/plugin/VPCLIConfigurationTest.java`（删除或改写为断言静态 `tinylog.properties` 关键键）
+- `assembly/plugin-zip.xml`（无需改动，已 include `tinylog.properties`）
+
+> 其余源码日志调用点（13 处 SLF4J）与 `vpcli/plugin/drivingadapter` 侧**均不改动**。

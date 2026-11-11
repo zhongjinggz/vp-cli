@@ -13,7 +13,6 @@ import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.PrintStream;
-import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import org.junit.jupiter.api.Test;
@@ -22,10 +21,7 @@ import org.junit.jupiter.api.function.Executable;
 import org.mockito.MockedStatic;
 import vpcli.plugin.VPCLI;
 import vpcli.plugin.application.ExportService;
-import vpcli.plugin.application.ListDiagramsService;
 import vpcli.plugin.application.TreeService;
-import vpcli.plugin.drivingadapter.CLIController;
-import vpcli.plugin.drivingadapter.CLIParams;
 import vpcli.plugin.util.MyIO;
 
 /**
@@ -45,8 +41,7 @@ class CLIControllerTest {
     private final MyIO myIOMock = mock(MyIO.class);
     private final ExportService exportServiceMock = mock(ExportService.class);
     private final TreeService treeServiceMock = mock(TreeService.class);
-    private final ListDiagramsService listDiagramsServiceMock = mock(ListDiagramsService.class);
-    private final CLIController controller = new CLIController(exportServiceMock, treeServiceMock, this.listDiagramsServiceMock,myIOMock);
+    private final CLIController controller = new CLIController(exportServiceMock, treeServiceMock, myIOMock);
 
     private void invoke(String[] args) throws IOException {
         controller.invoke(args);
@@ -76,7 +71,7 @@ class CLIControllerTest {
         // Path does not yet exist; mkdirs() succeeds.
         String newDir = tempDir.resolve("fresh").resolve("sub").toString();
         invokeNoThrow(() -> invoke(
-                new String[]{"-action", "export", "-target", "all", "-path", newDir}));
+                new String[]{"-action", "export",  "-path", newDir}));
         verify(exportServiceMock).exportAll(new File(newDir));
     }
 
@@ -86,44 +81,19 @@ class CLIControllerTest {
         File barrier = Files.createFile(tempDir.resolve("barrier")).toFile();
         String obstructed = new File(barrier, "sub" + File.separator + "dir").getAbsolutePath();
         invokeNoThrow(() -> invoke(
-                new String[]{"-action", "export", "-target", "all", "-path", obstructed}));
+                new String[]{"-action", "export", "-path", obstructed}));
         verify(myIOMock).println(contains("Could not create the specified directory"));
     }
 
-    @Test
-    void invoke_exportPathNotDirectory_printsError() throws Throwable {
-        // Path exists but is a regular file, not a directory.
-        File aFile = Files.createFile(tempDir.resolve("afile.txt")).toFile();
-        invokeNoThrow(() -> invoke(
-                new String[]{"-action", "export", "-target", "all", "-path", aFile.getAbsolutePath()}));
-        verify(myIOMock).println(contains("not a directory"));
-    }
 
     @Test
     void invoke_exportAll_callsPipeline() throws Throwable {
         File dir = tempDir.toFile();
         invokeNoThrow(() -> invoke(
-                new String[]{"-action", "export", "-target", "all", "-path", dir.getAbsolutePath()}));
+                new String[]{"-action", "export", "-path", dir.getAbsolutePath()}));
         verify(exportServiceMock).exportAll(dir);
     }
 
-    @Test
-    void invoke_exportSpecific_callsPipeline() {
-        File dir = tempDir.toFile();
-        invokeNoThrow(() -> invoke(
-                new String[]{"-action", "export", "-target", "someDiagram", "-path", dir.getAbsolutePath()}));
-        verify(exportServiceMock).exportSpecificDiagram("someDiagram", dir);
-    }
-
-
-    // ---------- invoke -> listAvailableDiagrams 分支（转调 pipeline 列举） ----------
-
-    @Test
-    void invoke_执行列出图表清单命令_则listDiagrams被调用() {
-        invokeNoThrow(() -> invoke(
-                new String[]{"-action", "list-diagrams"}));
-        verify(listDiagramsServiceMock).listDiagrams();
-    }
 
     // ---------- invoke 的 switch 默认分支（action 既非 import 也非 export） ----------
 

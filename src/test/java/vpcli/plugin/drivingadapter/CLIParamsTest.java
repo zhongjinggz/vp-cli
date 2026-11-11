@@ -5,11 +5,9 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import org.junit.jupiter.api.Test;
-import vpcli.plugin.drivingadapter.CLIParams;
 
 /**
  * <p>说明：类内部含有两处仅靠外部 API 无法触达的“防御性”分支：
@@ -23,37 +21,14 @@ class CLIParamsTest {
     // ---------- 正常/合法参数 ----------
 
     @Test
-    void valueOf_正常执行Import命令() {
-        CLIParams params = CLIParams.valueOf(new String[]{"-action", "import", "-path", "folder"});
-
-        assertFalse(params.isInvalid());
-        assertEquals("", params.errorMessage());
-        assertEquals("import", params.action().text());
-        assertFalse(params.action().isNonValue());
-        assertEquals("folder", params.path().text());
-        assertFalse(params.path().isUnset());
-        assertFalse(params.path().isNonValue());
-    }
-
-    @Test
     void valueOf_validExport_parsesWithoutError() {
         CLIParams params = CLIParams.valueOf(
-                new String[]{"-action", "export", "-target", "all", "-path", "out"});
+                new String[]{"-action", "export", "-path", "out"});
 
         assertFalse(params.isInvalid());
         assertEquals("export", params.action().text());
-        assertFalse(params.target().isUnset());
-        assertFalse(params.target().isNonValue());
         assertFalse(params.path().isUnset());
         assertFalse(params.path().isNonValue());
-    }
-
-    @Test
-    void valueOf_正常执行listdiagrams命令() {
-        CLIParams params = CLIParams.valueOf(new String[]{"-action", "list-diagrams"});
-
-        assertFalse(params.isInvalid());
-        assertEquals("list-diagrams", params.action().text());
     }
 
     // ---------- action 相关错误分支 ----------
@@ -76,40 +51,6 @@ class CLIParamsTest {
         assertTrue(params.errorMessage().contains("Invalid action specified"));
     }
 
-    @Test
-    void valueOf_actionLiteralNonValue_hitsDefaultSwitchBranch() {
-        // "non_value" 作为字面量传入 action，落入 switch 的 default 分支
-        CLIParams params = CLIParams.valueOf(
-                new String[]{"-action", "non_value", "-target", "all", "-path", "x"});
-
-        assertTrue(params.isInvalid());
-        assertTrue(params.action().isNonValue());
-        assertTrue(params.errorMessage().contains("Invalid action specified"));
-    }
-
-    // ---------- import 相关错误分支 ----------
-
-    @Test
-    void valueOf_importMissingPath_reportsError() {
-        CLIParams params = CLIParams.valueOf(new String[]{"-action", "import"});
-
-        assertTrue(params.isInvalid());
-        assertTrue(params.path().isUnset());
-        assertTrue(params.errorMessage().contains("-path for import"));
-    }
-
-    @Test
-    void valueOf_importPathLiteralNonValue_reportsError() {
-        // path 未设置真实的非空值，而是字面量 non_value，属于 isNonValue 分支
-        CLIParams params = CLIParams.valueOf(
-                new String[]{"-action", "import", "-path", "non_value"});
-
-        assertTrue(params.isInvalid());
-        assertFalse(params.path().isUnset());
-        assertTrue(params.path().isNonValue());
-        assertTrue(params.errorMessage().contains("-path for import"));
-    }
-
     // ---------- export 相关错误分支 ----------
 
     @Test
@@ -117,41 +58,27 @@ class CLIParamsTest {
         CLIParams params = CLIParams.valueOf(new String[]{"-action", "export"});
 
         assertTrue(params.isInvalid());
-        assertTrue(params.target().isUnset());
-        assertTrue(params.errorMessage().contains("Missing required arguments for export"));
-    }
-
-    @Test
-    void valueOf_exportTargetLiteralNonValue_reportsError() {
-        CLIParams params = CLIParams.valueOf(
-                new String[]{"-action", "export", "-target", "non_value", "-path", "out"});
-
-        assertTrue(params.isInvalid());
-        assertFalse(params.target().isUnset());
-        assertTrue(params.target().isNonValue());
-        assertTrue(params.errorMessage().contains("Missing required arguments for export"));
+        assertTrue(params.errorMessage().contains("Missing -path for export"));
     }
 
     @Test
     void valueOf_exportPathUnset_reportsError() {
-        CLIParams params = CLIParams.valueOf(new String[]{"-action", "export", "-target", "all"});
+        CLIParams params = CLIParams.valueOf(new String[]{"-action", "export"});
 
         assertTrue(params.isInvalid());
-        assertFalse(params.target().isUnset());
         assertTrue(params.path().isUnset());
-        assertTrue(params.errorMessage().contains("Missing required arguments for export"));
+        assertTrue(params.errorMessage().contains("Missing -path for export"));
     }
 
     @Test
     void valueOf_exportPathLiteralNonValue_reportsError() {
         CLIParams params = CLIParams.valueOf(
-                new String[]{"-action", "export", "-target", "all", "-path", "non_value"});
+                new String[]{"-action", "export", "-path", "non_value"});
 
         assertTrue(params.isInvalid());
-        assertFalse(params.target().isUnset());
         assertFalse(params.path().isUnset());
         assertTrue(params.path().isNonValue());
-        assertTrue(params.errorMessage().contains("Missing required arguments for export"));
+        assertTrue(params.errorMessage().contains("Missing -path for export"));
     }
 
     // ---------- acquireParams 退出分支（usage / 未知参数 / 缺值） ----------
@@ -184,17 +111,6 @@ class CLIParamsTest {
         assertTrue(params.errorMessage().contains("Usage:"));
     }
 
-    @Test
-    void parse_nullArgs_showsUsage_throughReflection() throws Exception {
-        // 字段 args 构造时总是非 null；只有反射注入 null 才能覆盖 args==null 分支
-        CLIParams params = new CLIParams(new String[]{"-action", "import"});
-        setArgs(params, null);
-
-        params.parse();
-
-        assertTrue(params.isInvalid());
-        assertTrue(params.errorMessage().contains("Usage:"));
-    }
 
     @Test
     void parse_unknownArgument_reportsUnknown() {
@@ -243,9 +159,4 @@ class CLIParamsTest {
 
     // ---------- 辅助工具 ----------
 
-    private static void setArgs(CLIParams params, String[] args) throws Exception {
-        Field f = CLIParams.class.getDeclaredField("args");
-        f.setAccessible(true);
-        f.set(params, args);
-    }
 }
