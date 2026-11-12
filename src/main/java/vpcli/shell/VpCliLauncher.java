@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Properties;
 
@@ -39,8 +40,8 @@ final class VpCliLauncher {
     private VpCliLauncher() {
     }
 
-    static int launch(PluginArgs args, String projectPath) throws IOException, InterruptedException {
-        String project = new File(args.project).getCanonicalPath();
+    static int launch(PluginArgs args, String projectPath, String... pluginArgs2) throws IOException, InterruptedException {
+        String project = new File(projectPath).getCanonicalPath();
         String vpApp = loadVpApp();
 
         File appBin = new File(vpApp, "bin");
@@ -60,7 +61,8 @@ final class VpCliLauncher {
         command.add("-project");
         command.add(project);
         command.add("-pluginargs");
-        command.addAll(pluginArgTokens(args.pluginArgs));
+//        command.addAll(pluginArgTokens(args.pluginArgs));
+        command.addAll(Arrays.asList(pluginArgs2));
 
         Process process = new ProcessBuilder(command)
             .directory(appBin)

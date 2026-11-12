@@ -28,7 +28,7 @@ public final class VPTree implements Callable<Integer> {
 
     @Override
     public Integer call() {
-        return runSafe(() -> VpCliLauncher.launch(PluginArgs.of(project, List.of("tree")),project ));
+        return runSafe(() -> VpCliLauncher.launch(PluginArgs.of(project, List.of("tree")),project,"-action", "tree"));
     }
 
     public static void main(String[] args) {

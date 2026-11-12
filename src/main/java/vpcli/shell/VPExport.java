@@ -37,7 +37,7 @@ public final class VPExport implements Callable<Integer> {
         try {
             String canonicalPath = new File(path).getCanonicalPath();
             return runSafe(() -> VpCliLauncher.launch(PluginArgs.of(
-                project, List.of("export", canonicalPath)),project ));
+                project, List.of("export", canonicalPath)),project,"-action", "export", "-path", canonicalPath ));
         } catch (IOException e) {
             System.err.println("错误: " + e.getMessage());
             return 1;
