@@ -30,7 +30,6 @@ import java.util.concurrent.Callable;
     subcommands = {
         VPCLIShell.ExportCommand.class,
         VPCLIShell.TreeCommand.class,
-        VPCLIShell.ListDiagramsCommand.class
     },
     mixinStandardHelpOptions = true,
     version = "vpcli 1.1.1"
@@ -94,7 +93,7 @@ public final class VPCLIShell implements Runnable {
         public Integer call() throws IOException {
             String canonicalPath = new File(path).getCanonicalPath();
             return runSafe(() -> VpCliLauncher.launch(PluginArgs.of(
-                project, List.of("export", canonicalPath))));
+                project, List.of("export", canonicalPath)), project));
         }
     }
 
@@ -114,28 +113,7 @@ public final class VPCLIShell implements Runnable {
 
         @Override
         public Integer call() {
-            return runSafe(() -> VpCliLauncher.launch(PluginArgs.of(project, List.of("tree"))));
-        }
-    }
-
-    /**
-     * {@code vpcli list-diagrams -project <prj>}
-     * <p>对应插件参数 {@code -action list-diagrams}。
-     */
-    @Command(
-        name = "list-diagrams",
-        mixinStandardHelpOptions = true,
-        description = "列出工程中可用的图表。"
-    )
-    static final class ListDiagramsCommand implements Callable<Integer> {
-        @Option(names = "-project", required = true,
-                description = "Visual Paradigm 工程文件路径 (.vpp)")
-        String project = "";
-
-        @Override
-        public Integer call() {
-            return runSafe(() -> VpCliLauncher.launch(
-                PluginArgs.of(project, List.of("list-diagrams"))));
+            return runSafe(() -> VpCliLauncher.launch(PluginArgs.of(project, List.of("tree")),project ));
         }
     }
 }
