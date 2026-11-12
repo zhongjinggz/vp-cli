@@ -8,13 +8,15 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Properties;
 
+import static vpcli.plugin.util.Strings.isNotBlank;
+
 /**
  * 切换到 VP 安装目录的 bin，启动 java 加载 {@code com.vp.cmd.Plugin} 插件并转发命令行参数，以插件的退出码
  * 结束本进程。
  */
 final class VpCliLauncher {
 
-    private static final String VP_APP_PATH =
+    private static final String DEFAULT_VP_APP_PATH =
         "/Applications/Visual Paradigm.app/Contents/Resources/app";
 
     private VpCliLauncher() {
@@ -49,20 +51,21 @@ final class VpCliLauncher {
         return process.waitFor();
     }
 
-    private static String getVpAppPath() {
-        Properties props = new Properties();
-        try (InputStream in = VpCliLauncher.class.getClassLoader()
-            .getResourceAsStream("vpcli.properties")) {
-            if (in != null) {
-                props.load(in);
-                String vpApp = props.getProperty("vp.app");
-                if (vpApp != null && !vpApp.isBlank()) {
-                    return vpApp.replace("\"", "").trim();
-                }
+    private static String getVpAppPath() throws IOException {
+        InputStream in = VpCliLauncher.class
+            .getClassLoader()
+            .getResourceAsStream("vpcli.properties");
+
+        if (in != null) {
+            Properties vpcliProperties = new Properties();
+            vpcliProperties.load(in);
+            String vpAppPath = vpcliProperties.getProperty("vp.app");
+            if (isNotBlank(vpAppPath)) {
+                return vpAppPath.replace("\"", "").trim();
             }
-        } catch (IOException e) {
-            // 忽略，回退到默认路径
         }
-        return VP_APP_PATH;
+        // TODO throw exception in case property not found, don't use default value?
+        // or, define the default value by os?
+        return DEFAULT_VP_APP_PATH;
     }
 }
