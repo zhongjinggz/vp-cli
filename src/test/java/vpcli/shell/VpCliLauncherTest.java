@@ -73,7 +73,7 @@ public class VpCliLauncherTest {
     private PluginArgs launchCaptured(Callable action) {
         try (MockedStatic<VpCliLauncher> launcher = mockStatic(VpCliLauncher.class)) {
             ArgumentCaptor<PluginArgs> captor = ArgumentCaptor.forClass(PluginArgs.class);
-            launcher.when(() -> VpCliLauncher.launch(captor.capture(),null )).thenReturn(0);
+            launcher.when(() -> VpCliLauncher.launch(null )).thenReturn(0);
             action.call();
             return captor.getValue();
         } catch (RuntimeException e) {

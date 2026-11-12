@@ -40,7 +40,7 @@ final class VpCliLauncher {
     private VpCliLauncher() {
     }
 
-    static int launch(PluginArgs args, String projectPath, String... pluginArgs2) throws IOException, InterruptedException {
+    static int launch(String projectPath, String... pluginArgs2) throws IOException, InterruptedException {
         String project = new File(projectPath).getCanonicalPath();
         String vpApp = loadVpApp();
 

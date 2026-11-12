@@ -6,40 +6,31 @@ import picocli.CommandLine.Option;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.List;
 import java.util.concurrent.Callable;
 
-/**
- * 独立导出命令。
- *
- * <p>{@code vp-export -project <prj> -path <out>} 把用户输入拼成插件侧
- * {@code -action export -path <out>} 的参数并交给 {@link VpCliLauncher}，
- * 透传其退出码。
- */
 @Command(
     name = "vp-export",
     mixinStandardHelpOptions = true,
-    description = "导出模型到 PlantUML。",
-    version = "vpcli 1.1.1"
+    description = "export the model to PlantUML files",
+    version = "Sky-First-JiaZi 1.1.1"
 )
 public final class VPExport implements Callable<Integer> {
 
     @Option(names = "-project", required = true,
-            description = "Visual Paradigm 工程文件路径 (.vpp)")
-    String project = "";
+            description = "Visual Paradigm project path (*.vpp)")
+    String projectPath = "";
 
     @Option(names = "-path", required = true,
-            description = "输出目录")
-    String path = "";
+            description = "output path")
+    String outputPath = "";
 
     @Override
     public Integer call() {
         try {
-            String canonicalPath = new File(path).getCanonicalPath();
-            return runSafe(() -> VpCliLauncher.launch(PluginArgs.of(
-                project, List.of("export", canonicalPath)),project,"-action", "export", "-path", canonicalPath ));
+            String canonicalPath = new File(outputPath).getCanonicalPath();
+            return runSafe(() -> VpCliLauncher.launch(projectPath,"-action", "export", "-path", canonicalPath ));
         } catch (IOException e) {
-            System.err.println("错误: " + e.getMessage());
+            System.err.println("Error: " + e.getMessage());
             return 1;
         }
     }
@@ -55,11 +46,11 @@ public final class VPExport implements Callable<Integer> {
         try {
             return task.run();
         } catch (IOException e) {
-            System.err.println("错误: " + e.getMessage());
+            System.err.println("Error: " + e.getMessage());
             return 1;
         } catch (InterruptedException e) {
             Thread.currentThread().interrupt();
-            System.err.println("中断: " + e.getMessage());
+            System.err.println("Error: " + e.getMessage());
             return 1;
         }
     }
