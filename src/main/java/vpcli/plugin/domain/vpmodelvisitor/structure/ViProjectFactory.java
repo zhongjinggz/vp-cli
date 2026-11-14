@@ -15,7 +15,7 @@ public class ViProjectFactory {
     public ViProjectFactory(ViElementFactory viElementFactory) {
         this.viElementFactory = viElementFactory;
     }
-    public ViProject of(IProject project) {
+    public ViProject build(IProject project) {
         return new ViProject(project, viElementFactory);
     }
 }

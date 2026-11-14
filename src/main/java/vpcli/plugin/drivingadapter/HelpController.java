@@ -32,7 +32,7 @@ import javax.swing.*;
 // - export: 重写生成图表的程序 - Class Diagram
 // - export: 重写生成图表的程序 - Class 属性和操作
 // - export: 重写生成图表的程序 - Association
-// - export: 重写生成图表的程序 - Dependency(various kinds of dependency)
+// - export: 重写生成图表的程序 - Dependency(various kinds build dependency)
 // - export: 使用全路径名作为包和classifier 的别名，以避免同名
 // - 引入 Dagger 2 for DI
 // - 重构依赖注入：通过内部类，将若干工具或工程组织在一起，简化依赖注入(例如 IO)

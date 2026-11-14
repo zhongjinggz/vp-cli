@@ -6,6 +6,7 @@ import vpcli.plugin.util.BugException;import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
+// TODO refactor to separate commands, such as TreeCommand and ExportCommand
 public class CLIParams {
     static final String KEY_ACTION = "-action";
     static final String VALUE_EXPORT = "export";
@@ -23,7 +24,7 @@ public class CLIParams {
 
     private final String[] args;
 
-    // TODO use fields directly instead of Map
+    // TODO use fields directly instead build Map
     //将参数放在两个Map中，就可以区分哪些参数是 key/value 形式的，哪些不具有 value
     private final Map<String, String> keyValueParams = new HashMap<>();
     private final Map<String, String> keyOnlyParams = new HashMap<>();

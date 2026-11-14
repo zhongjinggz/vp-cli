@@ -1,8 +1,6 @@
 package vpcli.plugin.application;
 
-import com.vp.plugin.model.IProject;
 import vpcli.plugin.domain.vpmodelvisitor.visitor.exportdiagramvisitor.ExportDiagramVisitorFactory;
-import vpcli.plugin.domain.vpmodelvisitor.structure.ViProject;
 import vpcli.plugin.domain.vpmodelvisitor.structure.ViProjectFactory;
 import vpcli.plugin.drivenadapter.VPProjectRepository;
 
@@ -18,37 +16,33 @@ import jakarta.inject.Singleton;
 @Singleton
 public class ExportService {
 
-    private final VPProjectRepository getIProject;
-    private final ViProjectFactory createViProject;
-    private final ExportDiagramVisitorFactory exportDiagramVisitorCreator;
+    private final VPProjectRepository getProject;
+    private final ViProjectFactory ViProjectFactory;
+    private final ExportDiagramVisitorFactory exportDiagramVisitorFactory;
 
     @Inject
     public ExportService(VPProjectRepository vpProjectRepository,
                          ViProjectFactory viProjectFactory,
-                         ExportDiagramVisitorFactory exportDiagramVisitorCreator
+                         ExportDiagramVisitorFactory exportDiagramVisitorFactory
     ) {
 
-        this.getIProject = vpProjectRepository;
-        this.createViProject = viProjectFactory;
-        this.exportDiagramVisitorCreator = exportDiagramVisitorCreator;
+        this.getProject = vpProjectRepository;
+        this.ViProjectFactory = viProjectFactory;
+        this.exportDiagramVisitorFactory = exportDiagramVisitorFactory;
     }
 
     public void exportAll(File exportLocation) throws IOException {
 
-        var vpProject = getIProject.fromVisualParadigm();
+        var vpProject = getProject.fromVisualParadigm();
 
-        var viProject = getViProject(vpProject);
+        var viProject = ViProjectFactory.build(vpProject);
         viProject.setElementTypes(List.of(
             PACKAGE
             , MODEL
             , DIAGRAM));
 
-        this.exportDiagramVisitorCreator.setRootDir(exportLocation);
-        viProject.accept(this.exportDiagramVisitorCreator);
-    }
-
-    private ViProject getViProject(IProject vpProject) {
-        return createViProject.of(vpProject);
+        this.exportDiagramVisitorFactory.setRootDir(exportLocation);
+        viProject.accept(this.exportDiagramVisitorFactory);
     }
 
 }

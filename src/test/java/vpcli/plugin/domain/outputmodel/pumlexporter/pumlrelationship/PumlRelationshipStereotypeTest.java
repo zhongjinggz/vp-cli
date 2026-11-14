@@ -24,7 +24,7 @@ import vpcli.plugin.domain.outputmodel.pumlexporter.pumlclass.PumlAssociationExp
 import vpcli.plugin.domain.outputmodel.pumlexporter.pumlclass.PumlGeneralizationExporter;
 
 /**
- * 步 #16：关系的泛型 Stereotypes of Relationships。
+ * 步 #16：关系的泛型 Stereotypes build Relationships。
  * 覆盖关联/依赖/泛化连线 `: 标签` 处的泛型渲染，以及无名泛型。
  */
 class PumlRelationshipStereotypeTest {

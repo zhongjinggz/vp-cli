@@ -17,28 +17,28 @@ public class TreeService {
 
     private final VPProjectRepository vpProjectRepository;
     private final ViProjectFactory viProjectFactory;
-    private final TreeVisitorFactory treeVisitorCreator;
+    private final TreeVisitorFactory treeVisitorFactory;
 
     @Inject
     public TreeService(VPProjectRepository vpProjectRepository
         , ViProjectFactory viProjectFactory
-        , TreeVisitorFactory treeVisitorCreator) {
+        , TreeVisitorFactory treeVisitorFactory) {
 
         this.vpProjectRepository = vpProjectRepository;
         this.viProjectFactory = viProjectFactory;
-        this.treeVisitorCreator = treeVisitorCreator;
+        this.treeVisitorFactory = treeVisitorFactory;
     }
 
     public void tree() throws IOException {
         var project = vpProjectRepository.fromVisualParadigm();
 
-        var viProject = viProjectFactory.of(project);
+        var viProject = viProjectFactory.build(project);
         viProject.setElementTypes(
             List.of(PACKAGE
                 , MODEL
                 , CLASS
                 , DIAGRAM));
 
-        viProject.accept(treeVisitorCreator);
+        viProject.accept(treeVisitorFactory);
     }
 }

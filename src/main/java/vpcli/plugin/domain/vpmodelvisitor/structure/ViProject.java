@@ -6,49 +6,49 @@ import vpcli.plugin.domain.vpmodelvisitor.ViElementType;
 import vpcli.plugin.domain.vpmodelvisitor.element.ViElement;
 import vpcli.plugin.domain.vpmodelvisitor.element.ViElementFactory;
 import vpcli.plugin.domain.vpmodelvisitor.visitor.ViElementVisitor;
-import vpcli.plugin.domain.vpmodelvisitor.visitor.ViElementVisitorFactory;
+import vpcli.plugin.domain.vpmodelvisitor.visitor.VisitorFactory;
 
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
 public class ViProject {
-    private final IProject project;
-    private final ViElementFactory createElement;
-    private final List<ViElementType> myElementTypes = new ArrayList<>();
-    private ViElementVisitorFactory createVisitor;
+    private final IProject vpProject;
+    private final ViElementFactory viElementFactory;
+    private final List<ViElementType> viElementTypes = new ArrayList<>();
+    private VisitorFactory visitorFactory;
 
     public ViProject(IProject vpProject
         , ViElementFactory elementFactory) {
 
-        this.project = vpProject;
-        this.createElement = elementFactory;
+        this.vpProject = vpProject;
+        this.viElementFactory = elementFactory;
     }
 
     public void setElementTypes(List<ViElementType> myElementTypes) {
-        this.myElementTypes.addAll(myElementTypes);
+        this.viElementTypes.addAll(myElementTypes);
     }
 
-    public void accept(ViElementVisitorFactory visitorCreator) throws IOException {
-        this.createVisitor = visitorCreator;
+    public void accept(VisitorFactory visitorFactory) throws IOException {
+        this.visitorFactory = visitorFactory;
         List<ViElement> elements = createTopLevelElements();
-        ViElementVisitor rootVisitor = this.createVisitor.createRoot();
+        ViElementVisitor rootVisitor = this.visitorFactory.createRoot();
         elementsAccept(elements, rootVisitor);
     }
 
     private List<ViElement> createTopLevelElements() {
         String[] vpModelTypes = getVpModelTypeArray();
-        var vpElements = project.toModelElementArray(vpModelTypes);
+        var vpElements = vpProject.toModelElementArray(vpModelTypes);
 
         List<ViElement> result = new ArrayList<>();
         for (var anElement : vpElements) {
-            result.add(createElement.from(anElement));
+            result.add(viElementFactory.from(anElement));
         }
         return result;
     }
 
     private String [] getVpModelTypeArray() {
-        return myElementTypes.stream()
+        return viElementTypes.stream()
             .filter(ViElementType::isModelElement)
             .map( ViElementType::getVPModelType)
             .toArray(String[]::new);
@@ -61,13 +61,13 @@ public class ViProject {
         int i = 0;
 
         for (var anElement : elements) {
-            var visitor = createVisitor.under(higherVisitor);
+            var visitor = visitorFactory.under(higherVisitor);
             visitor.setLast(i + 1 == size);
             //visitor.visit(anElement);
             anElement.accept(visitor);
 
             elementsAccept(
-                anElement.getChildren(myElementTypes)
+                anElement.getChildren(viElementTypes)
                 , visitor
             );
 
