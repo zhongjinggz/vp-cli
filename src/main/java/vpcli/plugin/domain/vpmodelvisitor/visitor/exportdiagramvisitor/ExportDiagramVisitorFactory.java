@@ -2,7 +2,7 @@ package vpcli.plugin.domain.vpmodelvisitor.visitor.exportdiagramvisitor;
 
 //import org.jetbrains.annotations.NotNull;
 import vpcli.plugin.domain.outputmodel.pumldiagram.PumlDiagramFactory;
-import vpcli.plugin.domain.vpmodelvisitor.visitor.ViElementVisitor;
+import vpcli.plugin.domain.vpmodelvisitor.visitor.Visitor;
 import vpcli.plugin.domain.vpmodelvisitor.visitor.VisitorFactory;
 import vpcli.plugin.drivenadapter.DocWriter;
 import vpcli.plugin.util.MyIO;
@@ -32,7 +32,7 @@ public class ExportDiagramVisitorFactory implements VisitorFactory {
     }
 
     @Override
-    public ViElementVisitor under(ViElementVisitor higherVisitor) {
+    public Visitor under(Visitor higherVisitor) {
         return new ExportDiagramVisitor(
             (ExportDiagramVisitor) higherVisitor,
             pumlDiagramFactory,
@@ -43,7 +43,7 @@ public class ExportDiagramVisitorFactory implements VisitorFactory {
     }
 
     @Override
-    public ViElementVisitor createRoot() {
+    public Visitor createRoot() {
         return new RootExportDiagramVisitor(this.rootDir);
     }
 

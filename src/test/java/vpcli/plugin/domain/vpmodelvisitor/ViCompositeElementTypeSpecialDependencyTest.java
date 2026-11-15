@@ -15,7 +15,7 @@ import org.junit.jupiter.api.Test;
  * 步 #21：ViElementType 对 4 个独立 model type 的登记，
  * 其余 5 类（Access/Import/Merge/Instantiate/Substitute）复用 DEPENDENCY。
  */
-class ViElementTypeSpecialDependencyTest {
+class ViCompositeElementTypeSpecialDependencyTest {
 
     @Test
     void registersIndependentModelTypes() {

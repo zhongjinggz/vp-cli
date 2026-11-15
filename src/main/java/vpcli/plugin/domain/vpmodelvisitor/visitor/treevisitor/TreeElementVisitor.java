@@ -1,9 +1,9 @@
 package vpcli.plugin.domain.vpmodelvisitor.visitor.treevisitor;
 
 import vpcli.plugin.domain.vpmodelvisitor.element.*;
-import vpcli.plugin.domain.vpmodelvisitor.visitor.ViElementVisitor;
+import vpcli.plugin.domain.vpmodelvisitor.visitor.Visitor;
 
-public class TreeElementVisitor extends ViElementVisitor {
+public class TreeElementVisitor extends Visitor {
     private final String prefix ;
 
     public TreeElementVisitor(TreeElementVisitor preLevelVisitor) {

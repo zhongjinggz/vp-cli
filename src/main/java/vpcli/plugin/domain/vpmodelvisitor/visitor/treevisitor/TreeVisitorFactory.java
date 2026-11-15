@@ -2,7 +2,7 @@ package vpcli.plugin.domain.vpmodelvisitor.visitor.treevisitor;
 
 import jakarta.inject.Inject;
 import jakarta.inject.Singleton;
-import vpcli.plugin.domain.vpmodelvisitor.visitor.ViElementVisitor;
+import vpcli.plugin.domain.vpmodelvisitor.visitor.Visitor;
 import vpcli.plugin.domain.vpmodelvisitor.visitor.VisitorFactory;
 
 @Singleton
@@ -13,13 +13,13 @@ public class TreeVisitorFactory implements VisitorFactory {
     }
 
     @Override
-    public ViElementVisitor under(ViElementVisitor higherVisitor) {
+    public Visitor under(Visitor higherVisitor) {
         return new TreeElementVisitor((TreeElementVisitor) higherVisitor) ;
     }
 
     //TODO use NULL Object pattern
     @Override
-    public ViElementVisitor createRoot() {
+    public Visitor createRoot() {
         return null;
     }
 }

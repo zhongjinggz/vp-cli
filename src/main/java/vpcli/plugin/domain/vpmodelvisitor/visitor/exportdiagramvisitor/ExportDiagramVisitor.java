@@ -3,14 +3,14 @@ package vpcli.plugin.domain.vpmodelvisitor.visitor.exportdiagramvisitor;
 import org.jspecify.annotations.Nullable;
 import vpcli.plugin.domain.outputmodel.pumldiagram.PumlDiagramFactory;
 import vpcli.plugin.domain.vpmodelvisitor.element.*;
-import vpcli.plugin.domain.vpmodelvisitor.visitor.ViElementVisitor;
+import vpcli.plugin.domain.vpmodelvisitor.visitor.Visitor;
 import vpcli.plugin.drivenadapter.DocWriter;
 import vpcli.plugin.util.MyIO;
 
 import java.io.File;
 import java.io.IOException;
 
-public class ExportDiagramVisitor extends ViElementVisitor {
+public class ExportDiagramVisitor extends Visitor {
     private final PumlDiagramFactory pumlDiagramFactory ;
     @Nullable protected File path;
     private final DocWriter write;

@@ -1,26 +1,14 @@
 package vpcli.plugin.domain.vpmodelvisitor.element;
 
 import vpcli.plugin.domain.vpmodelvisitor.ViElementType;
-import vpcli.plugin.domain.vpmodelvisitor.visitor.ViElementVisitor;
+import vpcli.plugin.domain.vpmodelvisitor.visitor.Visitor;
 
 import java.io.IOException;
-import java.util.List;
 
-public abstract class ViElement {
+public interface ViElement {
+    void accept(Visitor visitor) throws IOException;
 
-    public ViElement() {
-    }
+    String getName();
 
-    public abstract void accept(ViElementVisitor visitor) throws IOException;
-
-
-    public abstract String getName();
-
-    public abstract ViElementType getType();
-
-    public abstract List<ViElement> getChildren(List<ViElementType> myElementTypes);
-
-    public boolean typeIs(ViElementType viElementType) {
-        return getType().equals(viElementType);
-    }
+    ViElementType getType();
 }

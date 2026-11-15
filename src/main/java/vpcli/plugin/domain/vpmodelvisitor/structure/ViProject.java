@@ -3,9 +3,10 @@ package vpcli.plugin.domain.vpmodelvisitor.structure;
 import com.vp.plugin.model.IProject;
 //import org.jetbrains.annotations.NotNull;
 import vpcli.plugin.domain.vpmodelvisitor.ViElementType;
+import vpcli.plugin.domain.vpmodelvisitor.element.ViCompositeElement;
 import vpcli.plugin.domain.vpmodelvisitor.element.ViElement;
 import vpcli.plugin.domain.vpmodelvisitor.element.ViElementFactory;
-import vpcli.plugin.domain.vpmodelvisitor.visitor.ViElementVisitor;
+import vpcli.plugin.domain.vpmodelvisitor.visitor.Visitor;
 import vpcli.plugin.domain.vpmodelvisitor.visitor.VisitorFactory;
 
 import java.io.IOException;
@@ -32,7 +33,7 @@ public class ViProject {
     public void accept(VisitorFactory visitorFactory) throws IOException {
         this.visitorFactory = visitorFactory;
         List<ViElement> elements = createTopLevelElements();
-        ViElementVisitor rootVisitor = this.visitorFactory.createRoot();
+        Visitor rootVisitor = this.visitorFactory.createRoot();
         elementsAccept(elements, rootVisitor);
     }
 
@@ -55,7 +56,7 @@ public class ViProject {
     }
 
     private void elementsAccept(List<ViElement> elements
-        , ViElementVisitor higherVisitor) throws IOException {
+        , Visitor higherVisitor) throws IOException {
 
         int size = elements.size();
         int i = 0;
@@ -63,13 +64,16 @@ public class ViProject {
         for (var anElement : elements) {
             var visitor = visitorFactory.under(higherVisitor);
             visitor.setLast(i + 1 == size);
-            //visitor.visit(anElement);
             anElement.accept(visitor);
 
-            elementsAccept(
-                anElement.getChildren(viElementTypes)
-                , visitor
-            );
+            if(anElement instanceof ViCompositeElement) {
+                var anCompositeElement = (ViCompositeElement) anElement;
+                elementsAccept(
+                    anCompositeElement.getChildren(viElementTypes)
+                    , visitor
+                );
+
+            }
 
             i++;
         }

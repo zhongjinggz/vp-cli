@@ -4,11 +4,11 @@ import vpcli.plugin.domain.vpmodelvisitor.element.*;
 
 import java.io.IOException;
 
-public abstract class ViElementVisitor {
-    protected final ViElementVisitor higherVisitor;
+public abstract class Visitor {
+    protected final Visitor higherVisitor;
     private boolean lastOrNot = false;
 
-    protected ViElementVisitor(ViElementVisitor higherVisitor) {
+    protected Visitor(Visitor higherVisitor) {
         this.higherVisitor = higherVisitor;
     }
 

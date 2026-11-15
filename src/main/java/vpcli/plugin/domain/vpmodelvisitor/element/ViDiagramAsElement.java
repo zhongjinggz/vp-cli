@@ -2,12 +2,12 @@ package vpcli.plugin.domain.vpmodelvisitor.element;
 
 import com.vp.plugin.diagram.IDiagramUIModel;
 import vpcli.plugin.domain.vpmodelvisitor.ViElementType;
-import vpcli.plugin.domain.vpmodelvisitor.visitor.ViElementVisitor;
+import vpcli.plugin.domain.vpmodelvisitor.visitor.Visitor;
 
 import java.io.IOException;
 import java.util.List;
 
-public class ViDiagramAsElement extends ViElement {
+public class ViDiagramAsElement implements ViCompositeElement {
     private final IDiagramUIModel diagram;
 
     public ViDiagramAsElement(IDiagramUIModel diagram) {
@@ -15,7 +15,7 @@ public class ViDiagramAsElement extends ViElement {
     }
 
     @Override
-    public void accept(ViElementVisitor visitor) throws IOException {
+    public void accept(Visitor visitor) throws IOException {
         visitor.visit(this);
     }
 

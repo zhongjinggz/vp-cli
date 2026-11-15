@@ -1,9 +1,9 @@
 package vpcli.plugin.domain.vpmodelvisitor.element;
 
 import com.vp.plugin.model.IModelElement;
-import vpcli.plugin.domain.vpmodelvisitor.visitor.ViElementVisitor;
+import vpcli.plugin.domain.vpmodelvisitor.visitor.Visitor;
 
-public class ViPackage extends ViModelElement {
+public class ViPackage extends ViCompositeModelElement {
 
     public ViPackage(IModelElement vpElement,
                      ViElementFactory viElementFactory
@@ -12,7 +12,7 @@ public class ViPackage extends ViModelElement {
     }
 
     @Override
-    public void accept(ViElementVisitor visitor) {
+    public void accept(Visitor visitor) {
         visitor.visit(this);
     }
 }

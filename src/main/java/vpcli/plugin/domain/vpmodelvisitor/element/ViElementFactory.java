@@ -22,7 +22,7 @@ public class ViElementFactory {
             case MODEL_TYPE_MODEL:
                 return new ViModel(element, this);
             case MODEL_TYPE_CLASS:
-                return new ViClass(element, this);
+                return new ViClass(element);
             case MODEL_TYPE_USE_CASE:
                 return new ViUseCase(element, this);
             default:
@@ -30,7 +30,7 @@ public class ViElementFactory {
         }
     }
 
-    ViElement from(IDiagramUIModel diagram) {
+    ViCompositeElement from(IDiagramUIModel diagram) {
         return new ViDiagramAsElement(diagram);
     }
 

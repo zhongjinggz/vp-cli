@@ -1,17 +1,15 @@
 package vpcli.plugin.domain.vpmodelvisitor.element;
 
 import com.vp.plugin.model.IModelElement;
-import vpcli.plugin.domain.vpmodelvisitor.visitor.ViElementVisitor;
+import vpcli.plugin.domain.vpmodelvisitor.visitor.Visitor;
 
-public class ViClass extends ViModelElement {
-    public ViClass(IModelElement vpElement,
-                   ViElementFactory viElementFactory
-    ) {
-        super(vpElement, viElementFactory);
+public class ViClass extends ViLeafModelElement{
+    public ViClass(IModelElement vpElement) {
+        super(vpElement);
     }
 
     @Override
-    public void accept(ViElementVisitor visitor) {
+    public void accept(Visitor visitor) {
         visitor.visit(this);
     }
 }
