@@ -31,10 +31,4 @@ class MyDiagramFactoryConverterAsElementTest {
         assertEquals(ViElementType.DIAGRAM, vp.getType());
     }
 
-    @Test
-    void shouldReturnEmptyChildren() {
-        IDiagramUIModel diagram = mock(IDiagramUIModel.class);
-        ViDiagramAsElement vp = new ViDiagramAsElement(diagram);
-        assertTrue(vp.getChildren(List.of(ViElementType.DIAGRAM)).isEmpty());
-    }
 }

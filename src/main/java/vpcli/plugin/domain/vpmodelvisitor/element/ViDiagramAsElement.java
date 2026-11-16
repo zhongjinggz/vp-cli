@@ -7,7 +7,7 @@ import vpcli.plugin.domain.vpmodelvisitor.visitor.Visitor;
 import java.io.IOException;
 import java.util.List;
 
-public class ViDiagramAsElement implements ViCompositeElement {
+public class ViDiagramAsElement implements ViLeafElement {
     private final IDiagramUIModel diagram;
 
     public ViDiagramAsElement(IDiagramUIModel diagram) {
@@ -15,7 +15,7 @@ public class ViDiagramAsElement implements ViCompositeElement {
     }
 
     @Override
-    public void accept(Visitor visitor) throws IOException {
+    public void accept(Visitor visitor) {
         visitor.visit(this);
     }
 
@@ -27,11 +27,6 @@ public class ViDiagramAsElement implements ViCompositeElement {
     @Override
     public ViElementType getType() {
         return ViElementType.DIAGRAM;
-    }
-
-    @Override
-    public List<ViElement> getChildren(List<ViElementType> myElementTypes) {
-        return List.of();
     }
 
     public IDiagramUIModel getVPDiagramUIModel() {

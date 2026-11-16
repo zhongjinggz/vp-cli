@@ -6,7 +6,7 @@ import vpcli.plugin.domain.vpmodelvisitor.visitor.Visitor;
 import java.io.IOException;
 
 public interface ViElement {
-    void accept(Visitor visitor) throws IOException;
+    void accept(Visitor visitor) ;
 
     String getName();
 

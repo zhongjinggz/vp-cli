@@ -3,6 +3,7 @@ package vpcli.plugin.domain.vpmodelvisitor.visitor.exportdiagramvisitor;
 import org.jspecify.annotations.Nullable;
 import vpcli.plugin.domain.outputmodel.pumldiagram.PumlDiagramFactory;
 import vpcli.plugin.domain.vpmodelvisitor.element.*;
+import vpcli.plugin.domain.vpmodelvisitor.structure.ViProject;
 import vpcli.plugin.domain.vpmodelvisitor.visitor.Visitor;
 import vpcli.plugin.drivenadapter.DocWriter;
 import vpcli.plugin.util.MyIO;
@@ -46,7 +47,7 @@ public class ExportDiagramVisitor extends Visitor {
     }
 
     @Override
-    public void visit(ViDiagramAsElement viDiagram) throws IOException {
+    public void visit(ViDiagramAsElement viDiagram) {
         var vpDiagram = viDiagram.getVPDiagramUIModel();
         var puml = pumlDiagramFactory.build(vpDiagram);
         write.plantUML(puml, ((ExportDiagramVisitor) higherVisitor).getPath());
@@ -69,6 +70,11 @@ public class ExportDiagramVisitor extends Visitor {
 
     @Override
     public void visit(ViUseCase element) {
+
+    }
+
+    @Override
+    public void visit(ViProject viProject) {
 
     }
 

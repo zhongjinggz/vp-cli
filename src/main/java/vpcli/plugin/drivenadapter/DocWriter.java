@@ -26,7 +26,7 @@ public class DocWriter {
 
     }
 
-    public void plantUML(PumlDiagram puml, File parentDir) throws IOException {
+    public void plantUML(PumlDiagram puml, File parentDir) {
         String fileName = puml.getName() + ".puml";
         String pumlText = puml.toString();
 

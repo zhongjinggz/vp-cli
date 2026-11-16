@@ -14,12 +14,16 @@ public class TreeVisitorFactory implements VisitorFactory {
 
     @Override
     public Visitor under(Visitor higherVisitor) {
-        return new TreeElementVisitor((TreeElementVisitor) higherVisitor) ;
+        return new TreeVisitor((TreeVisitor) higherVisitor) ;
     }
 
     //TODO use NULL Object pattern
     @Override
     public Visitor createRoot() {
         return null;
+    }
+
+    public TreeVisitor build() {
+        return new TreeVisitor("", true, true);
     }
 }

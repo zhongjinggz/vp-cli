@@ -8,7 +8,7 @@ public class ViPackageFactory extends ViElementFactory {
     }
 
     @Override
-    public ViCompositeElement from(IModelElement vpElement) {
+    public ViCompositeElement build(IModelElement vpElement) {
         return new ViPackage(vpElement, this);
     }
 

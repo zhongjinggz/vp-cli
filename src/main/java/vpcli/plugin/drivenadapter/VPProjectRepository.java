@@ -14,7 +14,7 @@ public class VPProjectRepository {
     public VPProjectRepository() {
     }
 
-    public IProject fromVisualParadigm() {
+    public IProject get() {
         if (vpProject == null) {
             vpProject = ApplicationManager.instance().getProjectManager().getProject();
         }

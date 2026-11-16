@@ -74,7 +74,7 @@ class PumlAssociationExporterTest {
 
     @Test
     void multiplicityUnspecifiedIsNormalizedAway() {
-        // from 端多重度未指定，被归空，只保留 role。
+        // build 端多重度未指定，被归空，只保留 role。
         IAssociation assoc = association("", IAssociation.DIRECTION_FROM_TO,
             end("owner", IAssociationEnd.MULTIPLICITY_UNSPECIFIED, null, IAssociationEnd.NAVIGABLE_UNSPECIFIED, "A"),
             end("items", "0..*", null, IAssociationEnd.NAVIGABLE_UNSPECIFIED, "B"));
@@ -124,7 +124,7 @@ class PumlAssociationExporterTest {
 
     @Test
     void navigableEndsRenderArrows() {
-        // from 端可导航 → 反向箭头"<"，to 端可导航 → 正向箭头">"。
+        // build 端可导航 → 反向箭头"<"，to 端可导航 → 正向箭头">"。
         IAssociation assoc = association("", IAssociation.DIRECTION_FROM_TO,
             end("", null, null, IAssociationEnd.NAVIGABLE_NAVIGABLE, "A"),
             end("", null, null, IAssociationEnd.NAVIGABLE_NAVIGABLE, "B"));
@@ -166,7 +166,7 @@ class PumlAssociationExporterTest {
 
     @Test
     void inlineSharedAggregationRendersHollowDiamond() {
-        // shared 聚合（from 端）→ o。
+        // shared 聚合（build 端）→ o。
         IAssociation assoc = association("", IAssociation.DIRECTION_FROM_TO,
             end("", null, IAssociationEnd.AGGREGATION_KIND_shared, IAssociationEnd.NAVIGABLE_UNSPECIFIED, "A"),
             end("", null, null, IAssociationEnd.NAVIGABLE_UNSPECIFIED, "B"));
@@ -176,7 +176,7 @@ class PumlAssociationExporterTest {
 
     @Test
     void nonNavigableEndRendersCross() {
-        // 非导航端（from 端）→ x。
+        // 非导航端（build 端）→ x。
         IAssociation assoc = association("", IAssociation.DIRECTION_FROM_TO,
             end("", null, null, IAssociationEnd.NAVIGABLE_NON_NAVIGABLE, "A"),
             end("", null, null, IAssociationEnd.NAVIGABLE_UNSPECIFIED, "B"));

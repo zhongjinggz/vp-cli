@@ -33,7 +33,7 @@ public class ExportService {
 
     public void exportAll(File exportLocation) throws IOException {
 
-        var vpProject = getProject.fromVisualParadigm();
+        var vpProject = getProject.get();
 
         var viProject = ViProjectFactory.build(vpProject);
         viProject.setElementTypes(List.of(

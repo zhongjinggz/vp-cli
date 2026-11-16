@@ -1,5 +1,6 @@
 package vpcli.plugin.application;
 
+import vpcli.plugin.domain.vpmodelvisitor.visitor.treevisitor.TreeVisitor;
 import vpcli.plugin.domain.vpmodelvisitor.visitor.treevisitor.TreeVisitorFactory;
 import vpcli.plugin.domain.vpmodelvisitor.structure.ViProjectFactory;
 import vpcli.plugin.drivenadapter.VPProjectRepository;
@@ -20,17 +21,17 @@ public class TreeService {
     private final TreeVisitorFactory treeVisitorFactory;
 
     @Inject
-    public TreeService(VPProjectRepository vpProjectRepository
-        , ViProjectFactory viProjectFactory
-        , TreeVisitorFactory treeVisitorFactory) {
-
+    public TreeService(VPProjectRepository vpProjectRepository,
+                       ViProjectFactory viProjectFactory,
+                       TreeVisitorFactory treeVisitorFactory
+    ) {
         this.vpProjectRepository = vpProjectRepository;
         this.viProjectFactory = viProjectFactory;
         this.treeVisitorFactory = treeVisitorFactory;
     }
 
     public void tree() throws IOException {
-        var project = vpProjectRepository.fromVisualParadigm();
+        var project = vpProjectRepository.get();
 
         var viProject = viProjectFactory.build(project);
         viProject.setElementTypes(
@@ -40,5 +41,15 @@ public class TreeService {
                 , DIAGRAM));
 
         viProject.accept(treeVisitorFactory);
+    }
+
+    public void tree2() {
+        var project = vpProjectRepository.get();
+
+        var viProject = viProjectFactory.build(project);
+
+        TreeVisitor treeVisitor = TreeVisitor.root();
+        viProject.accept(treeVisitor);
+
     }
 }

@@ -1,10 +1,15 @@
 package vpcli.plugin.domain.vpmodelvisitor.visitor;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import vpcli.plugin.domain.vpmodelvisitor.element.*;
+import vpcli.plugin.domain.vpmodelvisitor.structure.ViProject;
 
 import java.io.IOException;
 
 public abstract class Visitor {
+    Logger log = LoggerFactory.getLogger(Visitor.class);
+
     protected final Visitor higherVisitor;
     private boolean lastOrNot = false;
 
@@ -20,7 +25,7 @@ public abstract class Visitor {
         return lastOrNot;
     }
 
-    abstract public void visit(ViDiagramAsElement element) throws IOException;
+    abstract public void visit(ViDiagramAsElement element) ;
 
     abstract public void visit(ViPackage element) ;
 
@@ -30,4 +35,12 @@ public abstract class Visitor {
 
     abstract public void visit(ViUseCase element) ;
 
+    abstract public void visit(ViProject viProject);
+
+    public void visit(ViUnimplemented viUnimplemented) {
+    }
+
+    public void visit(ViNary viNary) {
+
+    }
 }

@@ -20,11 +20,15 @@ public class MyIO {
     public MyIO() {
     }
 
-    public void writeFile(File parentDir, String fileName, String text) throws IOException {
+    public void writeFile(File parentDir, String fileName, String text) {
         File outputFile = new File(parentDir, fileName);
         Path path = outputFile.toPath();
         logger.debug("Writing file {} to {} ", fileName, path);
-        Files.writeString(path, text, StandardCharsets.UTF_8);
+        try {
+            Files.writeString(path, text, StandardCharsets.UTF_8);
+        } catch (IOException e) {
+            throw new SystemException(e);
+        }
     }
 
     public void println(String message) {

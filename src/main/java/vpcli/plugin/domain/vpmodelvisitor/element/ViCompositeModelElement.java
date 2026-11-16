@@ -24,7 +24,7 @@ public abstract class ViCompositeModelElement extends ViModelElement implements 
         var vpDiagrams = this.vpElement.toSubDiagramArray();
         if (vpDiagrams != null) {
             for (IDiagramUIModel aDiagram : vpDiagrams) {
-                result.add(createElement.from(aDiagram));
+                result.add(createElement.build(aDiagram));
             }
         }
 
@@ -35,7 +35,25 @@ public abstract class ViCompositeModelElement extends ViModelElement implements 
 
         var vpModelElements = this.vpElement.toChildArray(vpModelTypes);
         for (IModelElement anElement : vpModelElements) {
-            result.add(createElement.from(anElement));
+            result.add(createElement.build(anElement));
+        }
+        return result;
+    }
+
+    @Override
+    public List<ViElement> getChildren() {
+        List<ViElement> result = new ArrayList<>();
+
+        var vpDiagrams = this.vpElement.toSubDiagramArray();
+        if (vpDiagrams != null) {
+            for (IDiagramUIModel aDiagram : vpDiagrams) {
+                result.add(createElement.build(aDiagram));
+            }
+        }
+
+        var vpModelElements = this.vpElement.toChildArray();
+        for (IModelElement anElement : vpModelElements) {
+            result.add(createElement.build(anElement));
         }
         return result;
     }
