@@ -2,6 +2,7 @@ package vpcli.plugin.domain.vpmodelvisitor.element;
 
 import com.vp.plugin.diagram.IDiagramUIModel;
 import com.vp.plugin.model.IModelElement;
+import org.jspecify.annotations.NonNull;
 import vpcli.plugin.domain.vpmodelvisitor.ViElementType;
 
 import java.util.ArrayList;
@@ -42,6 +43,11 @@ public abstract class ViCompositeModelElement extends ViModelElement implements 
 
     @Override
     public List<ViElement> getChildren() {
+        return getChildren(new String[]{});
+    }
+
+    @Override
+    public @NonNull List<ViElement> getChildren(@NonNull String[] vpElementTypes) {
         List<ViElement> result = new ArrayList<>();
 
         var vpDiagrams = this.vpElement.toSubDiagramArray();
@@ -51,7 +57,14 @@ public abstract class ViCompositeModelElement extends ViModelElement implements 
             }
         }
 
-        var vpModelElements = this.vpElement.toChildArray();
+        IModelElement[] vpModelElements ;
+
+        if (vpElementTypes.length == 0) {
+            vpModelElements= this.vpElement.toChildArray();
+        } else {
+            vpModelElements = this.vpElement.toChildArray(vpElementTypes);
+        }
+
         for (IModelElement anElement : vpModelElements) {
             result.add(createElement.build(anElement));
         }

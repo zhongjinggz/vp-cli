@@ -18,4 +18,8 @@ public class ViModelElement {
         return ViElementType.of(
             vpElement.getModelType());
     }
+
+    public IModelElement getVPElement(){
+        return vpElement;
+    }
 }

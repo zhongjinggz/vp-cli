@@ -4,6 +4,7 @@ import com.vp.plugin.diagram.IConnectorUIModel;
 import com.vp.plugin.diagram.IDiagramElement;
 import com.vp.plugin.model.IRelationship;
 import vpcli.plugin.domain.outputmodel.pumldiagram.PumlDiagram;
+import vpcli.plugin.domain.vpmodel.ModelElements;
 
 import static vpcli.plugin.util.Strings.isNotBlank;
 
@@ -29,7 +30,7 @@ public abstract class PumlDirectedRelationshipExporter extends PumlElementExport
                 fromAlias,
                 toAlias,
                 getArrow(vpDiagramElement),
-                getStereotypesText(relationship)
+                ModelElements.getStereotypesText(relationship)
             )
         );
     }

@@ -19,6 +19,7 @@ import org.junit.jupiter.api.Test;
 import vpcli.plugin.domain.outputmodel.pumldiagram.PumlDiagram;
 import vpcli.plugin.domain.outputmodel.pumlexporter.pumlnamespace.PumlModelExporter;
 import vpcli.plugin.domain.outputmodel.pumlexporter.pumlnamespace.PumlPackageExporter;
+import vpcli.plugin.domain.vpmodel.ModelElements;
 
 /**
  * 步 #15：类、包的泛型 Stereotype 渲染。
@@ -35,7 +36,7 @@ class PumlBlockExporterStereotypeTest {
         IModelElement vp = mock(IModelElement.class);
         when(vp.stereotypeModelIterator()).thenReturn(Collections.emptyIterator());
 
-        assertEquals("", exporter.getStereotypesText(vp));
+        assertEquals("", ModelElements.getStereotypesText(vp));
     }
 
     @Test
@@ -46,7 +47,7 @@ class PumlBlockExporterStereotypeTest {
         when(vp.stereotypeModelIterator()).thenReturn(iterOf(s));
         when(vp.toStereotypeModelArray()).thenReturn(new IStereotype[]{s});
 
-        assertEquals("<<service>>", exporter.getStereotypesText(vp));
+        assertEquals("<<service>>", ModelElements.getStereotypesText(vp));
     }
 
     @Test
@@ -58,7 +59,7 @@ class PumlBlockExporterStereotypeTest {
 //        when(vp.stereotypeModelIterator()).thenReturn(iterOf(a, b));
         when(vp.toStereotypeModelArray()).thenReturn(new IStereotype[]{a, b});
 
-        assertEquals("<<service>> <<repository>>", exporter.getStereotypesText(vp));
+        assertEquals("<<service>> <<repository>>", ModelElements.getStereotypesText(vp));
     }
 
     @Test
@@ -69,7 +70,7 @@ class PumlBlockExporterStereotypeTest {
         when(vp.stereotypeModelIterator()).thenReturn(iterOf(s));
         when(vp.toStereotypeModelArray()).thenReturn(new IStereotype[]{s});
 
-        assertEquals("<<my service>>", exporter.getStereotypesText(vp));
+        assertEquals("<<my service>>", ModelElements.getStereotypesText(vp));
     }
 
     @Test
@@ -80,7 +81,7 @@ class PumlBlockExporterStereotypeTest {
         IModelElement vp = mock(IModelElement.class);
         when(vp.stereotypeModelIterator()).thenReturn(iterOf(empty));
 
-        assertEquals("", exporter.getStereotypesText(vp));
+        assertEquals("", ModelElements.getStereotypesText(vp));
     }
 
     // ---- keywordAndStereotypes：固定原型在前 + 泛型在后 ----

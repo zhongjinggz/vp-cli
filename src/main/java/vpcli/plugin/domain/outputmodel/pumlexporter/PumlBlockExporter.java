@@ -4,6 +4,7 @@ import com.vp.plugin.diagram.IDiagramElement;
 import com.vp.plugin.diagram.IShapeUIModel;
 import com.vp.plugin.model.IModelElement;
 import vpcli.plugin.domain.outputmodel.pumldiagram.PumlDiagram;
+import vpcli.plugin.domain.vpmodel.ModelElements;
 
 import static vpcli.plugin.util.Strings.buildStringPatcher;
 
@@ -45,7 +46,7 @@ public abstract class PumlBlockExporter extends PumlElementExporter {
      */
     public String keywordAndStereotypes(IModelElement vpElement) {
         return buildStringPatcher(getKeyword())
-            .patch(getStereotypesText(vpElement))
+            .patch(ModelElements.getStereotypesText(vpElement))
             .toString();
     }
 

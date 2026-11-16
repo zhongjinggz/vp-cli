@@ -14,9 +14,11 @@ import jakarta.inject.Singleton;
 import org.jspecify.annotations.NonNull;
 import vpcli.plugin.domain.outputmodel.pumldiagram.PumlDiagram;
 import vpcli.plugin.domain.outputmodel.pumlexporter.PumlBlockExporter;
+import vpcli.plugin.domain.vpmodel.ModelElements;
 import vpcli.plugin.util.BugException;
 import vpcli.plugin.util.Strings;
 
+import static vpcli.plugin.domain.vpmodel.ModelElements.hasStereotype;
 import static vpcli.plugin.util.Strings.isNotBlank;
 
 @Singleton
@@ -52,10 +54,6 @@ public class PumlClassExporter extends PumlBlockExporter {
         } else {
             throw new BugException("should be 'IClass' but is:" + vpElement.getClass());
         }
-    }
-
-    private boolean hasStereotype(IClass clazz, String stereotypeName) {
-        return getStereotypeNames(clazz).contains(stereotypeName);
     }
 
     // 泛型类追加模板参数后缀 `<T, U>`。

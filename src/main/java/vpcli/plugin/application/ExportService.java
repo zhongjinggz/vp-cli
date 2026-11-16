@@ -17,7 +17,7 @@ import jakarta.inject.Singleton;
 public class ExportService {
 
     private final VPProjectRepository getProject;
-    private final ViProjectFactory ViProjectFactory;
+    private final ViProjectFactory viProjectFactory;
     private final ExportDiagramVisitorFactory exportDiagramVisitorFactory;
 
     @Inject
@@ -27,7 +27,7 @@ public class ExportService {
     ) {
 
         this.getProject = vpProjectRepository;
-        this.ViProjectFactory = viProjectFactory;
+        this.viProjectFactory = viProjectFactory;
         this.exportDiagramVisitorFactory = exportDiagramVisitorFactory;
     }
 
@@ -35,7 +35,7 @@ public class ExportService {
 
         var vpProject = getProject.get();
 
-        var viProject = ViProjectFactory.build(vpProject);
+        var viProject = viProjectFactory.build(vpProject);
         viProject.setElementTypes(List.of(
             PACKAGE
             , MODEL

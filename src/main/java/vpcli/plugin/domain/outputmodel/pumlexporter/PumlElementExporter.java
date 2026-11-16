@@ -1,11 +1,7 @@
 package vpcli.plugin.domain.outputmodel.pumlexporter;
 
 import com.vp.plugin.diagram.IDiagramElement;
-import com.vp.plugin.model.IModelElement;
-import com.vp.plugin.model.IStereotype;
-import org.jspecify.annotations.NonNull;
 import vpcli.plugin.domain.outputmodel.pumldiagram.PumlDiagram;
-import vpcli.plugin.util.Strings;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -62,30 +58,6 @@ public abstract class PumlElementExporter {
             sb.append(segment.replaceAll("[^\\p{L}\\p{N}]", "_"));
         }
         return sb.toString();
-    }
-
-    public String getStereotypesText(IModelElement vpElement) {
-        Strings.StringPatcher result = Strings.buildStringPatcher();
-
-        List<String> stereotypeNames = getStereotypeNames(vpElement);
-
-        for (var aName : stereotypeNames) {
-            result.patch("<<" + aName + ">>");
-        }
-
-        return result.toString();
-    }
-
-    protected static @NonNull List<String> getStereotypeNames(IModelElement vpElement) {
-        List<String> result = new ArrayList<>();
-
-        IStereotype[] stereotypes = vpElement.toStereotypeModelArray();
-        if (stereotypes != null) {
-            for (IStereotype aStereotype : stereotypes) {
-                result.add(aStereotype.getName());
-            }
-        }
-        return result;
     }
 
 }

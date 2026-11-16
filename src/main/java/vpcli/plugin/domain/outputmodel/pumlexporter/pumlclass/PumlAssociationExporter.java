@@ -15,6 +15,7 @@ import org.slf4j.LoggerFactory;
 import vpcli.plugin.domain.outputmodel.pumldiagram.PumlDiagram;
 import vpcli.plugin.domain.outputmodel.pumldiagram.PumlEdgeEnd.ShapeKind;
 import vpcli.plugin.domain.outputmodel.pumlexporter.PumlElementExporter;
+import vpcli.plugin.domain.vpmodel.ModelElements;
 
 import java.util.Objects;
 
@@ -137,7 +138,7 @@ public class PumlAssociationExporter extends PumlElementExporter {
 
         var nameAndStereotypes = buildStringPatcher()
             .patch(association.getName())
-            .patch(getStereotypesText(association));
+            .patch(ModelElements.getStereotypesText(association));
 
         var result = patchDirection(association, nameAndStereotypes);
 
