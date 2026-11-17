@@ -13,6 +13,7 @@ import jakarta.inject.Inject;
 import jakarta.inject.Singleton;
 
 @Singleton
+// TODO each function, like export or tree, has separated command, like ExportCommand or TreeCommand
 public class CLIController {
     private static final org.slf4j.Logger logger =
         org.slf4j.LoggerFactory.getLogger(CLIController.class);
@@ -46,7 +47,7 @@ public class CLIController {
                 performExport(params.path().text());
                 break;
             case VALUE_TREE:
-                this.treeService.tree();
+                this.treeService.tree2();
                 break;
         }
     }
@@ -55,6 +56,7 @@ public class CLIController {
         File exportLocation = new File(path);
 
         // Check if the given path exists and is a directory
+        // TODO check it in shell
         if (!exportLocation.exists()) {
             if (!exportLocation.mkdirs()) {
                 myIO.println("Error: Could not create the specified directory.");

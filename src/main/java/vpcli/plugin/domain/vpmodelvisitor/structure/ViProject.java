@@ -9,13 +9,10 @@ import vpcli.plugin.domain.vpmodelvisitor.element.ViElement;
 import vpcli.plugin.domain.vpmodelvisitor.element.ViElementFactory;
 import vpcli.plugin.domain.vpmodelvisitor.visitor.Visitor;
 import vpcli.plugin.domain.vpmodelvisitor.visitor.VisitorFactory;
-import vpcli.plugin.domain.vpmodelvisitor.visitor.treevisitor.TreeVisitor;
 
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-
-import static com.vp.plugin.model.factory.IModelElementFactory.*;
 
 public class ViProject implements ViCompositeElement {
     private final IProject vpProject;
@@ -37,7 +34,7 @@ public class ViProject implements ViCompositeElement {
     public void accept(VisitorFactory visitorFactory) throws IOException {
         this.visitorFactory = visitorFactory;
         List<ViElement> elements = createTopLevelElements();
-        Visitor rootVisitor = this.visitorFactory.createRoot();
+        Visitor rootVisitor = this.visitorFactory.buildRoot();
         elementsAccept(elements, rootVisitor);
     }
 
@@ -83,7 +80,7 @@ public class ViProject implements ViCompositeElement {
         int i = 0;
 
         for (var anElement : elements) {
-            var visitor = visitorFactory.under(higherVisitor);
+            var visitor = visitorFactory.build(higherVisitor);
             visitor.setLast(i + 1 == size);
             anElement.accept(visitor);
 

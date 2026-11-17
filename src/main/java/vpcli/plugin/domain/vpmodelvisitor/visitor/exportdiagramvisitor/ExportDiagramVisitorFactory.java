@@ -4,6 +4,7 @@ package vpcli.plugin.domain.vpmodelvisitor.visitor.exportdiagramvisitor;
 import vpcli.plugin.domain.outputmodel.pumldiagram.PumlDiagramFactory;
 import vpcli.plugin.domain.vpmodelvisitor.visitor.Visitor;
 import vpcli.plugin.domain.vpmodelvisitor.visitor.VisitorFactory;
+import vpcli.plugin.domain.vpmodelvisitor.visitor.treevisitor.TreeVisitor;
 import vpcli.plugin.drivenadapter.DocWriter;
 import vpcli.plugin.util.MyIO;
 
@@ -32,7 +33,13 @@ public class ExportDiagramVisitorFactory implements VisitorFactory {
     }
 
     @Override
-    public Visitor under(Visitor higherVisitor) {
+    public Visitor build(Visitor preLevelVisitor, boolean thisLevelIsLast) {
+        return build(preLevelVisitor);
+    }
+
+    @Override
+    // TO be replaced by above build()
+    public Visitor build(Visitor higherVisitor) {
         return new ExportDiagramVisitor(
             (ExportDiagramVisitor) higherVisitor,
             pumlDiagramFactory,
@@ -43,7 +50,7 @@ public class ExportDiagramVisitorFactory implements VisitorFactory {
     }
 
     @Override
-    public Visitor createRoot() {
+    public Visitor buildRoot() {
         return new RootExportDiagramVisitor(this.rootDir);
     }
 

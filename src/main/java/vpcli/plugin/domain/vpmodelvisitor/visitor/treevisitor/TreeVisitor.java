@@ -21,7 +21,7 @@ public class TreeVisitor extends Visitor {
     private final String prefix;
     private boolean thisLevelIsLast;
 
-    public TreeVisitor(TreeVisitor preLevelVisitor) {
+    TreeVisitor(TreeVisitor preLevelVisitor) {
         super(null);
         if (preLevelVisitor == null) {
             this.prefix = "";
@@ -32,7 +32,7 @@ public class TreeVisitor extends Visitor {
         }
     }
 
-    public TreeVisitor(String preLevelPrefix,
+    TreeVisitor(String preLevelPrefix,
                        boolean preLevelIsLast,
                        boolean thisLevelIsLast
     ) {
@@ -74,15 +74,15 @@ public class TreeVisitor extends Visitor {
     @Override
     public void visit(ViProject element) {
 
-        List<ViElement> elements = element.getChildren(vpElementTypes);
-
-        int i = 0;
-        for (var anElement : elements) {
-            boolean nextLevelIsLast = (i + 1 == elements.size());
-            var visitor = buildTreeVisitor(nextLevelIsLast);
-            anElement.accept(visitor);
-            i++;
-        }
+//        List<ViElement> elements = element.getChildren(vpElementTypes);
+//
+//        int i = 0;
+//        for (var anElement : elements) {
+//            boolean nextLevelIsLast = (i + 1 == elements.size());
+//            var visitor = buildTreeVisitor(nextLevelIsLast);
+//            anElement.accept(visitor);
+//            i++;
+//        }
     }
 
     // Mock framework can spy the TreeVisitor here
@@ -94,30 +94,30 @@ public class TreeVisitor extends Visitor {
     public void visit(ViPackage element) {
         printBranch(element.getName(), "");
 
-        List<ViElement> elements = element.getChildren(vpElementTypes);
-
-        int i = 0;
-        for (var anElement : elements) {
-            boolean nextLevelIsLast = (i + 1 == elements.size());
-            var visitor = buildTreeVisitor(nextLevelIsLast);
-            anElement.accept(visitor);
-            i++;
-        }
+//        List<ViElement> elements = element.getChildren(vpElementTypes);
+//
+//        int i = 0;
+//        for (var anElement : elements) {
+//            boolean nextLevelIsLast = (i + 1 == elements.size());
+//            var visitor = buildTreeVisitor(nextLevelIsLast);
+//            anElement.accept(visitor);
+//            i++;
+//        }
     }
 
     @Override
     public void visit(ViModel element) {
         printBranch(element.getName(), "");
 
-        List<ViElement> elements = element.getChildren(vpElementTypes);
-
-        int i = 0;
-        for (var anElement : elements) {
-            boolean nextLevelIsLast = (i + 1 == elements.size());
-            var visitor = buildTreeVisitor(nextLevelIsLast);
-            anElement.accept(visitor);
-            i++;
-        }
+//        List<ViElement> elements = element.getChildren(vpElementTypes);
+//
+//        int i = 0;
+//        for (var anElement : elements) {
+//            boolean nextLevelIsLast = (i + 1 == elements.size());
+//            var visitor = buildTreeVisitor(nextLevelIsLast);
+//            anElement.accept(visitor);
+//            i++;
+//        }
 
     }
 
@@ -150,6 +150,13 @@ public class TreeVisitor extends Visitor {
         System.out.println(this.prefix + branch + element + suffix);
     }
 
+    public String getPrefix() {
+        return prefix;
+    }
+
+    public boolean isLast() {
+        return thisLevelIsLast;
+    }
 }
 
 

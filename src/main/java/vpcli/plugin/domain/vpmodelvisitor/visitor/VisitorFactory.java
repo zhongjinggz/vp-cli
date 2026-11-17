@@ -1,7 +1,11 @@
 package vpcli.plugin.domain.vpmodelvisitor.visitor;
 
-public interface VisitorFactory {
-    Visitor under(Visitor higherVisitor);
+import vpcli.plugin.domain.vpmodelvisitor.visitor.treevisitor.TreeVisitor;
 
-    Visitor createRoot();
+public interface VisitorFactory {
+    Visitor build(Visitor preLevelVisitor, boolean thisLevelIsLast);
+
+    Visitor build(Visitor higherVisitor);
+
+    Visitor buildRoot();
 }

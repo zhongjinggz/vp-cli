@@ -21,6 +21,7 @@ public abstract class Visitor {
         this.lastOrNot = lastOrNot;
     }
 
+    //TODO To be removed
     public boolean isLast() {
         return lastOrNot;
     }
