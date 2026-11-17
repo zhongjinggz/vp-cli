@@ -6,7 +6,6 @@ import vpcli.plugin.domain.vpmodelvisitor.element.ViElement;
 import vpcli.plugin.domain.vpmodelvisitor.structure.ViProject;
 import vpcli.plugin.domain.vpmodelvisitor.visitor.Visitor;
 import vpcli.plugin.domain.vpmodelvisitor.visitor.VisitorFactory;
-import vpcli.plugin.domain.vpmodelvisitor.visitor.treevisitor.TreeVisitor;
 
 import java.util.List;
 
