@@ -4,6 +4,7 @@
 - 引入 picocli
 - 引入 JSpecify
 - 可以静态化的方法抽取成静态工具
+- 重构 Visitor
 
 ## 改用 Tinylog
 - 状态：已完成
@@ -574,3 +575,76 @@ done
 - `assembly/plugin-zip.xml`（无需改动，已 include `tinylog.properties`）
 
 > 其余源码日志调用点（13 处 SLF4J）与 `vpcli/plugin/drivingadapter` 侧**均不改动**。
+
+
+
+
+## 重构 Visitor
+
+### 目标
+TreeService.java / TreeVisitor.java 以及周边相关类已经重构完毕。现在需要将 ExportService.java / ExportDiagramVisitor.java 按照相同的方式进行重构。
+
+### 方案
+
+#### 总体思路
+
+与 TreeService/TreeVisitor 的"新机制"对齐：把递归遍历从 `ViProject.accept(VisitorFactory)` 中剥离，交给统一的 `Traveller`；类型过滤数组由 Service 层集中定义为单一来源；per-node 状态（Export 侧是 `path`，对应 tree 侧是 `prefix`）仍在各 Visitor Factory 的 `build` 中按层构造。
+
+Export 侧与 tree 侧唯一差异：Export 需要"按目录写文件"这一副作用，且 `path` 依赖父节点路径，因此保持"visit 时创建目录并记录 path。
+在创建子节点时，保存 preLevelPath, 代替 `higherVisitor.getPath()` ，因此完全消除 higherVisitor 的必要性。
+
+#### 步骤 1：`ExportService` 对齐 `TreeService`
+
+- 删除 `viProject.setElementTypes(...)` 与 `viProject.accept(this.exportDiagramVisitorFactory)`（ExportService.java:39-45）。
+- 在方法内集中定义 `vpElementTypes`（单一来源），等价于原来的 PACKAGE/MODEL/DIGRAM 过滤：
+
+  ```java
+  String[] vpElementTypes = new String[]{
+      MODEL_TYPE_MODEL,
+      MODEL_TYPE_PACKAGE
+  };
+  ```
+
+  > 说明：`getChildren(String[])` 会把子图一并返回（`ViCompositeModelElement`），故数组只需 MODEL/PACKAGE 两种，DIAGRAM 不再显式出现。
+- 注入/复用 `TravellerFactory`，与 TreeService 相同方式组装并遍历：
+
+  ```java
+  var viProject = viProjectFactory.build(vpProject);
+  this.exportDiagramVisitorFactory.setRootDir(exportLocation);   // 配置冻结：root 目录交给它自己的工厂
+  Traveller traveller = travellerFactory.buildTraveller(this.exportDiagramVisitorFactory, vpElementTypes);
+  traveller.travel(viProject);
+  ```
+
+  > 设计要点：`Traveller.travel(ViProject)` 保持单参，对所有访问器一致——根目录是 Export 专属配置，不给 Tree 传 `null` 占位（避免 `travel(viProject, null)` 这种用得到的参数）。`exportLocation` 通过 `setRootDir` 冻结到 `ExportDiagramVisitorFactory` 上（仓库既有的「配置冻结」惯用法，原代码即如此），`Traveller` 只负责按 `buildRoot()` 拿根访问器、递归遍历，完全不感知目录。
+
+#### 步骤 2：`ExportDiagramVisitorFactory` 收敛 `build` 方法
+
+- 删除标着 "TO be replaced by above build()" 的 `build(Visitor)`（ExportDiagramVisitorFactory.java:40-42），只保留下面的真实构建入口：
+
+  - `build(Visitor preLevelVisitor, boolean thisLevelIsLast)`：从父节点显式提取路径 `((ExportDiagramVisitor) preLevelVisitor).getPath()` 作为子节点的 preLevelPath 传入构造器；Export 不关心 `isLast`，忽略该布尔即可（当前已如此）。
+  - `buildRoot()`：返回 `RootExportDiagramVisitor(this.rootDir)`。
+- `rootDir` 字段与 `setRootDir(File)` 保留，作为 Export 侧「配置冻结」的入口（步骤 1 调用），不做删除；它是 Export 专属配置，不进入 `Traveller` API。
+- 清理多余 import（如未使用的 `TreeVisitor`，ExportDiagramVisitorFactory.java:7）。
+
+#### 步骤 3：`ExportDiagramVisitor` 基本保持不变，微调即可
+
+- 增加一个字段 `preLevelPath`，来自父节点 visitor（由 Factory 的 `build` 显式传入），替代原来的 `higherVisitor.getPath()`。
+- `path` 的按层构造逻辑（`makeDirOf` 依赖 `preLevelPath`，取代 `higherVisitor.getPath()`），它就是导出侧的 per-node 状态。
+- `visit(ViDiagramAsElement)` 中 `write.plantUML(...)` 的目标目录同样由 `preLevelPath` 提供，不再经 `higherVisitor.getPath()`。
+- 若由此不再需要 `higherVisitor` 指针，`Visitor` 的 `higherVisitor` 字段可在收敛 `VisitorFactory` 时一并退役（本方案不计入导出改动，仅在步骤 4 统一处理该字段及其构造器参数）。
+
+#### 步骤 4：`VisitorFactory` 接口统一收敛（牵涉 tree 侧，一起处理）
+
+- 当前 `VisitorFactory` 有三个方法（VisitorFactory.java:6-10），新机制实际只用到 `build(Visitor, boolean)` 与 `buildRoot()`。
+- 删除 `build(Visitor)`，`TreeVisitorFactory` 与 `ExportDiagramVisitorFactory` 一并去掉对应实现（`TreeVisitorFactory.java:26-30` 处 "don't use it" 的代码即被清掉）。二者 `buildRoot()` 各自由各自的配置字段出货：Tree 无前缀根，Export 用其冻结的 rootDir。接口保持无参 `buildRoot()`，不把 Export 的目录参数泄漏进共享接口。
+- `RootExportDiagramVisitor` 构造保留 `(File)`，由 `ExportDiagramVisitorFactory.buildRoot()` 用其 rootDir 字段调用。
+- `Visitor.higherVisitor` 字段随 `build(Visitor)` 一起退役（TreeVisitor 已不依赖 `higherVisitor`，Export 改用 `preLevelPath` 后也不依赖）。
+- 这使 tree/export 两条路径在 `Traveller` 面前以完全一致的接口运行。
+
+#### 涉及文件清单
+
+- `src/main/java/vpcli/plugin/application/ExportService.java`
+- `src/main/java/vpcli/plugin/domain/vpmodelvisitor/visitor/exportdiagramvisitor/ExportDiagramVisitorFactory.java`
+- `src/main/java/vpcli/plugin/domain/vpmodelvisitor/visitor/exportdiagramvisitor/ExportDiagramVisitor.java`（少量或不变）
+- `src/main/java/vpcli/plugin/domain/vpmodelvisitor/visitor/VisitorFactory.java`（统一收敛）
+- `src/main/java/vpcli/plugin/domain/vpmodelvisitor/visitor/treevisitor/TreeVisitorFactory.java`（配套收敛）

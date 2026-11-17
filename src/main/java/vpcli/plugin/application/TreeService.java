@@ -1,7 +1,5 @@
 package vpcli.plugin.application;
 
-import org.jspecify.annotations.NonNull;
-import vpcli.plugin.domain.vpmodelvisitor.visitor.treevisitor.TreeVisitor;
 import vpcli.plugin.domain.vpmodelvisitor.structure.ViProjectFactory;
 
 import jakarta.inject.Inject;
@@ -9,6 +7,9 @@ import jakarta.inject.Singleton;
 import vpcli.plugin.domain.vpmodelvisitor.visitor.treevisitor.TreeVisitorFactory;
 import vpcli.plugin.domain.vpvisitor.vpmodelvisitor.structure.TravellerFactory;
 import vpcli.plugin.domain.vpvisitor.vpmodelvisitor.structure.Traveller;
+
+import static com.vp.plugin.model.factory.IModelElementFactory.*;
+import static com.vp.plugin.model.factory.IModelElementFactory.MODEL_TYPE_USE_CASE;
 
 @Singleton
 public class TreeService {
@@ -28,20 +29,17 @@ public class TreeService {
         this.treeVisitorFactory = treeVisitorFactory;
     }
 
+
     public void tree() {
+        String[] vpElementTypes = new String[]{
+                MODEL_TYPE_MODEL,
+                MODEL_TYPE_PACKAGE,
+                MODEL_TYPE_CLASS,
+                MODEL_TYPE_USE_CASE
+            };
+
         var viProject = viProjectFactory.build();
-        viProject.accept(rootTreeVisitor());
-    }
-
-    // Mock framework can spy visitor here
-    @NonNull TreeVisitor rootTreeVisitor() {
-        return TreeVisitor.root();
-    }
-
-
-    public void tree2() {
-        var viProject = viProjectFactory.build();
-        Traveller traveller = travellerFactory.buildTraveller(treeVisitorFactory);
+        Traveller traveller = travellerFactory.buildTraveller(treeVisitorFactory, vpElementTypes);
         traveller.travel(viProject);
     }
 }

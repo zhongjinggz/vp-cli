@@ -11,7 +11,7 @@ public class TravellerFactory {
     public TravellerFactory() {
     }
 
-    public Traveller buildTraveller(VisitorFactory visitorFactory) {
-        return new Traveller(visitorFactory);
+    public Traveller buildTraveller(VisitorFactory visitorFactory, String[] vpElementTypes) {
+        return new Traveller(visitorFactory, vpElementTypes);
     }
 }

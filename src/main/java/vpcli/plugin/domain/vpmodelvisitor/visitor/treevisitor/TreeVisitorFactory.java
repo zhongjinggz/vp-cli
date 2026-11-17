@@ -24,11 +24,6 @@ public class TreeVisitorFactory implements VisitorFactory {
     }
 
     @Override
-    // don't use it, will be replaced by above build()
-    public Visitor build(Visitor higherVisitor) {
-        return build(higherVisitor, true);
-    }
-
     public TreeVisitor buildRoot() {
         return new TreeVisitor();
     }

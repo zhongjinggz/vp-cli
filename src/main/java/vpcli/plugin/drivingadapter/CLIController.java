@@ -47,7 +47,7 @@ public class CLIController {
                 performExport(params.path().text());
                 break;
             case VALUE_TREE:
-                this.treeService.tree2();
+                this.treeService.tree();
                 break;
         }
     }
