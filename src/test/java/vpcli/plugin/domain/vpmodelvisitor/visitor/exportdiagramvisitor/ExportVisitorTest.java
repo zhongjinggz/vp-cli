@@ -27,7 +27,7 @@ import vpcli.plugin.util.MyIO;
  * 子节点的写入目录来自父节点路径（由 Factory 的 build 显式注入），
  * root 目录通过 setRootDir 冻结到工厂、由 buildRoot() 出货。
  */
-class ExportDiagramVisitorTest {
+class ExportVisitorTest {
 
     @TempDir
     Path tempDir;
@@ -38,8 +38,8 @@ class ExportDiagramVisitorTest {
     @SuppressWarnings("unused")
     private final ViElementFactory viElementFactory = new ViElementFactory();
 
-    private ExportDiagramVisitorFactory newFactory(File rootDir) {
-        ExportDiagramVisitorFactory factory = new ExportDiagramVisitorFactory(
+    private ExportVisitorFactory newFactory(File rootDir) {
+        ExportVisitorFactory factory = new ExportVisitorFactory(
             pumlDiagramFactory, docWriter, myIO);
         factory.setRootDir(rootDir);
         return factory;
@@ -48,8 +48,8 @@ class ExportDiagramVisitorTest {
     @Test
     void buildRoot_usesFrozenRootDirAsPath() {
         File rootDir = tempDir.toFile();
-        RootExportDiagramVisitor root =
-            (RootExportDiagramVisitor) newFactory(rootDir).buildRoot();
+        RootExportVisitor root =
+            (RootExportVisitor) newFactory(rootDir).buildRoot();
 
         assertEquals(rootDir, root.getPath());
     }
@@ -57,11 +57,11 @@ class ExportDiagramVisitorTest {
     @Test
     void visitDiagram_writesToParentPreLevelPath() throws IOException {
         File rootDir = tempDir.toFile();
-        ExportDiagramVisitorFactory factory = newFactory(rootDir);
+        ExportVisitorFactory factory = newFactory(rootDir);
 
-        RootExportDiagramVisitor root = (RootExportDiagramVisitor) factory.buildRoot();
-        ExportDiagramVisitor child =
-            (ExportDiagramVisitor) factory.build(root, false);
+        RootExportVisitor root = (RootExportVisitor) factory.buildRoot();
+        PracticalExportVisitor child =
+            (PracticalExportVisitor) factory.build(root, false);
 
         // 单层：父就是 root，root 的 path 即 rootDir；子 diagram 应写入 rootDir。
         PumlDiagram puml = new PumlDiagram("D");
@@ -75,13 +75,13 @@ class ExportDiagramVisitorTest {
     }
 
     @Test
-    void visitDiagram_usesParentPathAsTargetDir() throws IOException {
+    void visitDiagram_usesParentPathAsTargetDir() {
         // 两层：父是一个 Package 目录，子 diagram 应写入该目录而非 root。
         File rootDir = tempDir.toFile();
-        ExportDiagramVisitorFactory factory = newFactory(rootDir);
+        ExportVisitorFactory factory = newFactory(rootDir);
 
-        RootExportDiagramVisitor root = (RootExportDiagramVisitor) factory.buildRoot();
-        ExportDiagramVisitor pkg = (ExportDiagramVisitor) factory.build(root, false);
+        RootExportVisitor root = (RootExportVisitor) factory.buildRoot();
+        PracticalExportVisitor pkg = (PracticalExportVisitor) factory.build(root, false);
 
         IModelElement pkgElement = mock(IModelElement.class);
         when(pkgElement.getName()).thenReturn("pkg");
@@ -93,7 +93,7 @@ class ExportDiagramVisitorTest {
         File pkgDir = pkg.getPath();
         assertEquals(new File(rootDir, "pkg.package"), pkgDir);
 
-        ExportDiagramVisitor child = (ExportDiagramVisitor) factory.build(pkg, false);
+        PracticalExportVisitor child = (PracticalExportVisitor) factory.build(pkg, false);
 
         PumlDiagram puml = new PumlDiagram("D");
         when(pumlDiagramFactory.build(any(IDiagramUIModel.class))).thenReturn(puml);

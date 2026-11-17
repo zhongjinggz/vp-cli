@@ -13,13 +13,13 @@ public class TreeVisitorFactory implements VisitorFactory {
     }
 
     @Override
-    public TreeVisitor build(Visitor preLevelVisitor, boolean thisLevelIsLast) {
-        var preLevelTreeVisitor = (TreeVisitor) preLevelVisitor;
+    public TreeVisitor build(Visitor parentVisitor, boolean thisIsLast) {
+        var preLevelTreeVisitor = (TreeVisitor) parentVisitor;
 
         return new TreeVisitor(
             preLevelTreeVisitor.getPrefix(),
             preLevelTreeVisitor.isLast(),
-            thisLevelIsLast
+            thisIsLast
         );
     }
 

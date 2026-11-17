@@ -9,27 +9,25 @@ import static vpcli.plugin.domain.vpmodel.ModelElements.hasStereotype;
 public class TreeVisitor extends Visitor {
 
     private final String prefix;
-    private final boolean thisLevelIsLast;
+    private final boolean thisIsLast;
 
-    TreeVisitor(String preLevelPrefix,
-                       boolean preLevelIsLast,
-                       boolean thisLevelIsLast
+    TreeVisitor(String parentPrefix,
+                       boolean parentIsLast,
+                       boolean thisIsLast
     ) {
-        super(null);
-        this.thisLevelIsLast = thisLevelIsLast;
+        this.thisIsLast = thisIsLast;
 
-        if (preLevelIsLast) {
-            this.prefix = preLevelPrefix + "    ";
+        if (parentIsLast) {
+            this.prefix = parentPrefix + "    ";
         } else {
-            this.prefix = preLevelPrefix + "│   ";
+            this.prefix = parentPrefix + "│   ";
         }
     }
 
     // for root visitor only
     TreeVisitor() {
-        super(null);
         prefix = "";
-        thisLevelIsLast = true;
+        thisIsLast = true;
     }
 
     @Override
@@ -78,7 +76,7 @@ public class TreeVisitor extends Visitor {
 
 
     private void printBranch(String element, String suffix) {
-        String branch = this.thisLevelIsLast ? "└── " : "├── ";
+        String branch = this.thisIsLast ? "└── " : "├── ";
         System.out.println(this.prefix + branch + element + suffix);
     }
 
@@ -87,7 +85,7 @@ public class TreeVisitor extends Visitor {
     }
 
     public boolean isLast() {
-        return thisLevelIsLast;
+        return thisIsLast;
     }
 }
 

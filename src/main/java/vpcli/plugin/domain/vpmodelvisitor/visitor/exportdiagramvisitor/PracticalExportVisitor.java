@@ -1,58 +1,36 @@
 package vpcli.plugin.domain.vpmodelvisitor.visitor.exportdiagramvisitor;
 
-import org.jspecify.annotations.Nullable;
 import vpcli.plugin.domain.outputmodel.pumldiagram.PumlDiagramFactory;
 import vpcli.plugin.domain.vpmodelvisitor.element.*;
 import vpcli.plugin.domain.vpmodelvisitor.structure.ViProject;
-import vpcli.plugin.domain.vpmodelvisitor.visitor.Visitor;
 import vpcli.plugin.drivenadapter.DocWriter;
 import vpcli.plugin.util.MyIO;
 
 import java.io.File;
 
-public class ExportDiagramVisitor extends Visitor {
+public class PracticalExportVisitor extends ExportVisitor {
     private final PumlDiagramFactory pumlDiagramFactory ;
-    @Nullable protected File path;
-    @Nullable private final File preLevelPath;
+    private final File parentPath;
     private final DocWriter write;
     private final MyIO myIO;
 
-    ExportDiagramVisitor(
-        @Nullable File preLevelPath,
+    PracticalExportVisitor(
+        File parentPath,
         PumlDiagramFactory pumlDiagramFactory,
         DocWriter docWriter,
         MyIO myIO
     ) {
-        super(null);
-
+        this.parentPath = parentPath;
         this.pumlDiagramFactory = pumlDiagramFactory;
         this.write = docWriter;
         this.myIO = myIO;
-        this.preLevelPath = preLevelPath;
-    }
-
-    // used by RootExportDiagramVisitor only
-    @SuppressWarnings("NullAway")
-    ExportDiagramVisitor(File path) {
-        super(null);
-        this.write = null;
-
-        this.pumlDiagramFactory = null;
-
-        this.path = path;
-        this.myIO = null;
-        this.preLevelPath = null;
-    }
-
-    File getPath() {
-        return path;
     }
 
     @Override
     public void visit(ViDiagramAsElement viDiagram) {
         var vpDiagram = viDiagram.getVPDiagramUIModel();
         var puml = pumlDiagramFactory.build(vpDiagram);
-        write.plantUML(puml, this.preLevelPath);
+        write.plantUML(puml, this.parentPath);
     }
 
     @Override
@@ -82,7 +60,7 @@ public class ExportDiagramVisitor extends Visitor {
 
     private void makeDirOf(ViPackage viPackage) {
 
-        File parentDir = this.preLevelPath;
+        File parentDir = this.parentPath;
         this.path = myIO.makeDir(
             parentDir,
             viPackage.getName() + viPackage.getType().getSuffix()

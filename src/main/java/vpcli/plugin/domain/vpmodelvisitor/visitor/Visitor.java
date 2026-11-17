@@ -5,38 +5,26 @@ import org.slf4j.LoggerFactory;
 import vpcli.plugin.domain.vpmodelvisitor.element.*;
 import vpcli.plugin.domain.vpmodelvisitor.structure.ViProject;
 
-import java.io.IOException;
-
 public abstract class Visitor {
     Logger log = LoggerFactory.getLogger(Visitor.class);
 
-    protected final Visitor higherVisitor;
-    private boolean lastOrNot = false;
-
-    protected Visitor(Visitor higherVisitor) {
-        this.higherVisitor = higherVisitor;
+    public void visit(ViDiagramAsElement element) {
     }
 
-    public void setLast(boolean lastOrNot) {
-        this.lastOrNot = lastOrNot;
+    public void visit(ViPackage element) {
     }
 
-    //TODO To be removed
-    public boolean isLast() {
-        return lastOrNot;
+    public void visit(ViModel element) {
     }
 
-    abstract public void visit(ViDiagramAsElement element) ;
+    public void visit(ViClass element) {
+    }
 
-    abstract public void visit(ViPackage element) ;
+    public void visit(ViUseCase element) {
+    }
 
-    abstract public void visit(ViModel element) ;
-
-    abstract public void visit(ViClass element) ;
-
-    abstract public void visit(ViUseCase element) ;
-
-    abstract public void visit(ViProject viProject);
+    public void visit(ViProject viProject) {
+    }
 
     public void visit(ViUnimplemented viUnimplemented) {
     }

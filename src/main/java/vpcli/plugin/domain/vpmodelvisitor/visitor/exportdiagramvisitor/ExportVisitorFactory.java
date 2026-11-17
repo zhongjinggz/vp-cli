@@ -1,6 +1,5 @@
 package vpcli.plugin.domain.vpmodelvisitor.visitor.exportdiagramvisitor;
 
-//import org.jetbrains.annotations.NotNull;
 import vpcli.plugin.domain.outputmodel.pumldiagram.PumlDiagramFactory;
 import vpcli.plugin.domain.vpmodelvisitor.visitor.Visitor;
 import vpcli.plugin.domain.vpmodelvisitor.visitor.VisitorFactory;
@@ -13,7 +12,7 @@ import jakarta.inject.Inject;
 import jakarta.inject.Singleton;
 
 @Singleton
-public class ExportDiagramVisitorFactory implements VisitorFactory {
+public class ExportVisitorFactory implements VisitorFactory {
 
     private final PumlDiagramFactory pumlDiagramFactory;
     private final DocWriter docWriter;
@@ -21,7 +20,7 @@ public class ExportDiagramVisitorFactory implements VisitorFactory {
     private File rootDir;
 
     @Inject
-    public ExportDiagramVisitorFactory(
+    public ExportVisitorFactory(
         PumlDiagramFactory pumlDiagramFactory,
         DocWriter docWriter,
         MyIO myIO
@@ -33,8 +32,8 @@ public class ExportDiagramVisitorFactory implements VisitorFactory {
 
     @Override
     public Visitor build(Visitor preLevelVisitor, boolean thisLevelIsLast) {
-        return new ExportDiagramVisitor(
-            ((ExportDiagramVisitor) preLevelVisitor).getPath(),
+        return new PracticalExportVisitor(
+            ((ExportVisitor) preLevelVisitor).getPath(),
             pumlDiagramFactory,
             docWriter,
             myIO
@@ -43,7 +42,7 @@ public class ExportDiagramVisitorFactory implements VisitorFactory {
 
     @Override
     public Visitor buildRoot() {
-        return new RootExportDiagramVisitor(this.rootDir);
+        return new RootExportVisitor(this.rootDir);
     }
 
     public void setRootDir(File dir) {

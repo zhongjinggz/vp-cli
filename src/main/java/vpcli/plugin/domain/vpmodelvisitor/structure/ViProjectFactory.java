@@ -22,9 +22,6 @@ public class ViProjectFactory {
         this.vpProjectRepository = vpProjectRepository;
     }
 
-    public ViProject build(IProject project) {
-        return new ViProject(project, viElementFactory);
-    }
 
     public ViProject build() {
         return new ViProject(vpProjectRepository.get(), viElementFactory);

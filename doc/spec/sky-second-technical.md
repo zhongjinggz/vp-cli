@@ -595,7 +595,7 @@ Export 侧与 tree 侧唯一差异：Export 需要"按目录写文件"这一副�
 
 #### 步骤 1：`ExportService` 对齐 `TreeService`
 
-- 删除 `viProject.setElementTypes(...)` 与 `viProject.accept(this.exportDiagramVisitorFactory)`（ExportService.java:39-45）。
+- 删除 `viProject.setElementTypes(...)` 与 `viProject.accept(this.exportVisitorFactory)`（ExportService.java:39-45）。
 - 在方法内集中定义 `vpElementTypes`（单一来源），等价于原来的 PACKAGE/MODEL/DIGRAM 过滤：
 
   ```java
@@ -610,8 +610,8 @@ Export 侧与 tree 侧唯一差异：Export 需要"按目录写文件"这一副�
 
   ```java
   var viProject = viProjectFactory.build(vpProject);
-  this.exportDiagramVisitorFactory.setRootDir(exportLocation);   // 配置冻结：root 目录交给它自己的工厂
-  Traveller traveller = travellerFactory.buildTraveller(this.exportDiagramVisitorFactory, vpElementTypes);
+  this.exportVisitorFactory.setRootDir(exportLocation);   // 配置冻结：root 目录交给它自己的工厂
+  Traveller traveller = travellerFactory.buildTraveller(this.exportVisitorFactory, vpElementTypes);
   traveller.travel(viProject);
   ```
 

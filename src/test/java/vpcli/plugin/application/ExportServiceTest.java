@@ -11,7 +11,7 @@ import java.io.File;
 import org.junit.jupiter.api.Test;
 import vpcli.plugin.domain.vpmodelvisitor.structure.ViProject;
 import vpcli.plugin.domain.vpmodelvisitor.structure.ViProjectFactory;
-import vpcli.plugin.domain.vpmodelvisitor.visitor.exportdiagramvisitor.ExportDiagramVisitorFactory;
+import vpcli.plugin.domain.vpmodelvisitor.visitor.exportdiagramvisitor.ExportVisitorFactory;
 import vpcli.plugin.domain.vpvisitor.vpmodelvisitor.structure.Traveller;
 import vpcli.plugin.domain.vpvisitor.vpmodelvisitor.structure.TravellerFactory;
 import vpcli.plugin.drivenadapter.VPProjectRepository;
@@ -31,15 +31,15 @@ class ExportServiceTest {
 
         ViProjectFactory viProjectFactory = mock(ViProjectFactory.class);
         ViProject viProject = mock(ViProject.class);
-        when(viProjectFactory.build(any(IProject.class))).thenReturn(viProject);
+        when(viProjectFactory.build()).thenReturn(viProject);
 
-        ExportDiagramVisitorFactory exportFactory = mock(ExportDiagramVisitorFactory.class);
+        ExportVisitorFactory exportFactory = mock(ExportVisitorFactory.class);
         TravellerFactory travellerFactory = mock(TravellerFactory.class);
         Traveller traveller = mock(Traveller.class);
         when(travellerFactory.buildTraveller(any(), any())).thenReturn(traveller);
 
         ExportService service = new ExportService(
-            repo, viProjectFactory, exportFactory, travellerFactory);
+            viProjectFactory, exportFactory, travellerFactory);
 
         File exportLocation = new File("/tmp/out");
         service.exportAll(exportLocation);
@@ -55,15 +55,15 @@ class ExportServiceTest {
         when(repo.get()).thenReturn(vpProject);
 
         ViProjectFactory viProjectFactory = mock(ViProjectFactory.class);
-        when(viProjectFactory.build(any(IProject.class))).thenReturn(mock(ViProject.class));
+        when(viProjectFactory.build()).thenReturn(mock(ViProject.class));
 
-        ExportDiagramVisitorFactory exportFactory = mock(ExportDiagramVisitorFactory.class);
+        ExportVisitorFactory exportFactory = mock(ExportVisitorFactory.class);
         TravellerFactory travellerFactory = mock(TravellerFactory.class);
         Traveller traveller = mock(Traveller.class);
         when(travellerFactory.buildTraveller(any(), any())).thenReturn(traveller);
 
         ExportService service = new ExportService(
-            repo, viProjectFactory, exportFactory, travellerFactory);
+            viProjectFactory, exportFactory, travellerFactory);
 
         service.exportAll(new File("/tmp/out2"));
 
