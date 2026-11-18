@@ -20,7 +20,7 @@ public final class VPExport implements Callable<Integer> {
             description = "Visual Paradigm project path (*.vpp)")
     String projectPath = "";
 
-    @Option(names = "-path", required = true,
+    @Option(names = "-output", required = true,
             description = "output path")
     String outputPath = "";
 
@@ -28,7 +28,7 @@ public final class VPExport implements Callable<Integer> {
     public Integer call() {
         try {
             String canonicalPath = new File(outputPath).getCanonicalPath();
-            return runSafe(() -> VpCliLauncher.launch(projectPath, "export","-action", "export", "-path", canonicalPath ));
+            return runSafe(() -> VpCliLauncher.launch(projectPath, "export","-output", canonicalPath ));
         } catch (IOException e) {
             System.err.println("Error: " + e.getMessage());
             return 1;

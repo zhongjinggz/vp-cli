@@ -22,7 +22,7 @@ public final class VPTree implements Callable<Integer> {
     @Override
     public Integer call() {
         return runSafe(() ->
-            VpCliLauncher.launch(projectPath, "tree", "-action", "tree")
+            VpCliLauncher.launch(projectPath, "tree")
         );
     }
 

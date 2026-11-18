@@ -16,7 +16,7 @@ public class ExportCommand {
 
     private final ExportService exportService;
     private final MyIO myIO;
-    private String path;
+    private String output;
 
     @Inject
     public ExportCommand(ExportService exportService, MyIO myIO) {
@@ -26,27 +26,27 @@ public class ExportCommand {
 
     public void execute(String[] args) {
         setArgs(args);
-        performExport(path);
+        performExport(output);
     }
 
     private void setArgs(String[] args) {
         for (int i = 0; i < args.length; i++) {
             var arg = args[i];
-            if (Objects.equals(arg, "-path")) {
+            if (Objects.equals(arg, "-output")) {
                 if (i+1 < args.length) {
-                    this.path = args[++i];
+                    this.output = args[++i];
                 } else {
-                    throw new BusinessException("value of -path is missing!");
+                    throw new BusinessException("value of -output is missing!");
                 }
             }
         }
-        if (path == null) {
-            throw new BusinessException("-path is missing!");
+        if (output == null) {
+            throw new BusinessException("-output is missing!");
         }
     }
 
-    void performExport(String path) {
-        File exportLocation = new File(path);
+    void performExport(String output) {
+        File exportLocation = new File(output);
 
         // Check if the given path exists and is a directory
         // TODO check it in shell
@@ -59,11 +59,11 @@ public class ExportCommand {
 
         // TODO replace myIO.print to BusinessException
         if (!exportLocation.isDirectory()) {
-            myIO.println("Error: The specified path is not a directory.");
+            myIO.println("Error: The specified output path is not a directory.");
             return;
         }
 
-        log.info("Exporting diagram(s) to path: {}", path);
+        log.info("Exporting diagram(s) to path: {}", output);
 
         exportService.export(exportLocation);
     }
