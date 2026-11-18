@@ -608,7 +608,7 @@ Export 侧与 tree 侧唯一差异：Export 需要"按目录写文件"这一副�
   > 说明：`getChildren(String[])` 会把子图一并返回（`ViCompositeModelElement`），故数组只需 MODEL/PACKAGE 两种，DIAGRAM 不再显式出现。
 - 注入/复用 `TravellerFactory`，与 TreeService 相同方式组装并遍历：
 
-  ```java
+  ```
   var viProject = viProjectFactory.build(vpProject);
   this.exportVisitorFactory.setRootDir(exportLocation);   // 配置冻结：root 目录交给它自己的工厂
   Traveller traveller = travellerFactory.buildTraveller(this.exportVisitorFactory, vpElementTypes);

@@ -32,7 +32,7 @@ public class ExportService {
         this.travellerFactory = travellerFactory;
     }
 
-    public void exportAll(File exportLocation) {
+    public void export(File exportLocation) {
 
         String[] vpElementTypes = new String[]{
             MODEL_TYPE_MODEL,

@@ -24,7 +24,7 @@ import vpcli.plugin.drivenadapter.VPProjectRepository;
 class ExportServiceTest {
 
     @Test
-    void exportAll_freezesRootDirThenTravelsProject() throws Exception {
+    void export_freezesRootDirThenTravelsProject() throws Exception {
         VPProjectRepository repo = mock(VPProjectRepository.class);
         IProject vpProject = mock(IProject.class);
         when(repo.get()).thenReturn(vpProject);
@@ -42,7 +42,7 @@ class ExportServiceTest {
             viProjectFactory, exportFactory, travellerFactory);
 
         File exportLocation = new File("/tmp/out");
-        service.exportAll(exportLocation);
+        service.export(exportLocation);
 
         verify(exportFactory).setRootDir(exportLocation);
         verify(traveller).travel(viProject);
@@ -65,7 +65,7 @@ class ExportServiceTest {
         ExportService service = new ExportService(
             viProjectFactory, exportFactory, travellerFactory);
 
-        service.exportAll(new File("/tmp/out2"));
+        service.export(new File("/tmp/out2"));
 
         verify(travellerFactory).buildTraveller(same(exportFactory), any(String[].class));
     }

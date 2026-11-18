@@ -1,77 +1,44 @@
 package vpcli.plugin.drivingadapter;
 
-import vpcli.plugin.application.ExportService;
-import vpcli.plugin.application.TreeService;
-import vpcli.plugin.util.MyIO;
+import org.slf4j.LoggerFactory;
+import vpcli.plugin.util.BugException;
 
-import java.io.File;
-import java.io.IOException;
-
-import static vpcli.plugin.drivingadapter.CLIParams.*;
+import java.util.Arrays;
 
 import jakarta.inject.Inject;
 import jakarta.inject.Singleton;
 
 @Singleton
-// TODO each function, like export or tree, has separated command, like ExportCommand or TreeCommand
 public class CLIController {
-    private static final org.slf4j.Logger logger =
-        org.slf4j.LoggerFactory.getLogger(CLIController.class);
+    private static final org.slf4j.Logger log = LoggerFactory.getLogger(CLIController.class);
 
-    private final ExportService exportService;
-    private final TreeService treeService;
-    private final MyIO myIO;
+    private final TreeCommand treeCommand;
+    private final ExportCommand exportCommand;
 
     @Inject
     public CLIController(
-        ExportService exportService,
-        TreeService treeService,
-        MyIO myIO
+        TreeCommand treeCommand,
+        ExportCommand exportCommand
     ) {
 
-        this.exportService = exportService;
-        this.treeService = treeService;
-        this.myIO = myIO;
+        this.treeCommand = treeCommand;
+        this.exportCommand = exportCommand;
     }
 
-    public void invoke(String[] args) throws IOException {
-        CLIParams params = CLIParams.valueOf(args);
+    public void invoke(String[] args) {
+        var commandName = args[0];
+        var commandArgs = Arrays.copyOfRange(args, 1, args.length);
 
-        if (params.isInvalid()) {
-            myIO.println(params.errorMessage());
-            return;
-        }
-
-        switch (params.action().text()) {
-            case VALUE_EXPORT:
-                performExport(params.path().text());
+        switch (commandName) {
+            case "tree":
+                treeCommand.execute(commandArgs);
                 break;
-            case VALUE_TREE:
-                this.treeService.tree();
+            case "export":
+                exportCommand.execute(commandArgs);
                 break;
+            default:
+                throw new BugException("wrong command '" + commandName + "'");
         }
-    }
-
-    void performExport(String path) throws IOException {
-        File exportLocation = new File(path);
-
-        // Check if the given path exists and is a directory
-        // TODO check it in shell
-        if (!exportLocation.exists()) {
-            if (!exportLocation.mkdirs()) {
-                myIO.println("Error: Could not create the specified directory.");
-                return;
-            }
-        }
-
-        if (!exportLocation.isDirectory()) {
-            myIO.println("Error: The specified path is not a directory.");
-            return;
-        }
-
-        logger.info("Exporting diagram(s) to path: {}", path);
-
-        this.exportService.exportAll(exportLocation);
     }
 
 }

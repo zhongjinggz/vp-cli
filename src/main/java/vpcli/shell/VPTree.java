@@ -16,13 +16,13 @@ import java.util.concurrent.Callable;
 public final class VPTree implements Callable<Integer> {
 
     @Option(names = "-project", required = true,
-            description = "Visual Paradigm project path (*.vpp)")
+        description = "Visual Paradigm project path (*.vpp)")
     String projectPath = "";
 
     @Override
     public Integer call() {
         return runSafe(() ->
-            VpCliLauncher.launch(projectPath,"-action", "tree")
+            VpCliLauncher.launch(projectPath, "tree", "-action", "tree")
         );
     }
 

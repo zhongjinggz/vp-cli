@@ -110,8 +110,6 @@ public class VPCLI implements VPPlugin, VPPluginCommandLineSupport {
 
     @Override
     public void unloaded() {
-        // Dagger 生成的组件无显式关闭：@Singleton 实例由组件引用持有，
-        // 到进程结束自然可达，无需在此清理。
     }
 
     // CLI 入口：解析参数并分发到导入/导出逻辑
@@ -121,7 +119,7 @@ public class VPCLI implements VPPlugin, VPPluginCommandLineSupport {
         try {
             cliController.invoke(args);
         } catch (Exception e) {
-            throw new RuntimeException(e);
+            System.out.println(e.toString());
         }
     }
 

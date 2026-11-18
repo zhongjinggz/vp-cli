@@ -87,7 +87,7 @@ A set of command-line interfaces (CLI) for Visual Paradigm.  Currently, the core
 
 #### Version: Sky-Second
 
-- Technical 
+- Technical **Done**
     - Switch to Tinylog
     - Introduce JSpecify
     - Extract methods that can be staticized into static utilities
@@ -96,8 +96,6 @@ A set of command-line interfaces (CLI) for Visual Paradigm.  Currently, the core
 - Feature 
     - **vp-export** command
         - Wrap PlantUML in Markdown
-    - **vp-mount** command
-        - Like `mount` command, binds a model file to a directory so you don't need to provide the `-project` argument every time.
 
     - **vp-cd** command
         - Like `cd` command, switches between packages.
