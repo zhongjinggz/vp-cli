@@ -5,7 +5,11 @@ import vpcli.plugin.domain.vpmodelvisitor.element.ViElement;
 import vpcli.plugin.domain.vpmodelvisitor.element.ViProject;
 import vpcli.plugin.domain.vpmodelvisitor.visitor.Visitor;
 import vpcli.plugin.domain.vpmodelvisitor.visitor.VisitorFactory;
+import vpcli.plugin.domain.vpmodelvisitor.visitor.VisitorFactoryWithFileSystem;
+import vpcli.plugin.domain.vpmodelvisitor.visitor.VisitorFactoryWithoutFileSystem;
+import vpcli.plugin.util.BugException;
 
+import java.io.File;
 import java.util.List;
 
 public class Traveller {
@@ -18,7 +22,22 @@ public class Traveller {
     }
 
     public void travel(ViProject viProject) {
-        Visitor visitor = visitorFactory.buildRoot();
+        Visitor visitor;
+        if (visitorFactory instanceof VisitorFactoryWithoutFileSystem) {
+            visitor = ((VisitorFactoryWithoutFileSystem) visitorFactory).buildRoot();
+        } else {
+            throw new BugException("Bug: cannot conver to VisitorFactoryWithoutFileSystem!");
+        }
+        travelElement(viProject, visitor);
+    }
+
+    public void travel(ViProject viProject, File rootPath) {
+        Visitor visitor;
+        if (visitorFactory instanceof VisitorFactoryWithFileSystem) {
+            visitor = ((VisitorFactoryWithFileSystem) visitorFactory).buildRoot(rootPath);
+        } else {
+            throw new BugException("Bug: cannot conver to VisitorFactoryWithFileSystem!");
+        }
         travelElement(viProject, visitor);
     }
 

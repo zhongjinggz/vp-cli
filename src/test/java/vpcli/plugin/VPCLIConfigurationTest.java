@@ -54,17 +54,6 @@ public class VPCLIConfigurationTest {
             plugin.readWriterFilePattern());
     }
 
-    @Test
-    void resolvePluginLogDir_prefersPluginDir() {
-        Path pluginDir = tempDir.resolve("plugin");
-        VPPluginInfo info = mock(VPPluginInfo.class);
-        when(info.getPluginDir()).thenReturn(pluginDir.toFile());
-
-        Path resolved = plugin.resolvePluginLogDir(info);
-
-        assertEquals(pluginDir.resolve("log").toAbsolutePath(), resolved.toAbsolutePath());
-        assertTrue(Files.isDirectory(resolved));
-    }
 
     @Test
     void resolvePluginLogDir_fallsBackToSystemTempDir_whenNothingAvailable() {

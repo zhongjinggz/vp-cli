@@ -4,9 +4,10 @@ import jakarta.inject.Inject;
 import jakarta.inject.Singleton;
 import vpcli.plugin.domain.vpmodelvisitor.visitor.Visitor;
 import vpcli.plugin.domain.vpmodelvisitor.visitor.VisitorFactory;
+import vpcli.plugin.domain.vpmodelvisitor.visitor.VisitorFactoryWithoutFileSystem;
 
 @Singleton
-public class TreeVisitorFactory implements VisitorFactory {
+public class TreeVisitorFactory implements VisitorFactoryWithoutFileSystem {
 
     @Inject
     public TreeVisitorFactory() {

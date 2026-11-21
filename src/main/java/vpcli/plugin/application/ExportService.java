@@ -32,7 +32,7 @@ public class ExportService {
         this.travellerFactory = travellerFactory;
     }
 
-    public void export(File exportLocation) {
+    public void export(File outputPath) {
 
         String[] vpElementTypes = new String[]{
             MODEL_TYPE_MODEL,
@@ -41,12 +41,11 @@ public class ExportService {
 
         var viProject = viProjectFactory.build();
 
-        this.exportVisitorFactory.setRootDir(exportLocation);
         Traveller traveller = travellerFactory.buildTraveller(
             this.exportVisitorFactory,
             vpElementTypes
         );
-        traveller.travel(viProject);
+        traveller.travel(viProject, outputPath);
     }
 
 }
