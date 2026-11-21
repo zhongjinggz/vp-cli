@@ -1,7 +1,4 @@
-package vpcli.plugin.domain.vpmodelvisitor.structure;
-
-import com.vp.plugin.model.IProject;
-import vpcli.plugin.domain.vpmodelvisitor.element.ViElementFactory;
+package vpcli.plugin.domain.vpmodelvisitor.element;
 
 import jakarta.inject.Inject;
 import jakarta.inject.Singleton;

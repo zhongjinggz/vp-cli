@@ -1,7 +1,7 @@
 package vpcli.plugin.domain.vpmodelvisitor.visitor.treevisitor;
 
 import vpcli.plugin.domain.vpmodelvisitor.element.*;
-import vpcli.plugin.domain.vpmodelvisitor.structure.ViProject;
+import vpcli.plugin.domain.vpmodelvisitor.element.ViProject;
 import vpcli.plugin.domain.vpmodelvisitor.visitor.Visitor;
 
 import static vpcli.plugin.domain.vpmodel.ModelElements.hasStereotype;

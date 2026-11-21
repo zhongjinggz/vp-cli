@@ -1,9 +1,9 @@
 package vpcli.plugin.application;
 
 import vpcli.plugin.domain.vpmodelvisitor.visitor.exportdiagramvisitor.ExportVisitorFactory;
-import vpcli.plugin.domain.vpmodelvisitor.structure.ViProjectFactory;
-import vpcli.plugin.domain.vpvisitor.vpmodelvisitor.structure.Traveller;
-import vpcli.plugin.domain.vpvisitor.vpmodelvisitor.structure.TravellerFactory;
+import vpcli.plugin.domain.vpmodelvisitor.element.ViProjectFactory;
+import vpcli.plugin.domain.vpmodelvisitor.structure.Traveller;
+import vpcli.plugin.domain.vpmodelvisitor.structure.TravellerFactory;
 
 import java.io.File;
 

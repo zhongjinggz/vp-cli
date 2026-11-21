@@ -9,11 +9,11 @@ import static org.mockito.Mockito.when;
 import com.vp.plugin.model.IProject;
 import java.io.File;
 import org.junit.jupiter.api.Test;
-import vpcli.plugin.domain.vpmodelvisitor.structure.ViProject;
-import vpcli.plugin.domain.vpmodelvisitor.structure.ViProjectFactory;
+import vpcli.plugin.domain.vpmodelvisitor.element.ViProject;
+import vpcli.plugin.domain.vpmodelvisitor.element.ViProjectFactory;
 import vpcli.plugin.domain.vpmodelvisitor.visitor.exportdiagramvisitor.ExportVisitorFactory;
-import vpcli.plugin.domain.vpvisitor.vpmodelvisitor.structure.Traveller;
-import vpcli.plugin.domain.vpvisitor.vpmodelvisitor.structure.TravellerFactory;
+import vpcli.plugin.domain.vpmodelvisitor.structure.Traveller;
+import vpcli.plugin.domain.vpmodelvisitor.structure.TravellerFactory;
 import vpcli.plugin.drivenadapter.VPProjectRepository;
 
 /**

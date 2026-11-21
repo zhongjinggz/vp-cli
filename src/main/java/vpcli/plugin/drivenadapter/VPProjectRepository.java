@@ -5,10 +5,11 @@ import com.vp.plugin.model.IProject;
 
 import jakarta.inject.Inject;
 import jakarta.inject.Singleton;
+import org.jspecify.annotations.Nullable;
 
 @Singleton
 public class VPProjectRepository {
-    private IProject vpProject;
+    @Nullable private IProject vpProject;
 
     @Inject
     public VPProjectRepository() {

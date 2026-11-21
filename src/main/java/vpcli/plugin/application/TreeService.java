@@ -1,12 +1,12 @@
 package vpcli.plugin.application;
 
-import vpcli.plugin.domain.vpmodelvisitor.structure.ViProjectFactory;
+import vpcli.plugin.domain.vpmodelvisitor.element.ViProjectFactory;
 
 import jakarta.inject.Inject;
 import jakarta.inject.Singleton;
 import vpcli.plugin.domain.vpmodelvisitor.visitor.treevisitor.TreeVisitorFactory;
-import vpcli.plugin.domain.vpvisitor.vpmodelvisitor.structure.TravellerFactory;
-import vpcli.plugin.domain.vpvisitor.vpmodelvisitor.structure.Traveller;
+import vpcli.plugin.domain.vpmodelvisitor.structure.TravellerFactory;
+import vpcli.plugin.domain.vpmodelvisitor.structure.Traveller;
 
 import static com.vp.plugin.model.factory.IModelElementFactory.*;
 import static com.vp.plugin.model.factory.IModelElementFactory.MODEL_TYPE_USE_CASE;

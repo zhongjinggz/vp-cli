@@ -2,7 +2,7 @@ package vpcli.plugin.domain.vpmodelvisitor.visitor.exportdiagramvisitor;
 
 import vpcli.plugin.domain.outputmodel.pumldiagram.PumlDiagramFactory;
 import vpcli.plugin.domain.vpmodelvisitor.element.*;
-import vpcli.plugin.domain.vpmodelvisitor.structure.ViProject;
+import vpcli.plugin.domain.vpmodelvisitor.element.ViProject;
 import vpcli.plugin.drivenadapter.DocWriter;
 import vpcli.plugin.util.MyIO;
 

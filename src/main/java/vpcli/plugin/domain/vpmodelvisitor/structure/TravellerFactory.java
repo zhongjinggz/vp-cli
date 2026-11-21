@@ -1,4 +1,4 @@
-package vpcli.plugin.domain.vpvisitor.vpmodelvisitor.structure;
+package vpcli.plugin.domain.vpmodelvisitor.structure;
 
 import jakarta.inject.Inject;
 import jakarta.inject.Singleton;

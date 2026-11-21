@@ -3,7 +3,7 @@ package vpcli.plugin.domain.vpmodelvisitor.visitor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import vpcli.plugin.domain.vpmodelvisitor.element.*;
-import vpcli.plugin.domain.vpmodelvisitor.structure.ViProject;
+import vpcli.plugin.domain.vpmodelvisitor.element.ViProject;
 
 public abstract class Visitor {
     Logger log = LoggerFactory.getLogger(Visitor.class);

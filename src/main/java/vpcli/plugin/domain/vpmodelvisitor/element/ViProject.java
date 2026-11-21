@@ -1,11 +1,8 @@
-package vpcli.plugin.domain.vpmodelvisitor.structure;
+package vpcli.plugin.domain.vpmodelvisitor.element;
 
 import com.vp.plugin.model.IModelElement;
 import com.vp.plugin.model.IProject;
 import vpcli.plugin.domain.vpmodelvisitor.ViElementType;
-import vpcli.plugin.domain.vpmodelvisitor.element.ViCompositeElement;
-import vpcli.plugin.domain.vpmodelvisitor.element.ViElement;
-import vpcli.plugin.domain.vpmodelvisitor.element.ViElementFactory;
 import vpcli.plugin.domain.vpmodelvisitor.visitor.Visitor;
 
 import java.util.ArrayList;
