@@ -1,19 +1,21 @@
 package vpcli.plugin.drivingadapter;
 
-import jakarta.inject.Inject;
-import jakarta.inject.Singleton;
+import dagger.assisted.Assisted;
+import dagger.assisted.AssistedInject;
 import vpcli.plugin.application.TreeService;
 
-@Singleton
 public class TreeCommand {
     private final TreeService treeService;
 
-    @Inject
-    public TreeCommand(TreeService treeService) {
+    @AssistedInject
+    public TreeCommand(
+        TreeService treeService,
+        @Assisted String[] args
+    ) {
         this.treeService = treeService;
     }
 
-    public void execute(String[] args) {
+    public void execute() {
         this.treeService.tree();
     }
 }

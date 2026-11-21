@@ -13,17 +13,17 @@ public class CLIController {
     @SuppressWarnings("unused")
     private static final org.slf4j.Logger log = LoggerFactory.getLogger(CLIController.class);
 
-    private final TreeCommand treeCommand;
-    private final ExportCommand exportCommand;
+    private final TreeCommandFactory treeCommandFactory;
+    private final ExportCommandFactory exportCommandFactory;
 
     @Inject
     public CLIController(
-        TreeCommand treeCommand,
-        ExportCommand exportCommand
+        TreeCommandFactory treeCommandFactory,
+        ExportCommandFactory exportCommandFactory
     ) {
 
-        this.treeCommand = treeCommand;
-        this.exportCommand = exportCommand;
+        this.treeCommandFactory = treeCommandFactory;
+        this.exportCommandFactory = exportCommandFactory;
     }
 
     public void invoke(String[] args) {
@@ -32,10 +32,10 @@ public class CLIController {
 
         switch (commandName) {
             case "tree":
-                treeCommand.execute(commandArgs);
+                treeCommandFactory.build(commandArgs).execute();
                 break;
             case "export":
-                exportCommand.execute(commandArgs);
+                exportCommandFactory.build(commandArgs).execute();
                 break;
             default:
                 throw new BugException("wrong command '" + commandName + "'");

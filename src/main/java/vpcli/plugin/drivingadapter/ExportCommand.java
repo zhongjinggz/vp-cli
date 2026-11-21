@@ -1,50 +1,52 @@
 package vpcli.plugin.drivingadapter;
 
-import jakarta.inject.Inject;
+import dagger.assisted.Assisted;
+import dagger.assisted.AssistedInject;
 import jakarta.inject.Singleton;
 import vpcli.plugin.application.ExportService;
 import vpcli.plugin.util.BusinessException;
-import vpcli.plugin.util.FindBugs;
 import vpcli.plugin.util.MyIO;
 
 import java.io.File;
 import java.util.Objects;
 
-@Singleton
 public class ExportCommand {
     private static final org.slf4j.Logger log =
         org.slf4j.LoggerFactory.getLogger(ExportCommand.class);
 
     private final ExportService exportService;
     private final MyIO myIO;
-    private String output;
+    private final String output;
 
-    @Inject
-    public ExportCommand(ExportService exportService, MyIO myIO) {
+    @AssistedInject
+    public ExportCommand(
+        ExportService exportService,
+        MyIO myIO,
+        @Assisted String[] args
+    ) {
         this.exportService = exportService;
         this.myIO = myIO;
+        this.output = getOutput(args);
     }
 
-    public void execute(String[] args) {
-        parseArgs(args);
-        FindBugs.requireNonNull(output, "'-output' should not be null. It should be a bug since shell.VPExport should have checked it.");
+    public void execute() {
+//        getOutput(args);
+//        FindBugs.requireNonNull(output, "'-output' should not be null. It should be a bug since shell.VPExport should have checked it.");
         performExport(output);
     }
 
-    private void parseArgs(String[] args) {
+    private String getOutput(String[] args) {
         for (int i = 0; i < args.length; i++) {
             var arg = args[i];
             if (Objects.equals(arg, "-output")) {
-                if (i+1 < args.length) {
-                    this.output = args[++i];
+                if (i + 1 < args.length) {
+                    return args[++i];
                 } else {
                     throw new BusinessException("value of -output is missing!");
                 }
             }
         }
-        if (output == null) {
-            throw new BusinessException("-output is missing!");
-        }
+        throw new BusinessException("-output is missing!");
     }
 
     void performExport(String output) {
