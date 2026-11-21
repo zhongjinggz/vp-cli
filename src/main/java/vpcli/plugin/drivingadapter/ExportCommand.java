@@ -4,6 +4,7 @@ import jakarta.inject.Inject;
 import jakarta.inject.Singleton;
 import vpcli.plugin.application.ExportService;
 import vpcli.plugin.util.BusinessException;
+import vpcli.plugin.util.FindBugs;
 import vpcli.plugin.util.MyIO;
 
 import java.io.File;
@@ -25,11 +26,12 @@ public class ExportCommand {
     }
 
     public void execute(String[] args) {
-        setArgs(args);
+        parseArgs(args);
+        FindBugs.requireNonNull(output, "'-output' should not be null. It should be a bug since shell.VPExport should have checked it.");
         performExport(output);
     }
 
-    private void setArgs(String[] args) {
+    private void parseArgs(String[] args) {
         for (int i = 0; i < args.length; i++) {
             var arg = args[i];
             if (Objects.equals(arg, "-output")) {

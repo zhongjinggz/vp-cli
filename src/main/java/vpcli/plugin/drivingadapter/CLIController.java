@@ -10,6 +10,7 @@ import jakarta.inject.Singleton;
 
 @Singleton
 public class CLIController {
+    @SuppressWarnings("unused")
     private static final org.slf4j.Logger log = LoggerFactory.getLogger(CLIController.class);
 
     private final TreeCommand treeCommand;
