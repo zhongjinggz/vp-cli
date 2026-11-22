@@ -8,7 +8,7 @@ import jakarta.inject.Singleton;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import vpcli.plugin.domain.outputmodel.pumldiagram.PumlDiagram;
-import vpcli.plugin.domain.outputmodel.pumlexporter.PumlElementExporter;
+import vpcli.plugin.domain.outputmodel.pumlexporter.fundation.PumlElementExporter;
 
 // 关联类：从关联线到关联类别名的虚连线。VP 中该连接线的模型元素是 IAssociationClass，
 // 其两端分别是「关联 IAssociation（含两个被关联类）」与「关联类 IClass」。

@@ -7,7 +7,7 @@ import vpcli.plugin.domain.outputmodel.pumldiagram.PumlDiagram;
 
 import jakarta.inject.Inject;
 import jakarta.inject.Singleton;
-import vpcli.plugin.domain.outputmodel.pumlexporter.PumlElementExporter;
+import vpcli.plugin.domain.outputmodel.pumlexporter.fundation.PumlElementExporter;
 
 @Singleton
 public class PumlAnchorExporter extends PumlElementExporter {

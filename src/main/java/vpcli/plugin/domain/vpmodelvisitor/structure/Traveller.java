@@ -1,8 +1,8 @@
 package vpcli.plugin.domain.vpmodelvisitor.structure;
 
-import vpcli.plugin.domain.vpmodelvisitor.element.ViCompositeElement;
-import vpcli.plugin.domain.vpmodelvisitor.element.ViElement;
-import vpcli.plugin.domain.vpmodelvisitor.element.ViProject;
+import vpcli.plugin.domain.vpmodelvisitor.element.fundation.ViCompositeElement;
+import vpcli.plugin.domain.vpmodelvisitor.element.fundation.ViElement;
+import vpcli.plugin.domain.vpmodelvisitor.element.viproject.ViProject;
 import vpcli.plugin.domain.vpmodelvisitor.visitor.Visitor;
 import vpcli.plugin.domain.vpmodelvisitor.visitor.VisitorFactory;
 import vpcli.plugin.domain.vpmodelvisitor.visitor.VisitorFactoryWithFileSystem;

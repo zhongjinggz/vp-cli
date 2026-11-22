@@ -102,11 +102,11 @@
             <artifactId>dagger</artifactId>
             <version>${dagger.version}</version>
         </dependency>
-<!--        <dependency>-->
-<!--            <groupId>com.google.dagger</groupId>-->
-<!--            <artifactId>dagger-compiler</artifactId>-->
-<!--            <version>${dagger.version}</version>-->
-<!--        </dependency>-->
+        <!--        <dependency>-->
+        <!--            <groupId>com.google.dagger</groupId>-->
+        <!--            <artifactId>dagger-compiler</artifactId>-->
+        <!--            <version>${dagger.version}</version>-->
+        <!--        </dependency>-->
 
         <dependency>
             <groupId>org.jspecify</groupId>
@@ -114,6 +114,14 @@
             <version>${jspecify.version}</version>
             <scope>provided</scope>
         </dependency>
+
+        <dependency>
+            <groupId>org.jetbrains</groupId>
+            <artifactId>annotations</artifactId>
+            <version>26.0.2</version>
+            <scope>provided</scope>
+        </dependency>
+
     </dependencies>
 
     <build>
@@ -164,10 +172,13 @@
                                 <arg>--should-stop=ifError=FLOW</arg>
                                 <!--                    <arg>-Xplugin:ErrorProne -Xep:NullAway:ERROR -XepOpt:NullAway:AnnotatedPackages=my.tmp -XepOpt:NullAway:JSpecifyMode=true</arg>-->
                                 <!--                    remove -Xep:NullAway:ERROR -XepOpt:NullAway:JSpecifyMode=true temporatily-->
-<!--                                <arg>-Xplugin:ErrorProne -XepOpt:NullAway:AnnotatedPackages=vpcli  -XepExcludedPaths:.*/target/generated-sources/.*</arg>-->
+                                <!--                                <arg>-Xplugin:ErrorProne -XepOpt:NullAway:AnnotatedPackages=vpcli  -XepExcludedPaths:.*/target/generated-sources/.*</arg>-->
                                 <arg>
                                     -Xplugin:ErrorProne
                                     -XepOpt:NullAway:OnlyNullMarked=true
+                                    -XepOpt:NullAway:JSpecifyMode=true
+                                    -XepOpt:NullAway:JSpecifyExperimental=true
+                                    -Xep:RequireExplicitNullMarking:WARN
                                     -XepExcludedPaths:.*/target/generated-sources/.*
                                 </arg>
 

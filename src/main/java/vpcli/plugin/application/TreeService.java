@@ -1,6 +1,6 @@
 package vpcli.plugin.application;
 
-import vpcli.plugin.domain.vpmodelvisitor.element.ViProjectFactory;
+import vpcli.plugin.domain.vpmodelvisitor.element.viproject.ViProjectFactory;
 
 import jakarta.inject.Inject;
 import jakarta.inject.Singleton;

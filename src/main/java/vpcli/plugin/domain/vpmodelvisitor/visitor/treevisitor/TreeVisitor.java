@@ -1,7 +1,12 @@
 package vpcli.plugin.domain.vpmodelvisitor.visitor.treevisitor;
 
-import vpcli.plugin.domain.vpmodelvisitor.element.*;
-import vpcli.plugin.domain.vpmodelvisitor.element.ViProject;
+import vpcli.plugin.domain.vpmodelvisitor.element.viclassifier.ViClass;
+import vpcli.plugin.domain.vpmodelvisitor.element.viclassifier.ViNary;
+import vpcli.plugin.domain.vpmodelvisitor.element.viclassifier.ViUseCase;
+import vpcli.plugin.domain.vpmodelvisitor.element.vidiagram.ViDiagram;
+import vpcli.plugin.domain.vpmodelvisitor.element.vipackage.ViModel;
+import vpcli.plugin.domain.vpmodelvisitor.element.vipackage.ViPackage;
+import vpcli.plugin.domain.vpmodelvisitor.element.viproject.ViProject;
 import vpcli.plugin.domain.vpmodelvisitor.visitor.Visitor;
 
 import static vpcli.plugin.domain.vpmodel.ModelElements.hasStereotype;
@@ -31,7 +36,7 @@ public class TreeVisitor extends Visitor {
     }
 
     @Override
-    public void visit(ViDiagramAsElement element) {
+    public void visit(ViDiagram element) {
         printBranch(element.getName(), ".diagram");
 
     }

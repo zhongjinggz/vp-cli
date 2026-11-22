@@ -7,7 +7,7 @@ import static org.mockito.Mockito.when;
 import com.vp.plugin.diagram.IDiagramElement;
 import com.vp.plugin.model.IModelElement;
 import org.junit.jupiter.api.Test;
-import vpcli.plugin.domain.outputmodel.pumlexporter.PumlElementExporter;
+import vpcli.plugin.domain.outputmodel.pumlexporter.fundation.PumlElementExporter;
 
 /**
  * 针对 {@link PumlElementExporter#pumlAlias}：验证全局别名算法

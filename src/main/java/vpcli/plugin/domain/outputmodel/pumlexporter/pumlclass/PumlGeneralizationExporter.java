@@ -6,7 +6,7 @@ import com.vp.plugin.diagram.IShapeTypeConstants;
 
 import jakarta.inject.Inject;
 import jakarta.inject.Singleton;
-import vpcli.plugin.domain.outputmodel.pumlexporter.PumlDirectedRelationshipExporter;
+import vpcli.plugin.domain.outputmodel.pumlexporter.fundation.PumlDirectedRelationshipExporter;
 
 @Singleton
 public class PumlGeneralizationExporter extends PumlDirectedRelationshipExporter {

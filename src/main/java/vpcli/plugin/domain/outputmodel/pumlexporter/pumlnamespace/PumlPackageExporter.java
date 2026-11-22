@@ -4,7 +4,7 @@ import com.vp.plugin.diagram.IShapeTypeConstants;
 import com.vp.plugin.model.IModelElement;
 import jakarta.inject.Inject;
 import jakarta.inject.Singleton;
-import vpcli.plugin.domain.outputmodel.pumlexporter.PumlBlockExporter;
+import vpcli.plugin.domain.outputmodel.pumlexporter.fundation.PumlBlockExporter;
 
 @Singleton
 public class PumlPackageExporter extends PumlBlockExporter {

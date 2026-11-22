@@ -1,7 +1,7 @@
 package vpcli.plugin.application;
 
-import vpcli.plugin.domain.vpmodelvisitor.visitor.exportdiagramvisitor.ExportVisitorFactory;
-import vpcli.plugin.domain.vpmodelvisitor.element.ViProjectFactory;
+import vpcli.plugin.domain.vpmodelvisitor.visitor.exportvisitor.ExportVisitorFactory;
+import vpcli.plugin.domain.vpmodelvisitor.element.viproject.ViProjectFactory;
 import vpcli.plugin.domain.vpmodelvisitor.structure.Traveller;
 import vpcli.plugin.domain.vpmodelvisitor.structure.TravellerFactory;
 

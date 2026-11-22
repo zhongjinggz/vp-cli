@@ -7,11 +7,9 @@ import static org.mockito.Mockito.when;
 
 import com.vp.plugin.diagram.IDiagramUIModel;
 
-import java.util.List;
-
 import org.junit.jupiter.api.Test;
-import vpcli.plugin.domain.vpmodelvisitor.ViElementType;
-import vpcli.plugin.domain.vpmodelvisitor.element.ViDiagramAsElement;
+import vpcli.plugin.domain.vpmodelvisitor.element.fundation.ViElementType;
+import vpcli.plugin.domain.vpmodelvisitor.element.vidiagram.ViDiagram;
 
 class MyDiagramFactoryConverterAsElementTest {
 
@@ -19,7 +17,7 @@ class MyDiagramFactoryConverterAsElementTest {
     void shouldReturnNameFromDiagram() {
         IDiagramUIModel diagram = mock(IDiagramUIModel.class);
         when(diagram.getName()).thenReturn("D");
-        ViDiagramAsElement vp = new ViDiagramAsElement(diagram);
+        ViDiagram vp = new ViDiagram(diagram);
         assertEquals("D", vp.getName());
     }
 
@@ -27,7 +25,7 @@ class MyDiagramFactoryConverterAsElementTest {
     void shouldResolveTypeFromDiagramType() {
         IDiagramUIModel diagram = mock(IDiagramUIModel.class);
         when(diagram.getType()).thenReturn(ViElementType.DIAGRAM.getVPModelType());
-        ViDiagramAsElement vp = new ViDiagramAsElement(diagram);
+        ViDiagram vp = new ViDiagram(diagram);
         assertEquals(ViElementType.DIAGRAM, vp.getType());
     }
 

@@ -14,7 +14,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import vpcli.plugin.domain.outputmodel.pumldiagram.PumlDiagram;
 import vpcli.plugin.domain.outputmodel.pumldiagram.PumlEdgeEnd.ShapeKind;
-import vpcli.plugin.domain.outputmodel.pumlexporter.PumlElementExporter;
+import vpcli.plugin.domain.outputmodel.pumlexporter.fundation.PumlElementExporter;
 import vpcli.plugin.domain.vpmodel.ModelElements;
 
 import java.util.Objects;

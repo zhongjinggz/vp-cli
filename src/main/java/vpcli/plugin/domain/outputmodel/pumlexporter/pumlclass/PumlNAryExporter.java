@@ -6,7 +6,7 @@ import com.vp.plugin.diagram.IShapeTypeConstants;
 import jakarta.inject.Inject;
 import jakarta.inject.Singleton;
 import vpcli.plugin.domain.outputmodel.pumldiagram.PumlDiagram;
-import vpcli.plugin.domain.outputmodel.pumlexporter.PumlElementExporter;
+import vpcli.plugin.domain.outputmodel.pumlexporter.fundation.PumlElementExporter;
 
 // 多元（n-ary）关联：中心菱形（SHAPE_TYPE_NARY，模型为 INARY）渲染为 diamond <别名>，
 // 各参与类以带多重性的实线 -- 连到菱形。

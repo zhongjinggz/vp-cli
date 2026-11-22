@@ -4,7 +4,7 @@ import com.vp.plugin.diagram.IDiagramUIModel;
 
 import jakarta.inject.Inject;
 import jakarta.inject.Singleton;
-import vpcli.plugin.domain.outputmodel.pumlexporter.PumlElementExporterRepository;
+import vpcli.plugin.domain.outputmodel.pumlexporter.fundation.PumlElementExporterRepository;
 
 @Singleton
 public class PumlDiagramFactory {

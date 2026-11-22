@@ -10,6 +10,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.junit.jupiter.api.Test;
+import vpcli.plugin.domain.vpmodelvisitor.element.fundation.ViElementType;
 
 /**
  * 步 #21：ViElementType 对 4 个独立 model type 的登记，

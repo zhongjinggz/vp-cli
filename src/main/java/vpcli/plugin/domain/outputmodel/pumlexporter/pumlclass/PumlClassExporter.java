@@ -13,8 +13,7 @@ import jakarta.inject.Inject;
 import jakarta.inject.Singleton;
 import org.jspecify.annotations.NonNull;
 import vpcli.plugin.domain.outputmodel.pumldiagram.PumlDiagram;
-import vpcli.plugin.domain.outputmodel.pumlexporter.PumlBlockExporter;
-import vpcli.plugin.domain.vpmodel.ModelElements;
+import vpcli.plugin.domain.outputmodel.pumlexporter.fundation.PumlBlockExporter;
 import vpcli.plugin.util.BugException;
 import vpcli.plugin.util.Strings;
 
