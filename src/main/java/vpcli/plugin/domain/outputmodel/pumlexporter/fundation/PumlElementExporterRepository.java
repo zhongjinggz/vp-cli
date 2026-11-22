@@ -2,7 +2,6 @@ package vpcli.plugin.domain.outputmodel.pumlexporter.fundation;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Objects;
 
 import com.vp.plugin.diagram.IDiagramElement;
 import jakarta.inject.Inject;
@@ -18,7 +17,6 @@ import vpcli.plugin.domain.outputmodel.pumlexporter.pumlnamespace.PumlPackageExp
 import vpcli.plugin.domain.outputmodel.pumlexporter.pumlnote.PumlAnchorExporter;
 import vpcli.plugin.domain.outputmodel.pumlexporter.pumlnote.PumlNoteExporter;
 import vpcli.plugin.domain.outputmodel.pumlexporter.pumlusecase.PumlUseCaseExporter;
-import vpcli.plugin.util.BugException;
 import vpcli.plugin.util.FindBugs;
 
 import static vpcli.plugin.domain.vpmodel.DiagramElements.isInterfaceBall;

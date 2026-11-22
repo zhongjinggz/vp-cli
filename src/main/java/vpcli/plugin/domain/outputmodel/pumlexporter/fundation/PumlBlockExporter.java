@@ -5,6 +5,7 @@ import com.vp.plugin.diagram.IShapeUIModel;
 import com.vp.plugin.model.IModelElement;
 import vpcli.plugin.domain.outputmodel.pumldiagram.PumlDiagram;
 import vpcli.plugin.domain.vpmodel.ModelElements;
+import vpcli.plugin.util.FindBugs;
 
 import static vpcli.plugin.util.Strings.buildStringPatcher;
 
@@ -50,7 +51,7 @@ public abstract class PumlBlockExporter extends PumlElementExporter {
             .toString();
     }
 
-    protected String templateParams(IModelElement vpElement){
+    protected String templateParams(IModelElement vpElement) {
         return "";
     }
 
@@ -59,6 +60,10 @@ public abstract class PumlBlockExporter extends PumlElementExporter {
             IShapeUIModel shape = (IShapeUIModel) vpDiagramElement;
             for (IDiagramElement child : shape.toChildArray()) {
                 if (child.getModelElement() != null) {
+                    FindBugs.requireNonNull(
+                        exporterRepository,
+                        "the exporterRepository of this Exporter hasn't been set in PumlElementExporterRepository's constructor!"
+                    );
                     var exporter = exporterRepository.findBy(child);
                     exporter.export(result, child);
                 }

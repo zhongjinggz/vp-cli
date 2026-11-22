@@ -1,16 +1,16 @@
 package vpcli.plugin.domain.outputmodel.pumlexporter.fundation;
 
 import com.vp.plugin.diagram.IDiagramElement;
+import org.jspecify.annotations.Nullable;
 import vpcli.plugin.domain.outputmodel.pumldiagram.PumlDiagram;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public abstract class PumlElementExporter {
-    protected PumlElementExporterRepository exporterRepository;
+    // it will be set setExporterRepository() from constructor of PumlElementExporterRepository
+    @Nullable protected PumlElementExporterRepository exporterRepository;
 
-    public PumlElementExporter() {
-    }
 
     // used by PumlElementExporterRepository to build the bi-direction dependency
     public void setExporterRepository(PumlElementExporterRepository pumlElementExporterRepository) {

@@ -8,7 +8,7 @@ public class FindBugs {
     private FindBugs() {}
 
 
-    @Contract("null -> fail")
+    @Contract("null, _ -> fail")
     public static void requireNonNull(@Nullable Object object, String message) {
 
         if (object == null ) {
